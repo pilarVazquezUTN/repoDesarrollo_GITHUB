@@ -41,6 +41,15 @@ public class Factura {
         this.estado = estado;
     }
 
+    public void agregarItem(){
+
+    }
+    public void cancelar(){
+
+    }
+    public void calcularTotal(){
+
+    }
 
 
 

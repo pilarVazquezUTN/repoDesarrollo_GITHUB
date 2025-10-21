@@ -4,6 +4,7 @@
  */
 package Classes;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -68,6 +69,66 @@ public class Huesped {
     public void setNacionalidad(String nacionalidad) {
         this.nacionalidad = nacionalidad;
 
+    }
+
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+    public String getApellido() {
+        return apellido;
+    }
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+    public String getNumeroDocumento() {
+        return numeroDocumento;
+    }
+    public String getCuit() {
+        return cuit;
+    }
+    public String getPosicionIva() {
+        return posicionIva;
+    }
+    public String getOcupacion() {
+        return ocupacion;
+    }
+    public String getNacionalidad() {
+        return nacionalidad;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    public Direccion getDireccionHuesped() {
+        return direccionHuesped;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getTelefono() {
+
+        return telefono;
+    }
+
+    public boolean esMayorDeEdad(Huesped huesped) {
+        Date fechaNacimiento = huesped.getFechaNacimiento();
+
+        Calendar hoy = Calendar.getInstance();
+        Calendar nacimiento = Calendar.getInstance();
+        nacimiento.setTime(fechaNacimiento);
+
+        int edad = hoy.get(Calendar.YEAR) - nacimiento.get(Calendar.YEAR);
+
+        // Si todavía no cumplió , restamos 1 porq todavia no complio años pero en la resta da 18
+        if (hoy.get(Calendar.MONTH) < nacimiento.get(Calendar.MONTH) ||
+                ((hoy.get(Calendar.MONTH) == nacimiento.get(Calendar.MONTH) &&
+                        hoy.get(Calendar.DAY_OF_MONTH) < nacimiento.get(Calendar.DAY_OF_MONTH)))){
+            edad--;
+        }
+
+        return edad >= 18;
     }
 
 

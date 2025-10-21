@@ -9,5 +9,19 @@ package Classes;
  * @author st
  */
 public class GestorPago {
-    
+    private String idEmpleado;
+
+    public void ingresarPago(Factura factura,  float monto){
+
+    }
+
+    public boolean validarMonto(){
+        return false;
+    }
+    public void registrarPago(){
+
+    }
+    public boolean errorValidacion(){
+        return false;
+    }
 }

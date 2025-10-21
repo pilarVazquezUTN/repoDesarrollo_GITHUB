@@ -9,5 +9,9 @@ package Classes;
  * @author st
  */
 public class GestorResponsablePago {
-    
+    private String idEmpleado;
+
+
+
+
 }

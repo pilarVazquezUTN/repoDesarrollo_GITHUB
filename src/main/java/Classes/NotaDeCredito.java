@@ -9,5 +9,12 @@ package Classes;
  * @author st
  */
 public class NotaDeCredito {
-    
+    private float monto;
+
+    public void setMonto(float monto) {
+        this.monto = monto;
+    }
+    public float getMonto() {
+        return this.monto;
+    }
 }

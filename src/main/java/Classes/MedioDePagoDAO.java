@@ -9,5 +9,13 @@ package Classes;
  * @author st
  */
 public class MedioDePagoDAO {
-    
+    public void delete(){
+
+    }
+    public  void create(){
+    }
+    public  void update(){
+    }
+    public  void read(){
+    }
 }

@@ -16,7 +16,7 @@ public class Pago {
     private Date  fecha;
 
 
-   
+
     public float getMonto() {
         return monto;
     }
