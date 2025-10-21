@@ -4,10 +4,21 @@
  */
 package Classes;
 
+import java.util.Date;
+
 /**
  *
  * @author st
  */
 public class Estadia {
-    
+    private Date checkin;
+    private Date checkout;
+
+
+    public void setCheckin(Date checkin) {
+        this.checkin = checkin;
+    }
+    public void setCheckout(Date checkout) {
+        this.checkout = checkout;
+    }
 }
