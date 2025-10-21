@@ -10,6 +10,7 @@ import Classes.Direccion.DireccionDTO;
 import Classes.Huesped.HuespedDAO;
 import Classes.Huesped.HuespedDTO;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -114,8 +115,8 @@ public class App {
         huespedDTO=ingresarDatos();
         huespedDAO.registrarHuesped(huespedDTO);
         
-        System.out.println("El huésped" + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
-        " ha sido atisfactoriamente cargado al sistema. ¿Desea cargar otro? \n" +
+        System.out.println("El huésped " + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
+        " ha sido atisfactoriamente cargado al sistema. \n ¿Desea cargar otro? \n" +
         "1. si \n 2. no");
         
         Integer opcion= scanner.nextInt();
@@ -148,11 +149,23 @@ public class App {
         System.out.print("Ingrese su posicion frente al IVA: ");
         huespedDTO.setPosicionIva(scanner.nextLine());
 
-        System.out.print("Ingrese su fecha de nacimiento (dd/mm/aaaa): ");
-        String fechaNac = scanner.nextLine();
+        System.out.print("Ingrese su fecha de nacimiento (dd/MM/yyyy): ");
+        String fechaNacStr = scanner.nextLine();
+
+        // Definir el formato
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        fechaNacDTO = formatter.parse(fechaNac);
-        huespedDTO.setFechaNacimiento(fechaNacDTO);
+        formatter.setLenient(false); // Validar la fecha estrictamente
+
+        try {
+            // Intentamos la conversión UNA SOLA VEZ
+            fechaNacDTO = formatter.parse(fechaNacStr);
+            huespedDTO.setFechaNacimiento(fechaNacDTO);
+            //System.out.println("Fecha ingresada y guardada.");
+        } catch (ParseException e) {
+            // Si la conversión falla, informamos y la fechaNacDTO queda como null (o el valor que tenía antes)
+            //System.err.println("❌ ERROR: El formato de fecha ingresado es INCORRECTO. La fecha no fue guardada.");
+            huespedDTO.setFechaNacimiento(null); // Opcional: Asegurar que el DTO tenga null
+        }
 
         System.out.print("Ingrese su calle: ");
         direccionDTO.setCalle(scanner.nextLine());
