@@ -4,10 +4,13 @@
  */
 package Classes;
 
+import java.util.Date;
+
 /**
  *
  * @author st
  */
 public class MedioDePago {
-    
+    private int monto;
+    private Date fecha;
 }

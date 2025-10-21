@@ -9,5 +9,6 @@ package Classes;
  * @author st
  */
 public class ServicioExtra {
-    
+    private int tipoServicio;
+    private float precio;
 }

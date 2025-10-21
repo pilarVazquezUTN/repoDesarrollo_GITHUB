@@ -3,7 +3,12 @@ package Classes;
 public class GestorHuesped {
     private String idEmpleado;
 
-
+    public void setIdEmpleado(String idEmpleado) {
+        this.idEmpleado = idEmpleado;
+    }
+    public String getIdEmpleado() {
+        return idEmpleado;
+    }
 
 
 

@@ -9,5 +9,5 @@ package Classes;
  * @author st
  */
 public class PersonaFisica {
-    
+    private String nombre;
 }

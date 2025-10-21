@@ -18,4 +18,7 @@ public class GestorEstadia {
         return id_empleado;
     }
 
+    public void OcuparHabitacion(){
+
+    }
 }
