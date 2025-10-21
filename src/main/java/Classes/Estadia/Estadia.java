@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Classes.Estadia;
 
 import java.util.Date;
 
-/**
- *
- * @author st
- */
 public class Estadia {
     private Date checkin;
     private Date checkout;
@@ -20,5 +12,12 @@ public class Estadia {
     }
     public void setCheckout(Date checkout) {
         this.checkout = checkout;
+    }
+
+    public Date getCheckIn(){
+        return this.checkin;
+    }
+    public Date getCheckOut(){
+        return this.checkout;
     }
 }
