@@ -13,7 +13,7 @@ public class UsuarioDAO {
 
     public boolean usuarioEncontrado(String nombreUsuario, String contraseñaUsuario) {
         String usuarioIngresado = nombreUsuario;
-        String contrasenaIngresada = contraseñaUsuario;
+        String contrasenaIngresada = contraseña Usuario;
         String rutaArchivo = "D:/UTN/2025/DesarrolloSoftware/trabajoPractico/infoAutenticarUsuario.txt";
         boolean autenticado = false;
 
