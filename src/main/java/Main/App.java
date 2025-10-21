@@ -1,10 +1,12 @@
 package Main;
-
+/*
+ IMPORTAR TODAS LAS CLASES DE UN PACKAGE: import <paquetess>.*; ejmplo: import Classes.Usuario.*;
+ IMPORTAR CLASES QUE YO QUIERA DEL PACKAGE: import <paquetess>.<clase>; ejemplo: como esta en el tp
+*/
 import Classes.Usuario.UsuarioDTO;
 import Classes.Usuario.UsuarioDAO;
 
 import java.util.Scanner;
-
 
 public class App {
     public static void main(String[] args) {
@@ -31,8 +33,7 @@ public class App {
         int opcion= scanner.nextInt();
         
         while(opcion<1 || opcion>5){
-            System.out.print("\033[H\033[2J");
-            System.out.flush();
+            clearConsola();
             System.out.println("--------------- Ingrese una opcion correcta!");
             Menu();
             break;
@@ -46,7 +47,7 @@ public class App {
                 
                 break;
             case 3://daar de alta huesped
-                
+                darAltaHuesped();                
                 break;
             case 4:// modificar huesped
                 
@@ -58,7 +59,7 @@ public class App {
     }
 
     public static void autenticarHuesped(){
-        /*se presenta pantalla para autenticar usuario 
+        /*se presenta pantalla para autenticar usuario  
          ingresa nombre, contraseña(HACER LOS *****)
          mostrar error de algun dato invalido
          sistema blanquea campos cuando esten OK
@@ -84,15 +85,25 @@ public class App {
         //llamamos al DAO
         UsuarioDAO usuarioDAO= new UsuarioDAO();
         
+        clearConsola();
+
         if(usuarioDAO.buscarUsuario(usuarioDTO)){
-            System.out.println("encontrado");
+            System.out.println("encontrado \n");
         } else {
-            System.out.println("noooooooo encontrado");
+            System.out.println("noooooooo encontrado \n");
         }
 
-
+        Menu();
 
         
     }
 
+    public static void darAltaHuesped(){
+        
+    }
+
+    public static void clearConsola(){
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
 }
