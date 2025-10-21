@@ -107,10 +107,22 @@ public class App {
     }
 
     public static void darAltaHuesped(){
+        Scanner scanner = new Scanner(System.in);
         HuespedDTO huespedDTO = new HuespedDTO();
-        huespedDTO=ingresarDatos();
+        HuespedDAO huespedDAO = new HuespedDAO();
         
-
+        huespedDTO=ingresarDatos();
+        huespedDAO.registrarHuesped(huespedDTO);
+        
+        System.out.println("El huésped" + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
+        " ha sido atisfactoriamente cargado al sistema. ¿Desea cargar otro? \n" +
+        "1. si \n 2. no");
+        
+        Integer opcion= scanner.nextInt();
+        if(opcion==1){
+            //vuelve a que cargue mas huespedes
+            darAltaHuesped();
+        } 
     }
     public static HuespedDTO ingresarDatos(){
         HuespedDTO huespedDTO = new HuespedDTO();
@@ -183,7 +195,9 @@ public class App {
         System.out.println("1. Siguiente");
         System.out.println("2. Cancelar");
 
-        return huespedDTO;
+        Integer opcion =scanner.nextInt();
+
+        return huespedDTO; //FALTA VER QUE PASA SI PRESIONA CANCELAR   
     }
 
     public static void clearConsola(){

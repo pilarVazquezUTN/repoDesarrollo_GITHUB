@@ -18,6 +18,11 @@ public class HuespedDAO {
     public  void read(){
     }
 
+    public static void registrarHuesped(HuespedDTO huespedDTO){
+        /*
+         AGREGAR EL HUESPEDDTO QUE LLEGA A LA BD DE HUESPEDES
+         */
+    }
 
     public static HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
         String rutaArchivo = "C:\\Users\\guill\\Downloads\\CU2 DESARROLLO\\infoBuscarHuespedes.txt"; // Cambia por la ruta real de tu archivo
