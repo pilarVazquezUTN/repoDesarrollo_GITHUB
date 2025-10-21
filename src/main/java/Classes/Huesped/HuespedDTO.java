@@ -3,6 +3,7 @@ package Classes.Huesped;
 import java.util.Date;
 
 import Classes.Direccion.Direccion;
+import Classes.Direccion.DireccionDTO;
 
 public class HuespedDTO {
     private String apellido;
@@ -12,7 +13,7 @@ public class HuespedDTO {
     private Date fechaNacimiento;
     private String telefono;
     private String email;
-    private Direccion direccionHuesped;
+    private DireccionDTO direccionHuesped;
     private String cuit;
     private String posicionIva;
     private String ocupacion;
@@ -47,7 +48,7 @@ public class HuespedDTO {
         this.email = email;
     }
 
-    public void setDireccionHuesped(Direccion direccionHuesped) {
+    public void setDireccionHuesped(DireccionDTO direccionHuesped) {
         this.direccionHuesped = direccionHuesped;
     }
     public void setCuit(String cuit) {

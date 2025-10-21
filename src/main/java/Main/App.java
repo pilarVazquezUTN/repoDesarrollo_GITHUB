@@ -5,9 +5,15 @@ package Main;
 */
 import Classes.Usuario.UsuarioDTO;
 import Classes.Usuario.UsuarioDAO;
+import Classes.Direccion.Direccion;
+import Classes.Direccion.DireccionDTO;
 import Classes.Huesped.HuespedDAO;
 import Classes.Huesped.HuespedDTO;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Scanner;
 
 public class App {
@@ -101,7 +107,83 @@ public class App {
     }
 
     public static void darAltaHuesped(){
+        HuespedDTO huespedDTO = new HuespedDTO();
+        huespedDTO=ingresarDatos();
         
+
+    }
+    public static HuespedDTO ingresarDatos(){
+        HuespedDTO huespedDTO = new HuespedDTO();
+        Scanner scanner = new Scanner(System.in);
+        Date fechaNacDTO;
+        DireccionDTO direccionDTO=new DireccionDTO();
+
+        System.out.print("Ingrese su nombre: ");
+        huespedDTO.setNombre(scanner.nextLine());
+
+        System.out.print("Ingrese su apellido: ");
+        huespedDTO.setApellido(scanner.nextLine());
+
+        System.out.print("Ingrese Tipo de documento: ");
+        huespedDTO.setTipoDocumento(scanner.nextLine());
+
+        System.out.print("Ingrese su numero de documento: ");
+        huespedDTO.setNumeroDocumento(scanner.nextLine());
+
+        System.out.print("Ingrese su CUIT: ");
+        huespedDTO.setCuit(scanner.nextLine());
+
+        System.out.print("Ingrese su posicion frente al IVA: ");
+        huespedDTO.setPosicionIva(scanner.nextLine());
+
+        System.out.print("Ingrese su fecha de nacimiento (dd/mm/aaaa): ");
+        String fechaNac = scanner.nextLine();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        fechaNacDTO = formatter.parse(fechaNac);
+        huespedDTO.setFechaNacimiento(fechaNacDTO);
+
+        System.out.print("Ingrese su calle: ");
+        direccionDTO.setCalle(scanner.nextLine());
+
+        System.out.print("Ingrese su número de calle: ");
+        direccionDTO.setNumero(scanner.nextLine());
+
+        System.out.print("Ingrese su departamento: ");
+        direccionDTO.setDepartamento(scanner.nextLine());
+
+        System.out.print("Ingrese su piso: ");
+        direccionDTO.setPiso(scanner.nextLine());
+
+        System.out.print("Ingrese su código postal: ");
+        direccionDTO.setCodigoPostal(scanner.nextLine());
+
+        System.out.print("Ingrese su localidad: ");
+        direccionDTO.setLocalidad(scanner.nextLine());
+
+        System.out.print("Ingrese su provincia: ");
+        direccionDTO.setProvincia(scanner.nextLine());
+
+        System.out.print("Ingrese su pais: ");
+        direccionDTO.setPais(scanner.nextLine());
+
+        huespedDTO.setDireccionHuesped(direccionDTO);
+
+        System.out.print("Ingrese su telefono: ");
+        huespedDTO.setTelefono(scanner.nextLine());
+
+        System.out.print("Ingrese su email: ");
+        huespedDTO.setEmail(scanner.nextLine());
+
+        System.out.print("Ingrese su ocupación: ");
+        huespedDTO.setOcupacion(scanner.nextLine());
+
+        System.out.print("Ingrese su nacionalidad: ");
+        huespedDTO.setNacionalidad(scanner.nextLine());
+
+        System.out.println("1. Siguiente");
+        System.out.println("2. Cancelar");
+
+        return huespedDTO;
     }
 
     public static void clearConsola(){
