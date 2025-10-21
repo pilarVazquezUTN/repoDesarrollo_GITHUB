@@ -2,20 +2,20 @@ package Classes.Usuario;
 
 public class UsuarioDTO {
     String nombre;
-    String contraseña;
+    String contrasena;
 
         
     public void setNombre(String unNombre){
         this.nombre= unNombre;
     }
-    public void setContraseña(String unaContraseña){
-        this.contraseña= unaContraseña;
+    public void setContrasena(String unaContrasena){
+        this.contrasena= unaContrasena;
     }
 
-    public void getNombre(){
+    public String getNombre(){
         return this.nombre;
     }
-    public void getContraseña(){
-        return this.contraseña;
+    public String getContrasena(){
+        return this.contrasena;
     }
 }

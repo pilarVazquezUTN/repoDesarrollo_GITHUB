@@ -1,19 +1,26 @@
 package Classes.Usuario;
 
-public class UsuarioDAO {
-    public boolean buscarUsuario(UsuarioDTO usuarioDTO){
-        boolean encontrado=false;
-    
-        if(usuarioEncontado(usuarioDTO.getNombre,usuarioDTO.getContraseña)){
-            encontrado=true;
-        }
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
-        return encontrado;
+public class UsuarioDAO {
+    
+    public boolean buscarUsuario(UsuarioDTO usuarioDTO){
+        // 1. CORRECCIÓN: Llamar a los métodos getter con paréntesis ()
+        // 2. CORRECCIÓN: Asumir que el DTO usa getContrasena (sin ñ)
+        if(usuarioEncontrado(usuarioDTO.getNombre(), usuarioDTO.getContrasena())){
+            return true; // Retorna true inmediatamente si se encuentra
+        }
+        return false;
     }
 
-    public boolean usuarioEncontrado(String nombreUsuario, String contraseñaUsuario) {
+    public boolean usuarioEncontrado(String nombreUsuario, String contrasenaUsuario) {
         String usuarioIngresado = nombreUsuario;
-        String contrasenaIngresada = contraseña Usuario;
+        
+        // 3. CORRECCIÓN: La declaración de la variable estaba mal escrita (espacio)
+        String contrasenaIngresada = contrasenaUsuario; 
+        
         String rutaArchivo = "D:/UTN/2025/DesarrolloSoftware/trabajoPractico/infoAutenticarUsuario.txt";
         boolean autenticado = false;
 
@@ -36,12 +43,9 @@ public class UsuarioDAO {
             }
         } catch (IOException e) {
             System.out.println("Error al leer el archivo: " + e.getMessage());
+            // Si hay un error de IO, se considera que el usuario no fue encontrado (autenticado = false)
         }
 
-        if (autenticado) {
-            encontrado=true;
-        } 
-
-        return encontrado;
+        return autenticado;
     }
 }

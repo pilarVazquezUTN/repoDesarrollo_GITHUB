@@ -1,16 +1,13 @@
 package Main;
 
-import Classes.Usuario;
-import Classes.Usuario.UsuarioDAO;
 import Classes.Usuario.UsuarioDTO;
+import Classes.Usuario.UsuarioDAO;
 
 import java.util.Scanner;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+
 
 public class App {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         
         Menu();
     }
@@ -71,19 +68,18 @@ public class App {
         
 
         String nombreUsuario;
-        String contraseñaUsuario;
+        String contrasenaUsuario;
 
         System.out.print("Ingrese su nombre: ");
         nombreUsuario= scanner.next();
         System.out.print("Ingrese su contraseña: ");
-        contraseñaUsuario= scanner.next();
+        contrasenaUsuario= scanner.next();
 
         //creamos el usuarioDTO para pasarselo al usuarioDAO
-        
         UsuarioDTO usuarioDTO = new UsuarioDTO();
 
-        usuarioDTO.setNombre=nombreUsuario;
-        usuarioDTO.setContraseña=contraseñaUsuario;        
+        usuarioDTO.setNombre(nombreUsuario);
+        usuarioDTO.setContrasena(contrasenaUsuario);
 
         //llamamos al DAO
         UsuarioDAO usuarioDAO= new UsuarioDAO();
