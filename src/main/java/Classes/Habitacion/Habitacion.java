@@ -5,12 +5,4 @@ public abstract class Habitacion  {
     private String estado;
     private float precio;
     private int cantidadPersonas;
-
-
-
-
-
-
-
-
 }
