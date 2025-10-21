@@ -2,6 +2,8 @@ package Main;
 
 import Classes.Usuario.UsuarioDTO;
 import Classes.Usuario.UsuarioDAO;
+import Classes.Huesped.HuespedDAO;
+import Classes.Huesped.HuespedDTO;
 
 import java.util.Scanner;
 
@@ -43,7 +45,7 @@ public class App {
                 autenticarHuesped();
                 break;
             case 2://buscar huesped
-                
+                buscarHuesped();
                 break;
             case 3://daar de alta huesped
                 
@@ -95,4 +97,31 @@ public class App {
         
     }
 
+    public static void buscarHuesped(){
+        /*se presenta pantalla para buscar huesped 
+         ingresa nombre, apellido, tipo doc, num doc
+         mostrar error de algun dato invalido
+         sistema blanquea campos cuando esten OK
+         se vuelve al Menu
+        */
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese su nombre: ");
+        String nombreHuesped = scanner.nextLine();
+        System.out.print("Ingrese su apellido: ");
+        String apellidoHuesped = scanner.nextLine();
+        System.out.print("Ingrese Tipo de documento: ");
+        String tipoDoc = scanner.nextLine();
+        System.out.print("Ingrese su documento: ");
+        String numDoc = scanner.nextLine();
+        HuespedDAO huespedDAO= new HuespedDAO();
+        HuespedDTO huespedDTO= new HuespedDTO();
+        huespedDTO=huespedDAO.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
+        System.out.println("Huesped seleccionado: ");
+        System.out.println("  Nombre: " + huespedDTO.getNombre());  
+        System.out.println("  Apellido: " + huespedDTO.getApellido());
+        System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
+        System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
+        modificarHuesped(huespedDTO);
+    }
+   
 }
