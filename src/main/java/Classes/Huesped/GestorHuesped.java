@@ -14,7 +14,7 @@ public class GestorHuesped {
 
     public void  buscarHuesped(){
 
-    }
+    } 
     public Huesped darAltaHuesped(){
         return null;
     }

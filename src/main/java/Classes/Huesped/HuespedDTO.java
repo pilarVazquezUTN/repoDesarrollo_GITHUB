@@ -2,7 +2,6 @@ package Classes.Huesped;
 
 import java.util.Date;
 
-import Classes.Direccion.Direccion;
 import Classes.Direccion.DireccionDTO;
 
 public class HuespedDTO {
@@ -20,34 +19,26 @@ public class HuespedDTO {
     private String nacionalidad;
 
     public void setNombre(String nombre) {
-
         this.nombre = nombre;
     }
-
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
-
     public void setTipoDocumento(String tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
     }
     public void setNumeroDocumento(String numeroDocumento) {
         this.numeroDocumento = numeroDocumento;
     }
-
     public void setFechaNacimiento(Date fechaNacimiento) {
-
         this.fechaNacimiento = fechaNacimiento;
     }
-
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
-
     public void setDireccionHuesped(DireccionDTO direccionHuesped) {
         this.direccionHuesped = direccionHuesped;
     }
@@ -62,47 +53,42 @@ public class HuespedDTO {
     }
     public void setNacionalidad(String nacionalidad) {
         this.nacionalidad = nacionalidad;
-
     }
 
     public Date getFechaNacimiento() {
-        return fechaNacimiento;
+        return this.fechaNacimiento;
     }
     public String getApellido() {
-        return apellido;
+        return this.apellido;
     }
     public String getTipoDocumento() {
-        return tipoDocumento;
+        return this.tipoDocumento;
     }
     public String getNumeroDocumento() {
-        return numeroDocumento;
+        return this.numeroDocumento;
     }
     public String getCuit() {
-        return cuit;
+        return this.cuit;
     }
     public String getPosicionIva() {
-        return posicionIva;
+        return this.posicionIva;
     }
     public String getOcupacion() {
-        return ocupacion;
+        return this.ocupacion;
     }
     public String getNacionalidad() {
-        return nacionalidad;
+        return this.nacionalidad;
     }
-
     public String getEmail() {
-        return email;
+        return this.email;
     }
-    public Direccion getDireccionHuesped() {
-        return direccionHuesped;
+    public DireccionDTO getDireccionHuesped() {
+        return this.direccionHuesped;
     }
-
     public String getNombre() {
-        return nombre;
+        return this.nombre;
     }
-
     public String getTelefono() {
-
-        return telefono;
+        return this.telefono;
     }
 }

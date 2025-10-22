@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class HuespedDAO {
-    public void delete(){
+    public void delete(){ 
 
     }
     public  void create(){
