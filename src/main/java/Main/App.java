@@ -104,7 +104,7 @@ public class App {
         HuespedDAO huespedDAO = new HuespedDAO();
         Boolean camposVacios=false;//para controlar cuando ingresa mal los campos luego del 1er ingreso
 
-        huespedDTO=ingresarDatos(camposVacios);
+        ingresarDatos(camposVacios,huespedDTO);
         huespedDAO.registrarHuesped(huespedDTO);
         
         System.out.println("El huésped " + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
@@ -117,132 +117,243 @@ public class App {
             darAltaHuesped();
         } 
     }
-    public static HuespedDTO ingresarDatos(Boolean camposVacios){
-        HuespedDTO huespedDTO = new HuespedDTO();
+    public static HuespedDTO ingresarDatos(Boolean camposVacios, HuespedDTO huespedDTO){
+        //HuespedDTO huespedDTO = new HuespedDTO();
         Scanner scanner = new Scanner(System.in);
         Date fechaNacDTO;
         DireccionDTO direccionDTO=new DireccionDTO();
 
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su nombre: ");
+            if(huespedDTO.getNombre().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su nombre: ");
+                huespedDTO.setNombre(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su nombre: "+huespedDTO.getNombre());    
+            }
         } else{
             System.out.print("Ingrese su nombre: ");
-        } huespedDTO.setNombre(scanner.nextLine().toUpperCase());
+            huespedDTO.setNombre(scanner.nextLine().toUpperCase());
+        } 
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su apellido: ");
+            if(huespedDTO.getApellido().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su apellido: ");
+                huespedDTO.setApellido(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Apellido "+huespedDTO.getApellido());    
+            }
         } else{
             System.out.print("Ingrese su apellido: ");
-        } huespedDTO.setApellido(scanner.nextLine().toUpperCase());
+            huespedDTO.setApellido(scanner.nextLine().toUpperCase());
+        } 
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Tipo de Documento: ");
+            if(huespedDTO.getTipoDocumento().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Tipo de Documento: ");
+                huespedDTO.setTipoDocumento(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Tipo de Documento: "+huespedDTO.getTipoDocumento());    
+            }
         } else{
             System.out.print("Ingrese Tipo de Documento: ");
-        } huespedDTO.setTipoDocumento(scanner.nextLine().toUpperCase());
+            huespedDTO.setTipoDocumento(scanner.nextLine().toUpperCase());
+        } 
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Numero de Documento: ");
+            if(huespedDTO.getNumeroDocumento().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Numero de Documento: ");
+                huespedDTO.setNumeroDocumento(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Numero de Documento: "+huespedDTO.getNumeroDocumento());    
+            }
         } else{
             System.out.print("Ingrese su numero de documento: ");
-        } huespedDTO.setNumeroDocumento(scanner.nextLine());
+            huespedDTO.setNumeroDocumento(scanner.nextLine());
+        } 
         
         System.out.print("Ingrese su CUIT: ");
         huespedDTO.setCuit(scanner.nextLine());
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Posicion Frente al IVA: ");
+            if(huespedDTO.getPosicionIva().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Posicion Frente al IVA: ");
+                huespedDTO.setPosicionIva(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Posicion Frente al IVA: "+huespedDTO.getPosicionIva());    
+            }
         } else{
             System.out.print("Ingrese su Posicion Frente al IVA: ");
+            huespedDTO.setPosicionIva(scanner.nextLine().toUpperCase());
         } String posIva=scanner.nextLine().toUpperCase();
         if(posIva.isEmpty()){
             posIva="CONSUMIDOR FINAL";
         } huespedDTO.setPosicionIva(posIva);
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Fecha de Nacimiento (dd/MM/yyyy): ");
+            if(huespedDTO.getFechaNacimiento()==null){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Fecha de Nacimiento (dd/MM/yyyy): ");
+                //huespedDTO.set(scanner.nextLine().toUpperCase());
+                String fechaNacStr = scanner.nextLine();
+                // Definir el formato
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                formatter.setLenient(false); // Validar la fecha estrictamente
+                try {
+                    // Intentamos la conversión UNA SOLA VEZ
+                    fechaNacDTO = formatter.parse(fechaNacStr);
+                    huespedDTO.setFechaNacimiento(fechaNacDTO);
+                    //System.out.println("Fecha ingresada y guardada.");
+                } catch (ParseException e) {
+                    // Si la conversión falla, informamos y la fechaNacDTO queda como null (o el valor que tenía antes)
+                    //System.err.println("❌ ERROR: El formato de fecha ingresado es INCORRECTO. La fecha no fue guardada.");
+                    huespedDTO.setFechaNacimiento(null); // Opcional: Asegurar que el DTO tenga null
+                }
+            } else{
+                    System.out.println("Su Fecha de Nacimiento: "+huespedDTO.getFechaNacimiento());    
+                }
         } else{
             System.out.print("Ingrese su Fecha de Nacimiento (dd/MM/yyyy): ");
+            String fechaNacStr = scanner.nextLine();
+            // Definir el formato
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            formatter.setLenient(false); // Validar la fecha estrictamente
+            try {
+                // Intentamos la conversión UNA SOLA VEZ
+                fechaNacDTO = formatter.parse(fechaNacStr);
+                huespedDTO.setFechaNacimiento(fechaNacDTO);
+                //System.out.println("Fecha ingresada y guardada.");
+            } catch (ParseException e) {
+                // Si la conversión falla, informamos y la fechaNacDTO queda como null (o el valor que tenía antes)
+                //System.err.println("❌ ERROR: El formato de fecha ingresado es INCORRECTO. La fecha no fue guardada.");
+                huespedDTO.setFechaNacimiento(null); // Opcional: Asegurar que el DTO tenga null
+            }
         } 
-        String fechaNacStr = scanner.nextLine();
-        // Definir el formato
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        formatter.setLenient(false); // Validar la fecha estrictamente
-        try {
-            // Intentamos la conversión UNA SOLA VEZ
-            fechaNacDTO = formatter.parse(fechaNacStr);
-            huespedDTO.setFechaNacimiento(fechaNacDTO);
-            //System.out.println("Fecha ingresada y guardada.");
-        } catch (ParseException e) {
-            // Si la conversión falla, informamos y la fechaNacDTO queda como null (o el valor que tenía antes)
-            //System.err.println("❌ ERROR: El formato de fecha ingresado es INCORRECTO. La fecha no fue guardada.");
-            huespedDTO.setFechaNacimiento(null); // Opcional: Asegurar que el DTO tenga null
+        
+        
+        
+        if(camposVacios){
+            if(direccionDTO.getCalle().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Calle: ");
+                direccionDTO.setCalle(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Calle: "+direccionDTO.getCalle());    
+            }
+        } else{
+            System.out.print("Ingrese su Calle: ");
+            direccionDTO.setCalle(scanner.nextLine().toUpperCase());
+        } 
+        
+        if(camposVacios){
+            if(direccionDTO.getNumero().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Número de Calle: ");
+                direccionDTO.setNumero(scanner.nextLine());
+            } else{
+                System.out.println("Su Numero de Calle: "+direccionDTO.getNumero());    
+            }
+        } else{
+            System.out.print("Ingrese su Número de Calle: ");
+            direccionDTO.setNumero(scanner.nextLine());
         }
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Calle: ");
-        } else{
-            System.out.print("Ingrese su Calle: ");
-        } direccionDTO.setCalle(scanner.nextLine().toUpperCase());
-        
-        if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Número de Calle: ");
-        } else{
-            System.out.print("Ingrese su Número de Calle: ");
-        } direccionDTO.setNumero(scanner.nextLine());
-        
-        if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Departamento: ");
+            if(direccionDTO.getDepartamento().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Departamento: ");
+                direccionDTO.setDepartamento(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Departamento: "+direccionDTO.getDepartamento());    
+            }
         } else{
             System.out.print("Ingrese su departamento: ");
-        } direccionDTO.setDepartamento(scanner.nextLine().toUpperCase());
+            direccionDTO.setDepartamento(scanner.nextLine().toUpperCase());
+        } 
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Piso: ");
+            if(direccionDTO.getPiso().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Piso: ");
+                direccionDTO.setPiso(scanner.nextLine()); 
+            } else{
+                System.out.println("Su Piso: "+direccionDTO.getPiso());    
+            }
         } else{
             System.out.print("Ingrese su piso: ");
-        } direccionDTO.setPiso(scanner.nextLine()); 
+            direccionDTO.setPiso(scanner.nextLine()); 
+        } 
                
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Codigo Postal: ");
+            if(direccionDTO.getCodigoPostal().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Codigo Postal: ");
+                direccionDTO.setCodigoPostal(scanner.nextLine());
+            } else{
+                System.out.println("Su Codigo Postal: "+direccionDTO.getCodigoPostal());    
+            }
         } else{
             System.out.print("Ingrese su Código Postal: ");
-        } direccionDTO.setCodigoPostal(scanner.nextLine());
+            direccionDTO.setCodigoPostal(scanner.nextLine());
+        } 
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Localidad: ");
+            if(direccionDTO.getLocalidad().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Localidad: ");
+                direccionDTO.setLocalidad(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Localidad: "+direccionDTO.getLocalidad());    
+            }
         } else{
             System.out.print("Ingrese su Localidad: ");
-        } direccionDTO.setLocalidad(scanner.nextLine().toUpperCase());
+            direccionDTO.setLocalidad(scanner.nextLine().toUpperCase());
+        } 
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Provincia: ");
+            if(direccionDTO.getProvincia().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Provincia: ");
+                direccionDTO.setProvincia(scanner.nextLine().toUpperCase()); 
+            } else{
+                System.out.println("Su Provincia: "+direccionDTO.getProvincia());    
+            }
         } else{
             System.out.print("Ingrese su provincia: ");
-        } direccionDTO.setProvincia(scanner.nextLine().toUpperCase()); 
+            direccionDTO.setProvincia(scanner.nextLine().toUpperCase()); 
+        } 
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Pais: ");
+            if(direccionDTO.getPais().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Pais: ");
+                direccionDTO.setPais(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Pais: "+direccionDTO.getPais());    
+            }
         } else{
             System.out.print("Ingrese su Pais: ");
-        } direccionDTO.setPais(scanner.nextLine().toUpperCase());
+            direccionDTO.setPais(scanner.nextLine().toUpperCase());
+        } 
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Telefono: ");
+            if(huespedDTO.getTelefono().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Telefono: ");
+                huespedDTO.setTelefono(scanner.nextLine());
+            } else{
+                System.out.println("Su Telefono: "+huespedDTO.getTelefono());    
+            }
         } else{
             System.out.print("Ingrese su Telefono: ");
-        } huespedDTO.setTelefono(scanner.nextLine());
+            huespedDTO.setTelefono(scanner.nextLine());
+        } 
         
         System.out.print("Ingrese su email: ");
         huespedDTO.setEmail(scanner.nextLine().toUpperCase());
         
         if(camposVacios){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Ocupacion: ");
+            if(huespedDTO.getOcupacion().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Ocupacion: ");
+                huespedDTO.setOcupacion(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Ocupacion: "+huespedDTO.getOcupacion());    
+            }
         } else{
             System.out.print("Ingrese su Ocupación: ");
-        } huespedDTO.setOcupacion(scanner.nextLine().toUpperCase());
+            huespedDTO.setOcupacion(scanner.nextLine().toUpperCase());
+        } 
         
-        if(camposVacios){
+        if(camposVacios && huespedDTO.getNacionalidad().isEmpty()){
             System.out.print("Error en campo. Ingrese CORRECTAMENTE su Nacionalidad: ");
         } else{
             System.out.print("Ingrese su Nacionalidad: ");
@@ -272,7 +383,7 @@ public class App {
         huespedDTO.getOcupacion().isEmpty() || huespedDTO.getNacionalidad().isEmpty() || huespedDTO.getFechaNacimiento()==null){
 
                 //llamo a que se ingresen los datos pero le digo que se ingresaron mal los campos
-                ingresarDatos(true);
+                ingresarDatos(true,huespedDTO);
             } else{
                 registrarHuesped(huespedDTO,direccionDTO);
             } 
