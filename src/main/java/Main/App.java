@@ -4,6 +4,7 @@ package Main;
  IMPORTAR CLASES QUE YO QUIERA DEL PACKAGE: import <paquetess>.<clase>; ejemplo: como esta en el tp
 */
 import Classes.Usuario.UsuarioDTO;
+import Classes.Usuario.GestorUsuario;
 import Classes.Usuario.UsuarioDAO;
 import Classes.Direccion.Direccion;
 import Classes.Direccion.DireccionDTO;
@@ -75,7 +76,7 @@ public class App {
          se vuelve al Menu
         */
         Scanner scanner = new Scanner(System.in);
-        
+        GestorUsuario gestorUsuario= new GestorUsuario();
 
         String nombreUsuario;
         String contrasenaUsuario;
@@ -91,20 +92,12 @@ public class App {
         usuarioDTO.setNombre(nombreUsuario);
         usuarioDTO.setContrasena(contrasenaUsuario);
 
-        //llamamos al DAO
         UsuarioDAO usuarioDAO= new UsuarioDAO();
-        
         clearConsola();
-
-        if(usuarioDAO.buscarUsuario(usuarioDTO)){
-            System.out.println("encontrado \n");
-        } else {
-            System.out.println("noooooooo encontrado \n");
-        }
-
-        Menu();
-
+        //llamamos al Gestor
+        gestorUsuario.autenticarUsuario(usuarioDAO,usuarioDTO);
         
+        Menu();
     }
 
     public static void darAltaHuesped(){
