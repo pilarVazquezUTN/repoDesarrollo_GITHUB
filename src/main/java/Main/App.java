@@ -132,22 +132,30 @@ public class App {
         DireccionDTO direccionDTO=new DireccionDTO();
 
         System.out.print("Ingrese su nombre: ");
-        huespedDTO.setNombre(scanner.nextLine());
+        huespedDTO.setNombre(scanner.nextLine().toUpperCase());
+        
 
         System.out.print("Ingrese su apellido: ");
-        huespedDTO.setApellido(scanner.nextLine());
+        huespedDTO.setApellido(scanner.nextLine().toUpperCase());
+        
 
         System.out.print("Ingrese Tipo de documento: ");
-        huespedDTO.setTipoDocumento(scanner.nextLine());
-
+        huespedDTO.setTipoDocumento(scanner.nextLine().toUpperCase());
+        
+        
         System.out.print("Ingrese su numero de documento: ");
         huespedDTO.setNumeroDocumento(scanner.nextLine());
+        
 
         System.out.print("Ingrese su CUIT: ");
         huespedDTO.setCuit(scanner.nextLine());
 
         System.out.print("Ingrese su posicion frente al IVA: ");
-        huespedDTO.setPosicionIva(scanner.nextLine());
+        String posIva=scanner.nextLine().toUpperCase();
+        if(posIva.isEmpty()){
+            posIva="consumidor final";
+        } huespedDTO.setPosicionIva(posIva);
+        
 
         System.out.print("Ingrese su fecha de nacimiento (dd/MM/yyyy): ");
         String fechaNacStr = scanner.nextLine();
@@ -168,49 +176,174 @@ public class App {
         }
 
         System.out.print("Ingrese su calle: ");
-        direccionDTO.setCalle(scanner.nextLine());
+        direccionDTO.setCalle(scanner.nextLine().toUpperCase());
+        
 
         System.out.print("Ingrese su número de calle: ");
         direccionDTO.setNumero(scanner.nextLine());
+        
 
         System.out.print("Ingrese su departamento: ");
-        direccionDTO.setDepartamento(scanner.nextLine());
+        direccionDTO.setDepartamento(scanner.nextLine().toUpperCase());
+        
 
         System.out.print("Ingrese su piso: ");
         direccionDTO.setPiso(scanner.nextLine());
+        
 
         System.out.print("Ingrese su código postal: ");
         direccionDTO.setCodigoPostal(scanner.nextLine());
 
         System.out.print("Ingrese su localidad: ");
-        direccionDTO.setLocalidad(scanner.nextLine());
+        direccionDTO.setLocalidad(scanner.nextLine().toUpperCase());
+        
 
         System.out.print("Ingrese su provincia: ");
-        direccionDTO.setProvincia(scanner.nextLine());
-
+        direccionDTO.setProvincia(scanner.nextLine().toUpperCase());
+        
         System.out.print("Ingrese su pais: ");
-        direccionDTO.setPais(scanner.nextLine());
-
-        huespedDTO.setDireccionHuesped(direccionDTO);
+        direccionDTO.setPais(scanner.nextLine().toUpperCase());
+        
 
         System.out.print("Ingrese su telefono: ");
         huespedDTO.setTelefono(scanner.nextLine());
+        
 
         System.out.print("Ingrese su email: ");
-        huespedDTO.setEmail(scanner.nextLine());
+        huespedDTO.setEmail(scanner.nextLine().toUpperCase());
+        
 
         System.out.print("Ingrese su ocupación: ");
-        huespedDTO.setOcupacion(scanner.nextLine());
+        huespedDTO.setOcupacion(scanner.nextLine().toUpperCase());
+        
 
         System.out.print("Ingrese su nacionalidad: ");
-        huespedDTO.setNacionalidad(scanner.nextLine());
+        huespedDTO.setNacionalidad(scanner.nextLine().toUpperCase());
+        
 
-        System.out.println("1. Siguiente");
+        System.out.println("1. Siguiente");     
         System.out.println("2. Cancelar");
 
         Integer opcion =scanner.nextInt();
 
+        if(opcion==1){
+           controlarCampos(huespedDTO); 
+        }
+
         return huespedDTO; //FALTA VER QUE PASA SI PRESIONA CANCELAR   
+    }
+    public static void controlarCampos(HuespedDTO huespedDTO){
+        if(huespedDTO.getNombre().isEmpty() || huespedDTO.getApellido().isEmpty() || huespedDTO.getTipoDocumento().isEmpty() || numeroDoc.isEmpty() ||
+            calle.isEmpty() || numCalle.isEmpty() || departamento.isEmpty() || 
+            piso.isEmpty() || codPostal.isEmpty() || localidad.isEmpty() || provincia.isEmpty() ||
+            pais.isEmpty() || telefono.isEmpty() || ocupacion.isEmpty() || nacionalidad.isEmpty()){
+                //falta ver si la fecha de nacimiento es nula osea que no me ingresaron
+                HuespedDTO huespedDTO2 = new HuespedDTO();
+                Date fechaNacDTO2;
+                DireccionDTO direccionDTO2=new DireccionDTO();
+                Scanner scanner = new Scanner(System.in);
+
+                if(nombre.isEmpty()){
+                    System.out.print("Ingrese su nombre: ");
+                    String nombre2=scanner.nextLine().toUpperCase();
+                }
+                
+        
+                System.out.print("Ingrese su apellido: ");
+                String apellido2=scanner.nextLine().toUpperCase();
+        
+                System.out.print("Ingrese Tipo de documento: ");
+                String tipoDoc2=scanner.nextLine().toUpperCase();
+        
+                System.out.print("Ingrese su numero de documento: ");
+                String numeroDoc2=scanner.nextLine();
+
+                System.out.print("Ingrese su CUIT: ");
+                String cuit2=scanner.nextLine();
+
+                System.out.print("Ingrese su posicion frente al IVA: ");
+                String posIva2="consumidor final";
+                posIva=scanner.nextLine().toUpperCase();
+
+                System.out.print("Ingrese su fecha de nacimiento (dd/MM/yyyy): ");
+                String fechaNacStr2 = scanner.nextLine();
+
+                // Definir el formato
+                //SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                formatter.setLenient(false); // Validar la fecha estrictamente
+                
+                try {
+                    // Intentamos la conversión UNA SOLA VEZ
+                    fechaNacDTO = formatter.parse(fechaNacStr);
+                    //System.out.println("Fecha ingresada y guardada.");
+                } catch (ParseException e) {
+                    // Si la conversión falla, informamos y la fechaNacDTO queda como null (o el valor que tenía antes)
+                    //System.err.println("❌ ERROR: El formato de fecha ingresado es INCORRECTO. La fecha no fue guardada.");
+                    huespedDTO.setFechaNacimiento(null); // Opcional: Asegurar que el DTO tenga null
+                }
+
+                System.out.print("Ingrese su calle: ");
+                String calle2=scanner.nextLine().toUpperCase();
+
+                System.out.print("Ingrese su número de calle: ");
+                String numCalle2=scanner.nextLine();
+
+                System.out.print("Ingrese su departamento: ");
+                String departamento2=scanner.nextLine().toUpperCase();
+
+                System.out.print("Ingrese su piso: ");
+                String piso2=scanner.nextLine();
+
+                System.out.print("Ingrese su código postal: ");
+                String codPostal2=scanner.nextLine();
+
+                System.out.print("Ingrese su localidad: ");
+                String localidad2=scanner.nextLine().toUpperCase();
+
+                System.out.print("Ingrese su provincia: ");
+                String provincia2=scanner.nextLine().toUpperCase();
+
+                System.out.print("Ingrese su pais: ");
+                String pais2=scanner.nextLine().toUpperCase();
+
+                System.out.print("Ingrese su telefono: ");
+                String telefono2=scanner.nextLine();
+
+                System.out.print("Ingrese su email: ");
+                String email2=scanner.nextLine().toUpperCase();
+    
+                System.out.print("Ingrese su ocupación: ");
+                String ocupacion2=scanner.nextLine().toUpperCase();
+
+                System.out.print("Ingrese su nacionalidad: ");
+                String nacionalidad2=scanner.nextLine().toUpperCase();
+
+                System.out.println("1. Siguiente");     
+                System.out.println("2. Cancelar");    
+
+
+            } else {
+                huespedDTO.setNombre(nombre);
+                huespedDTO.setApellido(apellido);
+                huespedDTO.setTipoDocumento(tipoDoc);
+                huespedDTO.setNumeroDocumento(numeroDoc);
+                huespedDTO.setCuit(cuit);
+                huespedDTO.setPosicionIva(posIva);
+                huespedDTO.setFechaNacimiento(fechaNacDTO);
+                direccionDTO.setCalle(calle);
+                direccionDTO.setNumero(numCalle);
+                direccionDTO.setDepartamento(departamento);
+                direccionDTO.setPiso(piso);
+                direccionDTO.setCodigoPostal(codPostal);
+                direccionDTO.setLocalidad(localidad);
+                direccionDTO.setProvincia(provincia);
+                direccionDTO.setPais(pais);
+                huespedDTO.setDireccionHuesped(direccionDTO);
+                huespedDTO.setTelefono(telefono);
+                huespedDTO.setEmail(email);
+                huespedDTO.setOcupacion(ocupacion);
+                huespedDTO.setNacionalidad(nacionalidad);
+            }
     }
 
     public static void clearConsola(){
