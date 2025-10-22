@@ -114,15 +114,21 @@ public class App {
         ingresarDatos(camposVacios,huespedDTO,direccionDTO);
         gestorHuesped.registrarHuesped(huespedDTO);
         
-        System.out.println("El huésped " + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
-        " ha sido atisfactoriamente cargado al sistema. \n ¿Desea cargar otro? \n" +
-        "1. si \n 2. no");
+        Integer opcion;
+        do{
+            System.out.println("El huésped " + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
+            " ha sido atisfactoriamente cargado al sistema. \n ¿Desea cargar otro? \n" +
+            "1. si \n 2. no");
         
-        Integer opcion= scanner.nextInt();
+            opcion= scanner.nextInt();
+        } while (opcion!=1 && opcion!=2);
         if(opcion==1){
             //vuelve a que cargue mas huespedes
             darAltaHuesped();
-        } 
+        } else{
+            clearConsola();
+            Menu();
+        }
     }
     public static HuespedDTO ingresarDatos(Boolean camposVacios, HuespedDTO huespedDTO, DireccionDTO direccionDTO){
         //HuespedDTO huespedDTO = new HuespedDTO();
