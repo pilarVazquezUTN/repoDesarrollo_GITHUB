@@ -2,10 +2,16 @@ package Classes.Huesped;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import Classes.Direccion.DireccionDTO;
 
 public class HuespedDAO {
     public void delete(){ 
@@ -22,7 +28,55 @@ public class HuespedDAO {
         /*
          AGREGAR EL HUESPEDDTO QUE LLEGA A LA BD DE HUESPEDES
          */
+        String RUTA_ARCHIVO="D:/UTN/2025/DesarrolloSoftware/trabajoPractico/repoDesarrollo_GITHUB/infoDarAltaHuespedes.txt";
+
+        // 1. Crear el formateador de fechas para java.util.Date
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+        
+        // 2. Obtener y formatear datos (incluyendo la fecha y la dirección)
+        String nombre = huespedDTO.getNombre();
+        String apellido = huespedDTO.getApellido();
+        String tipoDoc = huespedDTO.getTipoDocumento();
+        String numDoc = huespedDTO.getNumeroDocumento();
+        String cuit = huespedDTO.getCuit();
+        String posIva = huespedDTO.getPosicionIva();
+        String telefono = huespedDTO.getTelefono();
+        String email = huespedDTO.getEmail();
+        String ocupacion = huespedDTO.getOcupacion();
+        String nacionalidad = huespedDTO.getNacionalidad();
+        
+        // Manejar la fecha de nacimiento (puede ser null si hubo error de parseo)
+        Date fechaNac = huespedDTO.getFechaNacimiento();
+        String fechaNacStr = (fechaNac != null) ? dateFormatter.format(fechaNac) : "NULL";
+
+        // Obtener y formatear datos de Dirección (Asumimos que no es null después de ingresarDatos)   
+        String calle = huespedDTO.getDireccionHuesped().getCalle();
+        String numeroCalle = huespedDTO.getDireccionHuesped().getNumero();
+        String departamento = huespedDTO.getDireccionHuesped().getDepartamento();
+        String piso = huespedDTO.getDireccionHuesped().getPiso();
+        String codPostal = huespedDTO.getDireccionHuesped().getCodigoPostal();
+        String localidad = huespedDTO.getDireccionHuesped().getLocalidad();
+        String provincia = huespedDTO.getDireccionHuesped().getProvincia();
+        String pais = huespedDTO.getDireccionHuesped().getPais();
+
+        // 3. Concatenar todos los datos en una sola línea separada por comas (CSV)
+        String lineaDatos = String.join(",", 
+            nombre, apellido, tipoDoc, numDoc, cuit, posIva, fechaNacStr,  
+            calle, numeroCalle, departamento, piso, codPostal, localidad, provincia, pais, 
+            telefono, email, ocupacion, nacionalidad
+        );
+
+        // 4. Escribir la línea en el archivo
+        try (PrintWriter out = new PrintWriter(new FileWriter(RUTA_ARCHIVO, true))) {
+            
+            // out.println() escribe la cadena y agrega un salto de línea al final
+            out.println(lineaDatos); 
+            
+        } catch (IOException e) {
+            System.err.println("❌ ERROR FATAL al guardar el huésped en el archivo: " + e.getMessage());
+        }
     }
+    
 
     public static HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
         String rutaArchivo = "C:\\Users\\guill\\Downloads\\CU2 DESARROLLO\\infoBuscarHuespedes.txt"; // Cambia por la ruta real de tu archivo

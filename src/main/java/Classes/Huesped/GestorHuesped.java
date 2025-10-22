@@ -24,6 +24,12 @@ public class GestorHuesped {
     public void modificarHuesped(HuespedDTO huespedDTO) {
         
     }
+    public void registrarHuesped(HuespedDAO huespedDAO, HuespedDTO huespedDTO) {
+        /*
+         llamar a la funcion del dao para que guarde los datos.
+         */
+        huespedDAO.registrarHuesped(huespedDTO);
+    }
 
 
 }

@@ -104,9 +104,10 @@ public class App {
         HuespedDAO huespedDAO = new HuespedDAO();
         Boolean camposVacios=false;//para controlar cuando ingresa mal los campos luego del 1er ingreso
         DireccionDTO direccionDTO=new DireccionDTO();
-        
+        GestorHuesped gestorHuesped = new GestorHuesped();
+
         ingresarDatos(camposVacios,huespedDTO,direccionDTO);
-        huespedDAO.registrarHuesped(huespedDTO);
+        gestorHuesped.registrarHuesped(huespedDAO,huespedDTO);
         
         System.out.println("El huésped " + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
         " ha sido atisfactoriamente cargado al sistema. \n ¿Desea cargar otro? \n" +
