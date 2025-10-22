@@ -174,20 +174,22 @@ public class App {
         System.out.print("Ingrese su CUIT: ");
         huespedDTO.setCuit(scanner.nextLine());
         
+        String posIva="CONSUMIDOR FINAL";
         if(camposVacios){
             if(huespedDTO.getPosicionIva().isEmpty()){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Posicion Frente al IVA: ");
-                huespedDTO.setPosicionIva(scanner.nextLine().toUpperCase());
+                posIva=scanner.nextLine().toUpperCase();
             } else{
                 System.out.println("Su Posicion Frente al IVA: "+huespedDTO.getPosicionIva());    
             }
         } else{
             System.out.print("Ingrese su Posicion Frente al IVA: ");
-            huespedDTO.setPosicionIva(scanner.nextLine().toUpperCase());
-        } String posIva=scanner.nextLine().toUpperCase();
+            posIva=scanner.nextLine().toUpperCase();
+        } 
         if(posIva.isEmpty()){
             posIva="CONSUMIDOR FINAL";
-        } huespedDTO.setPosicionIva(posIva);
+        }
+        huespedDTO.setPosicionIva(posIva);
         
         if(camposVacios){
             if(huespedDTO.getFechaNacimiento()==null){
@@ -235,11 +237,12 @@ public class App {
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Calle: ");
                 direccionDTO.setCalle(scanner.nextLine().toUpperCase());
             } else{
-                System.out.println("Su Calle: "+direccionDTO.getCalle());    
+                System.out.println("Su Calle: "+ direccionDTO.getCalle());    
             }
         } else{
             System.out.print("Ingrese su Calle: ");
             direccionDTO.setCalle(scanner.nextLine().toUpperCase());
+            //System.out.println(direccionDTO.getCalle());
         } 
         
         if(camposVacios){
@@ -325,6 +328,8 @@ public class App {
             System.out.print("Ingrese su Pais: ");
             direccionDTO.setPais(scanner.nextLine().toUpperCase());
         } 
+
+        huespedDTO.setDireccionHuesped(direccionDTO);
         
         if(camposVacios){
             if(huespedDTO.getTelefono().isEmpty()){
@@ -353,11 +358,17 @@ public class App {
             huespedDTO.setOcupacion(scanner.nextLine().toUpperCase());
         } 
         
-        if(camposVacios && huespedDTO.getNacionalidad().isEmpty()){
-            System.out.print("Error en campo. Ingrese CORRECTAMENTE su Nacionalidad: ");
+        if(camposVacios){
+            if(huespedDTO.getNacionalidad().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Nacionalidad: ");
+                huespedDTO.setNacionalidad(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Nacionalidad: "+huespedDTO.getNacionalidad());    
+            }
         } else{
             System.out.print("Ingrese su Nacionalidad: ");
-        } huespedDTO.setNacionalidad(scanner.nextLine().toUpperCase());
+            huespedDTO.setNacionalidad(scanner.nextLine().toUpperCase());
+        } 
                 
         System.out.println("1. Siguiente");     
         System.out.println("2. Cancelar");

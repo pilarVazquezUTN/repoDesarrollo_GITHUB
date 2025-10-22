@@ -38,27 +38,27 @@ public class DireccionDTO {
 
 
     public String getCalle() {
-        return calle;
+        return this.calle;
     }
     public String getNumero() {
-        return numero;
+        return this.numero;
     }
     public String getLocalidad() {
-        return localidad;
+        return this.localidad;
     }
     public String getDepartamento() {
-        return departamento;
+        return this.departamento;
     }
     public String getPiso() {
-        return piso;
+        return this.piso;
     }
     public String getCodigoPostal() {
-        return codigoPostal;
+        return this.codigoPostal;
     }
     public String getProvincia() {
-        return provincia;
+        return this.provincia;
     }
     public String getPais() {
-        return pais;
+        return this.pais;
     }    
 }
