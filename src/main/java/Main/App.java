@@ -103,8 +103,9 @@ public class App {
         HuespedDTO huespedDTO = new HuespedDTO();
         HuespedDAO huespedDAO = new HuespedDAO();
         Boolean camposVacios=false;//para controlar cuando ingresa mal los campos luego del 1er ingreso
-
-        ingresarDatos(camposVacios,huespedDTO);
+        DireccionDTO direccionDTO=new DireccionDTO();
+        
+        ingresarDatos(camposVacios,huespedDTO,direccionDTO);
         huespedDAO.registrarHuesped(huespedDTO);
         
         System.out.println("El huésped " + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
@@ -117,11 +118,10 @@ public class App {
             darAltaHuesped();
         } 
     }
-    public static HuespedDTO ingresarDatos(Boolean camposVacios, HuespedDTO huespedDTO){
+    public static HuespedDTO ingresarDatos(Boolean camposVacios, HuespedDTO huespedDTO, DireccionDTO direccionDTO){
         //HuespedDTO huespedDTO = new HuespedDTO();
         Scanner scanner = new Scanner(System.in);
         Date fechaNacDTO;
-        DireccionDTO direccionDTO=new DireccionDTO();
 
         if(camposVacios){
             if(huespedDTO.getNombre().isEmpty()){
@@ -394,7 +394,7 @@ public class App {
         huespedDTO.getOcupacion().isEmpty() || huespedDTO.getNacionalidad().isEmpty() || huespedDTO.getFechaNacimiento()==null){
 
                 //llamo a que se ingresen los datos pero le digo que se ingresaron mal los campos
-                ingresarDatos(true,huespedDTO);
+                ingresarDatos(true,huespedDTO,direccionDTO);
             } else{
                 registrarHuesped(huespedDTO,direccionDTO);
             } 
