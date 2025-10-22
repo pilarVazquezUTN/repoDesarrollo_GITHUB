@@ -21,6 +21,9 @@ public class GestorHuesped {
     public void darBajaHuesped(){
 
     }
+    public void modificarHuesped(HuespedDTO huespedDTO) {
+        
+    }
 
 
 }

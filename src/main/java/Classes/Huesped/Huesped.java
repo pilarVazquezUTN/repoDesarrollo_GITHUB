@@ -3,6 +3,8 @@ package Classes.Huesped;
 import java.util.Calendar;
 import java.util.Date;
 
+import Classes.Direccion.DireccionDTO;
+
 public class Huesped {
     private String apellido;
     private String nombre;
@@ -11,15 +13,15 @@ public class Huesped {
     private Date fechaNacimiento;
     private String telefono;
     private String email;
-    private Direccion direccionHuesped;
+    private DireccionDTO direccionHuesped;
     private String cuit;
     private String posicionIva;
     private String ocupacion;
     private String nacionalidad;
 
     
-    public boolean esMayorDeEdad(Huesped huesped) {
-        Date fechaNacimiento = huesped.getFechaNacimiento();
+    public boolean esMayorDeEdad(HuespedDTO huespedDTO) {
+        Date fechaNacimiento = huespedDTO.getFechaNacimiento();
 
         Calendar hoy = Calendar.getInstance();
         Calendar nacimiento = Calendar.getInstance();

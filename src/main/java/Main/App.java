@@ -6,21 +6,19 @@ package Main;
 import Classes.Usuario.UsuarioDTO;
 import Classes.Usuario.GestorUsuario;
 import Classes.Usuario.UsuarioDAO;
-import Classes.Direccion.Direccion;
 import Classes.Direccion.DireccionDTO;
+import Classes.Huesped.GestorHuesped;
 import Classes.Huesped.HuespedDAO;
 import Classes.Huesped.HuespedDTO;
 
 import java.text.ParseException; 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
 import java.util.Date;
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
-        
         Menu();
     }
 
@@ -314,6 +312,8 @@ public class App {
          se vuelve al Menu
         */
         Scanner scanner = new Scanner(System.in);
+        GestorHuesped gestorHuesped = new GestorHuesped();
+
         System.out.print("Ingrese su nombre: ");
         String nombreHuesped = scanner.nextLine();
         System.out.print("Ingrese su apellido: ");
@@ -330,7 +330,7 @@ public class App {
         System.out.println("  Apellido: " + huespedDTO.getApellido());
         System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
         System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
-        modificarHuesped(huespedDTO);
+        gestorHuesped.modificarHuesped(huespedDTO);
     }
    
 }
