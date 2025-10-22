@@ -11,14 +11,20 @@ import Classes.Huesped.GestorHuesped;
 import Classes.Huesped.HuespedDAO;
 import Classes.Huesped.HuespedDTO;
 
+import java.io.IOException;
 import java.text.ParseException; 
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.Scanner;
 
+
+
 public class App {
+    static GestorHuesped gestorHuesped=new GestorHuesped();
+    static GestorUsuario gestorUsuario= new GestorUsuario();
     public static void main(String[] args) {
+        
         Menu();
     }
 
@@ -74,7 +80,7 @@ public class App {
          se vuelve al Menu
         */
         Scanner scanner = new Scanner(System.in);
-        GestorUsuario gestorUsuario= new GestorUsuario();
+        
 
         String nombreUsuario;
         String contrasenaUsuario;
@@ -101,13 +107,12 @@ public class App {
     public static void darAltaHuesped(){
         Scanner scanner = new Scanner(System.in);
         HuespedDTO huespedDTO = new HuespedDTO();
-        HuespedDAO huespedDAO = new HuespedDAO();
         Boolean camposVacios=false;//para controlar cuando ingresa mal los campos luego del 1er ingreso
         DireccionDTO direccionDTO=new DireccionDTO();
-        GestorHuesped gestorHuesped = new GestorHuesped();
+        
 
         ingresarDatos(camposVacios,huespedDTO,direccionDTO);
-        gestorHuesped.registrarHuesped(huespedDAO,huespedDTO);
+        gestorHuesped.registrarHuesped(huespedDTO);
         
         System.out.println("El huésped " + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
         " ha sido atisfactoriamente cargado al sistema. \n ¿Desea cargar otro? \n" +
@@ -172,8 +177,11 @@ public class App {
             huespedDTO.setNumeroDocumento(scanner.nextLine());
         } 
         
-        System.out.print("Ingrese su CUIT: ");
-        huespedDTO.setCuit(scanner.nextLine());
+        if(huespedDTO.getCuit()=="Responsable Inscripto" && huespedDTO.getCuit().isEmpty()){
+            System.out.println("Error en campo. Ingrese un CUIT obligatoraimente: ");
+        } else {
+            System.out.print("Ingrese su CUIT: ");
+        } huespedDTO.setCuit(scanner.nextLine());
         
         String posIva="CONSUMIDOR FINAL";
         if(camposVacios){
@@ -377,13 +385,31 @@ public class App {
         Integer opcion =scanner.nextInt();
 
         if(opcion==1){
-           controlarCampos(huespedDTO,direccionDTO); 
+           //eligio Siguiente
+            controlarCampos(huespedDTO,direccionDTO); 
+        } else{
+            //elige Cancelar
+            do{
+                System.out.println("¿Desea cancelar el alta del huésped? \n 1. si. Salir \n 2. no. Volver a cargar todos los datos");
+                opcion=scanner.nextInt();
+            } while (opcion!=1 && opcion!=2);
+            if(opcion==1){
+                //sistema vuelve al paso 6: Menu();
+                clearConsola();
+                Menu();
+            } else{
+                //sistema vuelve al paso1: muestra todos los datos nuevamente
+                huespedDTO=null;
+                clearConsola();
+                darAltaHuesped();
+            }
         }
 
         return huespedDTO; //FALTA VER QUE PASA SI PRESIONA CANCELAR   
     }
     public static void controlarCampos(HuespedDTO huespedDTO, DireccionDTO direccionDTO){
         //veo si algun campo obligatorio esta sin completar
+        Scanner scanner = new Scanner(System.in);
         clearConsola();
 
         if(huespedDTO.getNombre().isEmpty() || huespedDTO.getApellido().isEmpty() || huespedDTO.getTipoDocumento().isEmpty() || 
@@ -396,9 +422,54 @@ public class App {
 
                 //llamo a que se ingresen los datos pero le digo que se ingresaron mal los campos
                 ingresarDatos(true,huespedDTO,direccionDTO);
+                if(verificarDocumento(huespedDTO)){
+                    //se encontro un huesped existente con ese DOCUMENTO
+                    System.out.println("“¡CUIDADO! El tipo y número de documento ya existen en el sistema");
+                    Integer opc;
+                    do {
+                        System.out.println("1. ACEPTAR IGUALMENTE");
+                        System.out.println("2. CORREGIR tipo de documento");
+                        opc= scanner.nextInt();
+                    } while (opc!=1 || opc!=2);
+
+                    if(opc==2){
+                        /*
+                         se vuelve al ingresarDatos(); con foco en el campo tipo de documento
+                         */
+                        huespedDTO.setTipoDocumento("");
+                        ingresarDatos(true, huespedDTO, direccionDTO);
+                    } else {//pone ACEPTAR IGUALMENTE
+                        registrarHuesped(huespedDTO, direccionDTO);
+                    }
+                }
             } else{
-                registrarHuesped(huespedDTO,direccionDTO);
+                if(verificarDocumento(huespedDTO)){
+                    //se encontro un huesped existente con ese DOCUMENTO
+                    System.out.println("“¡CUIDADO! El tipo y número de documento ya existen en el sistema");
+                    Integer opc;
+                    do {
+                        System.out.println("1. ACEPTAR IGUALMENTE");
+                        System.out.println("2. CORREGIR");
+                        opc= scanner.nextInt();
+                    } while (opc!=1 && opc!=2);
+
+                    if(opc==2){
+                        /*
+                         se vuelve al ingresarDatos(); con foco en el campo tipo de documento
+                         */
+                        huespedDTO.setTipoDocumento("");
+                        ingresarDatos(true, huespedDTO, direccionDTO);
+                    } else {//pone ACEPTAR IGUALMENTE
+                        registrarHuesped(huespedDTO, direccionDTO);
+                    }
+                } else{
+                    registrarHuesped(huespedDTO,direccionDTO);
+                }
+                
             } 
+    }
+    public static boolean verificarDocumento(HuespedDTO huespedDTO){
+        return gestorHuesped.verificarDocumento(huespedDTO);
     }
     public static void registrarHuesped(HuespedDTO huespedDTO, DireccionDTO direccionDTO){
         huespedDTO.setNombre(huespedDTO.getNombre());

@@ -24,6 +24,48 @@ public class HuespedDAO {
     public  void read(){
     }
 
+    public boolean verificarDocumento(HuespedDTO huespedDTO){
+    /*
+     * Chequea que el Tipo y Número de Documento no existan en el archivo de registro.
+     */
+    String tipoDocBuscado = huespedDTO.getTipoDocumento().trim();
+    String numDocBuscado = huespedDTO.getNumeroDocumento().trim();
+    String RUTA_ARCHIVO = "D:/UTN/2025/DesarrolloSoftware/trabajoPractico/repoDesarrollo_GITHUB/infoDarAltaHuespedes.txt";
+    Boolean existeDoc = false;
+
+    // Usamos try-with-resources para asegurar que el BufferedReader se cierre automáticamente
+    try (BufferedReader br = new BufferedReader(new FileReader(RUTA_ARCHIVO))) {
+        String linea;
+        
+        while ((linea = br.readLine()) != null) {
+            // Dividir la línea por comas
+            String[] partes = linea.split(",");
+            
+            // Verificamos que haya al menos 4 campos (0, 1, 2, 3)
+            if (partes.length >= 4) {
+                
+                // 2. CORRECCIÓN DE ÍNDICES:
+                // Tipo Documento es el índice 2 (tercer campo)
+                String tipoDocArchivo = partes[2].trim().toUpperCase();
+                // Número Documento es el índice 3 (cuarto campo)
+                String numDocArchivo = partes[3].trim();
+
+                // 3. Comparar los campos (Tipo y Número)
+                if (tipoDocArchivo.equals(tipoDocBuscado) && numDocArchivo.equals(numDocBuscado)) {
+                    existeDoc = true; // Coincidencia encontrada!
+                    break; // Salir del bucle una vez que se encuentra la primera coincidencia
+                }
+            }
+        }
+    } catch (IOException e) {
+        System.err.println("❌ ERROR: No se pudo acceder o leer el archivo: " + RUTA_ARCHIVO);
+        System.err.println("fijate que sea la rutaaa!!!");
+        // Devolvemos 'false' para que el sistema asuma que no está duplicado si el archivo no es accesible.
+    } 
+    
+    return existeDoc; 
+}
+
     public static void registrarHuesped(HuespedDTO huespedDTO){
         /*
          AGREGAR EL HUESPEDDTO QUE LLEGA A LA BD DE HUESPEDES
@@ -73,7 +115,7 @@ public class HuespedDAO {
             out.println(lineaDatos); 
             
         } catch (IOException e) {
-            System.err.println("❌ ERROR FATAL al guardar el huésped en el archivo: " + e.getMessage());
+            System.err.println("ERROR al guardar el huésped en el archivo: " + e.getMessage());
         }
     }
     
