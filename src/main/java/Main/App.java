@@ -540,13 +540,20 @@ public class App {
      * @param huespedDTO
      * @param gestorHuesped
      * yo aca agarro mis daots del huespedDTO, los tengo q mostrar por pantalla dsp mando al gestor para q llame al dao
+     * FALTA VALIDAR LOS DATOS DE CADA CAMPO QUE MODIFICA, (hice de campos string) SI PRESIONA BORRAR ---- DEBE VOLVER A PEDIR Q INGRESE PORQ ES OBLIGATORIO
      */
 
 
-    public static void modificarHuesped(HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
 
+
+    public static void modificarHuesped(HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
+        String dniNOMod = huespedDTO.getNumeroDocumento();
         Scanner sc = new Scanner(System.in);
+
+
         String nuevo; //en cada campo obligatorio seria un loop para q vuevla a ingresar ese cmapo
+
+
 
         System.out.println("Nombre: " + huespedDTO.getNombre());
         System.out.print("modificar nombre (enter para mantener) - 'b' para borrar");
@@ -557,7 +564,20 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setNombre(nuevo);
+                if (esStringValido.esValido(nuevo))  {
+                    huespedDTO.setNombre(nuevo);
+                }
+                else{
+                    while (!esStringValido.esValido(nuevo)) {
+                      System.out.println("Ingrese un nombre valido");
+                        nuevo = sc.nextLine().trim();
+                    }
+                    //se supone q para salir del while tuvo q haber puesto bien pero lo pongo por las du
+                    if (esStringValido.esValido(nuevo)) {
+                        huespedDTO.setNombre(nuevo);
+                    }
+                }
+
             }
         }
 
@@ -569,7 +589,20 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setApellido(nuevo);
+                if (esStringValido.esValido(nuevo))  {
+                    huespedDTO.setApellido(nuevo);
+                }
+                else{
+                    while (!esStringValido.esValido(nuevo)) {
+                        System.out.println("Ingrese un nombre valido");
+                        nuevo = sc.nextLine().trim();
+                    }
+                    //se supone q para salir del while tuvo q haber puesto bien pero lo pongo por las du
+                    if (esStringValido.esValido(nuevo)) {
+                        huespedDTO.setApellido(nuevo);
+                    }
+                }
+
             }
         }
 
@@ -597,22 +630,26 @@ public class App {
             }
         }
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-
         System.out.println("Fecha de nacimiento: " + formato.format(huespedDTO.getFechaNacimiento()));
-        System.out.print("modificar fecha (dd/MM/yyyy) (enter para mantener): - 'b' para borrar");
-        nuevo = sc.nextLine().trim();
+        System.out.print("Modificar fecha (dd/MM/yyyy) (Enter para mantener): - 'b' para borrar: ");
+
+         nuevo = sc.nextLine().trim();
 
         if (!nuevo.isEmpty()) {
             if (nuevo.equalsIgnoreCase("b")) {
-                System.out.println(" No se puede borrar campo obligatorio.");
+                System.out.println("No se puede borrar campo obligatorio.");
             } else {
-                   // huespedDTO.setFechaNacimiento(formato.format(nuevo));
+                try {
+                    Date nuevaFecha = formato.parse(nuevo); // convierte el String a Date
+                    huespedDTO.setFechaNacimiento(nuevaFecha);
+                    System.out.println("Fecha modificada correctamente: " + formato.format(nuevaFecha));
+                } catch (ParseException e) {
+                    System.out.println("Formato de fecha inválido. Debe ser dd/MM/yyyy.");
+                }
             }
         } else {
             System.out.println("No se modificó la fecha.");
         }
-
-        sc.close();
 
 
         System.out.println("Teléfono: " + huespedDTO.getTelefono());
@@ -639,13 +676,10 @@ public class App {
                 huespedDTO.setEmail(nuevo);
             }
         }
-
+//creo dto de direccion para ir guardando
         System.out.println("\nDIRECCIÓN");
         DireccionDTO d = huespedDTO.getDireccionHuesped();
-        if (d == null) {
-            d = new DireccionDTO();
-            huespedDTO.setDireccionHuesped(d);
-        }
+
 
         System.out.print("modificar direccion (enter para mantener): - 'b' para borrar ");
         System.out.print("Calle (" + d.getCalle() + "): ");
@@ -655,7 +689,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+               d.setCalle(nuevo);
             }
         }
 
@@ -666,7 +700,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+                d.setNumero(nuevo);
             }
         }
 
@@ -677,7 +711,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+                d.setLocalidad(nuevo);
             }
         }
 
@@ -688,7 +722,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+                d.setDepartamento(nuevo);
             }
         }
 
@@ -699,7 +733,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+                d.setPiso(nuevo);
             }
         }
         System.out.print("Código Postal (" + d.getCodigoPostal() + "): ");
@@ -709,7 +743,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+                d.setCodigoPostal(nuevo);
             }
         }
         System.out.print("Provincia (" + d.getProvincia() + "): ");
@@ -719,9 +753,25 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
-            }
-        }
+                if (esStringValido.esValido(nuevo))  {
+                    d.setProvincia(nuevo);
+                }
+                else{
+                    while (!esStringValido.esValido(nuevo)) {
+                        System.out.println("Ingrese un nombre valido");
+                        nuevo = sc.nextLine().trim();
+                    }
+                    //se supone q para salir del while tuvo q haber puesto bien pero lo pongo por las du
+                    if (esStringValido.esValido(nuevo)) {
+                        d.setProvincia(nuevo);
+                    }
+                }
+
+
+
+
+
+        }}
 
         System.out.print("País (" + d.getPais() + "): ");
          nuevo= sc.nextLine().trim();
@@ -730,7 +780,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+                d.setPais(nuevo);
             }
         }
 
@@ -742,7 +792,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+                huespedDTO.setCuit(nuevo);
             }
         }
 
@@ -753,7 +803,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+                huespedDTO.setPosicionIva(nuevo);
             }
         }
 
@@ -764,7 +814,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+                huespedDTO.setOcupacion(nuevo);
             }
         }
 
@@ -775,7 +825,7 @@ public class App {
                 System.out.println("no se puede borrar campo obligatorio");
             }
             else {
-                huespedDTO.setTelefono(nuevo);
+                huespedDTO.setNacionalidad(nuevo);
             }
         }
 
@@ -787,7 +837,7 @@ public class App {
         System.out.println(" Apellido: " + huespedDTO.getApellido());
         System.out.println(" Tipo documento: " + huespedDTO.getTipoDocumento());
         System.out.println(" N° documento: " + huespedDTO.getNumeroDocumento());
-        System.out.println("Fecha de nacimiento: " + huespedDTO.getFechaNacimiento());
+        System.out.println("Fecha de nacimiento: " + formato.format(huespedDTO.getFechaNacimiento()));
         System.out.println("Teléfono: " + huespedDTO.getTelefono());
         System.out.println("Email: " + huespedDTO.getEmail());
         System.out.println("DIRECCIÓN DEL HUESPED");
@@ -801,11 +851,22 @@ public class App {
 
         System.out.println("la operacion a culminado con exito ");
 
-        //ahora llamo a geestor para q llame al dao y guarde en el archivo
-        gestorHuesped.modificarHuesped(huespedDTO);
+        //ahora llamo a geestor para q llame al dao y guarde en el archivo, le paso el dni ue esta en el archivo para poder buscar
+        gestorHuesped.modificarHuesped(huespedDTO,"infoBuscarHuespedes.txt",dniNOMod );
 
 
     }
 
-   
+    /**
+     * interface funcional para chequear q sea palabra sin car y num
+     * @param <T>
+     */
+    @FunctionalInterface
+    interface Validador<T> {
+        boolean esValido(T valor);
+    }
+
+    static Validador<String> esStringValido = valor ->
+            valor.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
+
 }

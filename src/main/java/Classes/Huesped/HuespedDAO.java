@@ -5,6 +5,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -58,7 +61,7 @@ public class HuespedDAO {
             }
         }
     } catch (IOException e) {
-        System.err.println("❌ ERROR: No se pudo acceder o leer el archivo: " + RUTA_ARCHIVO);
+        System.err.println("ERROR: No se pudo acceder o leer el archivo: " + RUTA_ARCHIVO);
         System.err.println("fijate que sea la rutaaa!!!");
         // Devolvemos 'false' para que el sistema asuma que no está duplicado si el archivo no es accesible.
     } 
@@ -215,9 +218,81 @@ public class HuespedDAO {
         return huespedRetorno;
     }
 
+    /**
+     *
+     * @param rutaArchivo
+     * @param huespedDTO
+     * @param direccionDTO
+     * @param dni este parametro es el dni cargado en el archivo, sino nunca lo encuentro, guardo el anterior para buscar
+     */
+    public void actualizarHuesped(String rutaArchivo, HuespedDTO huespedDTO, DireccionDTO direccionDTO, String dni) {
+    // para formatear fecha primero
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaComoTexto = formato.format(huespedDTO.getFechaNacimiento());
+
+
+            // construye la nueva línea con todos los campos
+                    String nuevaLinea = String.join(",",
+                            huespedDTO.getNombre(),
+                            huespedDTO.getApellido(),
+                            huespedDTO.getTipoDocumento(),
+                            huespedDTO.getNumeroDocumento(),
+                            fechaComoTexto,
+                            huespedDTO.getTelefono(),
+                            huespedDTO.getEmail(),
+                            direccionDTO.getCalle(),
+                            direccionDTO.getNumero(),
+                            direccionDTO.getPiso(),
+                            direccionDTO.getDepartamento(),
+                            direccionDTO.getCodigoPostal(),
+                            direccionDTO.getLocalidad(),
+                            direccionDTO.getProvincia(),
+                            direccionDTO.getPais(),
+                            huespedDTO.getCuit(),
+                            huespedDTO.getPosicionIva(),
+                            huespedDTO.getOcupacion(),
+                            huespedDTO.getNacionalidad()
+                    );
+int indice= -1;
+//leo para buscar la linea
+        try {
+            // se leem todas las líneas del archivo
+            List<String> lineas = Files.readAllLines(Paths.get(rutaArchivo));
+
+            // buscar la línea que contenga el DNI en la 3
+            for (int i = 0; i < lineas.size(); i++) {
+                String[] campos = lineas.get(i).split(",");
+                if (campos.length > 3 && campos[3].equals(dni)) {
+                    indice = i; //agarra el indice
+                    break;
+                }
+            }
+
+            // Si lo encontró, reemplazar la línea y reescribir el archivo
+            if (indice != -1) {
+                lineas.set(indice, nuevaLinea);
+                Files.write(Paths.get(rutaArchivo), lineas);
+                System.out.println(" Cambios realizados correctamente " );
+            }
+            //el huesped ya esta registrado por ende en alguna fila de el archivo esta
+
+        } catch (IOException e) {
+            System.out.println(" Error al leer o escribir el archivo:");
+            e.printStackTrace();
+        }
 
 
 
+
+
+    }
+
+
+    /**
+     *
+     * @param datos datos q le llegan y hace el set
+     * @return
+     */
 
 
 

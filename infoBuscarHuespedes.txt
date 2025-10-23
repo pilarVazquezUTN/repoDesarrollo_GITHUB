@@ -1,15 +1,6 @@
-<<<<<<< HEAD
 Ernestina,Solorzano,DNI,12345678,06/08/03,543421234567,erneSolorzano@gmail.com,Santa Fe, 1123456788,ResponsableInscripto,estudiante,Argentina.
 Pilar,Vazquez,DNI,23456789,13/11/03,543425908612,pilarVazquez@gmail.com,Santa Fe,2234567899,ResponsableInscripto,estudiante,Argentina.
 Victoria,Sovrano,DNI,34567890,18/06/02,543428547896,victoriaSovrano@gmail.com,Santa Fe,3345678900,ResponsableInscripto,estudiante,Argentina.
 Guille,Fornari,DNI,45678901,22/02/03,543428501478,guilleFornari@gmail.com,Santa Fe,4456789011,ResponsableInscripto,estudiante,Argentina.
 valentin,DaSilva,DNI,56789012,01/02/03,543424023698,valenDaSilva@gmail.com,Santa Fe,5567890122,ResponsableInscripto,estudiante,Argentina.
-||||||| 368afcd
-=======
-Ernestina,Solorzano,DNI,12345678,06/08/03,543421234567,erneSolorzano@gmail.com,Santa Fe, 1123456788,ResponsableInscripto,estudiante,Argentina.
-Pilar,Vazquez,DNI,23456789,13/11/03,543425908612,pilarVazquez@gmail.com,Santa Fe,2234567899,ResponsableInscripto,estudiante,Argentina.
-Victoria,Sovrano,DNI,34567890,18/06/02,543428547896,victoriaSovrano@gmail.com,Santa Fe,3345678900,ResponsableInscripto,estudiante,Argentina.
-Guille,Fornari,DNI,45678901,22/02/03,543428501478,guilleFornari@gmail.com,Santa Fe,4456789011,ResponsableInscripto,estudiante,Argentina.
-valentin,DaSilva,DNI,56789012,01/02/03,543424023698,valenDaSilva@gmail.com,Santa Fe,5567890122,ResponsableInscripto,estudiante,Argentina.
->>>>>>> 6b247d9f651d58774bd538293fdde0d70c1c15b9
 maria,antonia,DNI,111111,06/08/2003,3437457594,mariaantonia@gmail.com,4 de enero,3449,b,8,3000,santa fe,santa fe,argentina,27449817953,monotributista,comerciante,Argentino

@@ -25,9 +25,17 @@ public class GestorHuesped {
 
     }
 
-
-    public void modificarHuesped(HuespedDTO huespedDTO) {
-
+    /**
+     *
+     * @param huespedDTO datos
+     * @param huespedDAO instancia del Dao
+     * @param rutaArchivo ruta donde esta el archivo
+     *
+     *
+     *el gestor le pasa al dao los datos y la ruta donde tiene q buscar
+     */
+    public void modificarHuesped(HuespedDTO huespedDTO, String rutaArchivo, String dninoMod) {
+    huespedDAO.actualizarHuesped(rutaArchivo, huespedDTO, huespedDTO.getDireccionHuesped(), dninoMod);
     }
 
 

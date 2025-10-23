@@ -9,7 +9,7 @@ public class Factura {
     private String estado;
 
     public void agregarItem(){
-    System.out.println("Agregando Item");
+
     }
     public void cancelar(){
 
