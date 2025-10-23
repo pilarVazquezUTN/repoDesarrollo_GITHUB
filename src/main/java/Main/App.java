@@ -531,42 +531,277 @@ public class App {
         System.out.println("  Apellido: " + huespedDTO.getApellido());
         System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
         System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
-        gestorHuesped.modificarHuesped(huespedDTO); //aca llamo a modificar huesped con Huesped DTO Y HuespedDto debe tener todos los campos
+        modificarHuesped(huespedDTO,gestorHuesped); //aca llamo a modificar huesped con Huesped DTO Y HuespedDto debe tener todos los campos
+        //nose si deberia llamar al gestor o a la clase
     }
-    //yo aca agarro mis daots del huespedDTO, los tengo q mostrar por pantalla
-    public void modificarHuesped(HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
 
-        System.out.println("Datos del Huesped");
+    /**
+     *
+     * @param huespedDTO
+     * @param gestorHuesped
+     * yo aca agarro mis daots del huespedDTO, los tengo q mostrar por pantalla dsp mando al gestor para q llame al dao
+     */
 
-        System.out.println("  Nombre: " + huespedDTO.getNombre());
-        System.out.println("  Apellido: " + huespedDTO.getApellido());
-        System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
-        System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
+
+    public static void modificarHuesped(HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
+
+        Scanner sc = new Scanner(System.in);
+        String nuevo; //en cada campo obligatorio seria un loop para q vuevla a ingresar ese cmapo
+
+        System.out.println("Nombre: " + huespedDTO.getNombre());
+        System.out.print("modificar nombre (enter para mantener) - 'b' para borrar");
+        nuevo = sc.nextLine().trim();
+
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setNombre(nuevo);
+            }
+        }
+
+        System.out.println("Apellido: " + huespedDTO.getApellido());
+        System.out.print("modificar apellido (enter para mantener): - 'b' para borrar ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setApellido(nuevo);
+            }
+        }
+
+
+        System.out.println("Tipo documento: " + huespedDTO.getTipoDocumento());
+        System.out.print("modificar tipo documento (enter para mantener): - 'b' para borrar ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTipoDocumento(nuevo);
+            }
+        }
+        System.out.println("N° documento: " + huespedDTO.getNumeroDocumento());
+        System.out.print("modificar número documento (enter para mantener): - 'b' para borrar ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setNumeroDocumento(nuevo);
+            }
+        }
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+
+        System.out.println("Fecha de nacimiento: " + formato.format(huespedDTO.getFechaNacimiento()));
+        System.out.print("modificar fecha (dd/MM/yyyy) (enter para mantener): - 'b' para borrar");
+        nuevo = sc.nextLine().trim();
+
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equalsIgnoreCase("b")) {
+                System.out.println(" No se puede borrar campo obligatorio.");
+            } else {
+                   // huespedDTO.setFechaNacimiento(formato.format(nuevo));
+            }
+        } else {
+            System.out.println("No se modificó la fecha.");
+        }
+
+        sc.close();
+
+
+        System.out.println("Teléfono: " + huespedDTO.getTelefono());
+        System.out.print("modificar teléfono (enter para mantener) - 'b' para borrar ");
+
+        nuevo= sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+        System.out.println("Email: " + huespedDTO.getEmail());
+        System.out.print("modificar email (enter para mantener): - 'b' para borrar ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                huespedDTO.setEmail("");
+            }
+            else {
+                huespedDTO.setEmail(nuevo);
+            }
+        }
+
+        System.out.println("\nDIRECCIÓN");
+        DireccionDTO d = huespedDTO.getDireccionHuesped();
+        if (d == null) {
+            d = new DireccionDTO();
+            huespedDTO.setDireccionHuesped(d);
+        }
+
+        System.out.print("modificar direccion (enter para mantener): - 'b' para borrar ");
+        System.out.print("Calle (" + d.getCalle() + "): ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+        System.out.print("Número (" + d.getNumero() + "): ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+        System.out.print("Localidad (" + d.getLocalidad() + "): ");
+        nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+        System.out.print("Departamento (" + d.getDepartamento() + "): ");
+         nuevo= sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+        System.out.print("Piso (" + d.getPiso() + "): ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+        System.out.print("Código Postal (" + d.getCodigoPostal() + "): ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+        System.out.print("Provincia (" + d.getProvincia() + "): ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+        System.out.print("País (" + d.getPais() + "): ");
+         nuevo= sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+        System.out.println("modificar datos (enter para mantener) - 'b' para borrar");
+        System.out.print("CUIT (" + huespedDTO.getCuit() + "): ");
+         nuevo= sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+        System.out.print("Posición IVA (" + huespedDTO.getPosicionIva() + "): ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+        System.out.print("Ocupación (" + huespedDTO.getOcupacion() + "): ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+        System.out.print("Nacionalidad (" + huespedDTO.getNacionalidad() + "): ");
+         nuevo = sc.nextLine().trim();
+        if (!nuevo.isEmpty()) {
+            if (nuevo.equals("b")) {
+                System.out.println("no se puede borrar campo obligatorio");
+            }
+            else {
+                huespedDTO.setTelefono(nuevo);
+            }
+        }
+
+
+        System.out.println("datos finales \n");
+
+
+        System.out.println("Datos del Huesped"); System.out.println(" Nombre: " + huespedDTO.getNombre());
+        System.out.println(" Apellido: " + huespedDTO.getApellido());
+        System.out.println(" Tipo documento: " + huespedDTO.getTipoDocumento());
+        System.out.println(" N° documento: " + huespedDTO.getNumeroDocumento());
         System.out.println("Fecha de nacimiento: " + huespedDTO.getFechaNacimiento());
         System.out.println("Teléfono: " + huespedDTO.getTelefono());
         System.out.println("Email: " + huespedDTO.getEmail());
-
-
         System.out.println("DIRECCIÓN DEL HUESPED");
-        DireccionDTO d = huespedDTO.getDireccionHuesped();
-        if (d != null) {
-            System.out.println("Calle: " + d.getCalle());
-            System.out.println("Número: " + d.getNumero());
-            System.out.println("Localidad: " + d.getLocalidad());
-            System.out.println("Departamento: " + d.getDepartamento());
-            System.out.println("Piso: " + d.getPiso());
-            System.out.println("Código Postal: " + d.getCodigoPostal());
-            System.out.println("Provincia: " + d.getProvincia());
-            System.out.println("País: " + d.getPais());
-        } else {
-            System.out.println("No se encontró dirección cargada.");
-        }
+        DireccionDTO dir = huespedDTO.getDireccionHuesped(); if (dir != null) { System.out.println("Calle: " + d.getCalle());
+        System.out.println("Número: " + d.getNumero()); System.out.println("Localidad: " + d.getLocalidad());
+        System.out.println("Departamento: " + d.getDepartamento()); System.out.println("Piso: " + d.getPiso());
+        System.out.println("Código Postal: " + d.getCodigoPostal()); System.out.println("Provincia: " + d.getProvincia());
+        System.out.println("País: " + d.getPais()); } else { System.out.println("No se encontró dirección cargada."); }
+        System.out.println("CUIT: " + huespedDTO.getCuit()); System.out.println("Posición IVA: " + huespedDTO.getPosicionIva());
+        System.out.println("Ocupación: " + huespedDTO.getOcupacion()); System.out.println("Nacionalidad: " + huespedDTO.getNacionalidad());
 
-        System.out.println("CUIT: " + huespedDTO.getCuit());
-        System.out.println("Posición IVA: " + huespedDTO.getPosicionIva());
-        System.out.println("Ocupación: " + huespedDTO.getOcupacion());
-        System.out.println("Nacionalidad: " + huespedDTO.getNacionalidad());
+        System.out.println("la operacion a culminado con exito ");
 
+        //ahora llamo a geestor para q llame al dao y guarde en el archivo
         gestorHuesped.modificarHuesped(huespedDTO);
 
 
