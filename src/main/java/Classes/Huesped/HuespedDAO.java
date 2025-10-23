@@ -14,8 +14,8 @@ import java.util.Scanner;
 import Classes.Direccion.DireccionDTO;
 
 public class HuespedDAO {
-    public void delete(){ 
-
+    public int delete(){
+     return 0;
     }
     public  void create(){
     }
