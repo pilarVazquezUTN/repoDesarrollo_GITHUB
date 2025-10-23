@@ -10,10 +10,8 @@ public class GestorHuesped {
         this.idEmpleado = idEmpleado;
     }
     public String getIdEmpleado() {
-        return idEmpleado;
+        return this.idEmpleado;
     }
-
-
 
     public void  buscarHuesped(){
 
@@ -35,7 +33,7 @@ public class GestorHuesped {
      *el gestor le pasa al dao los datos y la ruta donde tiene q buscar
      */
     public void modificarHuesped(HuespedDTO huespedDTO, String rutaArchivo, String dninoMod) {
-    huespedDAO.actualizarHuesped(rutaArchivo, huespedDTO, huespedDTO.getDireccionHuesped(), dninoMod);
+        huespedDAO.actualizarHuesped(rutaArchivo, huespedDTO, huespedDTO.getDireccionHuesped(), dninoMod);
     }
 
 

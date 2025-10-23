@@ -73,7 +73,7 @@ public class HuespedDAO {
         /*
          AGREGAR EL HUESPEDDTO QUE LLEGA A LA BD DE HUESPEDES
          */
-        String RUTA_ARCHIVO="infoDarAltaHuespedes.txt"; // esta en la misma carpera
+        String RUTA_ARCHIVO="infoBuscarHuespedes.txt"; // esta en la misma carpera
 
         // 1. Crear el formateador de fechas para java.util.Date
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");

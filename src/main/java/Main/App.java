@@ -25,17 +25,29 @@ public class App {
     static GestorUsuario gestorUsuario= new GestorUsuario();
     public static void main(String[] args) {
         
-        Menu();
+        Bienvenida();
     }
 
+    public static void Bienvenida(){
+        Scanner scanner = new Scanner(System.in);
+        Integer opcion;
+
+        clearConsola();
+        do{
+            System.out.println("BIENVENIDO A LA GESTION DEL HOTEL. \n Presione 1 para Autenticar su Usuario. ");
+            opcion=scanner.nextInt();
+        } while (opcion!=1);
+        clearConsola();
+        autenticarHuesped();
+
+    }
     public static void Menu(){
         //System.out.println("funciona");
         System.out.println("\n Opciones: ");
-        System.out.println("1. Autenticar Usuario"); 
-        System.out.println("2. Buscar Huesped"); 
-        System.out.println("3. Dar De Alta Huesped");
-        System.out.println("4. Modfiicar Huesped");  //para este se tiene que haber ejecutado primero el buscar huesped
-        System.out.println("5. Dar de Baja Huesped"); 
+        System.out.println("1. Buscar Huesped"); 
+        System.out.println("2. Dar De Alta Huesped");
+        System.out.println("3. Modfiicar Huesped");  //para este se tiene que haber ejecutado primero el buscar huesped
+        System.out.println("4. Dar de Baja Huesped"); 
         System.out.print("--- Ingrese una opción: "); 
 
         ingresaOpcion();
@@ -43,31 +55,34 @@ public class App {
 
     public static void ingresaOpcion(){
         Scanner scanner = new Scanner(System.in);
-        
+        boolean entradaValida=false;
         int opcion= scanner.nextInt();
         
-        while(opcion<1 || opcion>5){
-            clearConsola();
-            System.out.println("--------------- Ingrese una opcion correcta!");
-            Menu();
-            break;
-        }
+        do{
+            if(opcion<1 || opcion>4){
+                clearConsola();
+                System.out.println("--------------- Ingrese una opcion correcta!");
+                Menu();
+            } else{
+                entradaValida=true;
+            }
+        } while(!entradaValida);
 
+        clearConsola();
         switch (opcion) {
-            case 1://autenticar usuario
-                autenticarHuesped();
-                break;
-            case 2://buscar huesped
+            case 1://buscar huesped
+                System.out.println("BUSCAR HUESPED \n");
                 buscarHuesped();
                 break;
-            case 3://daar de alta huesped
+            case 2://daar de alta huesped
+                System.out.println("DAR DE ALTA HUESPED \n");
                 darAltaHuesped();                
                 break;
-            case 4:// modificar huesped
-                
-                break;                
-            case 5://dar de baja huesped
-                
+            case 3:// modificar huesped
+                System.out.println("MODIFICAR HUESPED \n");
+                break;
+            case 4://dar de baja huesped
+                System.out.println("DAR DE BAJA HUESPED \n");
                 break;                
         }
     }
@@ -80,8 +95,6 @@ public class App {
          se vuelve al Menu
         */
         Scanner scanner = new Scanner(System.in);
-        
-
         String nombreUsuario;
         String contrasenaUsuario;
 
