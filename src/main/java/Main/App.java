@@ -42,7 +42,7 @@ public class App {
 
     }
     public static void Menu(){
-        //System.out.println("funciona");
+        System.out.println("--------------- MENU ----------------");
         System.out.println("\n Opciones: ");
         System.out.println("1. Buscar Huesped"); 
         System.out.println("2. Dar De Alta Huesped");
@@ -80,9 +80,11 @@ public class App {
                 break;
             case 3:// modificar huesped
                 System.out.println("MODIFICAR HUESPED \n");
+                modificarHuesped(null, gestorHuesped);
                 break;
             case 4://dar de baja huesped
                 System.out.println("DAR DE BAJA HUESPED \n");
+                //darDeBajaHuesped();
                 break;                
         }
     }
@@ -112,9 +114,15 @@ public class App {
         UsuarioDAO usuarioDAO= new UsuarioDAO();
         clearConsola();
         //llamamos al Gestor
-        gestorUsuario.autenticarUsuario(usuarioDAO,usuarioDTO);
+        if(gestorUsuario.autenticarUsuario(usuarioDAO,usuarioDTO)){
+            System.out.println("Usuario Encontrado. Acceso concedido. \n");
+            Menu();
+        } else{
+            System.out.println("usuario no encontrado. Se vuelve a Autenticacion de Usuario. \n");
+            autenticarHuesped();
+        }
+              
         
-        Menu();
     }
 
     public static void darAltaHuesped(){
@@ -149,6 +157,19 @@ public class App {
         Date fechaNacDTO;
 
         if(camposVacios){
+            if(huespedDTO.getApellido().isEmpty()){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su apellido: ");
+                huespedDTO.setApellido(scanner.nextLine().toUpperCase());
+            } else{
+                System.out.println("Su Apellido "+huespedDTO.getApellido());    
+            }
+        } else{
+            System.out.print("Ingrese su apellido: ");
+            huespedDTO.setApellido(scanner.nextLine().toUpperCase());
+        }
+
+        
+        if(camposVacios){
             if(huespedDTO.getNombre().isEmpty()){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su nombre: ");
                 huespedDTO.setNombre(scanner.nextLine().toUpperCase());
@@ -159,18 +180,7 @@ public class App {
             System.out.print("Ingrese su nombre: ");
             huespedDTO.setNombre(scanner.nextLine().toUpperCase());
         } 
-        
-        if(camposVacios){
-            if(huespedDTO.getApellido().isEmpty()){
-                System.out.print("Error en campo. Ingrese CORRECTAMENTE su apellido: ");
-                huespedDTO.setApellido(scanner.nextLine().toUpperCase());
-            } else{
-                System.out.println("Su Apellido "+huespedDTO.getApellido());    
-            }
-        } else{
-            System.out.print("Ingrese su apellido: ");
-            huespedDTO.setApellido(scanner.nextLine().toUpperCase());
-        } 
+         
         
         if(camposVacios){
             if(huespedDTO.getTipoDocumento().isEmpty()){
