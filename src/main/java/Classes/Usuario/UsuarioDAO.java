@@ -22,7 +22,7 @@ public class UsuarioDAO {
         // 3. CORRECCIÓN: La declaración de la variable estaba mal escrita (espacio)
         String contrasenaIngresada = contrasenaUsuario; 
         
-        String rutaArchivo = "D:/UTN/2025/DesarrolloSoftware/trabajoPractico/infoAutenticarUsuario.txt";
+        String rutaArchivo = "infoAutenticarUsuario.txt";
         boolean autenticado = false;
 
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {

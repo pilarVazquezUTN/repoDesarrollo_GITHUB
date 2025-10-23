@@ -33,8 +33,8 @@ public class App {
         System.out.println("\n Opciones: ");
         System.out.println("1. Autenticar Usuario"); 
         System.out.println("2. Buscar Huesped"); 
-        System.out.println("3. Dar De Alta Huesped"); 
-        System.out.println("4. Modfiicar Huesped"); 
+        System.out.println("3. Dar De Alta Huesped");
+        System.out.println("4. Modfiicar Huesped");  //para este se tiene que haber ejecutado primero el buscar huesped
         System.out.println("5. Dar de Baja Huesped"); 
         System.out.print("--- Ingrese una opción: "); 
 
@@ -512,6 +512,7 @@ public class App {
          se vuelve al Menu
         */
         Scanner scanner = new Scanner(System.in);
+
         GestorHuesped gestorHuesped = new GestorHuesped();
 
         System.out.print("Ingrese su nombre: ");
@@ -530,7 +531,46 @@ public class App {
         System.out.println("  Apellido: " + huespedDTO.getApellido());
         System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
         System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
-        gestorHuesped.modificarHuesped(huespedDTO);
+        gestorHuesped.modificarHuesped(huespedDTO); //aca llamo a modificar huesped con Huesped DTO Y HuespedDto debe tener todos los campos
     }
+    //yo aca agarro mis daots del huespedDTO, los tengo q mostrar por pantalla
+    public void modificarHuesped(HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
+
+        System.out.println("Datos del Huesped");
+
+        System.out.println("  Nombre: " + huespedDTO.getNombre());
+        System.out.println("  Apellido: " + huespedDTO.getApellido());
+        System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
+        System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
+        System.out.println("Fecha de nacimiento: " + huespedDTO.getFechaNacimiento());
+        System.out.println("Teléfono: " + huespedDTO.getTelefono());
+        System.out.println("Email: " + huespedDTO.getEmail());
+
+
+        System.out.println("DIRECCIÓN DEL HUESPED");
+        DireccionDTO d = huespedDTO.getDireccionHuesped();
+        if (d != null) {
+            System.out.println("Calle: " + d.getCalle());
+            System.out.println("Número: " + d.getNumero());
+            System.out.println("Localidad: " + d.getLocalidad());
+            System.out.println("Departamento: " + d.getDepartamento());
+            System.out.println("Piso: " + d.getPiso());
+            System.out.println("Código Postal: " + d.getCodigoPostal());
+            System.out.println("Provincia: " + d.getProvincia());
+            System.out.println("País: " + d.getPais());
+        } else {
+            System.out.println("No se encontró dirección cargada.");
+        }
+
+        System.out.println("CUIT: " + huespedDTO.getCuit());
+        System.out.println("Posición IVA: " + huespedDTO.getPosicionIva());
+        System.out.println("Ocupación: " + huespedDTO.getOcupacion());
+        System.out.println("Nacionalidad: " + huespedDTO.getNacionalidad());
+
+        gestorHuesped.modificarHuesped(huespedDTO);
+
+
+    }
+
    
 }

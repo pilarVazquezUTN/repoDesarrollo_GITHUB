@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,8 +15,7 @@ import java.util.Scanner;
 import Classes.Direccion.DireccionDTO;
 
 public class HuespedDAO {
-    public int delete(){
-     return 0;
+    public void delete(){
     }
     public  void create(){
     }
@@ -30,7 +30,7 @@ public class HuespedDAO {
      */
     String tipoDocBuscado = huespedDTO.getTipoDocumento().trim();
     String numDocBuscado = huespedDTO.getNumeroDocumento().trim();
-    String RUTA_ARCHIVO = "D:/UTN/2025/DesarrolloSoftware/trabajoPractico/repoDesarrollo_GITHUB/infoDarAltaHuespedes.txt";
+    String RUTA_ARCHIVO = "infoDarAltaHuespedes.txt";
     Boolean existeDoc = false;
 
     // Usamos try-with-resources para asegurar que el BufferedReader se cierre automáticamente
@@ -70,7 +70,7 @@ public class HuespedDAO {
         /*
          AGREGAR EL HUESPEDDTO QUE LLEGA A LA BD DE HUESPEDES
          */
-        String RUTA_ARCHIVO="D:/UTN/2025/DesarrolloSoftware/trabajoPractico/repoDesarrollo_GITHUB/infoDarAltaHuespedes.txt";
+        String RUTA_ARCHIVO="infoDarAltaHuespedes.txt"; // esta en la misma carpera
 
         // 1. Crear el formateador de fechas para java.util.Date
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -121,7 +121,7 @@ public class HuespedDAO {
     
 
     public static HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
-        String rutaArchivo = "C:\\Users\\guill\\Downloads\\CU2 DESARROLLO\\infoBuscarHuespedes.txt"; // Cambia por la ruta real de tu archivo
+        String rutaArchivo = "infoBuscarHuespedes.txt"; // Cambia por la ruta real de tu archivo
         boolean encontrado = false;
         HuespedDTO huespedRetorno = new HuespedDTO();
         HuespedDTO huespedDTO;
@@ -160,6 +160,32 @@ public class HuespedDAO {
                         huespedDTO.setTipoDocumento(tipo);
                         System.out.println("  N° documento: " + documento);
                         huespedDTO.setNumeroDocumento(documento);
+
+                        //sigo cargando los datos del huesped
+                        String fechaTexto = datos[4].trim(); // "20/05/1995"
+                        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+
+                        try {
+                            Date fNacimiento = formato.parse(fechaTexto);
+                            huespedDTO.setFechaNacimiento(fNacimiento);
+                        } catch (ParseException e) {
+                            System.out.println("Error al convertir la fecha: " + fechaTexto);
+                        }
+
+                        huespedDTO.setTelefono(datos[5].trim());
+                        huespedDTO.setEmail(datos[6].trim());
+
+                        DireccionDTO direccionDTO = getDireccionDTO(datos);
+                        huespedDTO.setDireccionHuesped(direccionDTO);
+                        //aca hago el set en huesped
+
+                        huespedDTO.setCuit(datos[15].trim());
+                        huespedDTO.setPosicionIva(datos[16].trim());
+                        huespedDTO.setOcupacion(datos[17].trim());
+                        huespedDTO.setNacionalidad(datos[18].trim());
+
+
+
                         System.out.println("---------------------------");
                         encontrado = true;
                         listaHuespedes.add(huespedDTO);
@@ -188,5 +214,27 @@ public class HuespedDAO {
     }
         return huespedRetorno;
     }
+
+
+
+
+
+
+
+    private static DireccionDTO getDireccionDTO(String[] datos) {
+        DireccionDTO direccionDTO = new DireccionDTO();
+        direccionDTO.setCalle(datos[7].trim());
+        direccionDTO.setNumero(datos[8].trim());
+        direccionDTO.setDepartamento(datos[9].trim());
+        direccionDTO.setPiso(datos[10].trim());
+        direccionDTO.setCodigoPostal(datos[11].trim());
+        direccionDTO.setLocalidad(datos[12].trim());
+        direccionDTO.setProvincia(datos[13].trim());
+        direccionDTO.setPais(datos[14].trim());
+        return direccionDTO;
+    }
+
+
+
 }
 
