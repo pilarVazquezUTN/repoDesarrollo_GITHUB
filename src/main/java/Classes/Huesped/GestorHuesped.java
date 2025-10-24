@@ -55,4 +55,9 @@ public class GestorHuesped {
         return huespedDAO.verificarDocumento(huespedDTO);
     }
 
+    public boolean eliminarHuesped(HuespedDTO huespedDTO) {
+
+        return huespedDAO.eliminarHuespued(huespedDTO);
+    }
+
 }

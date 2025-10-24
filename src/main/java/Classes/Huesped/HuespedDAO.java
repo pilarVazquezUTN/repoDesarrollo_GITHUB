@@ -139,8 +139,8 @@ public class HuespedDAO {
                 String[] datos = linea.split(",");
 
                 if (datos.length >= 4) {
-                    String nombre = datos[0].trim();
-                    String apellido = datos[1].trim();
+                    String apellido = datos[0].trim();
+                    String nombre = datos[1].trim();
                     String tipo = datos[2].trim();
                     String documento = datos[3].trim();
 
@@ -154,18 +154,18 @@ public class HuespedDAO {
                     if (coincideNombre && coincideApellido && coincideTipo && coincideDocumento) {
                         i++;
                         huespedDTO = new HuespedDTO();
-                        System.out.println((i)+":");
-                        System.out.println("  Nombre: " + nombre);
-                        huespedDTO.setNombre(nombre);
+                        System.out.println((i)+": ");
                         System.out.println("  Apellido: " + apellido);
                         huespedDTO.setApellido(apellido);
+                        System.out.println("  Nombre: " + nombre);
+                        huespedDTO.setNombre(nombre);
                         System.out.println("  Tipo documento: " + tipo);
                         huespedDTO.setTipoDocumento(tipo);
                         System.out.println("  N° documento: " + documento);
                         huespedDTO.setNumeroDocumento(documento);
 
                         //sigo cargando los datos del huesped
-                        String fechaTexto = datos[4].trim(); // "20/05/1995"
+                        String fechaTexto = datos[6].trim(); // "20/05/1995"
                         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
                         try {
@@ -175,15 +175,15 @@ public class HuespedDAO {
                             System.out.println("Error al convertir la fecha: " + fechaTexto);
                         }
 
-                        huespedDTO.setTelefono(datos[5].trim());
-                        huespedDTO.setEmail(datos[6].trim());
+                        huespedDTO.setTelefono(datos[15].trim());
+                        huespedDTO.setEmail(datos[16].trim());
 
                         DireccionDTO direccionDTO = getDireccionDTO(datos);
                         huespedDTO.setDireccionHuesped(direccionDTO);
                         //aca hago el set en huesped
 
-                        huespedDTO.setCuit(datos[15].trim());
-                        huespedDTO.setPosicionIva(datos[16].trim());
+                        huespedDTO.setCuit(datos[4].trim());
+                        huespedDTO.setPosicionIva(datos[5].trim());
                         huespedDTO.setOcupacion(datos[17].trim());
                         huespedDTO.setNacionalidad(datos[18].trim());
 
@@ -308,7 +308,35 @@ int indice= -1;
         direccionDTO.setPais(datos[14].trim());
         return direccionDTO;
     }
+    public boolean eliminarHuespued(HuespedDTO huesped) {
+        String rutaArchivo = "infoBuscarHuespedes.txt";
+        boolean eliminado = false;
+        //VER QUE NO SE HAYA ALOJADO NUNCA EN EL HOTEL COMO?
+        try  {
+            // Leer todas las líneas del archivo
+            List<String> lineas = Files.readAllLines(Paths.get(rutaArchivo));
 
+            // Convertir el huesped a texto (como está guardado en el archivo)
+            SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+            String textoHuesped = huesped.getApellido() +","+ huesped.getNombre() +","+ huesped.getTipoDocumento() +","+ huesped.getNumeroDocumento() +","+ huesped.getCuit() +","+ huesped.getPosicionIva() +","+ formato.format(huesped.getFechaNacimiento() ) +","+ huesped.getDireccionHuesped().getCalle() +","+ huesped.getDireccionHuesped().getNumero() +","+ huesped.getDireccionHuesped().getDepartamento() +","+ huesped.getDireccionHuesped().getPiso() +","+ huesped.getDireccionHuesped().getCodigoPostal() +","+ huesped.getDireccionHuesped().getLocalidad() +","+ huesped.getDireccionHuesped().getProvincia() +","+ huesped.getDireccionHuesped().getPais() +","+ huesped.getTelefono() +","+ huesped.getEmail() +","+ huesped.getOcupacion() +","+ huesped.getNacionalidad();;
+
+            // Filtrar las líneas que NO coincidan con el huesped a eliminar
+            List<String> nuevasLineas = new ArrayList<>();
+            for (String linea : lineas) {
+                if (!linea.equals(textoHuesped)) {
+                    nuevasLineas.add(linea);
+                }
+            }
+            // Sobrescribir el archivo con las líneas filtradas
+            Files.write(Paths.get(rutaArchivo), nuevasLineas);
+
+            System.out.println("✅ Huesped eliminado del archivo.");
+            eliminado=true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return eliminado;
+    }
 
 
 }
