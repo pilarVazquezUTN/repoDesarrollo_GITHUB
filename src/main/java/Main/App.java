@@ -1,4 +1,4 @@
-package Main;
+package main;
 /*
  IMPORTAR TODAS LAS CLASES DE UN PACKAGE: import <paquetess>.*; ejmplo: import Classes.Usuario.*;
  IMPORTAR CLASES QUE YO QUIERA DEL PACKAGE: import <paquetess>.<clase>; ejemplo: como esta en el tp
@@ -23,9 +23,9 @@ import java.util.function.Predicate;
 
 public class App {
 
-
     static GestorHuesped gestorHuesped=new GestorHuesped();
     static GestorUsuario gestorUsuario= new GestorUsuario();
+    
     public static void main(String[] args) {
         
         Bienvenida();
@@ -49,8 +49,7 @@ public class App {
         System.out.println("\n Opciones: ");
         System.out.println("1. Buscar Huesped"); 
         System.out.println("2. Dar De Alta Huesped");
-        System.out.println("3. Modfiicar Huesped");  //para este se tiene que haber ejecutado primero el buscar huesped
-        System.out.println("4. Dar de Baja Huesped"); 
+        System.out.println("3. Dar de Baja Huesped"); 
         System.out.print("--- Ingrese una opción: "); 
 
         ingresaOpcion();
@@ -1059,7 +1058,7 @@ public class App {
      */
     public static boolean esCuitValido(String valor) {
 
-        if (valor == null) return false;
+        if (valor == null || valor.isEmpty()) return true;
 
         //Quitar guiones si los tiene
         String cuit = valor.replaceAll("-", "");
