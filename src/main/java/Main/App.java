@@ -11,7 +11,8 @@ import Classes.Huesped.GestorHuesped;
 import Classes.Huesped.HuespedDAO;
 import Classes.Huesped.HuespedDTO;
 
-import java.text.ParseException; 
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import java.time.LocalDate;
@@ -44,6 +45,7 @@ public class App {
         autenticarHuesped();
 
     }
+
     public static void Menu(){
         System.out.println("--------------- MENU ----------------");
         System.out.println("\n Opciones: ");
@@ -53,13 +55,14 @@ public class App {
         System.out.print("--- Ingrese una opción: "); 
 
         ingresaOpcion();
+
     }
 
     public static void ingresaOpcion(){
         Scanner scanner = new Scanner(System.in);
         boolean entradaValida=false;
         int opcion= scanner.nextInt();
-        
+        clearConsola();
         do{
             if(opcion<1 || opcion>4){
                 clearConsola();
@@ -86,40 +89,100 @@ public class App {
         }
     }
 
-    public static void autenticarHuesped(){
-        /*se presenta pantalla para autenticar usuario  
-         ingresa nombre, contraseña(HACER LOS *****)
-         mostrar error de algun dato invalido
-         sistema blanquea campos cuando esten OK
-         se vuelve al Menu
-        */
+    public static void autenticarHuesped() {
         Scanner scanner = new Scanner(System.in);
         String nombreUsuario;
         String contrasenaUsuario;
 
         System.out.print("Ingrese su nombre: ");
-        nombreUsuario= scanner.next();
-        System.out.print("Ingrese su contraseña: ");
-        contrasenaUsuario= scanner.next();
+        nombreUsuario = scanner.next();
 
-        //creamos el usuarioDTO para pasarselo al usuarioDAO
+        // Validación de contraseña con ocultación (*)
+        boolean contrasenaValida = false;
+        do {
+            System.out.print("Ingrese su contraseña: ");
+            contrasenaUsuario = leerContrasenaOculta();
+
+            if (!esContrasenaValida(contrasenaUsuario)) {
+                System.out.println("Contraseña inválida. \n"); //Debe tener al menos 5 letras y 3 números no iguales ni consecutivos.
+            } else {
+                contrasenaValida = true;
+            }
+        } while (!contrasenaValida);
+
+        // Creamos el UsuarioDTO para pasarlo al DAO
         UsuarioDTO usuarioDTO = new UsuarioDTO();
-
         usuarioDTO.setNombre(nombreUsuario);
         usuarioDTO.setContrasena(contrasenaUsuario);
 
-        UsuarioDAO usuarioDAO= new UsuarioDAO();
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
         clearConsola();
-        //llamamos al Gestor
-        if(gestorUsuario.autenticarUsuario(usuarioDAO,usuarioDTO)){
-            System.out.println("Usuario Encontrado. Acceso concedido. \n");
+
+        // Llamamos al Gestor
+        if (gestorUsuario.autenticarUsuario(usuarioDAO, usuarioDTO)) {
+            System.out.println("Usuario Encontrado. Acceso concedido.\n");
             Menu();
-        } else{
-            System.out.println("usuario no encontrado. Se vuelve a Autenticacion de Usuario. \n");
+        } else {
+            System.out.println("Usuario no encontrado. Se vuelve a Autenticación de Usuario.\n");
             autenticarHuesped();
         }
+    }
+
+    public static boolean esContrasenaValida(String contrasena) {
+        if (contrasena == null) return false;
+
+        int letras = 0;
+        List<Integer> numeros = new ArrayList<>();
+
+        for (char c : contrasena.toCharArray()) {
+            if (Character.isLetter(c)) letras++;
+            else if (Character.isDigit(c)) numeros.add(Character.getNumericValue(c));
+        }
+
+        if (letras < 5 || numeros.size() < 3) return false; // mínimo 5 letras y 3 números
+
+        // Revisar que no haya números consecutivos crecientes o decrecientes
+        for (int i = 0; i < numeros.size() - 2; i++) {
+            int a = numeros.get(i);
+            int b = numeros.get(i + 1);
+            int c = numeros.get(i + 2);
+
+            // Consecutivos crecientes
+            if (b == a + 1 && c == b + 1) return false;
+            // Consecutivos decrecientes
+            if (b == a - 1 && c == b - 1) return false;
+        }
+
+        // Revisar que no haya números repetidos
+        Set<Integer> setNumeros = new HashSet<>(numeros);
+        if (setNumeros.size() != numeros.size()) return false;
+
+        return true;
+    }
 
 
+
+    public static String leerContrasenaOculta() {
+        StringBuilder contrasena = new StringBuilder();
+        try {
+            // Leer carácter por carácter
+            int caracter;
+            while ((caracter = System.in.read()) != '\n' && caracter != '\r') {  // Hasta Enter
+                if (caracter == '\b') {  // Backspace: borrar último "*"
+                    if (contrasena.length() > 0) {
+                        contrasena.deleteCharAt(contrasena.length() - 1);
+                        System.out.print("\b \b");  // Borra el "*" en pantalla
+                    }
+                } else {
+                    contrasena.append((char) caracter);
+                    System.out.print("*");  // Imprime "*" en lugar del carácter real
+                }
+            }
+            System.out.println();  // Nueva línea después de Enter
+        } catch (IOException e) {
+            System.err.println("Error al leer la contraseña: " + e.getMessage());
+        }
+        return contrasena.toString();
     }
 
     public static void darAltaHuesped(){
@@ -135,7 +198,7 @@ public class App {
         Integer opcion;
         do{
             System.out.println("El huésped " + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
-            " ha sido atisfactoriamente cargado al sistema. \n ¿Desea cargar otro? \n" +
+            " ha sido satisfactoriamente cargado al sistema. \n ¿Desea cargar otro? \n" +
             "1. si \n 2. no");
         
             opcion= scanner.nextInt();
