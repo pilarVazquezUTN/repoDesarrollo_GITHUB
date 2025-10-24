@@ -308,7 +308,35 @@ int indice= -1;
         direccionDTO.setPais(datos[14].trim());
         return direccionDTO;
     }
+    public boolean eliminarHuespued(HuespedDTO huesped) {
+        String rutaArchivo = "infoBuscarHuespedes.txt";
+        boolean eliminado = false;
+        //VER QUE NO SE HAYA ALOJADO NUNCA EN EL HOTEL COMO?
+        try  {
+            // Leer todas las líneas del archivo
+            List<String> lineas = Files.readAllLines(Paths.get(rutaArchivo));
 
+            // Convertir el huesped a texto (como está guardado en el archivo)
+            SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+            String textoHuesped = huesped.getApellido() +","+ huesped.getNombre() +","+ huesped.getTipoDocumento() +","+ huesped.getNumeroDocumento() +","+ huesped.getCuit() +","+ huesped.getPosicionIva() +","+ formato.format(huesped.getFechaNacimiento() ) +","+ huesped.getDireccionHuesped().getCalle() +","+ huesped.getDireccionHuesped().getNumero() +","+ huesped.getDireccionHuesped().getDepartamento() +","+ huesped.getDireccionHuesped().getPiso() +","+ huesped.getDireccionHuesped().getCodigoPostal() +","+ huesped.getDireccionHuesped().getLocalidad() +","+ huesped.getDireccionHuesped().getProvincia() +","+ huesped.getDireccionHuesped().getPais() +","+ huesped.getTelefono() +","+ huesped.getEmail() +","+ huesped.getOcupacion() +","+ huesped.getNacionalidad();;
+
+            // Filtrar las líneas que NO coincidan con el huesped a eliminar
+            List<String> nuevasLineas = new ArrayList<>();
+            for (String linea : lineas) {
+                if (!linea.equals(textoHuesped)) {
+                    nuevasLineas.add(linea);
+                }
+            }
+            // Sobrescribir el archivo con las líneas filtradas
+            Files.write(Paths.get(rutaArchivo), nuevasLineas);
+
+            System.out.println("✅ Huesped eliminado del archivo.");
+            eliminado=true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return eliminado;
+    }
 
 
 }
