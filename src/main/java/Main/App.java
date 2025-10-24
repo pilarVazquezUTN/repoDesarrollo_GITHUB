@@ -21,6 +21,8 @@ import java.util.Scanner;
 
 
 public class App {
+
+
     static GestorHuesped gestorHuesped=new GestorHuesped();
     static GestorUsuario gestorUsuario= new GestorUsuario();
     public static void main(String[] args) {
