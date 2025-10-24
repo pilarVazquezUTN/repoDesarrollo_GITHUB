@@ -83,6 +83,7 @@ public class App {
                 break;
             case 4://dar de baja huesped
                 System.out.println("DAR DE BAJA HUESPED \n");
+                //darBajaHuesped ();
                 break;                
         }
     }
@@ -537,10 +538,10 @@ public class App {
         System.out.print("Ingrese su documento: ");
         String numDoc = scanner.nextLine();
         HuespedDAO huespedDAO= new HuespedDAO();
-        HuespedDTO huespedDTO= new HuespedDTO();
+        HuespedDTO huespedDTO = new HuespedDTO();
         huespedDTO=huespedDAO.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
         System.out.println("Huesped seleccionado: ");
-        System.out.println("  Nombre: " + huespedDTO.getNombre());  
+        System.out.println("  Nombre: " + huespedDTO.getNombre());
         System.out.println("  Apellido: " + huespedDTO.getApellido());
         System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
         System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
@@ -883,3 +884,5 @@ public class App {
             valor.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
 
 }
+
+//public static void darBajaHuesped (){}

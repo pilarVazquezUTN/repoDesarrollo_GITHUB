@@ -139,8 +139,8 @@ public class HuespedDAO {
                 String[] datos = linea.split(",");
 
                 if (datos.length >= 4) {
-                    String nombre = datos[0].trim();
-                    String apellido = datos[1].trim();
+                    String apellido = datos[0].trim();
+                    String nombre = datos[1].trim();
                     String tipo = datos[2].trim();
                     String documento = datos[3].trim();
 
@@ -154,7 +154,7 @@ public class HuespedDAO {
                     if (coincideNombre && coincideApellido && coincideTipo && coincideDocumento) {
                         i++;
                         huespedDTO = new HuespedDTO();
-                        System.out.println((i)+":");
+                        System.out.println((i)+": ");
                         System.out.println("  Nombre: " + nombre);
                         huespedDTO.setNombre(nombre);
                         System.out.println("  Apellido: " + apellido);
@@ -165,7 +165,7 @@ public class HuespedDAO {
                         huespedDTO.setNumeroDocumento(documento);
 
                         //sigo cargando los datos del huesped
-                        String fechaTexto = datos[4].trim(); // "20/05/1995"
+                        String fechaTexto = datos[6].trim(); // "20/05/1995"
                         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
                         try {
@@ -175,15 +175,15 @@ public class HuespedDAO {
                             System.out.println("Error al convertir la fecha: " + fechaTexto);
                         }
 
-                        huespedDTO.setTelefono(datos[5].trim());
-                        huespedDTO.setEmail(datos[6].trim());
+                        huespedDTO.setTelefono(datos[15].trim());
+                        huespedDTO.setEmail(datos[16].trim());
 
                         DireccionDTO direccionDTO = getDireccionDTO(datos);
                         huespedDTO.setDireccionHuesped(direccionDTO);
                         //aca hago el set en huesped
 
-                        huespedDTO.setCuit(datos[15].trim());
-                        huespedDTO.setPosicionIva(datos[16].trim());
+                        huespedDTO.setCuit(datos[4].trim());
+                        huespedDTO.setPosicionIva(datos[5].trim());
                         huespedDTO.setOcupacion(datos[17].trim());
                         huespedDTO.setNacionalidad(datos[18].trim());
 
