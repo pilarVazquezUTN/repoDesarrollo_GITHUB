@@ -11,7 +11,6 @@ import Classes.Huesped.GestorHuesped;
 import Classes.Huesped.HuespedDAO;
 import Classes.Huesped.HuespedDTO;
 
-import java.io.IOException;
 import java.text.ParseException; 
 import java.text.SimpleDateFormat;
 
@@ -78,11 +77,7 @@ public class App {
                 System.out.println("DAR DE ALTA HUESPED \n");
                 darAltaHuesped();                
                 break;
-            case 3:// modificar huesped
-                System.out.println("MODIFICAR HUESPED \n");
-                modificarHuesped(null, gestorHuesped);
-                break;
-            case 4://dar de baja huesped
+            case 3://dar de baja huesped
                 System.out.println("DAR DE BAJA HUESPED \n");
                 //darDeBajaHuesped();
                 break;                
@@ -168,7 +163,7 @@ public class App {
             huespedDTO.setApellido(scanner.nextLine().toUpperCase());
         }
 
-        
+
         if(camposVacios){
             if(huespedDTO.getNombre().isEmpty()){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su nombre: ");
@@ -244,7 +239,7 @@ public class App {
                     //System.out.println("Fecha ingresada y guardada.");
                 } catch (ParseException e) {
                     // Si la conversión falla, informamos y la fechaNacDTO queda como null (o el valor que tenía antes)
-                    //System.err.println("❌ ERROR: El formato de fecha ingresado es INCORRECTO. La fecha no fue guardada.");
+                    //System.err.println("ERROR: El formato de fecha ingresado es INCORRECTO.");
                     huespedDTO.setFechaNacimiento(null); // Opcional: Asegurar que el DTO tenga null
                 }
             } else{
