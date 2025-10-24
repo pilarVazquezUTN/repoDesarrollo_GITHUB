@@ -225,7 +225,7 @@ public class HuespedDAO {
      * @param direccionDTO
      * @param dni este parametro es el dni cargado en el archivo, sino nunca lo encuentro, guardo el anterior para buscar
      */
-    public void actualizarHuesped(String rutaArchivo, HuespedDTO huespedDTO, DireccionDTO direccionDTO, String dni) {
+    public void actualizarHuesped(String rutaArchivo, HuespedDTO huespedDTO, DireccionDTO direccionDTO, String tipoDoc, String dni) {
     // para formatear fecha primero
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         String fechaComoTexto = formato.format(huespedDTO.getFechaNacimiento());
@@ -262,7 +262,7 @@ int indice= -1;
             // buscar la línea que contenga el DNI en la 3
             for (int i = 0; i < lineas.size(); i++) {
                 String[] campos = lineas.get(i).split(",");
-                if (campos.length > 3 && campos[3].equals(dni)) {
+                if (campos.length > 3 && campos[2].equals[tipo] && campos[3].equals(dni)) {
                     indice = i; //agarra el indice
                     break;
                 }
