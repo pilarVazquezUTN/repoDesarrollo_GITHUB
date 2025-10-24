@@ -536,11 +536,10 @@ public class App {
         Scanner scanner = new Scanner(System.in);
 
         GestorHuesped gestorHuesped = new GestorHuesped();
-
-        System.out.print("Ingrese su nombre: ");
-        String nombreHuesped = scanner.nextLine();
         System.out.print("Ingrese su apellido: ");
         String apellidoHuesped = scanner.nextLine();
+        System.out.print("Ingrese su nombre: ");
+        String nombreHuesped = scanner.nextLine();
         System.out.print("Ingrese Tipo de documento: ");
         String tipoDoc = scanner.nextLine();
         System.out.print("Ingrese su documento: ");

@@ -155,10 +155,10 @@ public class HuespedDAO {
                         i++;
                         huespedDTO = new HuespedDTO();
                         System.out.println((i)+": ");
-                        System.out.println("  Nombre: " + nombre);
-                        huespedDTO.setNombre(nombre);
                         System.out.println("  Apellido: " + apellido);
                         huespedDTO.setApellido(apellido);
+                        System.out.println("  Nombre: " + nombre);
+                        huespedDTO.setNombre(nombre);
                         System.out.println("  Tipo documento: " + tipo);
                         huespedDTO.setTipoDocumento(tipo);
                         System.out.println("  N° documento: " + documento);
