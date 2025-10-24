@@ -6,11 +6,11 @@ import Classes.Usuario.UsuarioDTO;
 
 
 public class GestorUsuario {
-    public void autenticarUsuario(UsuarioDAO usuarioDAO, UsuarioDTO usuarioDTO){
+    public boolean autenticarUsuario(UsuarioDAO usuarioDAO, UsuarioDTO usuarioDTO){
+        boolean encontrado=false;
         if(usuarioDAO.buscarUsuario(usuarioDTO)){
-            System.out.println("encontrado \n");
-        } else {
-            System.out.println("noooooooo encontrado \n");
+            encontrado=true;
         }
+        return encontrado;
     }
 }
