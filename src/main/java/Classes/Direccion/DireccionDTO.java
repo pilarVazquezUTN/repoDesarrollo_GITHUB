@@ -1,4 +1,4 @@
-package Classes.Direccion;
+package classes.direccion;
 
 public class DireccionDTO {
     private String calle;

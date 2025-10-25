@@ -1,4 +1,4 @@
-package Classes.MedioDePago;
+package classes.medioDePago;
 
 public class MonedaLocalDTO {
     private String tipoMoneda;

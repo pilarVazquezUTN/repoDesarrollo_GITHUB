@@ -1,4 +1,4 @@
-package Classes.Huesped;
+package classes.huesped;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import Classes.Direccion.DireccionDTO;
+import classes.direccion.DireccionDTO;
 
 public class HuespedDAO {
     public void delete(){
@@ -201,7 +201,7 @@ public class HuespedDAO {
             }else
             {
                 Scanner scanner = new Scanner(System.in);
-                System.out.println("ingrese el numero del huesped que buscaba: ");
+                System.out.print("ingrese el numero del huesped que buscaba: ");
                 String huespedNum = scanner.nextLine();
                 while(Integer.parseInt(huespedNum)>i || Integer.parseInt(huespedNum)<=0){
                     System.out.println("----ingrese un numero valido----- ");

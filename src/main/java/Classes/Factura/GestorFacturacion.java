@@ -1,8 +1,8 @@
-package Classes.Factura;
+package classes.factura;
 
-import Classes.Huesped.Huesped;
-import Classes.Reserva.Reserva;
-import Classes.ResponsablePago.ResponsablePago;
+import classes.huesped.Huesped;
+import classes.reserva.Reserva;
+import classes.responsablePago.ResponsablePago;
 
 public class GestorFacturacion {
     private String id_empleado;

@@ -1,4 +1,4 @@
-package Classes.Usuario;
+package classes.usuario;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

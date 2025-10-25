@@ -1,4 +1,4 @@
-package Classes.Habitacion;
+package classes.habitacion;
 
 public class HabitacionDAO {
     public void delete(){
@@ -12,5 +12,12 @@ public class HabitacionDAO {
     }
     public  void read(){
         
+    }
+    public void muestraEstado(){
+        /*
+        map: key:numero de habitacion, value:Fecha(ir sacando desdeFecha y hastaFecha)
+
+         */
+        System.out.println("aca mostrariamos la grilla de habitaciones con sus estados.");
     }
 }

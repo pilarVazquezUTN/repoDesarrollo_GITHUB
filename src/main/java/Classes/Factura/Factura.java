@@ -1,4 +1,4 @@
-package Classes.Factura;
+package classes.factura;
 
 import java.util.Date;
 

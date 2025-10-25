@@ -1,4 +1,4 @@
-package Classes.Huesped;
+package classes.huesped;
 
 import java.io.IOException;
 

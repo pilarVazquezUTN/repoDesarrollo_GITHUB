@@ -1,15 +1,19 @@
-package Classes.Habitacion;
+package classes.habitacion;
 
 public class GestorHabitacion {
+    private HabitacionDAO habitacionDAO;
     private String idEmpleado;
+
     public void setIdEmpleado(String idEmpleado) {
         this.idEmpleado = idEmpleado;
     }
     public String getIdEmpleado() {
-        return idEmpleado;
+        return this.idEmpleado;
     }
-    void muestraEstado(){
+    public void muestraEstado(){
+        habitacionDAO.muestraEstado();
     }
     void modificarEstado(){
+
     }
 }

@@ -1,4 +1,4 @@
-package Classes.Habitacion;
+package classes.habitacion;
 
 public abstract class Habitacion  {
     private int numero;

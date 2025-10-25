@@ -1,33 +1,30 @@
 package main;
-/*
- IMPORTAR TODAS LAS CLASES DE UN PACKAGE: import <paquetess>.*; ejmplo: import Classes.Usuario.*;
- IMPORTAR CLASES QUE YO QUIERA DEL PACKAGE: import <paquetess>.<clase>; ejemplo: como esta en el tp
-*/
-import Classes.Usuario.UsuarioDTO;
-import Classes.Usuario.GestorUsuario;
-import Classes.Usuario.UsuarioDAO;
-import Classes.Direccion.DireccionDTO;
-import Classes.Huesped.GestorHuesped;
-import Classes.Huesped.HuespedDAO;
-import Classes.Huesped.HuespedDTO;
-
 import java.text.ParseException; 
 import java.text.SimpleDateFormat;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Predicate;
 
+import classes.direccion.DireccionDTO;
+import classes.huesped.GestorHuesped;
+import classes.huesped.HuespedDAO;
+import classes.huesped.HuespedDTO;
+import classes.usuario.GestorUsuario;
+import classes.usuario.UsuarioDAO;
+import classes.usuario.UsuarioDTO;
+import classes.habitacion.GestorHabitacion;
+
+
+
 
 public class App {
-
     static GestorHuesped gestorHuesped=new GestorHuesped();
     static GestorUsuario gestorUsuario= new GestorUsuario();
+    static GestorHabitacion gestorHabitacion= new GestorHabitacion();
     
     public static void main(String[] args) {
-        
         Bienvenida();
     }
 
@@ -50,6 +47,7 @@ public class App {
         System.out.println("1. Buscar Huesped"); 
         System.out.println("2. Dar De Alta Huesped");
         System.out.println("3. Dar de Baja Huesped"); 
+        System.out.println("4. Reservar Habitacion"); 
         System.out.print("--- Ingrese una opción: "); 
 
         ingresaOpcion();
@@ -83,16 +81,13 @@ public class App {
             case 3://dar de baja huesped
                 System.out.println("DAR DE BAJA HUESPED \n");
                 break;                
+            case 4: //reservar habitacion
+                reservarHabitacion();
+                break;
         }
     }
 
     public static void autenticarHuesped(){
-        /*se presenta pantalla para autenticar usuario  
-         ingresa nombre, contraseña(HACER LOS *****)
-         mostrar error de algun dato invalido
-         sistema blanquea campos cuando esten OK
-         se vuelve al Menu
-        */
         Scanner scanner = new Scanner(System.in);
         String nombreUsuario;
         String contrasenaUsuario;
@@ -118,8 +113,6 @@ public class App {
             System.out.println("usuario no encontrado. Se vuelve a Autenticacion de Usuario. \n");
             autenticarHuesped();
         }
-
-
     }
 
     public static void darAltaHuesped(){
@@ -128,7 +121,6 @@ public class App {
         Boolean camposVacios=false;//para controlar cuando ingresa mal los campos luego del 1er ingreso
         DireccionDTO direccionDTO=new DireccionDTO();
         
-
         ingresarDatos(camposVacios,huespedDTO,direccionDTO);
         gestorHuesped.registrarHuesped(huespedDTO);
         
@@ -533,7 +525,6 @@ public class App {
         */
         Scanner scanner = new Scanner(System.in);
 
-        GestorHuesped gestorHuesped = new GestorHuesped();
         System.out.print("Ingrese su apellido: ");
         String apellidoHuesped = scanner.nextLine();
         System.out.print("Ingrese su nombre: ");
@@ -545,6 +536,7 @@ public class App {
         HuespedDAO huespedDAO= new HuespedDAO();
         HuespedDTO huespedDTO = new HuespedDTO();
         huespedDTO=huespedDAO.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
+        clearConsola();
         System.out.println("Huesped seleccionado: ");
         System.out.println("  Nombre: " + huespedDTO.getNombre());  
         System.out.println("  Apellido: " + huespedDTO.getApellido());
@@ -567,18 +559,11 @@ public class App {
 
 
     public static void modificarHuesped(HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
-
-
-
-
         String dniNOMod = huespedDTO.getNumeroDocumento();
         Scanner sc = new Scanner(System.in);
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         System.out.println("Fecha de nacimiento: " + formato.format(huespedDTO.getFechaNacimiento()));
-
-
         String nuevo; //nuevo es la variable para ir guardando los valores a modificar
-
 
         //hago un map para tener todos los campos
 
@@ -1084,8 +1069,85 @@ public class App {
         return verificador == ultimo;
     };
 
+    public static void reservarHabitacion(){
+        System.out.println("RESERVAR HABITACION");
+        Date desdeFecha=null, hastaFecha=null;
 
+        Scanner scanner = new Scanner(System.in);
+        String fechaIngresada;
+        SimpleDateFormat formatter= new SimpleDateFormat("dd/MM/yyyy");
+        formatter.setLenient(false);
+
+         if (desdeFecha == null) {
+            while (true) {
+                System.out.print("Ingrese Desde Fecha (dd/MM/aaaa): ");
+                fechaIngresada = scanner.nextLine();
+                desdeFecha = validarFecha(fechaIngresada, formatter);
+                if (desdeFecha != null) break; // si fue válida, salgo del bucle
+                System.out.println("Fecha inválida. Intente nuevamente.");
+            }
+        } else {
+            System.out.println("Fecha Desde: " + formatter.format(desdeFecha));
+        }
+
+        if (hastaFecha == null) {
+            while (true) {
+                System.out.print("Ingrese Hasta Fecha (dd/MM/aaaa): ");
+                fechaIngresada = scanner.nextLine();
+                hastaFecha = validarFecha(fechaIngresada, formatter);
+                if (hastaFecha != null) break;
+                System.out.println("Fecha inválida. Intente nuevamente.");
+            }
+        } else {
+            System.out.println("Hasta Fecha: " + formatter.format(hastaFecha));
+        }
+
+        if(validarAmbasFechas(desdeFecha,hastaFecha)){
+            System.out.println("FECHAS FINALES:");
+            System.out.println("Desde Fecha: "+desdeFecha);
+            System.out.println("Hasta Fecha: "+hastaFecha + "\n");
+            mostrarEstadoHabitaciones(desdeFecha,hastaFecha); //CU05
+        } else{
+            clearConsola();
+            System.out.println("Error. Usted ha ingresado una fecha final mayor a la inicial.");
+            Integer opcion;
+            System.out.println("Presione: \n 1.Siguiente. Para volver a ingresar las fechas \n 2.Cancelar. Se retornara a Menu");
+            opcion= scanner.nextInt();
+
+            while(opcion!=1 && opcion!=2){
+                System.out.println("ERROR: ingrese una opcion valida.");
+                System.out.println("Presione: \n 1.Siguiente. Para volver a ingresar las fechas \n 2.Cancelar. Se retornara a Menu");
+                opcion= scanner.nextInt();
+            }
+            if (opcion==1) {
+                clearConsola();
+                reservarHabitacion();
+            } else{
+                clearConsola();
+                Menu();
+            }
+        }
+        
+    }
+
+    public static void mostrarEstadoHabitaciones(Date desdeFecha, Date hastaFecha){
+        System.out.println("MOSTRAR ESTADO DE HABITACIONES");        
+        gestorHabitacion.muestraEstado();
+    }
+    public static Date validarFecha(String fechaIngresada, SimpleDateFormat formatter){
+        try {
+            return formatter.parse(fechaIngresada);
+        } catch (ParseException e) {
+            return null; // devuelve null si no se pudo parsear
+        }
+    }
+    public static boolean validarAmbasFechas(Date desdeFecha, Date hastaFecha){
+        if(desdeFecha.before(hastaFecha)){
+            return true;    
+        } else {
+            return false;
+        }
+    }
 
 }
 
-//public static void darBajaHuesped (){}

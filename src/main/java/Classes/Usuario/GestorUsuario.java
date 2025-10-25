@@ -1,7 +1,7 @@
-package Classes.Usuario;
+package classes.usuario;
 
-import Classes.Usuario.UsuarioDAO;
-import Classes.Usuario.UsuarioDTO;
+import classes.usuario.UsuarioDAO;
+import classes.usuario.UsuarioDTO;
 
 
 

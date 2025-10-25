@@ -1,4 +1,4 @@
-package Classes.Usuario;
+package classes.usuario;
 
 public class Usuario {
     String nombre;

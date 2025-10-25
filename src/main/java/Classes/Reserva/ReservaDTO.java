@@ -1,4 +1,4 @@
-package Classes.Reserva;
+package classes.reserva;
 
 import java.util.Date;
 

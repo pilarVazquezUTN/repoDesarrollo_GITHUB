@@ -1,4 +1,4 @@
-package Classes.Reserva;
+package classes.reserva;
 
 public class GestorReserva {
     private String idEmpleado;
