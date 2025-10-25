@@ -1,7 +1,7 @@
 package classes.habitacion;
 
 public class GestorHabitacion {
-    private HabitacionDAO habitacionDAO;
+    private HabitacionDAO habitacionDAO=new HabitacionDAO();
     private String idEmpleado;
 
     public void setIdEmpleado(String idEmpleado) {

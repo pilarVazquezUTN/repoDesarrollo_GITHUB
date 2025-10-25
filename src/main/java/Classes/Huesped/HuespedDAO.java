@@ -33,7 +33,7 @@ public class HuespedDAO {
      */
     String tipoDocBuscado = huespedDTO.getTipoDocumento().trim();
     String numDocBuscado = huespedDTO.getNumeroDocumento().trim();
-    String RUTA_ARCHIVO = "infoDarAltaHuespedes.txt";
+    String RUTA_ARCHIVO = "infoBuscarHuespedes.txt";
     Boolean existeDoc = false;
 
     // Usamos try-with-resources para asegurar que el BufferedReader se cierre automáticamente
