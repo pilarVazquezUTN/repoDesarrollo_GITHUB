@@ -32,8 +32,8 @@ public class GestorHuesped {
      *
      *el gestor le pasa al dao los datos y la ruta donde tiene q buscar
      */
-    public void modificarHuesped(HuespedDTO huespedDTO, String rutaArchivo, String dninoMod) {
-        huespedDAO.actualizarHuesped(rutaArchivo, huespedDTO, huespedDTO.getDireccionHuesped(), dninoMod);
+    public void modificarHuesped(HuespedDTO huespedDTO, String rutaArchivo, String tipoDoc, String dninoMod) {
+        huespedDAO.actualizarHuesped(rutaArchivo, huespedDTO, huespedDTO.getDireccionHuesped(), tipoDoc, dninoMod);
     }
 
 

@@ -225,7 +225,7 @@ public class HuespedDAO {
      * @param direccionDTO
      * @param dni este parametro es el dni cargado en el archivo, sino nunca lo encuentro, guardo el anterior para buscar
      */
-    public void actualizarHuesped(String rutaArchivo, HuespedDTO huespedDTO, DireccionDTO direccionDTO, String dni) {
+    public void actualizarHuesped(String rutaArchivo, HuespedDTO huespedDTO, DireccionDTO direccionDTO, String tipoDoc, String dni) {
     // para formatear fecha primero
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         String fechaComoTexto = formato.format(huespedDTO.getFechaNacimiento());
@@ -262,7 +262,7 @@ int indice= -1;
             // buscar la línea que contenga el DNI en la 3
             for (int i = 0; i < lineas.size(); i++) {
                 String[] campos = lineas.get(i).split(",");
-                if (campos.length > 3 && campos[3].equals(dni)) {
+                if (campos.length > 3 && campos[2].equals(tipoDoc) && campos[3].equals(dni)) {
                     indice = i; //agarra el indice
                     break;
                 }
@@ -290,12 +290,9 @@ int indice= -1;
 
     /**
      *
-     * @param datos datos q le llegan y hace el set
+     * @param datos DATOS Q LEGGAN Y ARMO EL DTO
      * @return
      */
-
-
-
     private static DireccionDTO getDireccionDTO(String[] datos) {
         DireccionDTO direccionDTO = new DireccionDTO();
         direccionDTO.setCalle(datos[7].trim());
@@ -336,6 +333,57 @@ int indice= -1;
             e.printStackTrace();
         }
         return eliminado;
+    }
+
+    public boolean existeHuesped(HuespedDTO huespedDTO) {
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        boolean encontrado = false;
+        String rutaArchivo = "infoBuscarHuespedes.txt";
+        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+
+                String[] datos = linea.split(",");
+
+                if (datos.length >= 20) {
+                    String apellido = datos[0].trim();
+                    String nombre = datos[1].trim();
+                    String tipo = datos[2].trim();
+                    String documento = datos[3].trim();
+                    String cuit = datos[4].trim();
+                    String posicionIva = datos[5].trim();
+                    String FechaNacimiento = datos[6].trim();
+                    String calle = datos[7].trim();
+                    String numero = datos[8].trim();
+                    String departamento = datos[9].trim();
+                    String piso = datos[10].trim();
+                    String codigoPostal = datos[11].trim();
+                    String localidad = datos[12].trim();
+                    String provincia = datos[13].trim();
+                    String pais = datos[14].trim();
+                    String telefono = datos[15].trim();
+                    String email = datos[16].trim();
+                    String ocupacion = datos[17].trim();
+                    String nacionalidad = datos[18].trim();
+                    String CheckIn = datos[19].trim();
+                    String CheckOut = datos[20].trim();
+
+                    Date fecha = formato.parse(FechaNacimiento);
+
+                    if (apellido == huespedDTO.getApellido() && nombre == huespedDTO.getNombre() && tipo == huespedDTO.getTipoDocumento() && documento == huespedDTO.getNumeroDocumento() && cuit == huespedDTO.getCuit() && posicionIva == huespedDTO.getPosicionIva() && fecha == huespedDTO.getFechaNacimiento() && calle == huespedDTO.getDireccionHuesped().getCalle() && numero == huespedDTO.getDireccionHuesped().getNumero() && departamento == huespedDTO.getDireccionHuesped().getDepartamento() && piso == huespedDTO.getDireccionHuesped().getPiso() && codigoPostal == huespedDTO.getDireccionHuesped().getCodigoPostal() && localidad == huespedDTO.getDireccionHuesped().getLocalidad() && provincia == huespedDTO.getDireccionHuesped().getProvincia() && pais == huespedDTO.getDireccionHuesped().getPais() && telefono == huespedDTO.getTelefono() && email == huespedDTO.getEmail() && ocupacion == huespedDTO.getOcupacion() && nacionalidad == huespedDTO.getNacionalidad()) {
+                        encontrado = true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("error al abrir el archivo");
+            throw new RuntimeException(e);
+        }
+        catch (ParseException e) {
+            System.out.println("error al convertir fecha");
+            throw new RuntimeException(e);
+        }
+        return encontrado;
     }
 
 
