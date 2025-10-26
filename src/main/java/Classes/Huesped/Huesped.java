@@ -1,9 +1,9 @@
-package classes.huesped;
+package Classes.Huesped;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import classes.direccion.DireccionDTO;
+import Classes.Direccion.DireccionDTO;
 
 public class Huesped {
     private String apellido;

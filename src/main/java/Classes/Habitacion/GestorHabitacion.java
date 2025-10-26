@@ -1,4 +1,4 @@
-package classes.habitacion;
+package Classes.Habitacion;
 
 public class GestorHabitacion {
     private HabitacionDAO habitacionDAO=new HabitacionDAO();

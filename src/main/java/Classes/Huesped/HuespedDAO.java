@@ -1,4 +1,4 @@
-package classes.huesped;
+package Classes.Huesped;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import classes.direccion.DireccionDTO;
+import Classes.Direccion.DireccionDTO;
+import Classes.Huesped.GestorHuesped;
 
 public class HuespedDAO {
     public void delete(){
@@ -208,7 +209,7 @@ public class HuespedDAO {
                     System.out.println("ingrese el numero del huesped que buscaba: ");
                     huespedNum = scanner.nextLine();
                 }
-                return listaHuespedes.get(Integer.parseInt(huespedNum)-1);
+                return listaHuespedes.get(Integer.parseInt(huespedNum)-1); //ACA ME ESTA DEVOLVIENDO EL HUESPED ELEGIDO
             }
             //4.A.1. El sistema pasa a ejecutar el CU11 “Dar alta de Huésped” 4.A.2 El CU termina. 
         }
@@ -225,7 +226,7 @@ public class HuespedDAO {
      * @param direccionDTO
      * @param dni este parametro es el dni cargado en el archivo, sino nunca lo encuentro, guardo el anterior para buscar
      */
-    public void actualizarHuesped(String rutaArchivo, HuespedDTO huespedDTO, DireccionDTO direccionDTO, String tipoDoc, String dni) {
+    public boolean actualizarHuesped(String rutaArchivo, HuespedDTO huespedDTO, DireccionDTO direccionDTO, String tipoDoc, String dni) {
     // para formatear fecha primero
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         String fechaComoTexto = formato.format(huespedDTO.getFechaNacimiento());
@@ -273,6 +274,7 @@ int indice= -1;
                 lineas.set(indice, nuevaLinea);
                 Files.write(Paths.get(rutaArchivo), lineas);
                 System.out.println(" Cambios realizados correctamente " );
+                return true;
             }
             //el huesped ya esta registrado por ende en alguna fila de el archivo esta
 
@@ -282,7 +284,7 @@ int indice= -1;
         }
 
 
-
+      return false;//ACOMODAR SI FALLA
 
 
     }
@@ -386,6 +388,11 @@ int indice= -1;
         return encontrado;
     }
 
+    public static boolean buscarHuespedyReemplazar(String tipodoc, String tipoDoc){
+     HuespedDTO huespedDTO = new HuespedDTO();
 
+
+     return true;
+    }
 }
 
