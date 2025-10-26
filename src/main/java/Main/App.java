@@ -8,14 +8,15 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Predicate;
 
-import classes.huesped.HuespedDAO;
-import classes.huesped.HuespedDTO;
-import classes.usuario.GestorUsuario;
-import classes.usuario.UsuarioDAO;
-import classes.usuario.UsuarioDTO;
-import classes.habitacion.GestorHabitacion;
-import classes.huesped.GestorHuesped;
-import classes.direccion.DireccionDTO;
+import Classes.Huesped.HuespedDAO;
+import Classes.Huesped.HuespedDTO;
+import Classes.Usuario.GestorUsuario;
+import Classes.Usuario.UsuarioDAO;
+import Classes.Usuario.UsuarioDTO;
+import Classes.Habitacion.GestorHabitacion;
+import Classes.Huesped.GestorHuesped;
+import Classes.Direccion.DireccionDTO;
+import Classes.Validador;
 
 
 
@@ -40,7 +41,8 @@ public class App {
             System.out.println("BIENVENIDO A LA GESTION DEL HOTEL. \n Presione 1 para Autenticar su Usuario. ");
             opcion=scanner.nextInt();
         } while (opcion!=1);
-        clearConsola();
+        System.out.println("\033[H\033[2J"); //cambio erne no anda igual
+        System.out.flush();//cambio erne
         autenticarHuesped();
 
     }
@@ -617,7 +619,11 @@ public class App {
         System.out.println("  Apellido: " + huespedDTO.getApellido());
         System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
         System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
-        modificarHuesped(huespedDTO,gestorHuesped); //aca llamo a modificar huesped con Huesped DTO Y HuespedDto debe tener todos los campos
+        System.out.println("DESEA MODIFICAR EL HUESPED? - presione si o no ");
+        if (scanner.nextLine().equals("si")){
+            modificarHuesped(huespedDTO,gestorHuesped); //aca llamo a modificar huesped con Huesped DTO Y HuespedDto debe tener todos los campos
+        }
+
         //nose si deberia llamar al gestor o a la clase
         //System.out.println("se elimino: " + gestorHuesped.eliminarHuesped(huespedDTO)); es para probar a ver si elimina pero necesito el CU 12 PARA
     }
@@ -634,69 +640,14 @@ public class App {
 
 
     public static void modificarHuesped(HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
-        String dniNOMod = huespedDTO.getNumeroDocumento();
-        String tipoNomod=huespedDTO.getTipoDocumento();
+        String dniNOMod = huespedDTO.getNumeroDocumento(); //son los no modficados asi dsp busco en q parte de el archivo esta
         Scanner sc = new Scanner(System.in);
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-        System.out.println("Fecha de nacimiento: " + formato.format(huespedDTO.getFechaNacimiento()));
-        String nuevo; //nuevo es la variable para ir guardando los valores a modificar
-
-        //hago un map para tener todos los campos
+        String tipoNomod=huespedDTO.getTipoDocumento();
 
         Map<String, String> campos = new LinkedHashMap<>();
-        //esto entonces son los datos de el huesped
-        campos.put("apellido", huespedDTO.getApellido());
-        campos.put("nombre", huespedDTO.getNombre());
-        campos.put("tipoDocumento", huespedDTO.getTipoDocumento());
-        campos.put("numeroDocumento", huespedDTO.getNumeroDocumento());
-        campos.put("CUIT", huespedDTO.getCuit());
-        campos.put("posicionIva", huespedDTO.getPosicionIva());
-        campos.put("fechaNacimiento", formato.format(huespedDTO.getFechaNacimiento())); //hacer el format
-
-        DireccionDTO d = huespedDTO.getDireccionHuesped();
-        campos.put("calle", d.getCalle());
-        campos.put("numero", d.getNumero());
-        campos.put("departamento", d.getDepartamento());
-        campos.put("piso", d.getPiso());
-        campos.put("codigoPostal", d.getCodigoPostal());
-        campos.put("localidad", d.getLocalidad());
-        campos.put("provincia", d.getProvincia());
-        campos.put("pais", d.getPais());
-        campos.put("telefono", huespedDTO.getTelefono());
-        campos.put("email", huespedDTO.getEmail());
-        campos.put("ocupacion", huespedDTO.getOcupacion());
-        campos.put("nacionalidad", huespedDTO.getNacionalidad());
-
-
-
-        // aca pongo q predicado valida cada campo
         Map<String, Predicate<String>> validadores = new HashMap<>();
-        validadores.put("nombre", esStringValido);
-        validadores.put("apellido", esStringValido);
-        validadores.put("tipoDocumento", esStringValido);
-        validadores.put("numeroDocumento", esNumeroValido);
-
-        validadores.put("CUIT", App::esCuitValido);
-        validadores.put("posicionIva", esStringValido);
-        validadores.put("fechaNacimiento", esFechaValida);
-        validadores.put("calle", esCalleValida); //
-        validadores.put("numero", esNumeroValido);
-        validadores.put("departamento", esStringValido);
-        validadores.put("piso", esNumeroValido);
-        validadores.put("codigoPostal", esNumeroValido);
-        validadores.put("localidad", esStringValido);
-        validadores.put("provincia", esStringValido);
-        validadores.put("pais", esStringValido);
-        validadores.put("telefono", esNumeroValido);
-        validadores.put("email", esMailValido);
-        validadores.put("ocupacion", esStringValido);
-        validadores.put("nacionalidad", esStringValido);
-
-
-       //pedir valores y validad, si no valida se vuelve a pedir
-
-        //defino ciales son los obligatorios, hago set mas facil para buscar campos
         Set<String> noObligatorios = Set.of("CUIT", "email");
+        gestorHuesped.modificarHuespedGestor(huespedDTO, huespedDTO.getDireccionHuesped(), "infoBuscarHuespedes.txt", campos, validadores);
 
         for (String campo : campos.keySet()) {  // for primeoro para apellido, nombre , asi , cada campo en el keyset
             boolean ingresado = false;
@@ -809,7 +760,7 @@ public class App {
                 System.out.println("Ingrese el dni");
                 String valorDoc= sc.nextLine().trim();
 
-                if (esNumeroValido.test(valorDoc) && (esStringValido.test(tipoDoc))) {
+                if (Validador.esNumeroValido.test(valorDoc) && (Validador.esStringValido.test(tipoDoc))) {
                    //si valida guarda los calores en el map
                     campos.put("tipoDocumento", valorDoc);
                     campos.put("numeroDocumento", valorDoc);
@@ -819,7 +770,7 @@ public class App {
                     System.out.println("la operacion a culminado con exito ");
 
                     //ahora llamo a geestor para q llame al dao y guarde en el archivo, le paso el dni ue esta en el archivo para poder buscar
-                    gestorHuesped.modificarHuesped(huespedDTO,"infoBuscarHuespedes.txt", tipoNomod, dniNOMod );
+                    gestorHuesped.modificarDatosHuespedArchivo(huespedDTO, "infoBuscarHuespedes.txt", huespedDTO.getDireccionHuesped(), tipoNomod, dniNOMod );
                 }
 
                 }
@@ -848,83 +799,14 @@ public class App {
         System.out.println("la operacion a culminado con exito ");
 
         //ahora llamo a geestor para q llame al dao y guarde en el archivo, le paso el dni ue esta en el archivo para poder buscar
-       gestorHuesped.modificarHuesped(huespedDTO,"infoBuscarHuespedes.txt", tipoNomod, dniNOMod );
+        gestorHuesped.modificarDatosHuespedArchivo(huespedDTO, "infoBuscarHuespedes.txt",huespedDTO.getDireccionHuesped(), tipoNomod, dniNOMod );
+
+        //huespedDAO.actualizarHuesped(rutaArchivo, huespedDTO, huespedDTO.getDireccionHuesped(), tipoDoc, dninoMod);
+
 
 
     }
 
-    /**
-     * fecha valida
-     */
-    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    static Predicate<String> esFechaValida = fecha -> {
-        try {
-            LocalDate.parse(fecha, formatter);
-            return true;  // fecha válida
-        } catch (DateTimeParseException e) {
-            return false; // fecha inválida
-        }
-    };
-
-    /**
-     *predicado para chequear strings
-     */
-    static Predicate<String> esStringValido =
-            valor -> valor.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
-    /**
-     * verifica email
-     */
-    static Predicate<String> esMailValido = mail -> {
-        if (mail == null || mail.isEmpty()) {
-            return true; // Consideramos null o vacío como válido
-        }
-        return mail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
-    };
-
-    static Predicate<String> esCalleValida = calle -> {
-        if (calle == null || calle.isEmpty()) {
-            return true; // null o vacío también válido
-        }
-        return calle.matches("^[a-zA-Z0-9 ]+$");
-    };
-    /**
-     * chequea solo numeros
-     */
-    static Predicate<String> esNumeroValido =
-            valor -> valor != null && valor.matches("\\d+");
-
-    /**
-     *
-     * @param valor : es el numero de cuit
-     * @return : retorna true si es valido o no seun como se valida por afip
-     */
-    public static boolean esCuitValido(String valor) {
-
-        if (valor == null || valor.isEmpty()) return true;
-
-        //Quitar guiones si los tiene
-        String cuit = valor.replaceAll("-", "");
-
-        // longitud y solo num
-        if (!cuit.matches("\\d{11}")) return false;
-
-        //  dígito verificador
-        int[] pesos = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
-        int suma = 0;
-
-        for (int i = 0; i < 10; i++) {
-            suma += Character.getNumericValue(cuit.charAt(i)) * pesos[i];
-        }
-
-        int resto = suma % 11;
-        int verificador = 11 - resto;
-        if (verificador == 11) verificador = 0;
-        else if (verificador == 10) verificador = 9;
-
-        // Comparar con el último dígito
-        int ultimo = Character.getNumericValue(cuit.charAt(10));
-        return verificador == ultimo;
-    };
 
     public static void reservarHabitacion(){
         System.out.println("RESERVAR HABITACION");

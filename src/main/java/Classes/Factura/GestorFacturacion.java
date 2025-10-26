@@ -1,6 +1,6 @@
 package classes.factura;
 
-import classes.huesped.Huesped;
+import Classes.Huesped.Huesped;
 import classes.reserva.Reserva;
 import classes.responsablePago.ResponsablePago;
 
