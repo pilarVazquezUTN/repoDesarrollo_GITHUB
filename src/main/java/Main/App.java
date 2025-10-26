@@ -52,8 +52,8 @@ public class App {
         System.out.println("\n Opciones: ");
         System.out.println("1. Buscar Huesped"); 
         System.out.println("2. Dar De Alta Huesped");
-        System.out.println("3. Dar de Baja Huesped"); 
-        System.out.println("4. Reservar Habitacion"); 
+        //System.out.println("3. Dar de Baja Huesped");
+        System.out.println("3. Reservar Habitacion");
         System.out.print("--- Ingrese una opción: "); 
 
         ingresaOpcion();
@@ -81,15 +81,15 @@ public class App {
                 System.out.println("BUSCAR HUESPED \n");
                 buscarHuesped();
                 break;
-            case 2://daar de alta huesped
+            case 2://dar de alta huesped
                 System.out.println("DAR DE ALTA HUESPED \n");
                 darAltaHuesped();                
                 break;
-            case 3://dar de baja huesped
-                System.out.println("DAR DE BAJA HUESPED \n");
-                darBajaHuesped();
-                break;                
-            case 4: //reservar habitacion
+            //case 3://dar de baja huesped. POR LAS DUDAS LO DEJOR PERO ME PARECE QUE HAY QUE SACARLO
+               // System.out.println("DAR DE BAJA HUESPED \n");
+                // este no iria porque dar de baja al huesped se ejecuta despues del cu10 modificarhuesped
+                //break;
+            case 3: //reservar habitacion
                 reservarHabitacion();
                 break;
         }
@@ -620,9 +620,11 @@ public class App {
         System.out.println("  Apellido: " + huespedDTO.getApellido());
         System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
         System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
-        System.out.println("DESEA MODIFICAR EL HUESPED? - presione si o no ");
-        if (scanner.nextLine().equals("si")){
-            modificarHuesped(huespedDTO,gestorHuesped); //aca llamo a modificar huesped con Huesped DTO Y HuespedDto debe tener todos los campos
+        if(huespedDTO.getApellido()!=null){
+            System.out.println("DESEA MODIFICAR EL HUESPED? - presione si o no ");
+            if ( scanner.nextLine().equals("si")){
+                modificarHuesped(huespedDTO,gestorHuesped); //aca llamo a modificar huesped con Huesped DTO Y HuespedDto debe tener todos los campos
+            }
         }
 
         //nose si deberia llamar al gestor o a la clase
@@ -790,8 +792,8 @@ public class App {
 
         }
 
-        else if (opcion ==3){
-            //ejecutaDarBAJAHUESPED
+        else if (opcion == 3){
+            darBajaHuesped(huespedDTO);
         }
 
         System.out.println("\n Todos los campos válidos:"); //key - value
@@ -889,17 +891,17 @@ public class App {
         }
     }
 
-    public static void darBajaHuesped(){ //el huesped me lo pasa el CU12
+    public static void darBajaHuesped(HuespedDTO huespedDTO){ //el huesped me lo pasa el CU12
         Scanner scanner = new Scanner(System.in);
 
-        //prueba pero en realidad a dar de baja huesped le llega el huesped del CU12
+        /*prueba pero en realidad a dar de baja huesped le llega el huesped del CU10
         String nombre, apellido, tipoDoc, numDoc;
         nombre = scanner.nextLine();
         apellido = scanner.nextLine();
         tipoDoc = scanner.nextLine();
         numDoc = scanner.nextLine();
         HuespedDTO huespedDTO = gestorHuesped.buscarDatos(nombre,apellido,tipoDoc,numDoc);
-
+        */
         int opcion;
         if(huespedDTO.getApellido() == null){System.out.println(" no existe el huesped buscado");}
         else{

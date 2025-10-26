@@ -328,7 +328,7 @@ int indice= -1;
             // Sobrescribir el archivo con las líneas filtradas
             Files.write(Paths.get(rutaArchivo), nuevasLineas);
 
-            System.out.println("✅ Huesped eliminado del archivo.");
+            //System.out.println("✅ Huesped eliminado del archivo.");
 
         } catch (IOException e) {
             e.printStackTrace();
