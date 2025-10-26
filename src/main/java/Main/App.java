@@ -87,6 +87,7 @@ public class App {
                 break;
             case 3://dar de baja huesped
                 System.out.println("DAR DE BAJA HUESPED \n");
+                darBajaHuesped();
                 break;                
             case 4: //reservar habitacion
                 reservarHabitacion();
@@ -612,7 +613,7 @@ public class App {
         String numDoc = scanner.nextLine();
         HuespedDAO huespedDAO= new HuespedDAO();
         HuespedDTO huespedDTO = new HuespedDTO();
-        huespedDTO=huespedDAO.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
+        huespedDTO=gestorHuesped.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
         clearConsola();
         System.out.println("Huesped seleccionado: ");
         System.out.println("  Nombre: " + huespedDTO.getNombre());  
@@ -888,5 +889,40 @@ public class App {
         }
     }
 
+    public static void darBajaHuesped(){ //el huesped me lo pasa el CU12
+        Scanner scanner = new Scanner(System.in);
+
+        //prueba pero en realidad a dar de baja huesped le llega el huesped del CU12
+        String nombre, apellido, tipoDoc, numDoc;
+        nombre = scanner.nextLine();
+        apellido = scanner.nextLine();
+        tipoDoc = scanner.nextLine();
+        numDoc = scanner.nextLine();
+        HuespedDTO huespedDTO = gestorHuesped.buscarDatos(nombre,apellido,tipoDoc,numDoc);
+
+        int opcion;
+        if(huespedDTO.getApellido() == null){System.out.println(" no existe el huesped buscado");}
+        else{
+            if (!gestorHuesped.seAlojo(huespedDTO)){
+                System.out.println("los datos del huesped: "+huespedDTO.getNombre()+" "+huespedDTO.getApellido()+" "+huespedDTO.getTipoDocumento()+" "+huespedDTO.getNumeroDocumento()+" seran eliminados del sistema");
+                System.out.println("presione 1 si desea ELIMINAR o 2 si desea CANCELAR");
+                opcion = scanner.nextInt();
+                if(opcion==1){
+                    if(gestorHuesped.eliminarHuesped(huespedDTO)){
+                        System.out.println("los datos del huesped: "+huespedDTO.getNombre()+" "+huespedDTO.getApellido()+" "+huespedDTO.getTipoDocumento()+" "+huespedDTO.getNumeroDocumento()+" seran eliminados del sistema");
+                    }else {
+                        System.out.println("no existe huesped a eliminar");
+                    }
+                } else if (opcion == 2) {
+                    System.out.println("Cancelacion exitosa");
+                }
+            }else {
+                System.out.println(" El huesped no puede ser eliminado pues se ha alojado en el Hotel en alguna oportunidad.");
+                System.out.println(" PRESIONE CUALQUIER TECLA PARA CONTINUAR...");
+                scanner.nextLine();
+            }
+        }
+
+    }
 }
 

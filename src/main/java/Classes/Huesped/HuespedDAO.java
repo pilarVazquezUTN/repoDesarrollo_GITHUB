@@ -310,7 +310,6 @@ int indice= -1;
     public boolean eliminarHuespued(HuespedDTO huesped) {
         String rutaArchivo = "infoBuscarHuespedes.txt";
         boolean eliminado = false;
-        //VER QUE NO SE HAYA ALOJADO NUNCA EN EL HOTEL COMO?
         try  {
             // Leer todas las líneas del archivo
             List<String> lineas = Files.readAllLines(Paths.get(rutaArchivo));
@@ -324,13 +323,13 @@ int indice= -1;
             for (String linea : lineas) {
                 if (!linea.equals(textoHuesped)) {
                     nuevasLineas.add(linea);
-                }
+                }else {eliminado=true;}
             }
             // Sobrescribir el archivo con las líneas filtradas
             Files.write(Paths.get(rutaArchivo), nuevasLineas);
 
             System.out.println("✅ Huesped eliminado del archivo.");
-            eliminado=true;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -393,6 +392,13 @@ int indice= -1;
 
 
      return true;
+    }
+    public boolean seAlojo(HuespedDTO huespedDTO) {
+        if(huespedDTO.getEstadiaHuesped() == null){
+            return false;
+        }
+        return true;
+
     }
 }
 
