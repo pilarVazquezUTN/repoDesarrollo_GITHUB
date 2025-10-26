@@ -1,5 +1,5 @@
 package Classes.Huesped;
-
+import Classes.Estadia.*;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,6 +18,7 @@ public class Huesped {
     private String posicionIva;
     private String ocupacion;
     private String nacionalidad;
+    private classes.estadia.Estadia [] estadiaHuesped;
 
     
     public boolean esMayorDeEdad(HuespedDTO huespedDTO) {

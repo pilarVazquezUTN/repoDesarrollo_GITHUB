@@ -140,4 +140,11 @@ public class GestorHuesped {
         return huespedDAO.eliminarHuespued(huespedDTO);
     }
 
+    public boolean seAlojo (HuespedDTO huespedDTO) {
+        return huespedDAO.seAlojo(huespedDTO);
+    }
+
+    public HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
+        return huespedDAO.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
+    }
 }
