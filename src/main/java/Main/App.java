@@ -926,7 +926,7 @@ public class App {
 
     public static void mostrarEstadoHabitaciones(Date desdeFecha, Date hastaFecha){
         System.out.println("MOSTRAR ESTADO DE HABITACIONES");        
-        gestorHabitacion.muestraEstado();
+        gestorHabitacion.muestraEstado(desdeFecha,hastaFecha);
     }
     public static Date validarFecha(String fechaIngresada, SimpleDateFormat formatter){
         try {

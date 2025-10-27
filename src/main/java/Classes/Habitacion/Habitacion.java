@@ -12,4 +12,4 @@ public abstract class Habitacion  {
     private int cantidadPersonas;
     private ArrayList<Reserva> listaReservas= new ArrayList<>();
     private ArrayList<Estadia> listaEstadias= new ArrayList<>();
-}
+} 

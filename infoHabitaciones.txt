@@ -1,6 +1,0 @@
-Habitacion(numero, estado(disponible,reservada,ocupada,fueraDeServicio,pendiente??), precio, capacidadPersonas), fechaDesde, fechaHasta
-(1,),
-2,
-3,
-4,
-5,
