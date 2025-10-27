@@ -28,6 +28,10 @@ public class GestorHuesped {
 
     }
 
+    public boolean chequearExisteHuesped(HuespedDTO huespedDTO){
+        return huespedDAO.verificarDocumento(huespedDTO);
+    }
+
     /**
      *
      * @param huespedDTO datos
@@ -79,7 +83,8 @@ public class GestorHuesped {
         validadores.put("tipoDocumento", Validador.esStringValido);
         validadores.put("numeroDocumento", Validador.esNumeroValido);
 
-        //validadores.put("CUIT", Validador.esCuitValido);
+
+        validadores.put("CUIT", Validador.esCuitValido);
         validadores.put("posicionIva", Validador.esStringValido);
         validadores.put("fechaNacimiento", Validador.esFechaValida);
         validadores.put("calle", Validador.esCalleValida); //

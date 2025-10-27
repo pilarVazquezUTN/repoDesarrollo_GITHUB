@@ -52,17 +52,16 @@ public class Validador {
      * @param valor : es el numero de cuit
      * @return : retorna true si es valido o no seun como se valida por afip
      */
-    public static boolean esCuitValido(String valor) {
+    public static final Predicate<String> esCuitValido = valor -> {
 
         if (valor == null || valor.isEmpty()) return true;
 
-        //Quitar guiones si los tiene
+        // Quitar guiones
         String cuit = valor.replaceAll("-", "");
 
-        // longitud y solo num
+        // Validar formato numérico y longitud
         if (!cuit.matches("\\d{11}")) return false;
 
-        //  dígito verificador
         int[] pesos = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
         int suma = 0;
 
@@ -75,11 +74,9 @@ public class Validador {
         if (verificador == 11) verificador = 0;
         else if (verificador == 10) verificador = 9;
 
-        // Comparar con el último dígito
         int ultimo = Character.getNumericValue(cuit.charAt(10));
         return verificador == ultimo;
-    }
-
+    };
 
 
 

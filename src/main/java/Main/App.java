@@ -31,7 +31,7 @@ public class App {
     static GestorHabitacion gestorHabitacion= new GestorHabitacion();
 
 
-    
+
     public static void main(String[] args) {
         Bienvenida();
     }
@@ -650,10 +650,12 @@ public class App {
         String dniNOMod = huespedDTO.getNumeroDocumento(); //son los no modficados asi dsp busco en q parte de el archivo esta
         Scanner sc = new Scanner(System.in);
         String tipoNomod=huespedDTO.getTipoDocumento();
+        HuespedDTO huespedDNI = new HuespedDTO();
 
         Map<String, String> campos = new LinkedHashMap<>();
         Map<String, Predicate<String>> validadores = new HashMap<>();
         Set<String> noObligatorios = Set.of("CUIT", "email");
+
         gestorHuesped.modificarHuespedGestor(huespedDTO, huespedDTO.getDireccionHuesped(), "infoBuscarHuespedes.txt", campos, validadores);
 
         for (String campo : campos.keySet()) {  // for primeoro para apellido, nombre , asi , cada campo en el keyset
@@ -679,6 +681,13 @@ public class App {
                 } else {
                     // Nuevo valor ingresado
                     campos.put(campo, input);
+                    if ( campo.equals("tipoDocumento")){
+                        huespedDNI.setTipoDocumento(input);
+
+                    }
+                    else if (campo.equals("numeroDocumento")){
+                        huespedDNI.setNumeroDocumento(input);
+                    }
                     ingresado = true;
                 }
             }
@@ -694,17 +703,21 @@ public class App {
 
         System.out.println("CAMPOS INCORRECTOS VUELVA A INGRESAR \n");
         boolean todosValidos;
+
         do {
             todosValidos = true;
 
             for (Map.Entry<String, String> entry : campos.entrySet()) {
                 String campo = entry.getKey();
                 String valor = entry.getValue();
+
                 Predicate<String> validador = validadores.get(campo);
 
 
 
                 // Si es obligatorio y vacío .inválido
+                System.out.println("VALIDADOR VALOR " + valor);
+                System.out.println("TEST QUE DEVUELVE " + validador.test(valor));
 
                 if ((!noObligatorios.contains(campo) && valor.isBlank()) || !validador.test(valor)) {
 
@@ -729,6 +742,13 @@ public class App {
                             }
                         } else {
                             campos.put(campo, input);
+                            if ( campo.equals("tipoDocumento")){
+                                huespedDNI.setTipoDocumento(input);
+
+                            }
+                            else if (campo.equals("numeroDocumento")){
+                                huespedDNI.setNumeroDocumento(input);
+                            }
                             ingresado = true;
                         }
                     }
@@ -736,41 +756,48 @@ public class App {
                 }
             }
         } while (!todosValidos);
+
          //FUNCION GUILLE CHEQUEAR SI ESTA EL TIPO Y NUMERO EN EL SISTEMA EL QUE INGRESONUEVOOO
         // si hay exite el num de doc ese voy al huesped ese y lo modifico todo menos e ni
-        int a=1;
-       // if (huespedDao.existeHuesped()){
+
+       if (gestorHuesped.chequearExisteHuesped(huespedDNI)){  //llama al gestor q verifique si ya esta el doc
             System.out.println("¡CUIDADO NUMERO DOCUMENTO YA EXISTE EN EL SISTEMA");
             System.out.println("1. Aceptar igualmente");
             System.out.println("2. Corregir");
-            int entrada=sc.nextInt();
 
-            do {
+           int entrada = sc.nextInt();
+
+
+           while((entrada != 1 && (entrada != 2))){
+
                 System.out.println("Entrada inválida. Debe ingresar 1 o 2.");
-
                 System.out.println("1. Aceptar igualmente");
                 System.out.println("2. Corregir");
 
                 entrada = Integer.parseInt(sc.nextLine().trim());
 
-            } while((entrada != 1 && (entrada != 2)));
+            }
 
            if ( entrada != 1){
                //pide datos y se vuelven a ingresar
-                //itera y modifica el tipo y numero doc
-
-                System.out.println("corregir datos tipo y numero de documento");
-                //tenog q validar d enuevo
-                System.out.println("Ingrese el tipo");
-                String tipoDoc = sc.nextLine().trim();
-
-                System.out.println("Ingrese el dni");
+               System.out.println("corregir datos tipo y numero de documento");
+               System.out.println("Ingrese el tipo");
+               System.out.println("Ingrese el dni");
+               String tipoDoc = sc.nextLine().trim();
                 String valorDoc= sc.nextLine().trim();
 
-                if (Validador.esNumeroValido.test(valorDoc) && (Validador.esStringValido.test(tipoDoc))) {
-                   //si valida guarda los calores en el map
+                    while (!(Validador.esNumeroValido.test(valorDoc)) && !(Validador.esStringValido.test(tipoDoc))){  //PUEDE FALLAR
+                        System.out.println("INGRESE VALORES VALIDOS");
+                        //tenog q validar d enuevo
+                         System.out.println("Ingrese el tipo");
+                         tipoDoc = sc.nextLine().trim();
+
+                        System.out.println("Ingrese el dni");
+                         valorDoc= sc.nextLine().trim();
+                    }
                     campos.put("tipoDocumento", valorDoc);
                     campos.put("numeroDocumento", valorDoc);
+
                 }
                 else{
                     //opta por aceptar igualmente
