@@ -9,11 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
-import java.util.Date;
+import java.util.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 import Classes.Direccion.DireccionDTO;
 import Classes.Huesped.GestorHuesped;
@@ -226,6 +223,7 @@ public class HuespedDAO {
      * @param direccionDTO
      * @param dni este parametro es el dni cargado en el archivo, sino nunca lo encuentro, guardo el anterior para buscar
      */
+    //PUEDE FALLAR EN EL CASO DE MODIFICAR HUESPED SOLOOOOO!!!!!!!!!!!!!!!!
     public boolean actualizarHuesped(String rutaArchivo, HuespedDTO huespedDTO, DireccionDTO direccionDTO, String tipoDoc, String dni) {
     // para formatear fecha primero
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -234,23 +232,25 @@ public class HuespedDAO {
 
             // construye la nueva línea con todos los campos
                     String nuevaLinea = String.join(",",
-                            huespedDTO.getNombre(),
                             huespedDTO.getApellido(),
-                            huespedDTO.getTipoDocumento(),
-                            huespedDTO.getNumeroDocumento(),
+                            huespedDTO.getNombre(),
+
+                            tipoDoc,
+                            dni,
+                            huespedDTO.getCuit(),
+                            huespedDTO.getPosicionIva(),
                             fechaComoTexto,
-                            huespedDTO.getTelefono(),
-                            huespedDTO.getEmail(),
                             direccionDTO.getCalle(),
                             direccionDTO.getNumero(),
-                            direccionDTO.getPiso(),
                             direccionDTO.getDepartamento(),
+                            direccionDTO.getPiso(),
+
                             direccionDTO.getCodigoPostal(),
                             direccionDTO.getLocalidad(),
                             direccionDTO.getProvincia(),
                             direccionDTO.getPais(),
-                            huespedDTO.getCuit(),
-                            huespedDTO.getPosicionIva(),
+                            huespedDTO.getTelefono(),
+                            huespedDTO.getEmail(),
                             huespedDTO.getOcupacion(),
                             huespedDTO.getNacionalidad()
                     );
@@ -259,15 +259,23 @@ int indice= -1;
         try {
             // se leem todas las líneas del archivo
             List<String> lineas = Files.readAllLines(Paths.get(rutaArchivo));
-
+            System.out.println("tipooooooooooooooooo"+tipoDoc);
+            System.out.println("dniiiiiiiiiiii-----" + dni);
             // buscar la línea que contenga el DNI en la 3
             for (int i = 0; i < lineas.size(); i++) {
                 String[] campos = lineas.get(i).split(",");
-                if (campos.length > 3 && campos[2].equals(tipoDoc) && campos[3].equals(dni)) {
+
+                System.out.println("LINEAS ARCHIVO" + Arrays.toString(campos));
+                //comparo tipo y numero de ,i huesped guardado en dto
+                if (campos[2].trim().equalsIgnoreCase(tipoDoc.trim()) &&
+                        campos[3].trim().equals(dni.trim())) {
+
+                   System.out.println("encontradooooooooooooooo!!!!");
                     indice = i; //agarra el indice
                     break;
                 }
             }
+
 
             // Si lo encontró, reemplazar la línea y reescribir el archivo
             if (indice != -1) {

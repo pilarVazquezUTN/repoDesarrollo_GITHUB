@@ -652,6 +652,7 @@ public class App {
         String tipoNomod=huespedDTO.getTipoDocumento();
         HuespedDTO huespedDNI = new HuespedDTO();
 
+
         Map<String, String> campos = new LinkedHashMap<>();
         Map<String, Predicate<String>> validadores = new HashMap<>();
         Set<String> noObligatorios = Set.of("CUIT", "email");
@@ -667,7 +668,8 @@ public class App {
                 String input = sc.nextLine().trim();
 
                 if (input.isEmpty()) {
-                    // Enter se mantiene valor
+                    // Enter se mantiene valor --para el caso
+
                     ingresado = true;
 
                 } else if (input.equalsIgnoreCase("b")) {
@@ -742,7 +744,7 @@ public class App {
                             }
                         } else {
                             campos.put(campo, input);
-                            if ( campo.equals("tipoDocumento")){
+                           if ( campo.equals("tipoDocumento")){
                                 huespedDNI.setTipoDocumento(input);
 
                             }
@@ -760,54 +762,73 @@ public class App {
          //FUNCION GUILLE CHEQUEAR SI ESTA EL TIPO Y NUMERO EN EL SISTEMA EL QUE INGRESONUEVOOO
         // si hay exite el num de doc ese voy al huesped ese y lo modifico todo menos e ni
 
-       if (gestorHuesped.chequearExisteHuesped(huespedDNI)){  //llama al gestor q verifique si ya esta el doc
-            System.out.println("¡CUIDADO NUMERO DOCUMENTO YA EXISTE EN EL SISTEMA");
-            System.out.println("1. Aceptar igualmente");
-            System.out.println("2. Corregir");
+            System.out.println("HUESPED CARGADO CON REPETICION " + huespedDNI.getNumeroDocumento());
+       if (gestorHuesped.chequearExisteHuesped(huespedDTO)) {  //llama al gestor q verifique si ya esta el doc
+           System.out.println("¡CUIDADO NUMERO DOCUMENTO YA EXISTE EN EL SISTEMA");
+           System.out.println("1. Aceptar igualmente");
+           System.out.println("2. Corregir");
 
            int entrada = sc.nextInt();
 
 
-           while((entrada != 1 && (entrada != 2))){
+           while ((entrada != 1 && (entrada != 2))) {
 
-                System.out.println("Entrada inválida. Debe ingresar 1 o 2.");
-                System.out.println("1. Aceptar igualmente");
-                System.out.println("2. Corregir");
+               System.out.println("Entrada inválida. Debe ingresar 1 o 2.");
+               System.out.println("1. Aceptar igualmente");
+               System.out.println("2. Corregir");
 
-                entrada = Integer.parseInt(sc.nextLine().trim());
+               entrada = Integer.parseInt(sc.nextLine().trim());
 
-            }
+           }
 
-           if ( entrada != 1){
+           if (entrada != 1) {
                //pide datos y se vuelven a ingresar
                System.out.println("corregir datos tipo y numero de documento");
                System.out.println("Ingrese el tipo");
                System.out.println("Ingrese el dni");
                String tipoDoc = sc.nextLine().trim();
-                String valorDoc= sc.nextLine().trim();
+               String valorDoc = sc.nextLine().trim();
 
-                    while (!(Validador.esNumeroValido.test(valorDoc)) && !(Validador.esStringValido.test(tipoDoc))){  //PUEDE FALLAR
-                        System.out.println("INGRESE VALORES VALIDOS");
-                        //tenog q validar d enuevo
-                         System.out.println("Ingrese el tipo");
-                         tipoDoc = sc.nextLine().trim();
+               while (!(Validador.esNumeroValido.test(valorDoc)) && !(Validador.esStringValido.test(tipoDoc))) {  //PUEDE FALLAR
+                   System.out.println("INGRESE VALORES VALIDOS");
+                   //tenog q validar d enuevo
+                   System.out.println("Ingrese el tipo");
+                   tipoDoc = sc.nextLine().trim();
 
-                        System.out.println("Ingrese el dni");
-                         valorDoc= sc.nextLine().trim();
-                    }
-                    campos.put("tipoDocumento", valorDoc);
-                    campos.put("numeroDocumento", valorDoc);
+                   System.out.println("Ingrese el dni");
+                   valorDoc = sc.nextLine().trim();
+               }
+               campos.put("tipoDocumento", valorDoc);
+               campos.put("numeroDocumento", valorDoc);
 
-                }
-                else{
-                    //opta por aceptar igualmente
-                    System.out.println("la operacion a culminado con exito ");
+           } else {
+               //opta por aceptar igualmente
+               System.out.println("la operacion a culminado con exito ");
 
-                    //ahora llamo a geestor para q llame al dao y guarde en el archivo, le paso el dni ue esta en el archivo para poder buscar
-                    gestorHuesped.modificarDatosHuespedArchivo(huespedDTO, "infoBuscarHuespedes.txt", huespedDTO.getDireccionHuesped(), tipoNomod, dniNOMod );
-                }
+               //ahora llamo a geestor para q llame al dao y guarde en el archivo, le paso el dni ue esta en el archivo para poder buscar
+               System.out.println(" dni mo modificado " + dniNOMod);
+               System.out.println("TIPO NO MODIFICADO" + tipoNomod);
 
-                }
+               System.out.println(huespedDNI.getTipoDocumento());
+               System.out.println(huespedDNI.getNumeroDocumento());
+
+
+               gestorHuesped.modificarDatosHuespedArchivo(huespedDTO, "infoBuscarHuespedes.txt", huespedDTO.getDireccionHuesped(), huespedDNI.getTipoDocumento(), huespedDNI.getNumeroDocumento());
+           }
+
+       }
+       else{  //si no existe el dni, es porq le quiere cambiar a ese q ya esta el dni
+           System.out.println("\n Todos los campos válidos:"); //key - value
+           campos.forEach((k, v) -> System.out.println(k + ": " + v));
+
+           System.out.println("la operacion a culminado con exito ");
+
+           //ahora llamo a geestor para q llame al dao y guarde en el archivo, le paso el dni ue esta en el archivo para poder buscar
+           gestorHuesped.modificarDatosHuespedArchivo(huespedDTO, "infoBuscarHuespedes.txt",huespedDTO.getDireccionHuesped(), tipoNomod, dniNOMod );
+
+           //huespedDAO.actualizarHuesped(rutaArchivo, huespedDTO, huespedDTO.getDireccionHuesped(), tipoDoc, dninoMod);
+       }
+
 
         }
         //cancelar
@@ -827,7 +848,7 @@ public class App {
             darBajaHuesped(huespedDTO);
         }
 
-        System.out.println("\n Todos los campos válidos:"); //key - value
+        /*System.out.println("\n Todos los campos válidos:"); //key - value
         campos.forEach((k, v) -> System.out.println(k + ": " + v));
 
         System.out.println("la operacion a culminado con exito ");
@@ -836,7 +857,7 @@ public class App {
         gestorHuesped.modificarDatosHuespedArchivo(huespedDTO, "infoBuscarHuespedes.txt",huespedDTO.getDireccionHuesped(), tipoNomod, dniNOMod );
 
         //huespedDAO.actualizarHuesped(rutaArchivo, huespedDTO, huespedDTO.getDireccionHuesped(), tipoDoc, dninoMod);
-
+*/
 
 
     }
