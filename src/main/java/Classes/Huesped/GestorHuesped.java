@@ -28,6 +28,10 @@ public class GestorHuesped {
 
     }
 
+    public boolean chequearExisteHuesped(HuespedDTO huespedDTO){
+        return huespedDAO.verificarDocumento(huespedDTO);
+    }
+
     /**
      *
      * @param huespedDTO datos
@@ -79,7 +83,8 @@ public class GestorHuesped {
         validadores.put("tipoDocumento", Validador.esStringValido);
         validadores.put("numeroDocumento", Validador.esNumeroValido);
 
-        //validadores.put("CUIT", Validador.esCuitValido);
+
+        validadores.put("CUIT", Validador.esCuitValido);
         validadores.put("posicionIva", Validador.esStringValido);
         validadores.put("fechaNacimiento", Validador.esFechaValida);
         validadores.put("calle", Validador.esCalleValida); //
@@ -109,7 +114,7 @@ public class GestorHuesped {
      * @param tipo
      * le pasa al dao los datos, TIENE Q BUSCAR Y REEMPLAZAR
      */
-    public void modificarDatosHuespedArchivo(HuespedDTO huespedDTO, String rutaArchivo, DireccionDTO direccionDTO, String dni , String tipo) {
+    public void modificarDatosHuespedArchivo(HuespedDTO huespedDTO, String rutaArchivo, DireccionDTO direccionDTO, String tipo , String dni) {
         boolean huespedModificado = false;
         huespedModificado= huespedDAO.actualizarHuesped(rutaArchivo,huespedDTO,direccionDTO,tipo,dni);
 
@@ -140,4 +145,11 @@ public class GestorHuesped {
         return huespedDAO.eliminarHuespued(huespedDTO);
     }
 
+    public boolean seAlojo (HuespedDTO huespedDTO) {
+        return huespedDAO.seAlojo(huespedDTO);
+    }
+
+    public HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
+        return huespedDAO.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
+    }
 }

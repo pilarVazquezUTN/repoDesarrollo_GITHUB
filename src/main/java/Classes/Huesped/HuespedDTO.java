@@ -3,6 +3,7 @@ package Classes.Huesped;
 import java.util.Date;
 
 import Classes.Direccion.DireccionDTO;
+import classes.estadia.EstadiaDTO;
 
 public class HuespedDTO {
     private String apellido;
@@ -17,6 +18,7 @@ public class HuespedDTO {
     private String posicionIva;
     private String ocupacion;
     private String nacionalidad;
+    private classes.estadia.EstadiaDTO [] estadiaHuesped;
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -90,5 +92,9 @@ public class HuespedDTO {
     }
     public String getTelefono() {
         return this.telefono;
+    }
+
+    public classes.estadia.EstadiaDTO[] getEstadiaHuesped() {
+        return estadiaHuesped;
     }
 }
