@@ -127,16 +127,8 @@ public class App {
         usuarioDTO.setNombre(nombreUsuario);
         usuarioDTO.setContrasena(contrasenaUsuario);
 
-<<<<<<< HEAD
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-        funcionesUtiles.clearConsola();
-||||||| ab77e4e
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-        clearConsola();
-=======
         UsuarioDAO usuarioDAO = (UsuarioDAO) DAOFactory.create(DAOFactory.USUARIO);
-        clearConsola();
->>>>>>> 82b27c334f77bbbb093f6152e59f5d7c7aa69151
+        funcionesUtiles.clearConsola();
 
         // Llamamos al Gestor
         if (gestorUsuario.autenticarUsuario(usuarioDAO, usuarioDTO)) {
