@@ -23,10 +23,14 @@ import Classes.Validador;
 
 
 
+
+
 public class App {
     static GestorHuesped gestorHuesped=new GestorHuesped();
     static GestorUsuario gestorUsuario= new GestorUsuario();
     static GestorHabitacion gestorHabitacion= new GestorHabitacion();
+
+
     
     public static void main(String[] args) {
         Bienvenida();
