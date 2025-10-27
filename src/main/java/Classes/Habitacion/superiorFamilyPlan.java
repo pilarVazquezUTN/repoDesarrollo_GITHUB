@@ -1,4 +1,4 @@
-package classes.habitacion;
+package Classes.Habitacion;
 
 public class superiorFamilyPlan extends Habitacion{
     private boolean camasIndividuales;

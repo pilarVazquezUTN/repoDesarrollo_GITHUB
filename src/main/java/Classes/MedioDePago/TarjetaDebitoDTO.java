@@ -1,4 +1,4 @@
-package classes.medioDePago;
+package Classes.MedioDePago;
 
 public class TarjetaDebitoDTO {
     private String banco;

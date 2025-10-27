@@ -1,4 +1,4 @@
-package classes.estadia;
+package Classes.Estadia;
 
 public class EstadiaDAO {
     public void delete(){

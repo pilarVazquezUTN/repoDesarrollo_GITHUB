@@ -1,6 +1,6 @@
-package classes.responsablePago;
+package Classes.ResponsablePago;
 
-import classes.direccion.Direccion;
+import Classes.Direccion.Direccion;
 
 public class PersonaJuridicaDTO {
     private String razonSocial;

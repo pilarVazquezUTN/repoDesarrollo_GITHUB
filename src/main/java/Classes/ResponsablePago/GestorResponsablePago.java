@@ -1,4 +1,4 @@
-package classes.responsablePago;
+package Classes.ResponsablePago;
 
 public class GestorResponsablePago {
     private String idEmpleado;

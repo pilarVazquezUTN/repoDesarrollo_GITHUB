@@ -1,4 +1,4 @@
-package classes.medioDePago;
+package Classes.MedioDePago;
 
 import java.util.Date;
 

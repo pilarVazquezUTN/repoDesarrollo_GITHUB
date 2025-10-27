@@ -1,4 +1,4 @@
-package classes.pago;
+package Classes.Pago;
 
 import java.util.Date;
 

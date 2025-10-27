@@ -1,4 +1,4 @@
-package classes.medioDePago;
+package Classes.MedioDePago;
 
 public class MonedaExtranjeraDTO {
     private String tipoMoneda;

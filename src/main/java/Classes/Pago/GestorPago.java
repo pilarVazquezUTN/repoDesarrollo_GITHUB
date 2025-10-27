@@ -1,6 +1,6 @@
-package classes.pago;
+package Classes.Pago;
 
-import classes.factura.Factura;
+import Classes.Factura.Factura;
 
 public class GestorPago {
     private String idEmpleado;

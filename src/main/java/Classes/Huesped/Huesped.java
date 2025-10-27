@@ -18,7 +18,7 @@ public class Huesped {
     private String posicionIva;
     private String ocupacion;
     private String nacionalidad;
-    private classes.estadia.Estadia [] estadiaHuesped;
+    private Classes.Estadia.Estadia [] estadiaHuesped;
 
     
     public boolean esMayorDeEdad(HuespedDTO huespedDTO) {

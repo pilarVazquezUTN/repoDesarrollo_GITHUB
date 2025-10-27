@@ -1,4 +1,4 @@
-package classes.habitacion;
+package Classes.Habitacion;
 
 public class DobleEstandarDTO {
     private boolean camasIndividuales;
