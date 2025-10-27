@@ -18,6 +18,7 @@ import Classes.Huesped.GestorHuesped;
 import Classes.Direccion.DireccionDTO;
 import Classes.FuncionesUtiles;
 import Classes.Validador;
+import Classes.DAOFactory;
 
 
 
@@ -126,8 +127,16 @@ public class App {
         usuarioDTO.setNombre(nombreUsuario);
         usuarioDTO.setContrasena(contrasenaUsuario);
 
+<<<<<<< HEAD
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         funcionesUtiles.clearConsola();
+||||||| ab77e4e
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        clearConsola();
+=======
+        UsuarioDAO usuarioDAO = (UsuarioDAO) DAOFactory.create(DAOFactory.USUARIO);
+        clearConsola();
+>>>>>>> 82b27c334f77bbbb093f6152e59f5d7c7aa69151
 
         // Llamamos al Gestor
         if (gestorUsuario.autenticarUsuario(usuarioDAO, usuarioDTO)) {
@@ -613,7 +622,7 @@ public class App {
         String tipoDoc = scanner.nextLine();
         System.out.print("Ingrese su documento: ");
         String numDoc = scanner.nextLine();
-        HuespedDAO huespedDAO= new HuespedDAO();
+        HuespedDAO huespedDAO = (HuespedDAO) DAOFactory.create(DAOFactory.HUESPED);
         HuespedDTO huespedDTO = new HuespedDTO();
         huespedDTO=gestorHuesped.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
         funcionesUtiles.clearConsola();

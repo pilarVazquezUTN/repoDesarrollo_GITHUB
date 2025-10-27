@@ -4,9 +4,10 @@ import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import Classes.DAOFactory;
 
 public class GestorHabitacion {
-    private HabitacionDAO habitacionDAO=new HabitacionDAO();
+    private HabitacionDAO habitacionDAO = (HabitacionDAO) DAOFactory.create(DAOFactory.HABITACION);
     private String idEmpleado;
 
     public void setIdEmpleado(String idEmpleado) {
