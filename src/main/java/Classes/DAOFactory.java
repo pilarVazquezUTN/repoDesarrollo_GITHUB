@@ -1,27 +1,16 @@
 package Classes;
 
 import Classes.Direccion.DireccionDAO;
-import Classes.Direccion.DireccionDAOInterfaz;
 import Classes.Estadia.EstadiaDAO;
-import Classes.Estadia.EstadiaDAOInterfaz;
 import Classes.Factura.FacturaDAO;
-import Classes.Factura.FacturaDAOInterfaz;
 import Classes.Factura.NotaDeCreditoDAO;
-import Classes.Factura.NotaDeCreditoDAOInterfaz;
 import Classes.Habitacion.HabitacionDAO;
-import Classes.Habitacion.HabitacionDAOInterfaz;
 import Classes.Huesped.HuespedDAO;
-import Classes.Huesped.HuespedDAOInterfaz;
 import Classes.MedioDePago.MedioDePagoDAO;
-import Classes.MedioDePago.MedioDePagoDAOInterfaz;
 import Classes.Pago.PagoDAO;
-import Classes.Pago.PagoDAOInterfaz;
 import Classes.Reserva.ReservaDAO;
-import Classes.Reserva.ReservaDAOInterfaz;
 import Classes.ResponsablePago.PersonaJuridicaDAO;
-import Classes.ResponsablePago.PersonaJuridicaDAOInterfaz;
 import Classes.Usuario.UsuarioDAO;
-import Classes.Usuario.UsuarioDAOInterfaz;
 
 public class DAOFactory {
     public static final int DIRECCION = 0;
@@ -36,11 +25,6 @@ public class DAOFactory {
     public static final int PERSONA_JURIDICA = 9;
     public static final int USUARIO = 10;
     
-    public static String[] nombres = {
-        "Direccion", "Estadia", "Factura", "NotaDeCredito", 
-        "Habitacion", "Huesped", "MedioDePago", "Pago", 
-        "Reserva", "PersonaJuridica", "Usuario"
-    };
     
     public static int[] tipos = {
         DIRECCION, ESTADIA, FACTURA, NOTA_DE_CREDITO, 
