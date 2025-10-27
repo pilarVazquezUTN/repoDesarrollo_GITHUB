@@ -2,6 +2,7 @@ package Classes.Huesped;
 
 import Classes.Direccion.DireccionDTO;
 import Classes.Validador;
+import Classes.DAOFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -9,7 +10,7 @@ import java.util.function.Predicate;
 
 public class GestorHuesped {
     private String idEmpleado;
-    HuespedDAO huespedDAO = new HuespedDAO();
+    HuespedDAO huespedDAO = (HuespedDAO) DAOFactory.create(DAOFactory.HUESPED);
 
     public void setIdEmpleado(String idEmpleado) {
         this.idEmpleado = idEmpleado;

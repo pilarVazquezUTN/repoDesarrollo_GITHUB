@@ -17,6 +17,7 @@ import Classes.Habitacion.GestorHabitacion;
 import Classes.Huesped.GestorHuesped;
 import Classes.Direccion.DireccionDTO;
 import Classes.Validador;
+import Classes.DAOFactory;
 
 
 
@@ -125,7 +126,7 @@ public class App {
         usuarioDTO.setNombre(nombreUsuario);
         usuarioDTO.setContrasena(contrasenaUsuario);
 
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        UsuarioDAO usuarioDAO = (UsuarioDAO) DAOFactory.create(DAOFactory.USUARIO);
         clearConsola();
 
         // Llamamos al Gestor
@@ -615,7 +616,7 @@ public class App {
         String tipoDoc = scanner.nextLine();
         System.out.print("Ingrese su documento: ");
         String numDoc = scanner.nextLine();
-        HuespedDAO huespedDAO= new HuespedDAO();
+        HuespedDAO huespedDAO = (HuespedDAO) DAOFactory.create(DAOFactory.HUESPED);
         HuespedDTO huespedDTO = new HuespedDTO();
         huespedDTO=gestorHuesped.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
         clearConsola();
