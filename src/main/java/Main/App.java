@@ -896,7 +896,8 @@ public class App {
         }
 
         if(validarAmbasFechas(desdeFecha,hastaFecha)){
-            System.out.println("FECHAS SELECCIONADAS: "+desdeFecha+" hasta el "+hastaFecha);
+            funcionesUtiles.clearConsola();
+            System.out.println("FECHAS SELECCIONADAS: "+funcionesUtiles.convertirDateAString(desdeFecha)+" hasta el "+funcionesUtiles.convertirDateAString(hastaFecha)+"\n");
             //System.out.println("Desde Fecha: "+desdeFecha);
             //System.out.println("Hasta Fecha: "+hastaFecha + "\n");
             mostrarEstadoHabitaciones(desdeFecha,hastaFecha); //CU05
@@ -924,7 +925,7 @@ public class App {
     }
 
     public static void mostrarEstadoHabitaciones(Date desdeFecha, Date hastaFecha){
-        funcionesUtiles.clearConsola();
+        //funcionesUtiles.clearConsola();
         System.out.println("MOSTRAR ESTADO DE HABITACIONES");        
         gestorHabitacion.muestraEstado(desdeFecha,hastaFecha);
     }

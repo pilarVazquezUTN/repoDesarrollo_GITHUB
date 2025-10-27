@@ -27,14 +27,6 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
         
     }
     public void muestraEstado(Date desdeFecha, Date hastaFecha){
-        /*
-        map: key:numero de habitacion, value:Fecha(ir sacando desdeFecha y hastaFecha)
-
-         */
-        //System.out.println("aca mostrariamos la grilla de habitaciones con sus estados.");
-        /*
-        funcion para abrir csv segun desdeFecha y hastaFecha
-         */
         abrirArchivoCsvHabitaciones(desdeFecha,hastaFecha);    
     } 
     public void abrirArchivoCsvHabitaciones(Date desdeFecha, Date hastaFecha){
@@ -53,11 +45,9 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
 
             // Leer línea por línea
             while ((linea = br.readLine()) != null) {
-                
                 // Dividir la línea por el separador (ej: coma)
                 String[] campos = linea.split(SEPARADOR_CSV);
                 
-                // Asumimos que desdeFecha es el campo[0] y hastaFecha es el campo[1]
                 if (campos.length >= 7) { 
                     String numHabitacion = campos[0].trim();
                     String estadoHabitacion = campos[1].trim();
