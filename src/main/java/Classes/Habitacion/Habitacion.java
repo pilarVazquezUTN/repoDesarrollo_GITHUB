@@ -3,6 +3,7 @@ package Classes.Habitacion;
 import java.util.ArrayList;
 
 import Classes.Reserva.Reserva;
+import Classes.Estadia.Estadia;
 
 public abstract class Habitacion  {
     private int numero;
@@ -10,4 +11,5 @@ public abstract class Habitacion  {
     private float precio;
     private int cantidadPersonas;
     private ArrayList<Reserva> listaReservas= new ArrayList<>();
+    private ArrayList<Estadia> listaEstadias= new ArrayList<>();
 }
