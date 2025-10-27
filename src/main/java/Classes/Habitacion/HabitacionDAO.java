@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+
+import Classes.FuncionesUtiles;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -40,10 +43,11 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
         String SEPARADOR_CSV = ";";
         SimpleDateFormat formatter = new SimpleDateFormat(FECHA_FORMATO);
         formatter.setLenient(false);
+        FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
 
         try (BufferedReader br = new BufferedReader(new FileReader(NOMBRE_ARCHIVO))) {
             String linea;
-            
+            boolean existeHabitacion=false;            
             // Opcional: Saltar la línea de encabezado si existe
             // br.readLine(); 
 
@@ -60,13 +64,25 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
                     String precioHabitacion = campos[2].trim();
                     String capacidadHabitacion = campos[3].trim();
                     String estadoReserva = campos[4].trim();
-                    String desdeFechaString = campos[5].trim();
-                    String hastaFechaString = campos[6].trim();
+                    String desdeFechaHabitacioString=campos[5].trim();
+                    Date desdeFechaHabitacion = funcionesUtiles.convertirStringADate(desdeFechaHabitacioString);
+                    String hastaFechaHabitacionString=campos[6].trim();
+                    Date hastaFechaHabitacion = funcionesUtiles.convertirStringADate(hastaFechaHabitacionString);
 
-                    System.out.println("Habitacion nro: "+numHabitacion+"\n con estado: "+estadoHabitacion+"\n con precio: "+precioHabitacion+"\n capacidad: "+capacidadHabitacion+"\n estado de la reserva: "+estadoReserva+"\n desde fecha: "+desdeFechaString+"\n hasta fecha: "+hastaFechaString+"\n");
+                    if (desdeFechaHabitacion != null && hastaFechaHabitacion != null) {
+                        if(desdeFechaHabitacion.before(desdeFecha) && hastaFecha.before(hastaFechaHabitacion)){
+                        System.out.println("Habitacion nro: "+numHabitacion+"\n con estado: "+estadoHabitacion+"\n con precio: "+precioHabitacion+"\n capacidad: "+capacidadHabitacion+"\n estado de la reserva: "+estadoReserva+"\n desde fecha: "+funcionesUtiles.convertirDateAString(desdeFechaHabitacion)+"\n hasta fecha: "+funcionesUtiles.convertirDateAString(hastaFechaHabitacion)+"\n");
+                        existeHabitacion=true;
+                        }
+                        //System.out.println("Habitacion nro: "+numHabitacion+"\n con estado: "+estadoHabitacion+"\n con precio: "+precioHabitacion+"\n capacidad: "+capacidadHabitacion+"\n estado de la reserva: "+estadoReserva+"\n desde fecha: "+desdeFechaHabitacion+"\n hasta fecha: "+hastaFechaHabitacion+"\n");
+                    }
+                    
                 } else {
                     System.err.println("Advertencia: Línea incompleta o con formato incorrecto: " + linea);
                 }
+            }
+            if(!existeHabitacion){
+                System.out.println("No existen habitaciones disponibles para las fechas solicitadas. ");
             }
 
         } catch (IOException e) {

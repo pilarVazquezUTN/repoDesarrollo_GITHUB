@@ -16,6 +16,7 @@ import Classes.Usuario.UsuarioDTO;
 import Classes.Habitacion.GestorHabitacion;
 import Classes.Huesped.GestorHuesped;
 import Classes.Direccion.DireccionDTO;
+import Classes.FuncionesUtiles;
 import Classes.Validador;
 
 
@@ -29,7 +30,7 @@ public class App {
     static GestorHuesped gestorHuesped=new GestorHuesped();
     static GestorUsuario gestorUsuario= new GestorUsuario();
     static GestorHabitacion gestorHabitacion= new GestorHabitacion();
-
+    static FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
 
 
     public static void main(String[] args) {
@@ -40,7 +41,7 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         Integer opcion;
 
-        clearConsola();
+        funcionesUtiles.clearConsola();
         do{
             System.out.println("BIENVENIDO A LA GESTION DEL HOTEL. \n Presione 1 para Autenticar su Usuario. ");
             opcion=scanner.nextInt();
@@ -68,10 +69,10 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         boolean entradaValida=false;
         int opcion= scanner.nextInt();
-        clearConsola();
+        funcionesUtiles.clearConsola();
         do{
             if(opcion<1 || opcion>4){
-                clearConsola();
+                funcionesUtiles.clearConsola();
                 System.out.println("--------------- Ingrese una opcion correcta!");
                 Menu();
             } else{
@@ -79,7 +80,7 @@ public class App {
             }
         } while(!entradaValida);
 
-        clearConsola();
+        funcionesUtiles.clearConsola();
         switch (opcion) {
             case 1://buscar huesped
                 System.out.println("BUSCAR HUESPED \n");
@@ -126,7 +127,7 @@ public class App {
         usuarioDTO.setContrasena(contrasenaUsuario);
 
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        clearConsola();
+        funcionesUtiles.clearConsola();
 
         // Llamamos al Gestor
         if (gestorUsuario.autenticarUsuario(usuarioDAO, usuarioDTO)) {
@@ -216,7 +217,7 @@ public class App {
             //vuelve a que cargue mas huespedes
             darAltaHuesped();
         } else{
-            clearConsola();
+            funcionesUtiles.clearConsola();
             Menu();
         }
     }
@@ -493,12 +494,12 @@ public class App {
             } while (opcion!=1 && opcion!=2);
             if(opcion==1){
                 //sistema vuelve al paso 6: Menu();
-                clearConsola();
+                funcionesUtiles.clearConsola();
                 Menu();
             } else{
                 //sistema vuelve al paso1: muestra todos los datos nuevamente
                 huespedDTO=null;
-                clearConsola();
+                funcionesUtiles.clearConsola();
                 darAltaHuesped();
             }
         }
@@ -508,7 +509,7 @@ public class App {
     public static void controlarCampos(HuespedDTO huespedDTO, DireccionDTO direccionDTO){
         //veo si algun campo obligatorio esta sin completar
         Scanner scanner = new Scanner(System.in);
-        clearConsola();
+        funcionesUtiles.clearConsola();
 
         if(huespedDTO.getNombre().isEmpty() || huespedDTO.getApellido().isEmpty() || huespedDTO.getTipoDocumento().isEmpty() || 
         huespedDTO.getNumeroDocumento().isEmpty() || (huespedDTO.getDireccionHuesped()).getCalle().isEmpty() || 
@@ -594,10 +595,7 @@ public class App {
         huespedDTO.setNacionalidad(huespedDTO.getNacionalidad());
     }
 
-    public static void clearConsola(){
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
+    
     public static void buscarHuesped(){
         /*se presenta pantalla para buscar huesped 
          ingresa nombre, apellido, tipo doc, num doc
@@ -618,7 +616,7 @@ public class App {
         HuespedDAO huespedDAO= new HuespedDAO();
         HuespedDTO huespedDTO = new HuespedDTO();
         huespedDTO=gestorHuesped.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
-        clearConsola();
+        funcionesUtiles.clearConsola();
         System.out.println("Huesped seleccionado: ");
         System.out.println("  Nombre: " + huespedDTO.getNombre());  
         System.out.println("  Apellido: " + huespedDTO.getApellido());
@@ -897,12 +895,12 @@ public class App {
         }
 
         if(validarAmbasFechas(desdeFecha,hastaFecha)){
-            System.out.println("FECHAS FINALES:");
-            System.out.println("Desde Fecha: "+desdeFecha);
-            System.out.println("Hasta Fecha: "+hastaFecha + "\n");
+            System.out.println("FECHAS SELECCIONADAS: "+desdeFecha+" hasta el "+hastaFecha);
+            //System.out.println("Desde Fecha: "+desdeFecha);
+            //System.out.println("Hasta Fecha: "+hastaFecha + "\n");
             mostrarEstadoHabitaciones(desdeFecha,hastaFecha); //CU05
         } else{
-            clearConsola();
+            funcionesUtiles.clearConsola();
             System.out.println("Error. Usted ha ingresado una fecha final mayor a la inicial.");
             Integer opcion;
             System.out.println("Presione: \n 1.Siguiente. Para volver a ingresar las fechas \n 2.Cancelar. Se retornara a Menu");
@@ -914,10 +912,10 @@ public class App {
                 opcion= scanner.nextInt();
             }
             if (opcion==1) {
-                clearConsola();
+                funcionesUtiles.clearConsola();
                 reservarHabitacion();
             } else{
-                clearConsola();
+                funcionesUtiles.clearConsola();
                 Menu();
             }
         }
@@ -925,6 +923,7 @@ public class App {
     }
 
     public static void mostrarEstadoHabitaciones(Date desdeFecha, Date hastaFecha){
+        funcionesUtiles.clearConsola();
         System.out.println("MOSTRAR ESTADO DE HABITACIONES");        
         gestorHabitacion.muestraEstado(desdeFecha,hastaFecha);
     }

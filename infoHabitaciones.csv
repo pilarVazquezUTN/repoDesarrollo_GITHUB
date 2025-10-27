@@ -1,6 +1,8 @@
 1;disponible;$100.000;5;reservada;10/12/2025;20/12/2025
-2;reservada;$120.000;1;05/10/2025;reservada;20/10/2025
+2;reservada;$120.000;1;reservada;05/10/2025;20/10/2025
 3;ocupada;$350.000;3;realizada;12/11/2025;25/11/2025
 4;fueraDeServicio;$80.000;4;pendiente;15/12/2025;25/12/2025
 5;disponible;$500.000;8;pendiente;10/12/2025;20/12/2025
 6;disponible;$200.000;2;pendiente;01/01/2025;15/01/2025
+7;disponible;$450.000;7;reservada;01/10/2025;25/10/2025
+8;reservada;$230.000;4;pendiente;08/10/2025;31/10/2025
