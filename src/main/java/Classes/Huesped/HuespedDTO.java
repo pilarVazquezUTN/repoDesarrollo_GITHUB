@@ -3,7 +3,6 @@ package Classes.Huesped;
 import java.util.Date;
 
 import Classes.Direccion.DireccionDTO;
-import Classes.Estadia.EstadiaDTO;
 
 public class HuespedDTO {
     private String apellido;

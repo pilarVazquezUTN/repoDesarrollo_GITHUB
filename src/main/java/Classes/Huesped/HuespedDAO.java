@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.util.*;
 import java.text.SimpleDateFormat;
@@ -122,7 +121,7 @@ public class HuespedDAO implements HuespedDAOInterfaz {
     
 
     public HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
-        String rutaArchivo = "infoBuscarHuespedes.txt"; // Cambia por la ruta real de tu archivo
+        String rutaArchivo = "infoBuscarHuespedes.csv"; // Cambia por la ruta real de tu archivo
         boolean encontrado = false;
         HuespedDTO huespedRetorno = new HuespedDTO();
         HuespedDTO huespedDTO;
@@ -131,12 +130,17 @@ public class HuespedDAO implements HuespedDAOInterfaz {
 
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
             String linea;
+            boolean primeraLinea = true; // para saltar encabezado
             int i = 0;
             while ((linea = br.readLine()) != null) {
-
+                // saltear encabezado
+                if (primeraLinea) {
+                    primeraLinea = false;
+                    continue;
+                }
                 String[] datos = linea.split(",");
 
-                if (datos.length >= 4) {
+                if (datos.length >= 19) {
                     String apellido = datos[0].trim();
                     String nombre = datos[1].trim();
                     String tipo = datos[2].trim();
@@ -316,7 +320,7 @@ int indice= -1;
         return direccionDTO;
     }
     public boolean eliminarHuespued(HuespedDTO huesped) {
-        String rutaArchivo = "infoBuscarHuespedes.txt";
+        String rutaArchivo = "infoBuscarHuespedes.csv";
         boolean eliminado = false;
         try  {
             // Leer todas las líneas del archivo
@@ -327,11 +331,17 @@ int indice= -1;
             String textoHuesped = huesped.getApellido() +","+ huesped.getNombre() +","+ huesped.getTipoDocumento() +","+ huesped.getNumeroDocumento() +","+ huesped.getCuit() +","+ huesped.getPosicionIva() +","+ formato.format(huesped.getFechaNacimiento() ) +","+ huesped.getDireccionHuesped().getCalle() +","+ huesped.getDireccionHuesped().getNumero() +","+ huesped.getDireccionHuesped().getDepartamento() +","+ huesped.getDireccionHuesped().getPiso() +","+ huesped.getDireccionHuesped().getCodigoPostal() +","+ huesped.getDireccionHuesped().getLocalidad() +","+ huesped.getDireccionHuesped().getProvincia() +","+ huesped.getDireccionHuesped().getPais() +","+ huesped.getTelefono() +","+ huesped.getEmail() +","+ huesped.getOcupacion() +","+ huesped.getNacionalidad();;
 
             // Filtrar las líneas que NO coincidan con el huesped a eliminar
+            String encabezado = lineas.get(0);
             List<String> nuevasLineas = new ArrayList<>();
-            for (String linea : lineas) {
-                if (!linea.equals(textoHuesped)) {
+            nuevasLineas.add(encabezado);
+            // Recorrer las líneas (empezando desde la segunda) y conservar las que NO coincidan
+            for (int i = 1; i < lineas.size(); i++) {
+                String linea = lineas.get(i).trim();
+                if (!linea.equalsIgnoreCase(textoHuesped.trim())) {
                     nuevasLineas.add(linea);
-                }else {eliminado=true;}
+                } else {
+                    eliminado = true;
+                }
             }
             // Sobrescribir el archivo con las líneas filtradas
             Files.write(Paths.get(rutaArchivo), nuevasLineas);
