@@ -8,7 +8,7 @@ package Classes.Factura;
  *
  * @author st
  */
-public class FacturaDAO {
+public class FacturaDAO implements FacturaDAOInterfaz {
 
     public void delete(){
 

@@ -8,7 +8,7 @@ package Classes.Pago;
  *
  * @author st
  */
-public class PagoDAO {
+public class PagoDAO implements PagoDAOInterfaz {
     public void delete(){
 
     }

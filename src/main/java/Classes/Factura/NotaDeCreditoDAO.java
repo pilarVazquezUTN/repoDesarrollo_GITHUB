@@ -8,7 +8,7 @@ package Classes.Factura;
  *
  * @author st
  */
-public class NotaDeCreditoDAO {
+public class NotaDeCreditoDAO implements NotaDeCreditoDAOInterfaz {
     public void delete(){
 
     }

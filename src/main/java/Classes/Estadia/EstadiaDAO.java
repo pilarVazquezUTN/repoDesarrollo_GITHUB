@@ -1,6 +1,6 @@
 package Classes.Estadia;
 
-public class EstadiaDAO {
+public class EstadiaDAO implements EstadiaDAOInterfaz {
     public void delete(){
 
     }

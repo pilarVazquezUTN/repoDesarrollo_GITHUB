@@ -10,7 +10,7 @@ import java.time.format.DateTimeParseException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class HabitacionDAO {
+public class HabitacionDAO implements HabitacionDAOInterfaz {
     public void delete(){
 
     }

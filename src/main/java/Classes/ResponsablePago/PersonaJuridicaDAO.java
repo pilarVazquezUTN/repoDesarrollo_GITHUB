@@ -1,6 +1,6 @@
 package Classes.ResponsablePago;
 
-public class PersonaJuridicaDAO {
+public class PersonaJuridicaDAO implements PersonaJuridicaDAOInterfaz {
     public void delete(){
 
     }

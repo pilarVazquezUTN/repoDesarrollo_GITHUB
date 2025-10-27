@@ -1,6 +1,6 @@
 package Classes.Reserva;
  
-public class ReservaDAO {
+public class ReservaDAO implements ReservaDAOInterfaz {
     public void delete(){
 
     }

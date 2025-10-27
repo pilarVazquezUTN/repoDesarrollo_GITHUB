@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import Classes.Direccion.DireccionDTO;
 import Classes.Huesped.GestorHuesped;
 
-public class HuespedDAO {
+public class HuespedDAO implements HuespedDAOInterfaz {
     public void delete(){
     }
     public  void create(){
@@ -67,7 +67,7 @@ public class HuespedDAO {
     return existeDoc; 
 }
 
-    public static void registrarHuesped(HuespedDTO huespedDTO){
+    public void registrarHuesped(HuespedDTO huespedDTO){
         /*
          AGREGAR EL HUESPEDDTO QUE LLEGA A LA BD DE HUESPEDES
          */
@@ -121,7 +121,7 @@ public class HuespedDAO {
     }
     
 
-    public static HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
+    public HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
         String rutaArchivo = "infoBuscarHuespedes.txt"; // Cambia por la ruta real de tu archivo
         boolean encontrado = false;
         HuespedDTO huespedRetorno = new HuespedDTO();
@@ -395,7 +395,7 @@ int indice= -1;
         return encontrado;
     }
 
-    public static boolean buscarHuespedyReemplazar(String tipodoc, String tipoDoc){
+    public boolean buscarHuespedyReemplazar(String tipodoc, String tipoDoc){
      HuespedDTO huespedDTO = new HuespedDTO();
 
 

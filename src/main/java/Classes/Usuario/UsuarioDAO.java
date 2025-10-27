@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 
-public class UsuarioDAO {
+public class UsuarioDAO implements UsuarioDAOInterfaz {
     
     public boolean buscarUsuario(UsuarioDTO usuarioDTO){
         // 1. CORRECCIÓN: Llamar a los métodos getter con paréntesis ()

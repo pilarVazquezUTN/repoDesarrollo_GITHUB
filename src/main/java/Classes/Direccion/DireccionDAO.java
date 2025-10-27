@@ -1,6 +1,6 @@
 package Classes.Direccion;
 
-public class DireccionDAO {
+public class DireccionDAO implements DireccionDAOInterfaz {
     public void delete(){
 
     }

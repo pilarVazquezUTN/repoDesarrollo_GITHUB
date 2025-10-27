@@ -8,7 +8,7 @@ package Classes.MedioDePago;
  *
  * @author st
  */
-public class MedioDePagoDAO {
+public class MedioDePagoDAO implements MedioDePagoDAOInterfaz {
     public void delete(){
 
     }
