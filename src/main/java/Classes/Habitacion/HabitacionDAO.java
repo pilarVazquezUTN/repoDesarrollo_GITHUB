@@ -54,15 +54,16 @@ public class HabitacionDAO {
                 String[] campos = linea.split(SEPARADOR_CSV);
                 
                 // Asumimos que desdeFecha es el campo[0] y hastaFecha es el campo[1]
-                if (campos.length >= 6) { 
+                if (campos.length >= 7) { 
                     String numHabitacion = campos[0].trim();
                     String estadoHabitacion = campos[1].trim();
                     String precioHabitacion = campos[2].trim();
                     String capacidadHabitacion = campos[3].trim();
-                    String desdeFechaString = campos[4].trim();
-                    String hastaFechaString = campos[5].trim();
+                    String estadoReserva = campos[4].trim();
+                    String desdeFechaString = campos[5].trim();
+                    String hastaFechaString = campos[6].trim();
 
-                    System.out.println("Habitacion nro: "+numHabitacion+"\n con estado: "+estadoHabitacion+"\n con precio: "+precioHabitacion+"\n capacidad: "+capacidadHabitacion+"\n desde fecha: "+desdeFechaString+"\n hasta fecha: "+hastaFechaString+"\n");
+                    System.out.println("Habitacion nro: "+numHabitacion+"\n con estado: "+estadoHabitacion+"\n con precio: "+precioHabitacion+"\n capacidad: "+capacidadHabitacion+"\n estado de la reserva: "+estadoReserva+"\n desde fecha: "+desdeFechaString+"\n hasta fecha: "+hastaFechaString+"\n");
                 } else {
                     System.err.println("Advertencia: Línea incompleta o con formato incorrecto: " + linea);
                 }
