@@ -816,6 +816,7 @@ public class App {
                 System.out.print("Ingrese nuevo valor (Enter = mantener, b = borrar): ");
                 String input = sc.nextLine().trim();
 
+                //para que se guarden en mayuscula si ingresa un dato que sea String
                 if(!campo.equals("numeroDocumento") || !campo.equals("CUIT") || !campo.equals("fechaNacimiento") || 
                     !campo.equals("numero") || !campo.equals("piso") || !campo.equals("codigoPostal") || 
                     !campo.equals("telefono")){
