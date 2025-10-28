@@ -52,7 +52,7 @@ public class FuncionesUtiles {
         if(palabra==null || palabra.isEmpty()){
             soloLetras=false;
         }
-        String regex = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$";
+        String regex = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$";
 
         return palabra.matches(regex);
     }

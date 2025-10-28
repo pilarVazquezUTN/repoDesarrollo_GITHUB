@@ -273,6 +273,20 @@ public class App {
         
 
         String valorCuit= huespedDTO.getCuit();
+        if(valorCuit==null){
+            System.out.print("Ingrese su CUIT: ");
+            huespedDTO.setCuit(scanner.nextLine());
+        } else {
+            if(!funcionesUtiles.contieneSoloNumeros(huespedDTO.getCuit())){
+                //("RESPONSABLE INSCRIPTO".equals(huespedDTO.getCuit()) )
+                //System.out.print("Error en campo. Usted es Responsable Inscripto, ingrese un CUIT obligatoraimente: ");
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su CUIT: ");
+                huespedDTO.setCuit(scanner.nextLine());
+            } else {
+                System.out.println("Su CUIT: "+ huespedDTO.getCuit());
+            }    
+        }
+        /* 
         if("RESPONSABLE INSCRIPTO".equals(huespedDTO.getPosicionIva())){
             System.out.print("Error en campo. Usted es Responsable Inscripto, ingrese un CUIT obligatoraimente: ");
             huespedDTO.setCuit(scanner.nextLine());
@@ -283,9 +297,26 @@ public class App {
                 System.out.print("Ingrese su CUIT: ");
                 huespedDTO.setCuit(scanner.nextLine());
             }
-        } 
+        } */
         
-        String posIva="CONSUMIDOR FINAL";
+        String posIva= huespedDTO.getPosicionIva();
+        if(posIva==null){
+            System.out.print("Ingrese su Posicion Frente al IVA: ");
+            posIva=scanner.nextLine().toUpperCase();
+        } else {
+            if(huespedDTO.getPosicionIva().isEmpty() || !funcionesUtiles.contieneSoloLetras(huespedDTO.getPosicionIva())){
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Posicion Frente al IVA: ");
+                posIva=scanner.nextLine().toUpperCase();
+            } else {
+                System.out.println("Su Posicion Frente al IVA: "+huespedDTO.getPosicionIva());    
+            }
+        }
+        if(posIva.isEmpty()){
+            posIva="CONSUMIDOR FINAL";
+        }
+        huespedDTO.setPosicionIva(posIva);
+
+        /* 
         if(camposVacios){
             if(huespedDTO.getPosicionIva().isEmpty() || !funcionesUtiles.contieneSoloLetras(huespedDTO.getPosicionIva())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Posicion Frente al IVA: ");
@@ -301,7 +332,8 @@ public class App {
             posIva="CONSUMIDOR FINAL";
         }
         huespedDTO.setPosicionIva(posIva);
-        
+        */
+
         if(camposVacios){
             if(huespedDTO.getFechaNacimiento()==null){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Fecha de Nacimiento (dd/MM/yyyy): ");
@@ -514,7 +546,10 @@ public class App {
         System.out.println("1. Siguiente");     
         System.out.println("2. Cancelar");
 
-        Integer opcion =scanner.nextInt();
+        System.err.println("hasta aca 1");
+        Integer opcion;
+        opcion =scanner.nextInt();
+        System.err.println("hasta aca 2");
 
         if(opcion==1){
            //eligio Siguiente
@@ -551,18 +586,19 @@ public class App {
         (huespedDTO.getDireccionHuesped()).getLocalidad().isEmpty() || (huespedDTO.getDireccionHuesped()).getProvincia().isEmpty() ||
         (huespedDTO.getDireccionHuesped()).getPais().isEmpty() || huespedDTO.getTelefono().isEmpty() || 
         huespedDTO.getOcupacion().isEmpty() || huespedDTO.getNacionalidad().isEmpty() || huespedDTO.getFechaNacimiento()==null ||
-        funcionesUtiles.contieneSoloLetras(huespedDTO.getNombre()) || funcionesUtiles.contieneSoloLetras(huespedDTO.getApellido()) ||
-        funcionesUtiles.contieneSoloLetras(huespedDTO.getTipoDocumento()) || funcionesUtiles.contieneSoloNumeros(huespedDTO.getNumeroDocumento()) || 
-        funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getCalle()) || 
-        funcionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getNumero()) ||
-        funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getDepartamento()) ||
-        funcionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getPiso()) ||
-        funcionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getCodigoPostal()) || 
-        funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getLocalidad()) || 
-        funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getProvincia()) || 
-        funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getPais()) || 
-        funcionesUtiles.contieneSoloNumeros(huespedDTO.getTelefono()) || funcionesUtiles.contieneSoloLetras(huespedDTO.getOcupacion()) || 
-        funcionesUtiles.contieneSoloLetras(huespedDTO.getNacionalidad())){
+        !funcionesUtiles.contieneSoloLetras(huespedDTO.getNombre()) || !funcionesUtiles.contieneSoloLetras(huespedDTO.getApellido()) ||
+        !funcionesUtiles.contieneSoloLetras(huespedDTO.getTipoDocumento()) || !funcionesUtiles.contieneSoloNumeros(huespedDTO.getNumeroDocumento()) || 
+        !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getCalle()) || 
+        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getNumero()) ||
+        !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getDepartamento()) ||
+        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getPiso()) ||
+        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getCodigoPostal()) || 
+        !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getLocalidad()) || 
+        !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getProvincia()) || 
+        !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getPais()) || 
+        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getTelefono()) || !funcionesUtiles.contieneSoloLetras(huespedDTO.getOcupacion()) || 
+        !funcionesUtiles.contieneSoloLetras(huespedDTO.getNacionalidad()) || 
+        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getCuit())){
 
                 //llamo a que se ingresen los datos pero le digo que se ingresaron mal los campos
                 ingresarDatos(true,huespedDTO,direccionDTO);
