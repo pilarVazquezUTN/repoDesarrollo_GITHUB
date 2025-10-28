@@ -694,7 +694,7 @@ public class App {
         huespedDTO.setNacionalidad(huespedDTO.getNacionalidad());
     }
 
-    
+
     public static void buscarHuesped(){
         /*se presenta pantalla para buscar huesped 
          ingresa nombre, apellido, tipo doc, num doc
@@ -706,31 +706,55 @@ public class App {
 
         System.out.print("Ingrese apellido: ");
         String apellidoHuesped = scanner.nextLine();
+        if(!funcionesUtiles.contieneSoloLetras(apellidoHuesped) && !apellidoHuesped.isEmpty()){
+            //funcionesUtiles.clearConsola();
+            System.out.print("Ingrese apellido valido: ");
+            apellidoHuesped = scanner.nextLine();
+        }
         System.out.print("Ingrese nombre: ");
         String nombreHuesped = scanner.nextLine();
+        if(!funcionesUtiles.contieneSoloLetras(nombreHuesped) && !nombreHuesped.isEmpty()){
+            //funcionesUtiles.clearConsola();
+            System.out.print("Ingrese nombre valido: ");
+            nombreHuesped = scanner.nextLine();
+        }
         System.out.print("Ingrese Tipo de documento: ");
         String tipoDoc = scanner.nextLine();
+        if(!funcionesUtiles.contieneSoloLetras(tipoDoc) && !tipoDoc.isEmpty()){
+            //funcionesUtiles.clearConsola();
+            System.out.print("Ingrese tipo de documento valido: ");
+            tipoDoc = scanner.nextLine();
+        }
         System.out.print("Ingrese su documento: ");
         String numDoc = scanner.nextLine();
+        if(!funcionesUtiles.contieneSoloNumeros(numDoc) &&  !numDoc.isEmpty()){
+            //funcionesUtiles.clearConsola();
+            System.out.print("Ingrese numero de documento valido: ");
+            numDoc = scanner.nextLine();
+        }
         HuespedDAO huespedDAO = (HuespedDAO) DAOFactory.create(DAOFactory.HUESPED);
         HuespedDTO huespedDTO = new HuespedDTO();
         huespedDTO=gestorHuesped.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
         funcionesUtiles.clearConsola();
-        System.out.println("Huesped seleccionado: ");
-        System.out.println("  Nombre: " + huespedDTO.getNombre());  
-        System.out.println("  Apellido: " + huespedDTO.getApellido());
-        System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
-        System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
         if(huespedDTO.getApellido()!=null){
+            System.out.println("Huesped seleccionado: ");
+            System.out.println("  Nombre: " + huespedDTO.getNombre());
+            System.out.println("  Apellido: " + huespedDTO.getApellido());
+            System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
+            System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
             System.out.println("DESEA MODIFICAR EL HUESPED? - indique SI o NO ");
             if ( scanner.nextLine().equals("si")){
+                funcionesUtiles.clearConsola();
                 modificarHuesped1(huespedDTO,gestorHuesped); //aca llamo a modificar huesped1 con Huesped DTO Y HuespedDto debe tener todos los campos
+
             }
         }
-
+        funcionesUtiles.clearConsola();
+        Menu();
         //nose si deberia llamar al gestor o a la clase
         //System.out.println("se elimino: " + gestorHuesped.eliminarHuesped(huespedDTO)); es para probar a ver si elimina pero necesito el CU 12 PARA
     }
+
 
 
 
@@ -817,6 +841,13 @@ public class App {
                 System.out.print("Ingrese nuevo valor (Enter = mantener, b = borrar): ");
                 String input = sc.nextLine().trim();
 
+                //para que se guarden en mayuscula si ingresa un dato que sea String
+                if(!campo.equals("numeroDocumento") || !campo.equals("CUIT") || !campo.equals("fechaNacimiento") || 
+                    !campo.equals("numero") || !campo.equals("piso") || !campo.equals("codigoPostal") || 
+                    !campo.equals("telefono")){
+                    input=input.toUpperCase();
+                }
+
                 if (input.isEmpty()) {
                     // Enter se mantiene valor --para el caso
                     ingresado = true;
@@ -837,12 +868,11 @@ public class App {
                 }
                 else {
                     // Nuevo valor ingresado
-
                     campos.put(campo, input);
 
                     System.out.println(campo + ": " + input);
                     if ( campo.equals("tipoDocumento" ) && !input.equalsIgnoreCase(tipoNomod)){
-                        huespedDNI.setTipoDocumento(input);
+                        huespedDNI.setTipoDocumento(input.toUpperCase());
 
                     }
                     else if (campo.equals("numeroDocumento") && !input.equalsIgnoreCase(dniNomod)){

@@ -74,7 +74,7 @@ public class HuespedDAO implements HuespedDAOInterfaz {
         /*
          AGREGAR EL HUESPEDDTO QUE LLEGA A LA BD DE HUESPEDES
          */
-        String RUTA_ARCHIVO="infoBuscarHuespedes.txt"; // esta en la misma carpera
+        String RUTA_ARCHIVO="infoBuscarHuespedes.csv"; // esta en la misma carpera
 
         // 1. Crear el formateador de fechas para java.util.Date
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -122,7 +122,7 @@ public class HuespedDAO implements HuespedDAOInterfaz {
             System.err.println("ERROR al guardar el huésped en el archivo: " + e.getMessage());
         }
     }
-    
+
 
     public HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
         String rutaArchivo = "infoBuscarHuespedes.csv"; // Cambia por la ruta real de tu archivo
@@ -151,13 +151,13 @@ public class HuespedDAO implements HuespedDAOInterfaz {
                     String documento = datos[3].trim();
 
                     // Coincide si el campo ingresado no está vacío y coincide con el del archivo DAO
-                    boolean coincideNombre = nombreHuesped.isEmpty() || nombre.equalsIgnoreCase(nombreHuesped);
-                    boolean coincideApellido = apellidoHuesped.isEmpty() || apellido.equalsIgnoreCase(apellidoHuesped);
-                    boolean coincideTipo = tipoDoc.isEmpty() || tipo.equalsIgnoreCase(tipoDoc);
-                    boolean coincideDocumento = numDoc.isEmpty() || documento.equalsIgnoreCase(numDoc);
+                    boolean coincideNombre = (nombreHuesped == null || nombreHuesped.isEmpty()) || nombre.equalsIgnoreCase(nombreHuesped);
+                    boolean coincideApellido = (apellidoHuesped == null || apellidoHuesped.isEmpty()) || apellido.equalsIgnoreCase(apellidoHuesped);
+                    boolean coincideTipo = (tipoDoc == null || tipoDoc.isEmpty()) || tipo.equalsIgnoreCase(tipoDoc);
+                    boolean coincideDocumento = (numDoc == null || numDoc.isEmpty()) || documento.equalsIgnoreCase(numDoc);
 
                     // Mostrar si todos los campos ingresados coinciden
-                    if (coincideNombre && coincideApellido && coincideTipo && coincideDocumento) {
+                    if (coincideNombre && coincideApellido && coincideTipo && coincideDocumento ) {
                         i++;
                         huespedDTO = new HuespedDTO();
                         System.out.println((i)+": ");
@@ -203,7 +203,7 @@ public class HuespedDAO implements HuespedDAOInterfaz {
             }
             if (!encontrado)
             {
-                System.out.println(i+" coincidencias"); 
+                System.out.println(i+" coincidencias");
             }else
             {
                 Scanner scanner = new Scanner(System.in);
@@ -216,14 +216,13 @@ public class HuespedDAO implements HuespedDAOInterfaz {
                 }
                 return listaHuespedes.get(Integer.parseInt(huespedNum)-1); //ACA ME ESTA DEVOLVIENDO EL HUESPED ELEGIDO
             }
-            //4.A.1. El sistema pasa a ejecutar el CU11 “Dar alta de Huésped” 4.A.2 El CU termina. 
+            //4.A.1. El sistema pasa a ejecutar el CU11 “Dar alta de Huésped” 4.A.2 El CU termina.
         }
         catch (IOException e) {
-        System.out.println("Error al leer el archivo: " + e.getMessage());
-    }
+            System.out.println("Error al leer el archivo: " + e.getMessage());
+        }
         return huespedRetorno;
     }
-
     /**
      *
      * @param rutaArchivo
