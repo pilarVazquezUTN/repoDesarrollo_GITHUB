@@ -56,6 +56,8 @@ public class App {
         System.out.println("2. Dar De Alta Huesped");
         //System.out.println("3. Dar de Baja Huesped");
         System.out.println("3. Reservar Habitacion");
+        System.out.println("4. Autenticarse con otro Usuario");
+        System.out.println("5. Salir");
         System.out.print("--- Ingrese una opción: "); 
 
         ingresaOpcion();
@@ -68,7 +70,7 @@ public class App {
         int opcion= scanner.nextInt();
         funcionesUtiles.clearConsola();
         do{
-            if(opcion<1 || opcion>=4){
+            if(opcion<1 || opcion>=5){
                 funcionesUtiles.clearConsola();
                 System.out.println("--------------- Ingrese una opcion correcta!");
                 Menu();
@@ -93,6 +95,14 @@ public class App {
                 //break;
             case 3: //reservar habitacion
                 reservarHabitacion();
+                break;
+            case 4:
+                funcionesUtiles.clearConsola();
+                autenticarHuesped();
+                break;
+            case 5:
+                funcionesUtiles.clearConsola();
+                System.out.println("Hasta luego!");
                 break;
         }
     }
@@ -508,7 +518,13 @@ public class App {
             System.out.print("Ingrese su email: ");
             huespedDTO.setEmail(scanner.nextLine().toUpperCase());
         } else{
-            System.out.println("Su email: "+huespedDTO.getEmail());
+            if(funcionesUtiles.emailValido(emailHuesped)){
+                System.out.println("Su email: "+huespedDTO.getEmail());
+            } else{
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Email: ");
+                huespedDTO.setEmail(scanner.nextLine());
+            }
+            
         }
         /*
         if(!huespedDTO.getEmail().isEmpty()){
@@ -548,10 +564,8 @@ public class App {
         System.out.println("1. Siguiente");     
         System.out.println("2. Cancelar");
 
-        System.err.println("hasta aca 1");
         Integer opcion;
         opcion =scanner.nextInt();
-        System.err.println("hasta aca 2");
 
         if(opcion==1){
            //eligio Siguiente
@@ -600,7 +614,8 @@ public class App {
         !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getPais()) || 
         !funcionesUtiles.contieneSoloNumeros(huespedDTO.getTelefono()) || !funcionesUtiles.contieneSoloLetras(huespedDTO.getOcupacion()) || 
         !funcionesUtiles.contieneSoloLetras(huespedDTO.getNacionalidad()) || 
-        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getCuit())){
+        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getCuit()) ||
+        !funcionesUtiles.emailValido(huespedDTO.getEmail()) ){
 
                 //llamo a que se ingresen los datos pero le digo que se ingresaron mal los campos
                 ingresarDatos(true,huespedDTO,direccionDTO);
