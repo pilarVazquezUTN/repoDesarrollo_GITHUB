@@ -816,6 +816,12 @@ public class App {
                 System.out.print("Ingrese nuevo valor (Enter = mantener, b = borrar): ");
                 String input = sc.nextLine().trim();
 
+                if(!campo.equals("numeroDocumento") || !campo.equals("CUIT") || !campo.equals("fechaNacimiento") || 
+                    !campo.equals("numero") || !campo.equals("piso") || !campo.equals("codigoPostal") || 
+                    !campo.equals("telefono")){
+                    input=input.toUpperCase();
+                }
+
                 if (input.isEmpty()) {
                     // Enter se mantiene valor --para el caso
                     ingresado = true;
@@ -836,12 +842,11 @@ public class App {
                 }
                 else {
                     // Nuevo valor ingresado
-
                     campos.put(campo, input);
 
                     System.out.println(campo + ": " + input);
                     if ( campo.equals("tipoDocumento" ) && !input.equalsIgnoreCase(tipoNomod)){
-                        huespedDNI.setTipoDocumento(input);
+                        huespedDNI.setTipoDocumento(input.toUpperCase());
 
                     }
                     else if (campo.equals("numeroDocumento") && !input.equalsIgnoreCase(dniNomod)){
