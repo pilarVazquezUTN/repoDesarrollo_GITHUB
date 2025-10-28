@@ -32,7 +32,7 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
     public void abrirArchivoCsvHabitaciones(Date desdeFecha, Date hastaFecha){
         String FECHA_FORMATO = "dd/MM/yyyy";
         String NOMBRE_ARCHIVO = "infoHabitaciones.csv";
-        String SEPARADOR_CSV = ";";
+        String SEPARADOR_CSV = ",";
         SimpleDateFormat formatter = new SimpleDateFormat(FECHA_FORMATO);
         formatter.setLenient(false);
         FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
