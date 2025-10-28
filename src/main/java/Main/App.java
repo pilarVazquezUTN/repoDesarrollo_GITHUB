@@ -2,9 +2,9 @@ package Main;
 import java.io.IOException;
 import java.text.ParseException; 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+//import java.time.LocalDate;
+//import java.time.format.DateTimeFormatter;
+//import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -87,7 +87,7 @@ public class App {
                 break;
             case 2://dar de alta huesped
                 System.out.println("DAR DE ALTA HUESPED \n");
-                darAltaHuesped();                
+                darAltaHuesped();
                 break;
             //case 3://dar de baja huesped. POR LAS DUDAS LO DEJOR PERO ME PARECE QUE HAY QUE SACARLO
                // System.out.println("DAR DE BAJA HUESPED \n");
@@ -126,6 +126,7 @@ public class App {
             } else {
                 contrasenaValida = true;
             }
+            funcionesUtiles.clearConsola();
         } while (!contrasenaValida);
 
         // Creamos el UsuarioDTO para pasarlo al DAO
@@ -1143,6 +1144,18 @@ public class App {
         }
     }
 
+    public static void clearConsola() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            }
+        } catch (IOException | InterruptedException ex) {
+            System.out.println("No se pudo limpiar la consola.");
+        }
+    }
 
 
 
