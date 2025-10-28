@@ -60,7 +60,7 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
                     Date hastaFechaHabitacion = funcionesUtiles.convertirStringADate(hastaFechaHabitacionString);
 
                     if (desdeFechaHabitacion != null && hastaFechaHabitacion != null) {
-                        if(desdeFechaHabitacion.before(desdeFecha) && hastaFecha.before(hastaFechaHabitacion)){
+                        if(desdeFechaHabitacion.before(desdeFecha) && hastaFecha.before(hastaFechaHabitacion) && !"ocupada".equals(estadoHabitacion)){
                         System.out.println("Habitacion nro: "+numHabitacion+"\n con estado: "+estadoHabitacion+"\n con precio: "+precioHabitacion+"\n capacidad: "+capacidadHabitacion+"\n estado de la reserva: "+estadoReserva+"\n desde fecha: "+funcionesUtiles.convertirDateAString(desdeFechaHabitacion)+"\n hasta fecha: "+funcionesUtiles.convertirDateAString(hastaFechaHabitacion)+"\n");
                         existeHabitacion=true;
                         }
