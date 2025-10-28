@@ -8,6 +8,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Predicate;
 
+import Classes.Huesped.Huesped;
 import Classes.Huesped.HuespedDAO;
 import Classes.Huesped.HuespedDTO;
 import Classes.Usuario.GestorUsuario;
@@ -29,7 +30,6 @@ public class App {
 
 
 
-    
     public static void main(String[] args) {
         Bienvenida();
     }
@@ -68,7 +68,7 @@ public class App {
         int opcion= scanner.nextInt();
         funcionesUtiles.clearConsola();
         do{
-            if(opcion<1 || opcion>4){
+            if(opcion<1 || opcion>=4){
                 funcionesUtiles.clearConsola();
                 System.out.println("--------------- Ingrese una opcion correcta!");
                 Menu();
@@ -688,9 +688,9 @@ public class App {
         */
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Ingrese su apellido: ");
+        System.out.print("Ingrese apellido: ");
         String apellidoHuesped = scanner.nextLine();
-        System.out.print("Ingrese su nombre: ");
+        System.out.print("Ingrese nombre: ");
         String nombreHuesped = scanner.nextLine();
         System.out.print("Ingrese Tipo de documento: ");
         String tipoDoc = scanner.nextLine();
@@ -706,9 +706,9 @@ public class App {
         System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
         System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
         if(huespedDTO.getApellido()!=null){
-            System.out.println("DESEA MODIFICAR EL HUESPED? - presione si o no ");
+            System.out.println("DESEA MODIFICAR EL HUESPED? - indique SI o NO ");
             if ( scanner.nextLine().equals("si")){
-                modificarHuesped(huespedDTO,gestorHuesped); //aca llamo a modificar huesped con Huesped DTO Y HuespedDto debe tener todos los campos
+                modificarHuesped1(huespedDTO,gestorHuesped); //aca llamo a modificar huesped1 con Huesped DTO Y HuespedDto debe tener todos los campos
             }
         }
 
@@ -716,213 +716,24 @@ public class App {
         //System.out.println("se elimino: " + gestorHuesped.eliminarHuesped(huespedDTO)); es para probar a ver si elimina pero necesito el CU 12 PARA
     }
 
-    /**
-     *
-     * @param huespedDTO
-     * @param gestorHuesped
-     * yo aca agarro mis daots del huespedDTO, los tengo q mostrar por pantalla dsp mando al gestor para q llame al dao
-     * FALTA VALIDAR LOS DATOS DE CADA CAMPO QUE MODIFICA, (hice de campos string) SI PRESIONA BORRAR ---- DEBE VOLVER A PEDIR Q INGRESE PORQ ES OBLIGATORIO
-     */
 
 
-
-
-    public static void modificarHuesped(HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
-        String dniNOMod = huespedDTO.getNumeroDocumento(); //son los no modficados asi dsp busco en q parte de el archivo esta
+    public static void modificarHuesped(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuesped gestorHuesped, Map<String, Predicate<String>> validadores,
+                                        Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod ) {
         Scanner sc = new Scanner(System.in);
-        String tipoNomod=huespedDTO.getTipoDocumento();
-        HuespedDTO huespedDNI = new HuespedDTO();
-
-
-        Map<String, String> campos = new LinkedHashMap<>();
-        Map<String, Predicate<String>> validadores = new HashMap<>();
-        Set<String> noObligatorios = Set.of("CUIT", "email");
-
-        gestorHuesped.modificarHuespedGestor(huespedDTO, huespedDTO.getDireccionHuesped(), "infoBuscarHuespedes.txt", campos, validadores);
-
-        for (String campo : campos.keySet()) {  // for primeoro para apellido, nombre , asi , cada campo en el keyset
-            boolean ingresado = false;
-            while (!ingresado) { //aca el while para verificar cada campo y q vuelva a ingresar valor
-
-                System.out.println("Valor de " + campo + ": " + campos.get(campo));
-                System.out.print("Ingrese nuevo valor (Enter = mantener, b = borrar): ");
-                String input = sc.nextLine().trim();
-
-                if (input.isEmpty()) {
-                    // Enter se mantiene valor --para el caso
-
-                    ingresado = true;
-
-                } else if (input.equalsIgnoreCase("b")) {
-                    // Quiere borrar - si es obligatorio no puede, si no esta en NO OBLIGATORIOS ES PORQ ES OBLIGATORIO
-                    if (!noObligatorios.contains(campo)) {
-                        System.out.println("Este campo es obligatorio y no puede quedar vacío.");
-                    } else {
-                        campos.put(campo, ""); // borrar valor
-                        ingresado = true;
-                    }
-                } else {
-                    // Nuevo valor ingresado
-                    campos.put(campo, input);
-                    if ( campo.equals("tipoDocumento")){
-                        huespedDNI.setTipoDocumento(input);
-
-                    }
-                    else if (campo.equals("numeroDocumento")){
-                        huespedDNI.setNumeroDocumento(input);
-                    }
-                    ingresado = true;
-                }
-            }
-        }
-
+        muestraCamposIngresados(campos);
         // valida campos, pide incorrectos
         System.out.println("PARA ACEPTAR PRESIONE 1: ");
         System.out.println("PARA CANCELAR PRESIONE 2: ");
         System.out.println("PARA BORRAR PRESIONE 3: ");
         int opcion = sc.nextInt();
 
-        if ( opcion == 1) {
-
-        System.out.println("CAMPOS INCORRECTOS VUELVA A INGRESAR \n");
-        boolean todosValidos;
-
-        do {
-            todosValidos = true;
-
-            for (Map.Entry<String, String> entry : campos.entrySet()) {
-                String campo = entry.getKey();
-                String valor = entry.getValue();
-
-                Predicate<String> validador = validadores.get(campo);
-
-
-
-                // Si es obligatorio y vacío .inválido
-                System.out.println("VALIDADOR VALOR " + valor);
-                System.out.println("TEST QUE DEVUELVE " + validador.test(valor));
-
-                if ((!noObligatorios.contains(campo) && valor.isBlank()) || !validador.test(valor)) {
-
-                    System.out.println("\n Valor inválido para '" + campo + "': " + valor);
-
-                    boolean ingresado = false;
-
-                    while (!ingresado) {
-                        System.out.print("ingrese " + campo + " nuevamente (B para borrar): ");
-                        String input = sc.nextLine().trim();
-
-                        if (input.isEmpty() && noObligatorios.contains(campo)) {
-                            // Enter en opcional, se puede  mantener vacío
-                            ingresado = true;
-
-                        } else if (input.equalsIgnoreCase("b")) {
-                            if (!noObligatorios.contains(campo)) {
-                                System.out.println("Este campo es obligatorio y no puede quedar vacío.");
-                            } else {
-                                campos.put(campo, "");
-                                ingresado = true;
-                            }
-                        } else {
-                            campos.put(campo, input);
-                           if ( campo.equals("tipoDocumento")){
-                                huespedDNI.setTipoDocumento(input);
-
-                            }
-                            else if (campo.equals("numeroDocumento")){
-                                huespedDNI.setNumeroDocumento(input);
-                            }
-                            ingresado = true;
-                        }
-                    }
-                    todosValidos = false;
-                }
-            }
-        } while (!todosValidos);
-
-         //FUNCION GUILLE CHEQUEAR SI ESTA EL TIPO Y NUMERO EN EL SISTEMA EL QUE INGRESONUEVOOO
-        // si hay exite el num de doc ese voy al huesped ese y lo modifico todo menos e ni
-
-            System.out.println("HUESPED CARGADO CON REPETICION " + huespedDNI.getNumeroDocumento());
-       if (gestorHuesped.chequearExisteHuesped(huespedDTO)) {  //llama al gestor q verifique si ya esta el doc
-           System.out.println("¡CUIDADO NUMERO DOCUMENTO YA EXISTE EN EL SISTEMA");
-           System.out.println("1. Aceptar igualmente");
-           System.out.println("2. Corregir");
-
-           int entrada = sc.nextInt();
-
-
-           while ((entrada != 1 && (entrada != 2))) {
-
-               System.out.println("Entrada inválida. Debe ingresar 1 o 2.");
-               System.out.println("1. Aceptar igualmente");
-               System.out.println("2. Corregir");
-
-               entrada = Integer.parseInt(sc.nextLine().trim());
-
-           }
-
-           if (entrada != 1) {
-               //pide datos y se vuelven a ingresar
-               System.out.println("corregir datos tipo y numero de documento");
-               System.out.println("Ingrese el tipo");
-               System.out.println("Ingrese el dni");
-               String tipoDoc = sc.nextLine().trim();
-               String valorDoc = sc.nextLine().trim();
-
-               while (!(Validador.esNumeroValido.test(valorDoc)) && !(Validador.esStringValido.test(tipoDoc))) {  //PUEDE FALLAR
-                   System.out.println("INGRESE VALORES VALIDOS");
-                   //tenog q validar d enuevo
-                   System.out.println("Ingrese el tipo");
-                   tipoDoc = sc.nextLine().trim();
-
-                   System.out.println("Ingrese el dni");
-                   valorDoc = sc.nextLine().trim();
-               }
-               campos.put("tipoDocumento", valorDoc);
-               campos.put("numeroDocumento", valorDoc);
-
-           } else {
-               //opta por aceptar igualmente
-               System.out.println("la operacion a culminado con exito ");
-
-               //ahora llamo a geestor para q llame al dao y guarde en el archivo, le paso el dni ue esta en el archivo para poder buscar
-               System.out.println(" dni mo modificado " + dniNOMod);
-               System.out.println("TIPO NO MODIFICADO" + tipoNomod);
-
-               System.out.println(huespedDNI.getTipoDocumento());
-               System.out.println(huespedDNI.getNumeroDocumento());
-
-
-               gestorHuesped.modificarDatosHuespedArchivo(huespedDTO, "infoBuscarHuespedes.txt", huespedDTO.getDireccionHuesped(), huespedDNI.getTipoDocumento(), huespedDNI.getNumeroDocumento());
-           }
-
-       }
-       else{  //si no existe el dni, es porq le quiere cambiar a ese q ya esta el dni
-           System.out.println("\n Todos los campos válidos:"); //key - value
-           campos.forEach((k, v) -> System.out.println(k + ": " + v));
-
-           System.out.println("la operacion a culminado con exito ");
-
-           //ahora llamo a geestor para q llame al dao y guarde en el archivo, le paso el dni ue esta en el archivo para poder buscar
-           gestorHuesped.modificarDatosHuespedArchivo(huespedDTO, "infoBuscarHuespedes.txt",huespedDTO.getDireccionHuesped(), tipoNomod, dniNOMod );
-
-           //huespedDAO.actualizarHuesped(rutaArchivo, huespedDTO, huespedDTO.getDireccionHuesped(), tipoDoc, dninoMod);
-       }
-
-
+        if ( opcion == 1) {  //si la opcion es 1 acepta los cambios , entonces valida - SI NO VALIDA EL CMAPO INGRESADO
+            opcionAceptar(campos,validadores, noObligatorios,huespedDNI,dniNOMod,tipoNomod,huespedDTO);
         }
         //cancelar
         else if (opcion ==2){
-            System.out.println("¿Desea cancelar la modificacion del huesped?");
-            System.out.println("Indique - si o no ");
-            String opcion2 = sc.nextLine().trim();
-
-            if (opcion2.equalsIgnoreCase("si")){ //muestra todo lo seleccionado
-                System.out.println("Se cancela la modificacin del huesped");
-
-            }
-
+            opcionCancelar(campos,huespedDTO,gestorHuesped,validadores,noObligatorios,huespedDNI,dniNOMod,tipoNomod);
         }
 
         else if (opcion == 3){
@@ -942,6 +753,297 @@ public class App {
 
 
     }
+
+
+    public static void modificarHuesped1 (HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
+        String dniNOMod = huespedDTO.getNumeroDocumento(); //son los no modficados asi dsp busco en q parte de el archivo esta
+        String tipoNomod=huespedDTO.getTipoDocumento();
+
+        Scanner sc = new Scanner(System.in);
+        HuespedDTO huespedDNI = new HuespedDTO();
+
+
+        Map<String, String> campos = new LinkedHashMap<>();  //map es linkedHASHMAP ENTONCES LO QUE HACE ES CUANDO LE INSERTO LOS VALORES D ELOS CAMPOS LOS MANTINEE ASI
+        Map<String, Predicate<String>> validadores = new HashMap<>();
+
+        Set<String> noObligatorios = Set.of("CUIT", "email");
+
+        //se cargan los datos
+        gestorHuesped.modificarHuespedGestor(huespedDTO, huespedDTO.getDireccionHuesped(), "infoBuscarHuespedes.csv", campos, validadores);//lama para tener los datos cargaods
+
+        validacionyOpciones(campos,huespedDNI,noObligatorios,huespedDTO,tipoNomod,dniNOMod); //llama a pedir los datos puedo llamar ahi primero y dsp llamar a esta funcon
+        modificarHuesped(campos,huespedDTO,gestorHuesped,validadores,noObligatorios,huespedDNI,dniNOMod,tipoNomod);
+    System.out.println("DESEA REALIZAR OTRA OPERACION? - indique SI o NO ");
+    Scanner sc2 = new Scanner(System.in);
+    if( sc.nextLine().equals("si")){
+        System.out.println("\n ");
+        Menu();
+    }
+
+
+
+
+    }
+
+
+
+
+    public static void validacionyOpciones( Map<String, String> campos,HuespedDTO huespedDNI, Set<String> noObligatorios, HuespedDTO huespedDTO, String tipoNomod, String dniNomod){
+
+        Scanner sc = new Scanner(System.in);
+
+        for (String campo : campos.keySet()) {  // for primeoro para apellido, nombre , asi , cada campo en el keyset
+            boolean ingresado = false;
+
+            while (!ingresado) { //aca el while para verificar cada campo y q vuelva a ingresar valor
+
+                System.out.println(campo + ": " + campos.get(campo));
+                System.out.print("Ingrese nuevo valor (Enter = mantener, b = borrar): ");
+                String input = sc.nextLine().trim();
+
+                if (input.isEmpty()) {
+                    // Enter se mantiene valor --para el caso
+                    ingresado = true;
+                    if ( campo.equals("tipoDocumento")){
+                        huespedDNI.setTipoDocumento(huespedDTO.getTipoDocumento());
+                    }
+
+
+                }
+                else if (input.equalsIgnoreCase("b")) {
+                    // Quiere borrar - si es obligatorio no puede, si no esta en NO OBLIGATORIOS ES PORQ ES OBLIGATORIO
+                    if (!noObligatorios.contains(campo)) {
+                        System.out.println("\n campo obligatorio no puede quedar vacio ");
+                    } else {
+                        campos.put(campo, ""); // borrar valor
+                        ingresado = true;
+                    }
+                }
+                else {
+                    // Nuevo valor ingresado
+
+                    campos.put(campo, input);
+
+                    System.out.println(campo + ": " + input);
+                    if ( campo.equals("tipoDocumento" ) && !input.equalsIgnoreCase(tipoNomod)){
+                        huespedDNI.setTipoDocumento(input);
+
+                    }
+                    else if (campo.equals("numeroDocumento") && !input.equalsIgnoreCase(dniNomod)){
+                        huespedDNI.setNumeroDocumento(input);
+                    }
+                    ingresado = true;
+                }
+            }
+        }
+
+    }
+
+    public static void muestraCamposIngresados(Map<String, String> campos){
+        for (Map.Entry<String, String> entry : campos.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    public static void opcionAceptar(Map<String, String> campos,Map<String, Predicate<String>> validadores,
+                                     Set<String> noObligatorios, HuespedDTO huespedDNI,String  dniNOMod,String tipoNomod, HuespedDTO huespedDTO ){
+        Scanner sc = new Scanner(System.in);
+
+        //VUELVE A PEDIR DATOS Y VUELVE A VALIDAR
+
+
+
+        boolean todosValidos;
+
+        do {
+            todosValidos = true;
+
+            for (Map.Entry<String, String> entry : campos.entrySet()) {
+                String campo = entry.getKey();
+                String valor = entry.getValue();
+
+                Predicate<String> validador = validadores.get(campo);
+                // Si es obligatorio y vacío .inválido
+
+
+                if ((!noObligatorios.contains(campo) && valor.isBlank()) || !validador.test(valor)) {
+
+                    System.out.println("\n valor inválido para '" + campo + "': " + valor);
+
+                    boolean ingresado = false;
+
+                    while (!ingresado) {
+                        System.out.print("ingrese " + campo + " nuevamente - (B para borrar): ");
+                        String input = sc.nextLine().trim();
+
+                        if (input.isEmpty() && noObligatorios.contains(campo)) {
+                            // Enter en opcional, se puede  mantener vacío
+                            ingresado = true;
+
+                        }
+                        else if (input.equalsIgnoreCase("b")) {
+                            if (!noObligatorios.contains(campo)) {
+                                System.out.println("Este campo es obligatorio y no puede quedar vacío.");
+                            } else {
+                                campos.put(campo, "");
+                                ingresado = true;
+                            }
+                        }
+                        else {
+                            campos.put(campo, input);
+                            if ( campo.equals("tipoDocumento" ) && !input.equalsIgnoreCase(tipoNomod)){
+                                huespedDNI.setTipoDocumento(input);
+
+                            }
+                            else if (campo.equals("numeroDocumento") && !input.equalsIgnoreCase(dniNOMod)){
+                                huespedDNI.setNumeroDocumento(input);
+                            }
+                            ingresado = true;
+                        }
+                    }
+                    todosValidos = false;
+                }
+            }
+        } while (!todosValidos);
+
+
+        System.out.println("dni de huesped dni" + huespedDNI.getNumeroDocumento());
+        System.out.println("tipo de huesped dni" + huespedDNI.getTipoDocumento());
+        System.out.println("DNI NO MOD" + dniNOMod);
+
+
+        //entra a modificar otro huesped en el caso q hayan ingresadp un dni nuevo, en otro caso entra al else
+        if (huespedDNI.getNumeroDocumento() != null && huespedDNI.getTipoDocumento()!=null && !huespedDNI.getNumeroDocumento().equalsIgnoreCase(dniNOMod) ) {//si es distinto de null es porq ingreso otro dni
+            System.out.println("ENTRA");
+            if (gestorHuesped.chequearExisteHuesped(huespedDNI)) {  //llama al gestor q verifique si ya esta el doc
+                System.out.println("¡CUIDADO NUMERO DOCUMENTO YA EXISTE EN EL SISTEMA");
+                System.out.println("1. Aceptar igualmente");
+                System.out.println("2. Corregir");
+
+                int entrada = sc.nextInt();
+
+
+                while ((entrada != 1 && (entrada != 2))) {
+
+                    System.out.println("Entrada inválida. Debe ingresar 1 o 2.");
+                    System.out.println("1. Aceptar igualmente");
+                    System.out.println("2. Corregir");
+
+                    entrada = Integer.parseInt(sc.nextLine().trim());
+
+                }
+
+                if (entrada != 1) {
+                    //pide datos y se vuelven a ingresar
+                    System.out.println("corregir datos tipo y numero de documento");
+                    System.out.println("Ingrese el tipo");
+                    System.out.println("Ingrese el dni");
+                    String tipoDoc = sc.nextLine().trim();
+                    String valorDoc = sc.nextLine().trim();
+
+                    while (!(Validador.esNumeroValido.test(valorDoc)) && !(Validador.esStringValido.test(tipoDoc))) {  //PUEDE FALLAR
+                        System.out.println("INGRESE VALORES VALIDOS");
+                        //tenog q validar d enuevo
+                        System.out.println("Ingrese el tipo");
+                        tipoDoc = sc.nextLine().trim();
+
+                        System.out.println("Ingrese el dni");
+                        valorDoc = sc.nextLine().trim();
+                    }
+                    campos.put("tipoDocumento", valorDoc);
+                    campos.put("numeroDocumento", valorDoc);
+
+                }
+                else {
+                    //opta por aceptar igualmente
+                    System.out.println("la operacion a culminado con exito ");
+
+                    //ahora llamo a geestor para q llame al dao y guarde en el archivo, le paso el dni ue esta en el archivo para poder buscar
+
+
+                    System.out.println(huespedDNI.getTipoDocumento());
+                    System.out.println(huespedDNI.getNumeroDocumento());
+
+
+                    gestorHuesped.modificarDatosHuespedArchivo(campos,huespedDTO, "infoBuscarHuespedes.csv", huespedDTO.getDireccionHuesped(), huespedDNI.getTipoDocumento(), huespedDNI.getNumeroDocumento());
+                }
+
+            }} //si huespedDni es null es porq quiere modificar datos de el huesped q esta
+        else{  //si no existe el dni, es porq le quiere cambiar a ese q ya esta el dni ENTONCES OCUPA EL DNI VIEJO
+
+            System.out.println("\n Todos los campos válidos:"); //key - value
+            campos.forEach((k, v) -> System.out.println(k + ": " + v));
+
+            System.out.println("la operacion a culminado con exito ");
+
+            //ahora llamo a geestor para q llame al dao y guarde en el archivo, le paso el dni ue esta en el archivo para poder buscar
+            gestorHuesped.modificarDatosHuespedArchivo(campos, huespedDTO, "infoBuscarHuespedes.csv",huespedDTO.getDireccionHuesped(), tipoNomod, dniNOMod );
+
+            //huespedDAO.actualizarHuesped(rutaArchivo, huespedDTO, huespedDTO.getDireccionHuesped(), tipoDoc, dninoMod);
+        }
+
+
+    }
+
+    public static void opcionCancelar(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuesped gestorHuesped, Map<String, Predicate<String>> validadores,
+                                      Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod )  {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("¿Desea cancelar la modificacion del huesped?");
+        System.out.println("Indique - SI o NO");
+        String op = sc.nextLine().trim();
+        while (!(op.equalsIgnoreCase("si") || op.equalsIgnoreCase("no"))) {
+
+           System.out.println("Indique - SI o NO");
+            op = sc.nextLine().trim();
+        }
+        if (op.equalsIgnoreCase("si")){
+            System.out.println("Se cancela la modificacin del huesped");
+            Menu();
+        }
+        else{ //vuelve a mostrar hasta el boton aceptar borrar cancelar
+            modificarHuesped(campos, huespedDTO,gestorHuesped,validadores,noObligatorios,huespedDNI,dniNOMod,tipoNomod);
+
+        }
+
+    }
+
+        public static void darBajaHuesped(HuespedDTO huespedDTO){ //el huesped me lo pasa el CU12
+            Scanner scanner = new Scanner(System.in);
+
+        /*prueba pero en realidad a dar de baja huesped le llega el huesped del CU10
+        String nombre, apellido, tipoDoc, numDoc;
+        nombre = scanner.nextLine();
+        apellido = scanner.nextLine();
+        tipoDoc = scanner.nextLine();
+        numDoc = scanner.nextLine();
+        HuespedDTO huespedDTO = gestorHuesped.buscarDatos(nombre,apellido,tipoDoc,numDoc);
+        */
+            int opcion;
+            if(huespedDTO.getApellido() == null){System.out.println(" no existe el huesped buscado");}
+            else{
+                if (!gestorHuesped.seAlojo(huespedDTO)){
+                    System.out.println("los datos del huesped: "+huespedDTO.getNombre()+" "+huespedDTO.getApellido()+" "+huespedDTO.getTipoDocumento()+" "+huespedDTO.getNumeroDocumento()+" seran eliminados del sistema");
+                    System.out.println("presione 1 si desea ELIMINAR o 2 si desea CANCELAR");
+                    opcion = scanner.nextInt();
+                    if(opcion==1){
+                        if(gestorHuesped.eliminarHuesped(huespedDTO)){
+                            System.out.println("los datos del huesped: "+huespedDTO.getNombre()+" "+huespedDTO.getApellido()+" "+huespedDTO.getTipoDocumento()+" "+huespedDTO.getNumeroDocumento()+" seran eliminados del sistema");
+                        }else {
+                            System.out.println("no existe huesped a eliminar");
+                        }
+                    } else if (opcion == 2) {
+                        System.out.println("Cancelacion exitosa");
+                    }
+                }else {
+                    System.out.println(" El huesped no puede ser eliminado pues se ha alojado en el Hotel en alguna oportunidad.");
+                    System.out.println(" PRESIONE CUALQUIER TECLA PARA CONTINUAR...");
+                    scanner.nextLine();
+                }
+            }
+
+        }
+
+
 
 
     public static void reservarHabitacion(){
@@ -1026,40 +1128,9 @@ public class App {
         }
     }
 
-    public static void darBajaHuesped(HuespedDTO huespedDTO){ //el huesped me lo pasa el CU12
-        Scanner scanner = new Scanner(System.in);
 
-        /*prueba pero en realidad a dar de baja huesped le llega el huesped del CU10
-        String nombre, apellido, tipoDoc, numDoc;
-        nombre = scanner.nextLine();
-        apellido = scanner.nextLine();
-        tipoDoc = scanner.nextLine();
-        numDoc = scanner.nextLine();
-        HuespedDTO huespedDTO = gestorHuesped.buscarDatos(nombre,apellido,tipoDoc,numDoc);
-        */
-        int opcion;
-        if(huespedDTO.getApellido() == null){System.out.println(" no existe el huesped buscado");}
-        else{
-            if (!gestorHuesped.seAlojo(huespedDTO)){
-                System.out.println("los datos del huesped: "+huespedDTO.getNombre()+" "+huespedDTO.getApellido()+" "+huespedDTO.getTipoDocumento()+" "+huespedDTO.getNumeroDocumento()+" seran eliminados del sistema");
-                System.out.println("presione 1 si desea ELIMINAR o 2 si desea CANCELAR");
-                opcion = scanner.nextInt();
-                if(opcion==1){
-                    if(gestorHuesped.eliminarHuesped(huespedDTO)){
-                        System.out.println("los datos del huesped: "+huespedDTO.getNombre()+" "+huespedDTO.getApellido()+" "+huespedDTO.getTipoDocumento()+" "+huespedDTO.getNumeroDocumento()+" seran eliminados del sistema");
-                    }else {
-                        System.out.println("no existe huesped a eliminar");
-                    }
-                } else if (opcion == 2) {
-                    System.out.println("Cancelacion exitosa");
-                }
-            }else {
-                System.out.println(" El huesped no puede ser eliminado pues se ha alojado en el Hotel en alguna oportunidad.");
-                System.out.println(" PRESIONE CUALQUIER TECLA PARA CONTINUAR...");
-                scanner.nextLine();
-            }
-        }
 
-    }
+
+
 }
 

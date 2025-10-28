@@ -115,9 +115,9 @@ public class GestorHuesped {
      * @param tipo
      * le pasa al dao los datos, TIENE Q BUSCAR Y REEMPLAZAR
      */
-    public void modificarDatosHuespedArchivo(HuespedDTO huespedDTO, String rutaArchivo, DireccionDTO direccionDTO, String tipo , String dni) {
+    public void modificarDatosHuespedArchivo(Map<String, String> campos, HuespedDTO huespedDTO, String rutaArchivo, DireccionDTO direccionDTO, String tipo , String dni) {
         boolean huespedModificado = false;
-        huespedModificado= huespedDAO.actualizarHuesped(rutaArchivo,huespedDTO,direccionDTO,tipo,dni);
+        huespedModificado= huespedDAO.actualizarHuesped( campos, rutaArchivo,huespedDTO,direccionDTO,tipo,dni);
 
 
     }
