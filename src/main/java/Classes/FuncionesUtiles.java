@@ -45,4 +45,26 @@ public class FuncionesUtiles {
         // 3. Usa el método format() para realizar la conversión.
         return formateador.format(fechaDate);
     }
+
+
+    public static boolean contieneSoloLetras(String palabra){
+        boolean soloLetras=true;
+        if(palabra==null || palabra.isEmpty()){
+            soloLetras=false;
+        }
+        String regex = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$";
+
+        return palabra.matches(regex);
+    }
+
+
+    public static boolean contieneSoloNumeros(String palabra){
+        boolean soloLetras=true;
+        if(palabra==null || palabra.isEmpty()){
+            soloLetras=false;
+        }
+        String regex = "^\\d+$";
+
+        return palabra.matches(regex);
+    }
 }
