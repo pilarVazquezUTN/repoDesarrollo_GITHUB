@@ -14,6 +14,7 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 
 import Classes.Direccion.DireccionDTO;
+import Classes.FuncionesUtiles;
 import Classes.Huesped.GestorHuesped;
 
 import static java.lang.Class.forName;
@@ -34,7 +35,7 @@ public class HuespedDAO implements HuespedDAOInterfaz {
      */
     String tipoDocBuscado = huespedDTO.getTipoDocumento().trim();
     String numDocBuscado = huespedDTO.getNumeroDocumento().trim();
-    String RUTA_ARCHIVO = "infoBuscarHuespedes.txt";
+    String RUTA_ARCHIVO = "infoBuscarHuespedes.csv";
     Boolean existeDoc = false;
 
     // Usamos try-with-resources para asegurar que el BufferedReader se cierre automáticamente
@@ -209,13 +210,15 @@ public class HuespedDAO implements HuespedDAOInterfaz {
                 Scanner scanner = new Scanner(System.in);
                 System.out.print("ingrese el numero del huesped que buscaba: ");
                 String huespedNum = scanner.nextLine();
-                while(Integer.parseInt(huespedNum)>i || Integer.parseInt(huespedNum)<=0){
+
+                while(!(FuncionesUtiles.esUnSoloNumero(huespedNum)) || (Integer.parseInt(huespedNum)>i || Integer.parseInt(huespedNum)<=0) ){
                     System.out.println("----ingrese un numero valido----- ");
                     System.out.println("ingrese el numero del huesped que buscaba: ");
                     huespedNum = scanner.nextLine();
                 }
                 return listaHuespedes.get(Integer.parseInt(huespedNum)-1); //ACA ME ESTA DEVOLVIENDO EL HUESPED ELEGIDO
-            }
+
+               }
             //4.A.1. El sistema pasa a ejecutar el CU11 “Dar alta de Huésped” 4.A.2 El CU termina.
         }
         catch (IOException e) {

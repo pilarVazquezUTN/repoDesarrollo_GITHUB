@@ -38,6 +38,9 @@ public class FuncionesUtiles {
 
     }
 
+    public static boolean esUnSoloNumero(String valor) {
+        return valor.matches("[0-9]"); // solo un dígito entre 0 y 9
+    }
 
 
     public static String convertirDateAString(Date fechaDate) {

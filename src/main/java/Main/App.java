@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Predicate;
 
+import Classes.Habitacion.Suite;
 import Classes.Huesped.Huesped;
 import Classes.Huesped.HuespedDAO;
 import Classes.Huesped.HuespedDTO;
@@ -36,21 +37,27 @@ public class App {
         Bienvenida();
     }
 
+    /**
+     * Bienvenida, funcion q llama a autenticar huesped
+     */
     public static void Bienvenida(){
         Scanner scanner = new Scanner(System.in);
-        Integer opcion;
+        String opcion;
 
         funcionesUtiles.clearConsola();
         do{
             System.out.println("BIENVENIDO A LA GESTION DEL HOTEL. \n Presione 1 para Autenticar su Usuario. ");
-            opcion=scanner.nextInt();
-        } while (opcion!=1);
-        System.out.println("\033[H\033[2J"); //cambio erne no anda igual
-        System.out.flush();//cambio erne
+            opcion=scanner.nextLine();
+        } while (!opcion.equalsIgnoreCase("1"));
+
         autenticarHuesped();
 
     }
 
+
+    /**
+     * Menu tiene las opciones que puede realiazar el usuario
+     */
     public static void Menu(){
         System.out.println("--------------- MENU ----------------");
         System.out.println("\n Opciones: ");
@@ -66,6 +73,9 @@ public class App {
 
     }
 
+    /**
+     * ingresa opciones valida q ingrese un numero valido y en base a ese numero llama a la respectiva funcion
+     */
     public static void ingresaOpcion(){
         Scanner scanner = new Scanner(System.in);
         boolean entradaValida=false;
@@ -109,6 +119,9 @@ public class App {
         }
     }
 
+    /**
+     * auntenticarHuesped vaalida que el huesped este en el sistema y valida la contraseña y el usuario
+     */
     public static void autenticarHuesped(){
         Scanner scanner = new Scanner(System.in);
         String nombreUsuario;
@@ -206,6 +219,9 @@ public class App {
         return contrasena.toString();
     }
 
+    /**
+     * dar alta huesped se encarga de cargar un nuevo huesped al sistema, llama a registrar huesped del gestor
+     */
     public static void darAltaHuesped(){
         Scanner scanner = new Scanner(System.in);
         HuespedDTO huespedDTO = new HuespedDTO();
@@ -231,6 +247,14 @@ public class App {
             Menu();
         }
     }
+
+    /**
+     * Ingreso de todos los datos del huesped, validacion correspondiente
+     * @param camposVacios
+     * @param huespedDTO datos del huesped
+     * @param direccionDTO direccion
+     * @return
+     */
     public static HuespedDTO ingresarDatos(Boolean camposVacios, HuespedDTO huespedDTO, DireccionDTO direccionDTO){
         //HuespedDTO huespedDTO = new HuespedDTO();
         Scanner scanner = new Scanner(System.in);
@@ -593,6 +617,12 @@ public class App {
 
         return huespedDTO; //FALTA VER QUE PASA SI PRESIONA CANCELAR   
     }
+
+    /**
+     * se controlan los campos del huesped
+     * @param huespedDTO
+     * @param direccionDTO
+     */
     public static void controlarCampos(HuespedDTO huespedDTO, DireccionDTO direccionDTO){
         //veo si algun campo obligatorio esta sin completar
         Scanner scanner = new Scanner(System.in);
@@ -668,10 +698,21 @@ public class App {
                 
             } 
     }
+
+    /**
+     * verificacion del documento
+     * @param huespedDTO datos del huesped
+     * @return
+     */
     public static boolean verificarDocumento(HuespedDTO huespedDTO){
         return gestorHuesped.verificarDocumento(huespedDTO);
     }
 
+    /**
+     * se registra un huesped y su direccion
+     * @param huespedDTO
+     * @param direccionDTO
+     */
 
     public static void registrarHuesped(HuespedDTO huespedDTO, DireccionDTO direccionDTO){
         huespedDTO.setNombre(huespedDTO.getNombre());
@@ -696,7 +737,9 @@ public class App {
         huespedDTO.setNacionalidad(huespedDTO.getNacionalidad());
     }
 
-
+    /**
+     * se busca el huesped en base a los campos ingresados, si no ingresa valores, todos los huespedes
+     */
     public static void buscarHuesped(){
         /*se presenta pantalla para buscar huesped 
          ingresa nombre, apellido, tipo doc, num doc
@@ -745,21 +788,52 @@ public class App {
             System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
             System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
             System.out.println("DESEA MODIFICAR EL HUESPED? - indique SI o NO ");
-            if ( scanner.nextLine().equals("si")){
+            String opcion = scanner.nextLine();
+           while (!opcion.equalsIgnoreCase("si")) {
+               System.out.println("Ingrese opcion valida - SI o NO");
+                opcion = scanner.nextLine();
+           }
+
+            if ( opcion.equals("si")){
                 funcionesUtiles.clearConsola();
                 modificarHuesped1(huespedDTO,gestorHuesped); //aca llamo a modificar huesped1 con Huesped DTO Y HuespedDto debe tener todos los campos
 
             }
         }
         funcionesUtiles.clearConsola();
-        Menu();
+        System.out.println("\n ");
+        System.out.println("\n");
+        System.out.println(" presione 1. si desea volver a buscar un huesped ");
+        System.out.println("presione 2. para volver al menu ");
+        String opc = scanner.nextLine();
+        while (opc.equalsIgnoreCase("1") && opc.equalsIgnoreCase("2")) {
+            System.out.print("Ingrese opcion valida - 1. 2. ");
+            opc = scanner.nextLine();
+        }
+        if (opc.equalsIgnoreCase("1")) {
+           System.out.print("-------BUSCAR HUESPED \n ");
+            buscarHuesped();
+        }
+        else{
+            Menu();
+        }
+
         //nose si deberia llamar al gestor o a la clase
         //System.out.println("se elimino: " + gestorHuesped.eliminarHuesped(huespedDTO)); es para probar a ver si elimina pero necesito el CU 12 PARA
     }
 
 
-
-
+    /**
+     * modificacion del huesped, si el dni existe, se reemplazan los valores en esa posicion
+     * @param campos
+     * @param huespedDTO
+     * @param gestorHuesped
+     * @param validadores
+     * @param noObligatorios
+     * @param huespedDNI
+     * @param dniNOMod
+     * @param tipoNomod
+     */
     public static void modificarHuesped(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuesped gestorHuesped, Map<String, Predicate<String>> validadores,
                                         Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod ) {
         Scanner sc = new Scanner(System.in);
@@ -771,6 +845,10 @@ public class App {
         int opcion = sc.nextInt();
 
         if ( opcion == 1) {  //si la opcion es 1 acepta los cambios , entonces valida - SI NO VALIDA EL CMAPO INGRESADO
+            System.out.println("DNInomod " + dniNOMod);
+            System.out.println("tipoDNInomod: " + tipoNomod);
+           System.out.println("Tipo de documento: " + huespedDNI.getTipoDocumento());
+           System.out.println("Numero de documento: " + huespedDNI.getNumeroDocumento());
             opcionAceptar(campos,validadores, noObligatorios,huespedDNI,dniNOMod,tipoNomod,huespedDTO);
         }
         //cancelar
@@ -796,7 +874,11 @@ public class App {
 
     }
 
-
+    /**
+     * se cargan los campos y los validadores y se llama a las funciones correspondientes para modificar el archivo
+     * @param huespedDTO
+     * @param gestorHuesped
+     */
     public static void modificarHuesped1 (HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
         String dniNOMod = huespedDTO.getNumeroDocumento(); //son los no modficados asi dsp busco en q parte de el archivo esta
         String tipoNomod=huespedDTO.getTipoDocumento();
@@ -815,20 +897,40 @@ public class App {
 
         validacionyOpciones(campos,huespedDNI,noObligatorios,huespedDTO,tipoNomod,dniNOMod); //llama a pedir los datos puedo llamar ahi primero y dsp llamar a esta funcon
         modificarHuesped(campos,huespedDTO,gestorHuesped,validadores,noObligatorios,huespedDNI,dniNOMod,tipoNomod);
-    System.out.println("DESEA REALIZAR OTRA OPERACION? - indique SI o NO ");
+
+    /*    System.out.println("DESEA MODIFICAR OTRO HUESPED? - indique SI o NO ");
+    System.out.println("PRESIONE 1.-PARA MODIFICAR OTRO HUESPED");
+    System.out.println("PRESIONE 2.-PARA VOLVER AL MENU PRINCIPAL");
     Scanner sc2 = new Scanner(System.in);
+    while(!(sc2.equals("SI") && sc2.equals("NO"))){
+        System.out.println("Indique SI o NO ");
+        sc2.nextLine();
+
+    }
+
     if( sc.nextLine().equals("si")){
         System.out.println("\n ");
+       buscarHuesped();
+    }
+    else{
         Menu();
     }
-
+*/
 
 
 
     }
 
 
-
+    /**
+     * valida los campos ingresados
+     * @param campos es un map que tiene campo valor
+     * @param huespedDNI
+     * @param noObligatorios son los no obligatios, pueden quedar vacios
+     * @param huespedDTO
+     * @param tipoNomod tipodni q esta en el archivo, sin modificar para poder buscar la pos
+     * @param dniNomod dni q esta en el archivo sin modificar
+     */
 
     public static void validacionyOpciones( Map<String, String> campos,HuespedDTO huespedDNI, Set<String> noObligatorios, HuespedDTO huespedDTO, String tipoNomod, String dniNomod){
 
@@ -887,12 +989,26 @@ public class App {
 
     }
 
+    /**
+     * se muestran campo por campo y valores
+     * @param campos
+     */
     public static void muestraCamposIngresados(Map<String, String> campos){
         for (Map.Entry<String, String> entry : campos.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
 
+    /**
+     * es la opcion de aceptar, es decir q se hagan los cambios
+     * @param campos campos con key-valor
+     * @param validadores campo con key-validador
+     * @param noObligatorios
+     * @param huespedDNI huesped dni guarda el nuevodni y tipo
+     * @param dniNOMod
+     * @param tipoNomod
+     * @param huespedDTO
+     */
     public static void opcionAceptar(Map<String, String> campos,Map<String, Predicate<String>> validadores,
                                      Set<String> noObligatorios, HuespedDTO huespedDNI,String  dniNOMod,String tipoNomod, HuespedDTO huespedDTO ){
         Scanner sc = new Scanner(System.in);
@@ -955,14 +1071,10 @@ public class App {
         } while (!todosValidos);
 
 
-        System.out.println("dni de huesped dni" + huespedDNI.getNumeroDocumento());
-        System.out.println("tipo de huesped dni" + huespedDNI.getTipoDocumento());
-        System.out.println("DNI NO MOD" + dniNOMod);
-
 
         //entra a modificar otro huesped en el caso q hayan ingresadp un dni nuevo, en otro caso entra al else
         if (huespedDNI.getNumeroDocumento() != null && huespedDNI.getTipoDocumento()!=null && !huespedDNI.getNumeroDocumento().equalsIgnoreCase(dniNOMod) ) {//si es distinto de null es porq ingreso otro dni
-            System.out.println("ENTRA");
+
             if (gestorHuesped.chequearExisteHuesped(huespedDNI)) {  //llama al gestor q verifique si ya esta el doc
                 System.out.println("¡CUIDADO NUMERO DOCUMENTO YA EXISTE EN EL SISTEMA");
                 System.out.println("1. Aceptar igualmente");
@@ -1016,7 +1128,16 @@ public class App {
                     gestorHuesped.modificarDatosHuespedArchivo(campos,huespedDTO, "infoBuscarHuespedes.csv", huespedDTO.getDireccionHuesped(), huespedDNI.getTipoDocumento(), huespedDNI.getNumeroDocumento());
                 }
 
-            }} //si huespedDni es null es porq quiere modificar datos de el huesped q esta
+            }else{ //opcion de q le quiere modificar el doc al huesped q eligio y ese doc no esta en el archivo
+                System.out.println("\n Todos los campos válidos:"); //key - value
+                campos.forEach((k, v) -> System.out.println(k + ": " + v));
+
+                System.out.println("la operacion a culminado con exito ");
+
+                //le paso eldni y tipo viejo para q busque pero modifica
+                gestorHuesped.modificarDatosHuespedArchivo(campos, huespedDTO, "infoBuscarHuespedes.csv",huespedDTO.getDireccionHuesped(), tipoNomod, dniNOMod );
+            }
+        } //si huespedDni es null es porq quiere modificar datos de el huesped q esta
         else{  //si no existe el dni, es porq le quiere cambiar a ese q ya esta el dni ENTONCES OCUPA EL DNI VIEJO
 
             System.out.println("\n Todos los campos válidos:"); //key - value
@@ -1032,6 +1153,18 @@ public class App {
 
 
     }
+
+    /**
+     * cuando se cancela la modificacion del huesped, dsp se ve si cancela o vuelve al paso anterior
+     * @param campos
+     * @param huespedDTO
+     * @param gestorHuesped
+     * @param validadores
+     * @param noObligatorios
+     * @param huespedDNI
+     * @param dniNOMod
+     * @param tipoNomod
+     */
 
     public static void opcionCancelar(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuesped gestorHuesped, Map<String, Predicate<String>> validadores,
                                       Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod )  {
@@ -1055,6 +1188,10 @@ public class App {
 
     }
 
+    /**
+     * dar de baja huesped , valida q exista el huesped y si se alojo no se puede eliminar
+     * @param huespedDTO
+     */
         public static void darBajaHuesped(HuespedDTO huespedDTO){ //el huesped me lo pasa el CU12
             Scanner scanner = new Scanner(System.in);
 
@@ -1092,7 +1229,9 @@ public class App {
         }
 
 
-
+    /**
+     * reserva  de la habitacion desdefecha-hastafecha
+     */
 
     public static void reservarHabitacion(){
         System.out.println("RESERVAR HABITACION");
@@ -1198,6 +1337,12 @@ public class App {
         }
     }
 
+    /**
+     * se muestra el estado de habitaciones
+     * @param tipoHabitacion
+     * @param desdeFecha
+     * @param hastaFecha
+     */
     public static void mostrarEstadoHabitaciones(String tipoHabitacion, Date desdeFecha, Date hastaFecha){
         Scanner scanner = new Scanner(System.in);
 

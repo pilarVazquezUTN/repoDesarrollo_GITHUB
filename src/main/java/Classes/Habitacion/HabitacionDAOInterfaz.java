@@ -7,6 +7,6 @@ public interface HabitacionDAOInterfaz {
     void create();
     void update();
     void read();
-    void muestraEstado(Date desdeFecha, Date hastaFecha);
+    void muestraEstado(String tipoHabitacion, Date desdeFecha, Date hastaFecha);
     void abrirArchivoCsvHabitaciones(Date desdeFecha, Date hastaFecha);
 }
