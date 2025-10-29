@@ -9,6 +9,16 @@ package Classes.Factura;
  * @author st
  */
 public class NotaDeCreditoDAO implements NotaDeCreditoDAOInterfaz {
+    private static NotaDeCreditoDAO instancia; // única instancia
+
+    private NotaDeCreditoDAO() { }
+
+    public static synchronized NotaDeCreditoDAO getInstancia() {
+        if (instancia == null) {
+            instancia = new NotaDeCreditoDAO();
+        }
+        return instancia;
+    }
     public void delete(){
 
     }

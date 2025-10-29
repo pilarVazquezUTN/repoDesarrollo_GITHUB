@@ -35,27 +35,27 @@ public class DAOFactory {
     public static Object create(int tipo) {
         switch(tipo) {
             case DIRECCION:
-                return new DireccionDAO();
+                return DireccionDAO.getInstancia();
             case ESTADIA:
-                return new EstadiaDAO();
+                return EstadiaDAO.getInstancia();
             case FACTURA:
-                return new FacturaDAO();
+                return FacturaDAO.getInstancia();
             case NOTA_DE_CREDITO:
-                return new NotaDeCreditoDAO();
+                return NotaDeCreditoDAO.getInstancia();
             case HABITACION:
-                return new HabitacionDAO();
+                return HabitacionDAO.getInstancia();
             case HUESPED:
-                return new HuespedDAO();
+                return HuespedDAO.getInstancia();
             case MEDIO_DE_PAGO:
-                return new MedioDePagoDAO();
+                return MedioDePagoDAO.getInstancia();
             case PAGO:
-                return new PagoDAO();
+                return PagoDAO.getInstancia();
             case RESERVA:
-                return new ReservaDAO();
+                return ReservaDAO.getInstancia();
             case PERSONA_JURIDICA:
-                return new PersonaJuridicaDAO();
+                return PersonaJuridicaDAO.getInstancia();
             case USUARIO:
-                return new UsuarioDAO();
+                return UsuarioDAO.getInstancia();
             default:
                 return null;
         }

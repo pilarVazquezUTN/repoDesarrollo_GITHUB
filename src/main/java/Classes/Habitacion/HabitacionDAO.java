@@ -14,6 +14,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class HabitacionDAO implements HabitacionDAOInterfaz {
+    private static HabitacionDAO instancia; // única instancia
+
+    private HabitacionDAO() { }
+
+    public static synchronized HabitacionDAO getInstancia() {
+        if (instancia == null) {
+            instancia = new HabitacionDAO();
+        }
+        return instancia;
+    }
     public void delete(){
 
     }
@@ -223,7 +233,6 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
  * tiene mayor prioridad (se mostrará sobre los otros).
  */
 private int getPrioridadEstado(String estado) {
-    // Puedes ajustar estas prioridades según tu lógica de negocio
     switch (estado.toLowerCase()) {
         case "fueradeservicio": // O como lo tengas escrito
         case "fuera de servicio":
@@ -237,6 +246,11 @@ private int getPrioridadEstado(String estado) {
         default:
             return 0; // Otros estados
     }
+}
+@Override
+public void muestraEstado(Date desdeFecha, Date hastaFecha) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'muestraEstado'");
 }
 
     /* 
