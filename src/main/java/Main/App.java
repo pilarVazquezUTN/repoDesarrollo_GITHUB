@@ -141,7 +141,7 @@ public class App {
             } else {
                 contrasenaValida = true;
             }
-            funcionesUtiles.clearConsola();
+            FuncionesUtiles.clearConsola();
         } while (!contrasenaValida);
 
         // Creamos el UsuarioDTO para pasarlo al DAO
