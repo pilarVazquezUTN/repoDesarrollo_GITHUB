@@ -230,20 +230,17 @@ public class HuespedDAO implements HuespedDAOInterfaz {
      * @param direccionDTO
      * @param dni este parametro es el dni cargado en el archivo, sino nunca lo encuentro, guardo el anterior para buscar
      */
-    //PUEDE FALLAR EN EL CASO DE MODIFICAR HUESPED SOLOOOOO!!!!!!!!!!!!!!!!
+
     public boolean actualizarHuesped(Map<String, String> campos, String rutaArchivo, HuespedDTO huespedDTO, DireccionDTO direccionDTO, String tipoDoc, String dni) {
     // para formatear fecha primero
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         String fechaComoTexto = formato.format(huespedDTO.getFechaNacimiento());
-
-
-            // construye la nueva línea con todos los campos
-                    String nuevaLinea = String.join(",",
-
+        // construye la nueva línea con todos los campos
+        String nuevaLinea = String.join(",",
                                     campos.values()  // toma todos los valores del Map
-                            );
+        );
 
-int indice= -1;
+        int indice= -1;
 //leo para buscar la linea
         try {
             // se leem todas las líneas del archivo
@@ -269,7 +266,6 @@ int indice= -1;
             if (indice != -1) {
                 lineas.set(indice, nuevaLinea);
                 Files.write(Paths.get(rutaArchivo), lineas);
-                System.out.println(" Cambios realizados correctamente " );
                 return true;
             }
             //el huesped ya esta registrado por ende en alguna fila de el archivo esta
@@ -280,7 +276,7 @@ int indice= -1;
         }
 
 
-      return false;//ACOMODAR SI FALLA
+      return false;
 
 
     }

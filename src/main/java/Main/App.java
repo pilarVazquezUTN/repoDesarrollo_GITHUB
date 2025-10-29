@@ -31,7 +31,7 @@ public class App {
 
 
 
-    
+
     public static void main(String[] args) {
         Bienvenida();
     }
@@ -745,7 +745,14 @@ public class App {
             System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
             System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
             System.out.println("DESEA MODIFICAR EL HUESPED? - indique SI o NO ");
-            if ( scanner.nextLine().equals("si")){
+            Scanner sc = new Scanner(System.in);
+            String op = sc.nextLine().trim();
+            while (!(op.equalsIgnoreCase("si") || op.equalsIgnoreCase("no"))) {
+
+                System.out.println("Indique - SI o NO");
+                op = sc.nextLine().trim();
+            }
+            if ( op.equals("si")){
                 funcionesUtiles.clearConsola();
                 modificarHuesped1(huespedDTO,gestorHuesped); //aca llamo a modificar huesped1 con Huesped DTO Y HuespedDto debe tener todos los campos
 
@@ -763,7 +770,7 @@ public class App {
     public static void modificarHuesped(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuesped gestorHuesped, Map<String, Predicate<String>> validadores,
                                         Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod ) {
         Scanner sc = new Scanner(System.in);
-        muestraCamposIngresados(campos);
+        //muestraCamposIngresados(campos);
         // valida campos, pide incorrectos
         System.out.println("PARA ACEPTAR PRESIONE 1: ");
         System.out.println("PARA CANCELAR PRESIONE 2: ");
@@ -815,12 +822,23 @@ public class App {
 
         validacionyOpciones(campos,huespedDNI,noObligatorios,huespedDTO,tipoNomod,dniNOMod); //llama a pedir los datos puedo llamar ahi primero y dsp llamar a esta funcon
         modificarHuesped(campos,huespedDTO,gestorHuesped,validadores,noObligatorios,huespedDNI,dniNOMod,tipoNomod);
+
     System.out.println("DESEA REALIZAR OTRA OPERACION? - indique SI o NO ");
     Scanner sc2 = new Scanner(System.in);
+    String op = sc2.nextLine().trim();
+
+        while (!(op.equalsIgnoreCase("si") || op.equalsIgnoreCase("no"))) {
+
+            System.out.println("Indique - SI o NO");
+            op = sc.nextLine().trim();
+        }
+
     if( sc.nextLine().equals("si")){
         System.out.println("\n ");
         Menu();
     }
+
+
 
 
 
@@ -887,12 +905,12 @@ public class App {
 
     }
 
-    public static void muestraCamposIngresados(Map<String, String> campos){
+   /* public static void muestraCamposIngresados(Map<String, String> campos){
         for (Map.Entry<String, String> entry : campos.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
-
+*/
     public static void opcionAceptar(Map<String, String> campos,Map<String, Predicate<String>> validadores,
                                      Set<String> noObligatorios, HuespedDTO huespedDNI,String  dniNOMod,String tipoNomod, HuespedDTO huespedDTO ){
         Scanner sc = new Scanner(System.in);
@@ -955,14 +973,12 @@ public class App {
         } while (!todosValidos);
 
 
-        System.out.println("dni de huesped dni" + huespedDNI.getNumeroDocumento());
-        System.out.println("tipo de huesped dni" + huespedDNI.getTipoDocumento());
-        System.out.println("DNI NO MOD" + dniNOMod);
+
 
 
         //entra a modificar otro huesped en el caso q hayan ingresadp un dni nuevo, en otro caso entra al else
         if (huespedDNI.getNumeroDocumento() != null && huespedDNI.getTipoDocumento()!=null && !huespedDNI.getNumeroDocumento().equalsIgnoreCase(dniNOMod) ) {//si es distinto de null es porq ingreso otro dni
-            System.out.println("ENTRA");
+
             if (gestorHuesped.chequearExisteHuesped(huespedDNI)) {  //llama al gestor q verifique si ya esta el doc
                 System.out.println("¡CUIDADO NUMERO DOCUMENTO YA EXISTE EN EL SISTEMA");
                 System.out.println("1. Aceptar igualmente");
@@ -1000,7 +1016,7 @@ public class App {
                     }
                     campos.put("tipoDocumento", valorDoc);
                     campos.put("numeroDocumento", valorDoc);
-
+                    modificarHuesped(campos,huespedDTO,gestorHuesped,validadores,noObligatorios,huespedDNI,dniNOMod,tipoNomod);
                 }
                 else {
                     //opta por aceptar igualmente
@@ -1190,7 +1206,9 @@ public class App {
     }
 
 
-
+    public static int terminar(){
+        return 0;
+    }
 
 }
 
