@@ -82,9 +82,164 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
         }
     }
 
+    public void mostrarGrillaHabitaciones(String tipoHabitacion, Date desdeFecha, Date hastaFecha) {
+    String FECHA_FORMATO = "dd/MM/yyyy";
+    String NOMBRE_ARCHIVO = "infoHabitaciones.csv";
+    String SEPARADOR_CSV = ",";
+    SimpleDateFormat formatter = new SimpleDateFormat(FECHA_FORMATO);
+    FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
 
+    // 1. Generar lista de fechas (columnas de la grilla)
+    List<Date> listaFechas = new ArrayList<>();
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(desdeFecha);
 
+    while (!cal.getTime().after(hastaFecha)) {
+        listaFechas.add(cal.getTime());
+        cal.add(Calendar.DATE, 1);
+    }
 
+    // 2. Leer TODAS las líneas del CSV
+    // Esta lista contendrá todas las reservas, ocupaciones, etc.
+    List<String[]> habitacionesCSV = new ArrayList<>();
+
+    try (BufferedReader br = new BufferedReader(new FileReader(NOMBRE_ARCHIVO))) {
+        br.readLine(); // Saltar encabezado
+        String linea;
+        while ((linea = br.readLine()) != null) {
+            String[] campos = linea.split(SEPARADOR_CSV, -1);
+            if (campos.length >= 7) {
+                habitacionesCSV.add(campos);
+            } else {
+                System.err.println("Línea inválida (faltan columnas): " + linea);
+            }
+        }
+    } catch (IOException e) {
+        System.err.println("Error al leer el archivo: " + e.getMessage());
+        return;
+    }
+
+    // 3. Determinar rango de habitaciones (filas de la grilla)
+    int rangoMin = 0;
+    int rangoMax = 0;
+
+    // Usamos .toLowerCase() para que coincida con los case
+    switch (tipoHabitacion) {
+        case "Individual Estandar":
+            rangoMin = 1;
+            rangoMax = 10;
+            break;
+        case "Doble Estandar":
+            rangoMin = 11;
+            rangoMax = 28;
+            break;
+        case "Doble Superior":
+            rangoMin = 29;
+            rangoMax = 36;
+            break;
+        case "Superior Family Plan":
+            rangoMin = 37;
+            rangoMax = 46;
+            break;
+        case "Suite Doble":
+            rangoMin = 47;
+            rangoMax = 48;
+            break;
+    }
+
+    // 4. Imprimir Cabecera
+    System.out.printf("%-17s", "Habitación");
+    for (Date fecha : listaFechas) {
+        System.out.printf("%-17s", formatter.format(fecha));
+    }
+    System.out.println();
+
+    // 5. ----- LÓGICA PRINCIPAL (MODIFICADA) -----
+    // Iteramos por cada NÚMERO de habitación que queremos mostrar
+    for (int numHab = rangoMin; numHab <= rangoMax; numHab++) {
+        
+        System.out.printf("%-17s", "Hab " + numHab);
+
+        // Ahora, iteramos por cada FECHA (columna)
+        for (Date fecha : listaFechas) {
+            String estadoDelDia = "disponible"; // Estado por defecto
+
+            // Buscamos en TODAS las líneas del CSV
+            // para ver cuál aplica a esta 'fecha' y a esta 'numHab'
+            for (String[] h : habitacionesCSV) {
+                int csvNumHab;
+                try {
+                    csvNumHab = Integer.parseInt(h[0].trim());
+                } catch (NumberFormatException e) {
+                    continue; // Saltar línea con número de hab inválido
+                }
+
+                // Si la línea del CSV no es para la habitación actual, la ignoramos
+                if (csvNumHab != numHab) {
+                    continue;
+                }
+
+                // Es la habitación correcta, vemos si la fecha aplica
+                String csvEstado = h[1].trim();
+                String desdeStr = h[5].trim();
+                String hastaStr = h[6].trim();
+
+                Date csvDesde = null;
+                Date csvHasta = null;
+
+                if (!desdeStr.isEmpty()) csvDesde = funcionesUtiles.convertirStringADate(desdeStr);
+                if (!hastaStr.isEmpty()) csvHasta = funcionesUtiles.convertirStringADate(hastaStr);
+
+                boolean aplicaHoy = false;
+
+                // Caso 1: Estado permanente (sin fechas, ej: "fueraDeServicio")
+                if (csvDesde == null || csvHasta == null) {
+                    aplicaHoy = true;
+                } 
+                // Caso 2: Estado con rango de fechas
+                else if ((fecha.equals(csvDesde) || fecha.after(csvDesde)) &&
+                         (fecha.equals(csvHasta) || fecha.before(csvHasta))) {
+                    aplicaHoy = true;
+                }
+
+                // Si esta línea del CSV aplica, comparamos su prioridad
+                if (aplicaHoy) {
+                    if (getPrioridadEstado(csvEstado) > getPrioridadEstado(estadoDelDia)) {
+                        estadoDelDia = csvEstado;
+                    }
+                }
+            } // Fin del bucle por el CSV
+
+            // Imprimimos el estado de mayor prioridad encontrado para esta celda
+            System.out.printf("%-17s", estadoDelDia);
+
+        } // Fin del bucle por las fechas
+        System.out.println(); // Fin de la fila para esta habitación
+    } // Fin del bucle por las habitaciones
+}
+
+/**
+ * Define la prioridad de un estado. Un número más alto
+ * tiene mayor prioridad (se mostrará sobre los otros).
+ */
+private int getPrioridadEstado(String estado) {
+    // Puedes ajustar estas prioridades según tu lógica de negocio
+    switch (estado.toLowerCase()) {
+        case "fueradeservicio": // O como lo tengas escrito
+        case "fuera de servicio":
+            return 4;
+        case "ocupada":
+            return 3;
+        case "reservada":
+            return 2;
+        case "disponible":
+            return 1;
+        default:
+            return 0; // Otros estados
+    }
+}
+
+    /* 
     public void mostrarGrillaHabitaciones(String tipoHabitacion, Date desdeFecha, Date hastaFecha) {
         String FECHA_FORMATO = "dd/MM/yyyy";
         String NOMBRE_ARCHIVO = "infoHabitaciones.csv";
@@ -218,4 +373,5 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
             System.out.println();
         }
     }
+    */
 }

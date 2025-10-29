@@ -1172,7 +1172,7 @@ public class App {
             }
 
             funcionesUtiles.clearConsola();
-            System.out.println("FECHAS SELECCIONADAS: "+funcionesUtiles.convertirDateAString(desdeFecha)+" hasta el "+funcionesUtiles.convertirDateAString(hastaFecha)+"\n");
+            System.out.println("FECHAS SELECCIONADAS: "+funcionesUtiles.convertirDateAString(desdeFecha)+" hasta el "+funcionesUtiles.convertirDateAString(hastaFecha));
             System.out.println("HABITACION SELECCIONADA: "+nombreTipoHabitacion);
 
             mostrarEstadoHabitaciones(nombreTipoHabitacion,desdeFecha,hastaFecha); //CU05
