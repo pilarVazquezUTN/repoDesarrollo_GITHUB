@@ -30,12 +30,8 @@ public class FuncionesUtiles {
 
 
     public static void clearConsola() {
-    
-
             System.out.print("\033[H\033[2J");
             System.out.flush();
-
-
     }
 
     public static boolean esUnSoloNumero(String valor) {

@@ -150,7 +150,7 @@ public class App {
         usuarioDTO.setContrasena(contrasenaUsuario);
 
         UsuarioDAO usuarioDAO = (UsuarioDAO) DAOFactory.create(DAOFactory.USUARIO);
-        funcionesUtiles.clearConsola();
+        FuncionesUtiles.clearConsola();
 
         // Llamamos al Gestor
         if (gestorUsuario.autenticarUsuario(usuarioDAO, usuarioDTO)) {
@@ -243,7 +243,7 @@ public class App {
             //vuelve a que cargue mas huespedes
             darAltaHuesped();
         } else{
-            funcionesUtiles.clearConsola();
+            FuncionesUtiles.clearConsola();
             Menu();
         }
     }
@@ -261,7 +261,7 @@ public class App {
         Date fechaNacDTO;
 
         if(camposVacios){
-            if(huespedDTO.getApellido().isEmpty() || !funcionesUtiles.contieneSoloLetras(huespedDTO.getApellido())){
+            if(huespedDTO.getApellido().isEmpty() || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getApellido())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su apellido: ");
                 huespedDTO.setApellido(scanner.nextLine().toUpperCase());
             } else{
@@ -274,7 +274,7 @@ public class App {
 
 
         if(camposVacios){
-            if(huespedDTO.getNombre().isEmpty() || !funcionesUtiles.contieneSoloLetras(huespedDTO.getNombre())){
+            if(huespedDTO.getNombre().isEmpty() || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getNombre())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su nombre: ");
                 huespedDTO.setNombre(scanner.nextLine().toUpperCase());
             } else{
@@ -287,7 +287,7 @@ public class App {
 
         
         if(camposVacios){
-            if(huespedDTO.getTipoDocumento().isEmpty() || !funcionesUtiles.contieneSoloLetras(huespedDTO.getTipoDocumento())){
+            if(huespedDTO.getTipoDocumento().isEmpty() || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getTipoDocumento())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Tipo de Documento: ");
                 huespedDTO.setTipoDocumento(scanner.nextLine().toUpperCase());
             } else{
@@ -299,7 +299,7 @@ public class App {
         } 
         
         if(camposVacios){
-            if(huespedDTO.getNumeroDocumento().isEmpty() || !funcionesUtiles.contieneSoloNumeros(huespedDTO.getNumeroDocumento())){
+            if(huespedDTO.getNumeroDocumento().isEmpty() || !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getNumeroDocumento())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Numero de Documento: ");
                 huespedDTO.setNumeroDocumento(scanner.nextLine().toUpperCase());
             } else{
@@ -316,7 +316,7 @@ public class App {
             System.out.print("Ingrese su CUIT: ");
             huespedDTO.setCuit(scanner.nextLine());
         } else {
-            if(!funcionesUtiles.contieneSoloNumeros(huespedDTO.getCuit())){
+            if(!FuncionesUtiles.contieneSoloNumeros(huespedDTO.getCuit())){
                 //("RESPONSABLE INSCRIPTO".equals(huespedDTO.getCuit()) )
                 //System.out.print("Error en campo. Usted es Responsable Inscripto, ingrese un CUIT obligatoraimente: ");
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su CUIT: ");
@@ -343,7 +343,7 @@ public class App {
             System.out.print("Ingrese su Posicion Frente al IVA: ");
             posIva=scanner.nextLine().toUpperCase();
         } else {
-            if(huespedDTO.getPosicionIva().isEmpty() || !funcionesUtiles.contieneSoloLetras(huespedDTO.getPosicionIva())){
+            if(huespedDTO.getPosicionIva().isEmpty() || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getPosicionIva())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Posicion Frente al IVA: ");
                 posIva=scanner.nextLine().toUpperCase();
             } else {
@@ -392,7 +392,7 @@ public class App {
                     huespedDTO.setFechaNacimiento(null); // Opcional: Asegurar que el DTO tenga null
                 }
             } else{
-                    System.out.println("Su Fecha de Nacimiento: "+funcionesUtiles.convertirDateAString(huespedDTO.getFechaNacimiento()));    
+                    System.out.println("Su Fecha de Nacimiento: "+FuncionesUtiles.convertirDateAString(huespedDTO.getFechaNacimiento()));    
                 }
         } else{
             System.out.print("Ingrese su Fecha de Nacimiento (dd/MM/yyyy): ");
@@ -415,7 +415,7 @@ public class App {
         
         
         if(camposVacios){
-            if(direccionDTO.getCalle().isEmpty() || !funcionesUtiles.contieneSoloLetras(direccionDTO.getCalle())){
+            if(direccionDTO.getCalle().isEmpty() || !FuncionesUtiles.contieneSoloLetras(direccionDTO.getCalle())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Calle: ");
                 direccionDTO.setCalle(scanner.nextLine().toUpperCase());
             } else{
@@ -428,7 +428,7 @@ public class App {
         } 
         
         if(camposVacios){
-            if(direccionDTO.getNumero().isEmpty() || !funcionesUtiles.contieneSoloNumeros(direccionDTO.getNumero())){
+            if(direccionDTO.getNumero().isEmpty() || !FuncionesUtiles.contieneSoloNumeros(direccionDTO.getNumero())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Número de Calle: ");
                 direccionDTO.setNumero(scanner.nextLine());
             } else{
@@ -440,7 +440,7 @@ public class App {
         }
         
         if(camposVacios){
-            if(direccionDTO.getDepartamento().isEmpty() || !funcionesUtiles.contieneSoloLetras(direccionDTO.getDepartamento())){
+            if(direccionDTO.getDepartamento().isEmpty() || !FuncionesUtiles.contieneSoloLetras(direccionDTO.getDepartamento())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Departamento: ");
                 direccionDTO.setDepartamento(scanner.nextLine().toUpperCase());
             } else{
@@ -452,7 +452,7 @@ public class App {
         } 
         
         if(camposVacios){
-            if(direccionDTO.getPiso().isEmpty() || !funcionesUtiles.contieneSoloNumeros(direccionDTO.getPiso())){
+            if(direccionDTO.getPiso().isEmpty() || !FuncionesUtiles.contieneSoloNumeros(direccionDTO.getPiso())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Piso: ");
                 direccionDTO.setPiso(scanner.nextLine()); 
             } else{
@@ -464,7 +464,7 @@ public class App {
         } 
                
         if(camposVacios){
-            if(direccionDTO.getCodigoPostal().isEmpty() || !funcionesUtiles.contieneSoloNumeros(direccionDTO.getCodigoPostal())){
+            if(direccionDTO.getCodigoPostal().isEmpty() || !FuncionesUtiles.contieneSoloNumeros(direccionDTO.getCodigoPostal())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Codigo Postal: ");
                 direccionDTO.setCodigoPostal(scanner.nextLine());
             } else{
@@ -476,7 +476,7 @@ public class App {
         } 
         
         if(camposVacios){
-            if(direccionDTO.getLocalidad().isEmpty() || !funcionesUtiles.contieneSoloLetras(direccionDTO.getLocalidad())){
+            if(direccionDTO.getLocalidad().isEmpty() || !FuncionesUtiles.contieneSoloLetras(direccionDTO.getLocalidad())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Localidad: ");
                 direccionDTO.setLocalidad(scanner.nextLine().toUpperCase());
             } else{
@@ -488,7 +488,7 @@ public class App {
         } 
         
         if(camposVacios){
-            if(direccionDTO.getProvincia().isEmpty() || !funcionesUtiles.contieneSoloLetras(direccionDTO.getProvincia())){
+            if(direccionDTO.getProvincia().isEmpty() || !FuncionesUtiles.contieneSoloLetras(direccionDTO.getProvincia())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Provincia: ");
                 direccionDTO.setProvincia(scanner.nextLine().toUpperCase()); 
             } else{
@@ -500,7 +500,7 @@ public class App {
         } 
         
         if(camposVacios){
-            if(direccionDTO.getPais().isEmpty() || !funcionesUtiles.contieneSoloLetras(direccionDTO.getPais())){
+            if(direccionDTO.getPais().isEmpty() || !FuncionesUtiles.contieneSoloLetras(direccionDTO.getPais())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Pais: ");
                 direccionDTO.setPais(scanner.nextLine().toUpperCase());
             } else{
@@ -518,7 +518,7 @@ public class App {
             System.out.print("Ingrese su Telefono: ");
             huespedDTO.setTelefono(scanner.nextLine());
         } else{
-            if(huespedDTO.getTelefono().isEmpty() || !funcionesUtiles.contieneSoloNumeros(huespedDTO.getTelefono())){
+            if(huespedDTO.getTelefono().isEmpty() || !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getTelefono())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Telefono: ");
                 huespedDTO.setTelefono(scanner.nextLine());
             } else{
@@ -545,7 +545,7 @@ public class App {
             System.out.print("Ingrese su email: ");
             huespedDTO.setEmail(scanner.nextLine().toUpperCase());
         } else{
-            if(funcionesUtiles.emailValido(emailHuesped)){
+            if(FuncionesUtiles.emailValido(emailHuesped)){
                 System.out.println("Su email: "+huespedDTO.getEmail());
             } else{
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Email: ");
@@ -565,7 +565,7 @@ public class App {
         
         
         if(camposVacios){
-            if(huespedDTO.getOcupacion().isEmpty() || !funcionesUtiles.contieneSoloLetras(huespedDTO.getOcupacion())){
+            if(huespedDTO.getOcupacion().isEmpty() || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getOcupacion())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Ocupacion: ");
                 huespedDTO.setOcupacion(scanner.nextLine().toUpperCase());
             } else{
@@ -577,7 +577,7 @@ public class App {
         } 
         
         if(camposVacios){
-            if(huespedDTO.getNacionalidad().isEmpty() || !funcionesUtiles.contieneSoloLetras(huespedDTO.getNacionalidad())){
+            if(huespedDTO.getNacionalidad().isEmpty() || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getNacionalidad())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Nacionalidad: ");
                 huespedDTO.setNacionalidad(scanner.nextLine().toUpperCase());
             } else{
@@ -605,12 +605,12 @@ public class App {
             } while (opcion!=1 && opcion!=2);
             if(opcion==1){
                 //sistema vuelve al paso 6: Menu();
-                funcionesUtiles.clearConsola();
+                FuncionesUtiles.clearConsola();
                 Menu();
             } else{
                 //sistema vuelve al paso1: muestra todos los datos nuevamente
                 huespedDTO=null;
-                funcionesUtiles.clearConsola();
+                FuncionesUtiles.clearConsola();
                 darAltaHuesped();
             }
         }
@@ -626,7 +626,7 @@ public class App {
     public static void controlarCampos(HuespedDTO huespedDTO, DireccionDTO direccionDTO){
         //veo si algun campo obligatorio esta sin completar
         Scanner scanner = new Scanner(System.in);
-        funcionesUtiles.clearConsola();
+        FuncionesUtiles.clearConsola();
 
         if(huespedDTO.getNombre().isEmpty() || huespedDTO.getApellido().isEmpty() || huespedDTO.getTipoDocumento().isEmpty() || 
         huespedDTO.getNumeroDocumento().isEmpty() || (huespedDTO.getDireccionHuesped()).getCalle().isEmpty() || 
@@ -635,20 +635,20 @@ public class App {
         (huespedDTO.getDireccionHuesped()).getLocalidad().isEmpty() || (huespedDTO.getDireccionHuesped()).getProvincia().isEmpty() ||
         (huespedDTO.getDireccionHuesped()).getPais().isEmpty() || huespedDTO.getTelefono().isEmpty() || 
         huespedDTO.getOcupacion().isEmpty() || huespedDTO.getNacionalidad().isEmpty() || huespedDTO.getFechaNacimiento()==null ||
-        !funcionesUtiles.contieneSoloLetras(huespedDTO.getNombre()) || !funcionesUtiles.contieneSoloLetras(huespedDTO.getApellido()) ||
-        !funcionesUtiles.contieneSoloLetras(huespedDTO.getTipoDocumento()) || !funcionesUtiles.contieneSoloNumeros(huespedDTO.getNumeroDocumento()) || 
-        !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getCalle()) || 
-        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getNumero()) ||
-        !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getDepartamento()) ||
-        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getPiso()) ||
-        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getCodigoPostal()) || 
-        !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getLocalidad()) || 
-        !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getProvincia()) || 
-        !funcionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getPais()) || 
-        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getTelefono()) || !funcionesUtiles.contieneSoloLetras(huespedDTO.getOcupacion()) || 
-        !funcionesUtiles.contieneSoloLetras(huespedDTO.getNacionalidad()) || 
-        !funcionesUtiles.contieneSoloNumeros(huespedDTO.getCuit()) ||
-        !funcionesUtiles.emailValido(huespedDTO.getEmail()) ){
+        !FuncionesUtiles.contieneSoloLetras(huespedDTO.getNombre()) || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getApellido()) ||
+        !FuncionesUtiles.contieneSoloLetras(huespedDTO.getTipoDocumento()) || !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getNumeroDocumento()) || 
+        !FuncionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getCalle()) || 
+        !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getNumero()) ||
+        !FuncionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getDepartamento()) ||
+        !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getPiso()) ||
+        !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getCodigoPostal()) || 
+        !FuncionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getLocalidad()) || 
+        !FuncionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getProvincia()) || 
+        !FuncionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getPais()) || 
+        !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getTelefono()) || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getOcupacion()) || 
+        !FuncionesUtiles.contieneSoloLetras(huespedDTO.getNacionalidad()) || 
+        !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getCuit()) ||
+        !FuncionesUtiles.emailValido(huespedDTO.getEmail()) ){
 
                 //llamo a que se ingresen los datos pero le digo que se ingresaron mal los campos
                 ingresarDatos(true,huespedDTO,direccionDTO);
@@ -795,12 +795,12 @@ public class App {
            }
 
             if ( opcion.equals("si")){
-                funcionesUtiles.clearConsola();
+                FuncionesUtiles.clearConsola();
                 modificarHuesped1(huespedDTO,gestorHuesped); //aca llamo a modificar huesped1 con Huesped DTO Y HuespedDto debe tener todos los campos
 
             }
         }
-        funcionesUtiles.clearConsola();
+        FuncionesUtiles.clearConsola();
         System.out.println("\n ");
         System.out.println("\n");
         System.out.println(" presione 1. si desea volver a buscar un huesped ");
@@ -1311,12 +1311,12 @@ public class App {
             }
 
             funcionesUtiles.clearConsola();
-            System.out.println("FECHAS SELECCIONADAS: "+funcionesUtiles.convertirDateAString(desdeFecha)+" hasta el "+funcionesUtiles.convertirDateAString(hastaFecha));
+            System.out.println("FECHAS SELECCIONADAS: "+FuncionesUtiles.convertirDateAString(desdeFecha)+" hasta el "+FuncionesUtiles.convertirDateAString(hastaFecha));
             System.out.println("HABITACION SELECCIONADA: "+nombreTipoHabitacion);
 
             mostrarEstadoHabitaciones(nombreTipoHabitacion,desdeFecha,hastaFecha); //CU05
         } else{
-            funcionesUtiles.clearConsola();
+            FuncionesUtiles.clearConsola();
             System.out.println("Error. Usted ha ingresado una fecha final mayor a la inicial.");
             Integer opcion;
             System.out.println("Presione: \n 1.Siguiente. Para volver a ingresar las fechas \n 2.Cancelar. Se retornara a Menu");
@@ -1328,10 +1328,10 @@ public class App {
                 opcion= scanner.nextInt();
             }
             if (opcion==1) {
-                funcionesUtiles.clearConsola();
+                FuncionesUtiles.clearConsola();
                 reservarHabitacion();
             } else{
-                funcionesUtiles.clearConsola();
+                FuncionesUtiles.clearConsola();
                 Menu();
             }
         }
@@ -1362,7 +1362,7 @@ public class App {
             System.out.println("ERROR. Por favor ingrese una opcion valida.");
             System.out.println("1. Reservar");
             System.out.println("2. Volver a Ingresar Datos de Busqueda");
-        } funcionesUtiles.clearConsola();
+        } FuncionesUtiles.clearConsola();
         if(opcion==1){
 
         } else{

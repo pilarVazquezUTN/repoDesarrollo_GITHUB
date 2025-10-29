@@ -249,7 +249,6 @@ private int getPrioridadEstado(String estado) {
 }
 @Override
 public void muestraEstado(Date desdeFecha, Date hastaFecha) {
-    // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'muestraEstado'");
 }
 
