@@ -86,63 +86,65 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
 
 
     public void mostrarGrillaHabitaciones(Date desdeFecha, Date hastaFecha) {
-    String FECHA_FORMATO = "dd/MM/yyyy";
-    String NOMBRE_ARCHIVO = "infoHabitaciones.csv";
-    String SEPARADOR_CSV = ",";
-    SimpleDateFormat formatter = new SimpleDateFormat(FECHA_FORMATO);
-    FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
+        String FECHA_FORMATO = "dd/MM/yyyy";
+        String NOMBRE_ARCHIVO = "infoHabitaciones.csv";
+        String SEPARADOR_CSV = ",";
+        SimpleDateFormat formatter = new SimpleDateFormat(FECHA_FORMATO);
+        FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
 
-    //Generar lista de fechas entre desde y hasta
-    List<Date> listaFechas = new ArrayList<>();
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(desdeFecha);
-    while (!cal.getTime().after(hastaFecha)) {
-        listaFechas.add(cal.getTime());
-        cal.add(Calendar.DATE, 1);
-    }
-
-    //Leer habitaciones del CSV
-    List<String[]> habitaciones = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader(NOMBRE_ARCHIVO))) {
-        String linea;
-        while ((linea = br.readLine()) != null) {
-            String[] campos = linea.split(SEPARADOR_CSV);
-            if (campos.length >= 7) {
-                habitaciones.add(campos);
-            }
+        //Generar lista de fechas entre desde y hasta
+        List<Date> listaFechas = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(desdeFecha);
+        while (!cal.getTime().after(hastaFecha)) {
+            listaFechas.add(cal.getTime());
+            cal.add(Calendar.DATE, 1);
         }
-    } catch (IOException e) {
-        System.err.println("Error al leer el archivo: " + e.getMessage());
-        return;
-    }
 
-    //Imprimir cabecera de fechas
-    System.out.printf("%-17s", "Habitación");
-    for (Date fecha : listaFechas) {
-        System.out.printf("%-17s", formatter.format(fecha));
-    }
-    System.out.println();
-
-    //Imprimir cada fila (habitacion)
-    for (String[] h : habitaciones) {
-        String numHab = h[0].trim();
-        String estadoReserva = h[4].trim();
-        Date desdeHab = funcionesUtiles.convertirStringADate(h[5].trim());
-        Date hastaHab = funcionesUtiles.convertirStringADate(h[6].trim());
-
-        System.out.printf("%-17s", "Hab " + numHab);
-
-        for (Date fecha : listaFechas) {
-            String estado;
-            if (!fecha.before(desdeHab) && !fecha.after(hastaHab)) {
-                estado = estadoReserva; // ocupado o reservado
-            } else {
-                estado = "Disponible";
+        //Leer habitaciones del CSV
+        List<String[]> habitaciones = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(NOMBRE_ARCHIVO))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] campos = linea.split(SEPARADOR_CSV);
+                if (campos.length >= 7) {
+                    habitaciones.add(campos);
+                }
             }
-            System.out.printf("%-17s", estado);
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo: " + e.getMessage());
+            return;
+        }
+
+        //Imprimir cabecera de fechas
+        System.out.printf("%-17s", "Habitación");
+        for (Date fecha : listaFechas) {
+            System.out.printf("%-17s", formatter.format(fecha));
         }
         System.out.println();
-    }
-}
 
+        //Imprimir cada fila (habitacion)
+        for (String[] h : habitaciones) {
+            String numHab = h[0].trim();
+            String estadoHabitacion = h[1].trim();
+            String estadoReserva = h[4].trim();
+            Date desdeHab = funcionesUtiles.convertirStringADate(h[5].trim());
+            Date hastaHab = funcionesUtiles.convertirStringADate(h[6].trim());
+
+            System.out.printf("%-17s", "Hab " + numHab);
+
+            for(Date fecha : listaFechas) {
+                String estado;
+                 
+                if (!fecha.before(desdeHab) && !fecha.after(hastaHab)) {
+                    estado = estadoReserva; // ocupado o reservado
+                } else {
+                    estado = "Disponible";
+                }
+                
+                System.out.printf("%-17s", estadoHabitacion);
+            }
+            System.out.println();
+        }
+    }
 }
