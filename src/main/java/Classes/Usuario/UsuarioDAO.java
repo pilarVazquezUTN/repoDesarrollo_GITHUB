@@ -6,7 +6,17 @@ import java.io.IOException;
 
 
 public class UsuarioDAO implements UsuarioDAOInterfaz {
-    
+    private static UsuarioDAO instancia; // única instancia
+
+    private UsuarioDAO() { }
+
+    public static synchronized UsuarioDAO getInstancia() {
+        if (instancia == null) {
+            instancia = new UsuarioDAO();
+        }
+        return instancia;
+    }
+
     public boolean buscarUsuario(UsuarioDTO usuarioDTO){
         // 1. CORRECCIÓN: Llamar a los métodos getter con paréntesis ()
         // 2. CORRECCIÓN: Asumir que el DTO usa getContrasena (sin ñ)

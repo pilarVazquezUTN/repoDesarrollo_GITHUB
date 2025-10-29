@@ -19,6 +19,16 @@ import Classes.Huesped.GestorHuesped;
 import static java.lang.Class.forName;
 
 public class HuespedDAO implements HuespedDAOInterfaz {
+    private static HuespedDAO instancia; // única instancia
+
+    private HuespedDAO() { }
+
+    public static synchronized HuespedDAO getInstancia() {
+        if (instancia == null) {
+            instancia = new HuespedDAO();
+        }
+        return instancia;
+    }
     public void delete(){
     }
     public  void create(){
