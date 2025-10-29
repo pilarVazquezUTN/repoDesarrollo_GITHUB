@@ -16,8 +16,8 @@ public class GestorHabitacion {
     public String getIdEmpleado() {
         return this.idEmpleado;
     } 
-    public void muestraEstado(Date desdeFecha, Date hastaFecha){
-        habitacionDAO.muestraEstado(desdeFecha,hastaFecha);
+    public void muestraEstado(String tipoHabitacion, Date desdeFecha, Date hastaFecha){
+        habitacionDAO.muestraEstado(tipoHabitacion,desdeFecha,hastaFecha);
     }
     void modificarEstado(){
 
