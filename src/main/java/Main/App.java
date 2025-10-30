@@ -790,16 +790,17 @@ public class App {
             System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
             System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
             System.out.println("DESEA MODIFICAR EL HUESPED? - indique SI o NO ");
-            String opcion = scanner.nextLine();
-           while (!opcion.equalsIgnoreCase("si")) {
-               System.out.println("Ingrese opcion valida - SI o NO");
-                opcion = scanner.nextLine();
-           }
 
-            if ( opcion.equals("si")){
+            String opcion1 = scanner.nextLine();
+
+
+            if ( opcion1.equalsIgnoreCase("si")){
                 FuncionesUtiles.clearConsola();
                 modificarHuesped1(huespedDTO,gestorHuesped); //aca llamo a modificar huesped1 con Huesped DTO Y HuespedDto debe tener todos los campos
 
+            }
+            else{
+                Menu();
             }
         }
         FuncionesUtiles.clearConsola();
@@ -959,6 +960,10 @@ public class App {
                     ingresado = true;
                     if ( campo.equals("tipoDocumento")){
                         huespedDNI.setTipoDocumento(huespedDTO.getTipoDocumento());
+
+                    }
+                    if (campo.equals("numeroDocumento")){
+                        huespedDNI.setNumeroDocumento(huespedDTO.getNumeroDocumento());
                     }
 
 
@@ -977,11 +982,11 @@ public class App {
                     campos.put(campo, input);
 
                     System.out.println(campo + ": " + input);
-                    if ( campo.equals("tipoDocumento" ) && !input.equalsIgnoreCase(tipoNomod)){
+                    if ( campo.equals("tipoDocumento" )){
                         huespedDNI.setTipoDocumento(input.toUpperCase());
 
                     }
-                    else if (campo.equals("numeroDocumento") && !input.equalsIgnoreCase(dniNomod)){
+                    else if (campo.equals("numeroDocumento") ){
                         huespedDNI.setNumeroDocumento(input);
                     }
                     ingresado = true;
@@ -1057,11 +1062,11 @@ public class App {
                         }
                         else {
                             campos.put(campo, input);
-                            if ( campo.equals("tipoDocumento" ) && !input.equalsIgnoreCase(tipoNomod)){
+                            if ( campo.equals("tipoDocumento" ) ){
                                 huespedDNI.setTipoDocumento(input);
 
                             }
-                            else if (campo.equals("numeroDocumento") && !input.equalsIgnoreCase(dniNOMod)){
+                            else if (campo.equals("numeroDocumento") ){
                                 huespedDNI.setNumeroDocumento(input);
                             }
                             ingresado = true;
@@ -1073,9 +1078,10 @@ public class App {
         } while (!todosValidos);
 
 
-
+        String tipoDoc = campos.get("tipoDocumento");
+        String numeroDoc = campos.get("numeroDocumento");
         //entra a modificar otro huesped en el caso q hayan ingresadp un dni nuevo, en otro caso entra al else
-        if (huespedDNI.getNumeroDocumento() != null && huespedDNI.getTipoDocumento()!=null && !huespedDNI.getNumeroDocumento().equalsIgnoreCase(dniNOMod) ) {//si es distinto de null es porq ingreso otro dni
+        if ((!(tipoDoc.equalsIgnoreCase(tipoNomod) && (numeroDoc.equalsIgnoreCase(dniNOMod)))) ) {//si es distinto de null es porq ingreso otro dni
 
             if (gestorHuesped.chequearExisteHuesped(huespedDNI)) {  //llama al gestor q verifique si ya esta el doc
                 System.out.println("¡CUIDADO NUMERO DOCUMENTO YA EXISTE EN EL SISTEMA");
@@ -1099,21 +1105,24 @@ public class App {
                     //pide datos y se vuelven a ingresar
                     System.out.println("corregir datos tipo y numero de documento");
                     System.out.println("Ingrese el tipo");
+                    String tipoDocC = sc.nextLine().trim();
                     System.out.println("Ingrese el dni");
-                    String tipoDoc = sc.nextLine().trim();
+
                     String valorDoc = sc.nextLine().trim();
 
-                    while (!(Validador.esNumeroValido.test(valorDoc)) && !(Validador.esStringValido.test(tipoDoc))) {  //PUEDE FALLAR
+                    while (!(Validador.esNumeroValido.test(valorDoc)) && !(Validador.esStringValido.test(tipoDocC))) {  //PUEDE FALLAR
                         System.out.println("INGRESE VALORES VALIDOS");
                         //tenog q validar d enuevo
                         System.out.println("Ingrese el tipo");
-                        tipoDoc = sc.nextLine().trim();
+                        tipoDocC = sc.nextLine().trim();
 
                         System.out.println("Ingrese el dni");
                         valorDoc = sc.nextLine().trim();
                     }
-                    campos.put("tipoDocumento", valorDoc);
+                    campos.put("tipoDocumento", tipoDocC);
                     campos.put("numeroDocumento", valorDoc);
+                    //muestraCamposIngresados(campos);
+                    modificarHuesped(campos, huespedDTO,gestorHuesped,validadores,noObligatorios,huespedDNI,dniNOMod,tipoNomod);
 
                 }
                 else {
