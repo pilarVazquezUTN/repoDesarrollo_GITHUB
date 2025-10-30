@@ -22,6 +22,7 @@ import Classes.Usuario.UsuarioDAO;
  * 
  * 
  * Ejemplo de uso:
+ * 
  * <pre>{@code
  * HuespedDAO dao = (HuespedDAO) DAOFactory.create(DAOFactory.HUESPED);
  * }</pre>

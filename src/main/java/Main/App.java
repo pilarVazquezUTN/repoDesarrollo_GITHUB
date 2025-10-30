@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import Classes.Habitacion.Suite;
-import Classes.Huesped.Huesped;
+import Classes.Huesped.Huesped; 
 import Classes.Huesped.HuespedDAO;
 import Classes.Huesped.HuespedDTO;
 import Classes.Usuario.GestorUsuario;
@@ -19,6 +19,7 @@ import Classes.Usuario.UsuarioDTO;
 import Classes.Habitacion.GestorHabitacion;
 import Classes.Huesped.GestorHuesped;
 import Classes.Direccion.DireccionDTO;
+import Classes.Excepciones.*;
 import Classes.FuncionesUtiles;
 import Classes.Validador;
 import Classes.DAOFactory;
@@ -76,21 +77,18 @@ public class App {
 
     }
 
-    /**
-     * ingresa opciones valida q ingrese un numero valido y en base a ese numero llama a la respectiva funcion
-     */
     public static void ingresaOpcion(){
         Scanner scanner = new Scanner(System.in);
         //boolean entradaValida=false;
         int opcion= scanner.nextInt();
-        funcionesUtiles.clearConsola();
+        FuncionesUtiles.clearConsola();
         if(opcion<1 || opcion>5){
-            funcionesUtiles.clearConsola();
+            FuncionesUtiles.clearConsola();
             System.out.println("--------------- Ingrese una opcion correcta!");
             Menu();
         }
 
-        funcionesUtiles.clearConsola();
+        FuncionesUtiles.clearConsola();
         switch (opcion) {
             case 1://buscar huesped
                 System.out.println("BUSCAR HUESPED \n");
@@ -108,11 +106,11 @@ public class App {
                 reservarHabitacion();
                 break;
             case 4:
-                funcionesUtiles.clearConsola();
+                FuncionesUtiles.clearConsola();
                 autenticarHuesped();
                 break;
             case 5:
-                funcionesUtiles.clearConsola();
+                FuncionesUtiles.clearConsola();
                 System.out.println("Hasta luego!");
                 break;
         }
@@ -737,86 +735,99 @@ public class App {
     }
 
     /**
-     * se busca el huesped en base a los campos ingresados, si no ingresa valores, todos los huespedes
+     * Permite buscar huespedes en el sistema segun los datos ingresados por consola.
+     *
+     * El metodo pide al usuario que ingrese uno o varios criterios de busqueda:
+     * apellido, nombre, tipo de documento y numero de documento.
+     * Cada campo puede dejarse vacio si no se desea filtrar por ese dato.
+     *
+     * Comportamiento:
+     * - Valida que los datos ingresados sean correctos (solo letras o solo numeros segun corresponda).
+     * - Llama al gestor de huespedes para realizar la busqueda segun los criterios ingresados.
+     * - Si no se ingresa ningun dato, se muestran todos los huespedes cargados.
+     * - Si se ingresa algun filtro, se muestran solo los huespedes que cumplan con esos datos.
+     * - Si no se encuentra ninguno, se informa por consola.
+     * - Si hay resultados, el usuario puede elegir si quiere modificar alguno indicando su numero.
+     *
+     * Si se selecciona un huesped valido, se llama al metodo modificarHuesped del gestor.
+     *
+     * @return No devuelve ningun valor y toda la interaccion se realiza por consola.
      */
     public static void buscarHuesped(){
-        /*se presenta pantalla para buscar huesped 
-         ingresa nombre, apellido, tipo doc, num doc
-         mostrar error de algun dato invalido
-         sistema blanquea campos cuando esten OK
-         se vuelve al Menu
-        */
+        
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Ingrese apellido: ");
         String apellidoHuesped = scanner.nextLine();
-        while(!funcionesUtiles.contieneSoloLetras(apellidoHuesped) && !apellidoHuesped.isEmpty()){
+        while(!FuncionesUtiles.contieneSoloLetras(apellidoHuesped) && !apellidoHuesped.isEmpty()){
             //funcionesUtiles.clearConsola();
             System.out.print("Ingrese apellido valido: ");
             apellidoHuesped = scanner.nextLine();
         }
         System.out.print("Ingrese nombre: ");
         String nombreHuesped = scanner.nextLine();
-        while(!funcionesUtiles.contieneSoloLetras(nombreHuesped) && !nombreHuesped.isEmpty()){
+        while(!FuncionesUtiles.contieneSoloLetras(nombreHuesped) && !nombreHuesped.isEmpty()){
             //funcionesUtiles.clearConsola();
             System.out.print("Ingrese nombre valido: ");
             nombreHuesped = scanner.nextLine();
         }
         System.out.print("Ingrese Tipo de documento: ");
         String tipoDoc = scanner.nextLine();
-        while(!funcionesUtiles.contieneSoloLetras(tipoDoc) && !tipoDoc.isEmpty()){
+        while(!FuncionesUtiles.contieneSoloLetras(tipoDoc) && !tipoDoc.isEmpty()){
             //funcionesUtiles.clearConsola();
             System.out.print("Ingrese tipo de documento valido: ");
             tipoDoc = scanner.nextLine();
         }
         System.out.print("Ingrese su documento: ");
         String numDoc = scanner.nextLine();
-        while(!funcionesUtiles.contieneSoloNumeros(numDoc) &&  !numDoc.isEmpty()){
+        while(!FuncionesUtiles.contieneSoloNumeros(numDoc) &&  !numDoc.isEmpty()){
             //funcionesUtiles.clearConsola();
             System.out.print("Ingrese numero de documento valido: ");
             numDoc = scanner.nextLine();
         }
-        HuespedDAO huespedDAO = (HuespedDAO) DAOFactory.create(DAOFactory.HUESPED);
-        HuespedDTO huespedDTO = new HuespedDTO();
-        huespedDTO=gestorHuesped.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
-        funcionesUtiles.clearConsola();
-        if(huespedDTO.getApellido()!=null){
-            System.out.println("Huesped seleccionado: ");
-            System.out.println("  Nombre: " + huespedDTO.getNombre());
-            System.out.println("  Apellido: " + huespedDTO.getApellido());
-            System.out.println("  Tipo documento: " + huespedDTO.getTipoDocumento());
-            System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
-            System.out.println("DESEA MODIFICAR EL HUESPED? - indique SI o NO ");
-
-            String opcion1 = scanner.next();
 
 
-            if ( opcion1.equalsIgnoreCase("si")){
-                FuncionesUtiles.clearConsola();
-                modificarHuesped1(huespedDTO,gestorHuesped); //aca llamo a modificar huesped1 con Huesped DTO Y HuespedDto debe tener todos los campos
+        List<HuespedDTO> listaHuespedDTOs = gestorHuesped.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
 
+        FuncionesUtiles.clearConsola();
+        if (listaHuespedDTOs == null || listaHuespedDTOs.isEmpty()) {
+            System.out.println("No se encontraron huéspedes con los datos ingresados.");
+        } else {
+            // Muestro todos los huéspedes encontrados
+            System.out.println("=== RESULTADOS DE LA BÚSQUEDA ===");
+            for (int i = 0; i < listaHuespedDTOs.size(); i++) {
+                HuespedDTO h = listaHuespedDTOs.get(i);
+                System.out.println((i + 1) + ". " + h.getApellido() + ", " + h.getNombre()
+                        + " - " + h.getTipoDocumento() + " " + h.getNumeroDocumento());
+            }
+
+            // Pregunto si quiere modificar alguno
+            Scanner sc = new Scanner(System.in);
+            System.out.print("\n¿Desea modificar alguno de los huéspedes encontrados? (S/N): ");
+            String respuesta = sc.nextLine().trim();
+
+            if (respuesta.equalsIgnoreCase("S")) {
+                System.out.print("Ingrese el número del huésped que desea modificar: ");
+                try {
+                    int indice = Integer.parseInt(sc.nextLine().trim()) - 1;
+
+                    if (indice >= 0 && indice < listaHuespedDTOs.size()) {
+                        HuespedDTO seleccionado = listaHuespedDTOs.get(indice);
+                        System.out.println("\nSeleccionado: " + seleccionado.getApellido() + ", " + seleccionado.getNombre());
+                        
+                        modificarHuesped1(seleccionado,gestorHuesped); 
+                    } else {
+                        System.out.println("Número inválido. No existe ese huésped en la lista.");
+                    }
+
+                } catch (NumberFormatException e) {
+                    System.out.println("Entrada inválida. Debe ingresar un número.");
+                }
+            } else {
+                System.out.println("No se modificó ningún huésped.");
             }
         }
-        FuncionesUtiles.clearConsola();
-        System.out.println("\n ");
-        System.out.println("\n");
-        System.out.println(" presione 1. si desea volver a buscar un huesped ");
-        System.out.println("presione 2. para volver al menu ");
-        String opc = scanner.next();
-        while (opc.equalsIgnoreCase("1") && opc.equalsIgnoreCase("2")) {
-            System.out.print("Ingrese opcion valida - 1. 2. ");
-            opc = scanner.nextLine();
-        }
-        if (opc.equalsIgnoreCase("1")) {
-           System.out.print("-------BUSCAR HUESPED \n ");
-            buscarHuesped();
-        }
-        else{
-            Menu();
-        }
-
-        //nose si deberia llamar al gestor o a la clase
-        //System.out.println("se elimino: " + gestorHuesped.eliminarHuesped(huespedDTO)); es para probar a ver si elimina pero necesito el CU 12 PARA
+        
     }
 
 
@@ -832,7 +843,7 @@ public class App {
      * @param tipoNomod
      */
     public static void modificarHuesped(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuesped gestorHuesped, Map<String, Predicate<String>> validadores,
-                                        Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod ) {
+    Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod ) {
         Scanner sc = new Scanner(System.in);
         muestraCamposIngresados(campos);
         // valida campos, pide incorrectos

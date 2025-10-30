@@ -1,6 +1,7 @@
 package Classes.Huesped;
 
 import Classes.Direccion.DireccionDTO;
+import Classes.Excepciones.HuespedNoEncontradoException;
 import Classes.Validador;
 import Classes.DAOFactory;
 
@@ -59,26 +60,11 @@ public class GestorHuesped {
         return huespedDAO.verificarDocumento(huespedDTO);
     }
 
-    /**
-     *
-     * @param huespedDTO datos
-     * @param huespedDAO instancia del Dao
-     * @param rutaArchivo ruta donde esta el archivo
-     *
-     *
-     *el gestor le pasa al dao los datos y la ruta donde tiene q buscar
-     */
     public void modificarHuespedGestor(HuespedDTO huespedDTO, DireccionDTO d, String rutaArchivo, Map<String, String> campos, Map<String,Predicate<String>> validadores ) {
 
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
 
-        String nuevo; //nuevo es la variable para ir guardando los valores a modificar
-
-
-
-
-        //esto entonces son los datos de el huesped
         campos.put("apellido", huespedDTO.getApellido());
         campos.put("nombre", huespedDTO.getNombre());
         campos.put("tipoDocumento", huespedDTO.getTipoDocumento());
@@ -148,11 +134,6 @@ public class GestorHuesped {
 
     }
 
-
-    /**
-     * se registra el hueesped
-     * @param huespedDTO
-     */
     public void registrarHuesped(HuespedDTO huespedDTO) {
         /*
          llamar a la funcion del dao para que guarde los datos.
@@ -161,7 +142,7 @@ public class GestorHuesped {
     }
 
     /**
-     * sse verifica el documento del huesped
+     * se verifica el documento del huesped
      * @param huespedDTO
      * @return
      */
@@ -198,10 +179,17 @@ public class GestorHuesped {
      * @param tipoDoc
      * @param numDoc
      * @return
+     * @throws HuespedNoEncontradoException 
      */
-    public HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
-        return huespedDAO.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
+    public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc, String numDoc) {
+    try {
+        return huespedDAO.buscarDatos(nombreHuesped, apellidoHuesped, tipoDoc, numDoc);
+    } catch (HuespedNoEncontradoException e) {
+        System.out.println(e.getMessage());
+        return new ArrayList<>(); // o Collections.emptyList()
     }
+}
+
 
     /**
      * valida q sea el huesped mayor de edad
