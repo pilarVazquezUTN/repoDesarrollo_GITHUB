@@ -811,7 +811,8 @@ public static String leerContrasenaOculta() {
 
         FuncionesUtiles.clearConsola();
         if (listaHuespedDTOs == null || listaHuespedDTOs.isEmpty()) {
-            System.out.println("No se encontraron huéspedes con los datos ingresados.");
+                System.err.println("Dar alta de huésped");
+                darAltaHuesped();
         } else {
             // Muestro todos los huéspedes encontrados
             System.out.println("=== RESULTADOS DE LA BÚSQUEDA ===");
