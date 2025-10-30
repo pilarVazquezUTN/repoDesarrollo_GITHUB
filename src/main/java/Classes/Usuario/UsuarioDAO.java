@@ -11,6 +11,12 @@ public class UsuarioDAO implements UsuarioDAOInterfaz {
 
     private UsuarioDAO() { }
 
+    /**
+     * Devuelve la única instancia de UsuarioDAO.
+     * Si todavía no fue creada, la instancia se genera y se guarda.
+     *
+     * @return instancia única de UsuarioDAO
+     */
     public static synchronized UsuarioDAO getInstancia() {
         if (instancia == null) {
             instancia = new UsuarioDAO();
