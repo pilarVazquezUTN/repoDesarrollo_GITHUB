@@ -45,7 +45,11 @@ public class DAOFactory {
         HABITACION, HUESPED, MEDIO_DE_PAGO, PAGO, 
         RESERVA, PERSONA_JURIDICA, USUARIO
     };
-
+    /**
+     * Crea una instancia de un objeto DAO dependiendo del tipo de objeto que se le pase.
+     * @param tipo El tipo de objeto DAO que se desea crear.
+     * @return Una instancia de un objeto DAO.
+     */
     public static Object create(int tipo) {
         switch(tipo) {
             case DIRECCION:
