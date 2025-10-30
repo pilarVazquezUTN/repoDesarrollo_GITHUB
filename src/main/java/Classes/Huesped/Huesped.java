@@ -21,25 +21,7 @@ public class Huesped {
     private Classes.Estadia.Estadia [] estadiaHuesped;
 
     
-    public boolean esMayorDeEdad(HuespedDTO huespedDTO) {
-        Date fechaNacimiento = huespedDTO.getFechaNacimiento();
 
-        Calendar hoy = Calendar.getInstance();
-        Calendar nacimiento = Calendar.getInstance();
-        nacimiento.setTime(fechaNacimiento);
-
-        int edad = hoy.get(Calendar.YEAR) - nacimiento.get(Calendar.YEAR);
-
-        // Si todavía no cumplió , restamos 1 porq todavia no complio años pero en la resta da 18
-        if (hoy.get(Calendar.MONTH) < nacimiento.get(Calendar.MONTH) ||
-                ((hoy.get(Calendar.MONTH) == nacimiento.get(Calendar.MONTH) &&
-                        hoy.get(Calendar.DAY_OF_MONTH) < nacimiento.get(Calendar.DAY_OF_MONTH)))){
-            edad--;
-        }
-
-        return edad >= 18;
-    }
-    
 }
 
 

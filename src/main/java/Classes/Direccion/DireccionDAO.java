@@ -5,7 +5,10 @@ public class DireccionDAO implements DireccionDAOInterfaz {
 
     private DireccionDAO() { }
 
-    
+    /**
+     *
+     * @return instancia
+     */
     public static synchronized DireccionDAO getInstancia() {
         if (instancia == null) {
             instancia = new DireccionDAO();

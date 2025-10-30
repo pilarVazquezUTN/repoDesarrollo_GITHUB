@@ -8,12 +8,24 @@ public class Factura {
     private String tipo;
     private String estado;
 
+    /**
+     *
+     */
     public void agregarItem(){
 
     }
+
+    /**
+     *
+     */
     public void cancelar(){
 
     }
+
+    /**
+     *
+     */
+
     public void calcularTotal(){
 
     }

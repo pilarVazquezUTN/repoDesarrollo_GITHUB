@@ -13,6 +13,10 @@ public class FacturaDAO implements FacturaDAOInterfaz {
 
     private FacturaDAO() { }
 
+    /**
+     *
+     * @return instancia
+     */
     public static synchronized FacturaDAO getInstancia() {
         if (instancia == null) {
             instancia = new FacturaDAO();

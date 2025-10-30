@@ -14,11 +14,23 @@ public class GestorFacturacion {
         return id_empleado;
     }
 
-//las hago aca para tenerlas pero hay q implementar!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+    /**
+     * se genera una factura
+     * @param unaReserva
+     * @param responsablePago
+     * @return
+     */
     public Factura generarFactura(Reserva unaReserva, ResponsablePago responsablePago) {
         return null;
     }
 
+    /**
+     * se selecciona al resp de pago
+     * @param unHuesped
+     * @return
+     */
     public ResponsablePago seleccionarResponsablePago(Huesped unHuesped) {
         return null;
     }

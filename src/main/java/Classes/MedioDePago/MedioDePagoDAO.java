@@ -15,19 +15,39 @@ public class MedioDePagoDAO implements MedioDePagoDAOInterfaz {
 
     private MedioDePagoDAO() { }
 
+    /**
+     *
+     * @return
+     */
     public static synchronized MedioDePagoDAO getInstancia() {
         if (instancia == null) {
             instancia = new MedioDePagoDAO();
         }
         return instancia;
     }
+
+    /**
+     *
+     */
     public void delete(){
 
     }
+
+    /**
+     *
+     */
     public  void create(){
     }
+
+    /**
+     *
+     */
     public  void update(){
     }
+
+    /**
+     *
+     */
     public  void read(){
     }
 }

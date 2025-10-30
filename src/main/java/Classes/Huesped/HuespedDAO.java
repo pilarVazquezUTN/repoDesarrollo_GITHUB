@@ -24,6 +24,10 @@ public class HuespedDAO implements HuespedDAOInterfaz {
 
     private HuespedDAO() { }
 
+    /**
+     *
+     * @return
+     */
     public static synchronized HuespedDAO getInstancia() {
         if (instancia == null) {
             instancia = new HuespedDAO();
@@ -39,6 +43,11 @@ public class HuespedDAO implements HuespedDAOInterfaz {
     public  void read(){
     }
 
+    /**
+     * se verifica el documento si existe
+     * @param huespedDTO
+     * @return
+     */
     public boolean verificarDocumento(HuespedDTO huespedDTO){
     /*
      * Chequea que el Tipo y Número de Documento no existan en el archivo de registro.
@@ -80,6 +89,11 @@ public class HuespedDAO implements HuespedDAOInterfaz {
     
     return existeDoc; 
 }
+
+    /**
+     * se registra un huesped al archivo
+     * @param huespedDTO
+     */
 
     public void registrarHuesped(HuespedDTO huespedDTO){
         /*
@@ -133,6 +147,15 @@ public class HuespedDAO implements HuespedDAOInterfaz {
             System.err.println("ERROR al guardar el huésped en el archivo: " + e.getMessage());
         }
     }
+
+    /**
+     * se buscan los datos del huesped
+     * @param nombreHuesped
+     * @param apellidoHuesped
+     * @param tipoDoc
+     * @param numDoc
+     * @return
+     */
 
     //cumple con la consigna del tp stream/lambda
     public HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc, String numDoc) {
@@ -217,7 +240,7 @@ public class HuespedDAO implements HuespedDAOInterfaz {
     }
 
     /**
-     *
+     * se actualiza un huesped, de la funcion modificar huesped, dependiendo de el dni
      * @param rutaArchivo
      * @param huespedDTO
      * @param direccionDTO
@@ -277,7 +300,7 @@ public class HuespedDAO implements HuespedDAOInterfaz {
 
     /**
      *
-     * @param datos DATOS Q LEGGAN Y ARMO EL DTO
+     * @param datos DATOS Q LEGGAN  Y ARMO EL DTO
      * @return
      */
     private static DireccionDTO getDireccionDTO(String[] datos) {
@@ -292,6 +315,12 @@ public class HuespedDAO implements HuespedDAOInterfaz {
         direccionDTO.setPais(datos[14].trim());
         return direccionDTO;
     }
+
+    /**
+     * se elimina un huesped del archivo
+     * @param huesped
+     * @return
+     */
     public boolean eliminarHuespued(HuespedDTO huesped) {
         String rutaArchivo = "infoBuscarHuespedes.csv";
         boolean eliminado = false;
@@ -319,7 +348,7 @@ public class HuespedDAO implements HuespedDAOInterfaz {
             // Sobrescribir el archivo con las líneas filtradas
             Files.write(Paths.get(rutaArchivo), nuevasLineas);
 
-            //System.out.println("✅ Huesped eliminado del archivo.");
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -327,6 +356,11 @@ public class HuespedDAO implements HuespedDAOInterfaz {
         return eliminado;
     }
 
+    /**
+     * chequea si existe huesped
+     * @param huespedDTO
+     * @return true o false dependiendo si existe
+     */
     public boolean existeHuesped(HuespedDTO huespedDTO) {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         boolean encontrado = false;

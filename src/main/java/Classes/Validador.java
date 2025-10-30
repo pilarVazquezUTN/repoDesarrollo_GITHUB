@@ -34,7 +34,9 @@ public class Validador {
         }
         return mail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
     };
-
+    /**
+     * calle valida es q no tenga signos q no ssean letras o numeros
+     */
     public static Predicate<String> esCalleValida = calle -> {
         if (calle == null || calle.isEmpty()) {
             return true; // null o vacío también válido

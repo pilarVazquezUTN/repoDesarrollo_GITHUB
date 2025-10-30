@@ -8,22 +8,50 @@ public class PagoDTO {
     private Date  fecha;
 
 
-
+    /**
+     *
+     * @return
+     */
     public float getMonto() {
         return monto;
     }
+
+    /**
+     *
+     * @param monto
+     */
     public void setMonto(float monto) {
         this.monto = monto;
     }
+
+    /**
+     *
+     * @return
+     */
     public String getMedioPago() {
         return medioPago;
     }
+
+    /**
+     *
+     * @param medioPago
+     */
     public void setMedioPago(String medioPago) {
         this.medioPago = medioPago;
     }
+
+    /**
+     *
+     * @return
+     */
     public Date getFecha() {
         return fecha;
     }
+
+    /**
+     *
+     * @param fecha
+     */
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }

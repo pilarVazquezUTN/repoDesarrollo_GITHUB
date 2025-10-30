@@ -11,9 +11,18 @@ package Classes.Factura;
 public class NotaDeCredito {
     private float monto;
 
+    /**
+     *
+     * @param monto
+     */
     public void setMonto(float monto) {
         this.monto = monto;
     }
+
+    /**
+     *
+     * @return
+     */
     public float getMonto() {
         return this.monto;
     }

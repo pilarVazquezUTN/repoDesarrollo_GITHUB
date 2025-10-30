@@ -12,23 +12,49 @@ public class GestorHuesped {
     private String idEmpleado;
     HuespedDAO huespedDAO = (HuespedDAO) DAOFactory.create(DAOFactory.HUESPED);
 
+    /**
+     *
+     * @param idEmpleado
+     */
     public void setIdEmpleado(String idEmpleado) {
         this.idEmpleado = idEmpleado;
     }
+
+    /**
+     *
+     * @return
+     */
     public String getIdEmpleado() {
         return this.idEmpleado;
     }
 
+    /**
+     *buscar huesped
+     */
     public void  buscarHuesped(){
 
-    } 
+    }
+
+    /**
+     * dar alta un huesped
+     * @return
+     */
     public Huesped darAltaHuesped(){
         return null;
     }
+
+    /**dar de baja un huesped
+     *
+     */
     public void darBajaHuesped(){
 
     }
 
+    /**
+     * verificar si ya existe el huesped
+     * @param huespedDTO
+     * @return
+     */
     public boolean chequearExisteHuesped(HuespedDTO huespedDTO){
         return huespedDAO.verificarDocumento(huespedDTO);
     }
@@ -123,17 +149,22 @@ public class GestorHuesped {
     }
 
 
-
-
-
-
-
+    /**
+     * se registra el hueesped
+     * @param huespedDTO
+     */
     public void registrarHuesped(HuespedDTO huespedDTO) {
         /*
          llamar a la funcion del dao para que guarde los datos.
          */
         huespedDAO.registrarHuesped(huespedDTO);
     }
+
+    /**
+     * sse verifica el documento del huesped
+     * @param huespedDTO
+     * @return
+     */
     public boolean verificarDocumento(HuespedDTO huespedDTO){
         /*
          chequear que el tipo y numero de documento no existan
@@ -141,16 +172,59 @@ public class GestorHuesped {
         return huespedDAO.verificarDocumento(huespedDTO);
     }
 
+    /**
+     * se pasa al dao los datos para eliminar un huesped
+     * @param huespedDTO
+     * @return
+     */
     public boolean eliminarHuesped(HuespedDTO huespedDTO) {
 
         return huespedDAO.eliminarHuespued(huespedDTO);
     }
 
+    /**
+     * si se alojo en el hotel no se puede eliminar
+     * @param huespedDTO
+     * @return
+     */
     public boolean seAlojo (HuespedDTO huespedDTO) {
         return huespedDAO.seAlojo(huespedDTO);
     }
 
+    /**
+     * busca los datos del huesped
+     * @param nombreHuesped
+     * @param apellidoHuesped
+     * @param tipoDoc
+     * @param numDoc
+     * @return
+     */
     public HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
         return huespedDAO.buscarDatos(nombreHuesped,apellidoHuesped,tipoDoc,numDoc);
     }
+
+    /**
+     * valida q sea el huesped mayor de edad
+     * @param huespedDTO
+     * @return
+     */
+    public boolean esMayorDeEdad(HuespedDTO huespedDTO) {
+        Date fechaNacimiento = huespedDTO.getFechaNacimiento();
+
+        Calendar hoy = Calendar.getInstance();
+        Calendar nacimiento = Calendar.getInstance();
+        nacimiento.setTime(fechaNacimiento);
+
+        int edad = hoy.get(Calendar.YEAR) - nacimiento.get(Calendar.YEAR);
+
+        // Si todavía no cumplió , restamos 1 porq todavia no complio años pero en la resta da 18
+        if (hoy.get(Calendar.MONTH) < nacimiento.get(Calendar.MONTH) ||
+                ((hoy.get(Calendar.MONTH) == nacimiento.get(Calendar.MONTH) &&
+                        hoy.get(Calendar.DAY_OF_MONTH) < nacimiento.get(Calendar.DAY_OF_MONTH)))){
+            edad--;
+        }
+
+        return edad >= 18;
+    }
+
 }

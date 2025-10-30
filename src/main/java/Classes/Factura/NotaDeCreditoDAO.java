@@ -13,6 +13,10 @@ public class NotaDeCreditoDAO implements NotaDeCreditoDAOInterfaz {
 
     private NotaDeCreditoDAO() { }
 
+    /**
+     * retorna una instancia
+     * @return
+     */
     public static synchronized NotaDeCreditoDAO getInstancia() {
         if (instancia == null) {
             instancia = new NotaDeCreditoDAO();

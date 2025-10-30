@@ -18,6 +18,10 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
 
     private HabitacionDAO() { }
 
+    /**
+     *
+     * @return
+     */
     public static synchronized HabitacionDAO getInstancia() {
         if (instancia == null) {
             instancia = new HabitacionDAO();
@@ -36,10 +40,23 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
     public  void read(){
         
     }
+
+    /**
+     * mostrar estado de las habitaciones
+     * @param tipoHabitacion
+     * @param desdeFecha
+     * @param hastaFecha
+     */
     public void muestraEstado(String tipoHabitacion, Date desdeFecha, Date hastaFecha){
         mostrarGrillaHabitaciones(tipoHabitacion,desdeFecha, hastaFecha);
         //abrirArchivoCsvHabitaciones(desdeFecha,hastaFecha);    
-    } 
+    }
+
+    /**
+     * abrir el archivo de las habitaciones
+     * @param desdeFecha
+     * @param hastaFecha
+     */
     public void abrirArchivoCsvHabitaciones(Date desdeFecha, Date hastaFecha){
         String FECHA_FORMATO = "dd/MM/yyyy";
         String NOMBRE_ARCHIVO = "infoHabitaciones.csv";
@@ -92,6 +109,12 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
         }
     }
 
+    /**
+     * mostrar la grilla de las habitaciones
+     * @param tipoHabitacion
+     * @param desdeFecha
+     * @param hastaFecha
+     */
     public void mostrarGrillaHabitaciones(String tipoHabitacion, Date desdeFecha, Date hastaFecha) {
     String FECHA_FORMATO = "dd/MM/yyyy";
     String NOMBRE_ARCHIVO = "infoHabitaciones.csv";
@@ -232,6 +255,7 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
  * Define la prioridad de un estado. Un número más alto
  * tiene mayor prioridad (se mostrará sobre los otros).
  */
+
 private int getPrioridadEstado(String estado) {
     switch (estado.toLowerCase()) {
         case "fueradeservicio": // O como lo tengas escrito
@@ -247,7 +271,13 @@ private int getPrioridadEstado(String estado) {
             return 0; // Otros estados
     }
 }
-@Override
+
+    /**
+     * muestra el estado de las habitaciones
+     * @param desdeFecha
+     * @param hastaFecha
+     */
+    @Override
 public void muestraEstado(Date desdeFecha, Date hastaFecha) {
     throw new UnsupportedOperationException("Unimplemented method 'muestraEstado'");
 }
