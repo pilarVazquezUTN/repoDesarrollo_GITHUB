@@ -30,13 +30,6 @@ public class GestorHuesped {
     }
 
     /**
-     *buscar huesped
-     */
-    public void  buscarHuesped(){
-
-    }
-
-    /**
      * dar alta un huesped
      * @return
      */
@@ -59,6 +52,22 @@ public class GestorHuesped {
     public boolean chequearExisteHuesped(HuespedDTO huespedDTO){
         return huespedDAO.verificarDocumento(huespedDTO);
     }
+
+
+    /**
+     * Carga los datos del huesped en los mapas de campos y validadores para preparar su modificacion.
+     *
+     * Este metodo toma la informacion del objeto HuespedDTO y de su direccion
+     * y la guarda en un mapa con los nombres de los campos como clave.
+     * Tambien asigna a cada campo un predicado que define la regla de validacion
+     * correspondiente (por ejemplo, si es texto, numero, fecha, etc).
+     *
+     * @param huespedDTO objeto con los datos del huesped que se va a modificar
+     * @param d direccion del huesped, usada para obtener los datos de ubicacion
+     * @param rutaArchivo ruta del archivo donde se guardan los datos (no se usa todavia)
+     * @param campos mapa que almacena los nombres de campo y sus valores actuales
+     * @param validadores mapa que relaciona cada campo con su funcion de validacion
+     */
 
     public void modificarHuespedGestor(HuespedDTO huespedDTO, DireccionDTO d, String rutaArchivo, Map<String, String> campos, Map<String,Predicate<String>> validadores ) {
 
@@ -112,10 +121,6 @@ public class GestorHuesped {
         validadores.put("email",Validador.esMailValido);
         validadores.put("ocupacion", Validador.esStringValido);
         validadores.put("nacionalidad", Validador.esStringValido);
-
-
-        //defino ciales son los obligatorios, hago set mas facil para buscar campos
-
 
     }
 

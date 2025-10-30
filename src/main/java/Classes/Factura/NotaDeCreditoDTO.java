@@ -4,10 +4,6 @@
  */
 package Classes.Factura;
 
-/**
- *
- * @author st
- */
 public class NotaDeCreditoDTO {
     
 }

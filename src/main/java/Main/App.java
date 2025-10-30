@@ -9,9 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Predicate;
 
-import Classes.Habitacion.Suite;
-import Classes.Huesped.Huesped; 
-import Classes.Huesped.HuespedDAO;
 import Classes.Huesped.HuespedDTO;
 import Classes.Usuario.GestorUsuario;
 import Classes.Usuario.UsuarioDAO;
@@ -19,7 +16,6 @@ import Classes.Usuario.UsuarioDTO;
 import Classes.Habitacion.GestorHabitacion;
 import Classes.Huesped.GestorHuesped;
 import Classes.Direccion.DireccionDTO;
-import Classes.Excepciones.*;
 import Classes.FuncionesUtiles;
 import Classes.Validador;
 import Classes.DAOFactory;
@@ -48,7 +44,7 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         String opcion;
 
-        funcionesUtiles.clearConsola();
+        FuncionesUtiles.clearConsola();
         do{
             System.out.println("BIENVENIDO A LA GESTION DEL HOTEL. \n Presione 1 para Autenticar su Usuario. ");
             opcion=scanner.nextLine();
@@ -117,8 +113,14 @@ public class App {
     }
 
     /**
-     * auntenticarHuesped vaalida que el huesped este en el sistema y valida la contraseña y el usuario
+     * Permite autenticar a un huesped en el sistema.
+     *
+     * Solicita el nombre de usuario y la contrasena por consola.
+     * La contrasena se ingresa de forma oculta y se valida antes de continuar.
+     * Si los datos son correctos, se concede el acceso y se muestra el menu principal.
+     * Si el usuario no existe o la contrasena es incorrecta, se vuelve a pedir la autenticacion.
      */
+
     public static void autenticarHuesped(){
         Scanner scanner = new Scanner(System.in);
         String nombreUsuario;
@@ -158,6 +160,11 @@ public class App {
             autenticarHuesped();
         }
     }
+    /**
+     * Verifica si una contrasena cumple con las reglas de seguridad definidas.
+     * @param contrasena texto a validar
+     * @return true si la contrasena cumple con todas las condiciones, false en caso contrario
+     */
 
     public static boolean esContrasenaValida(String contrasena) {
         if (contrasena == null) return false;
@@ -193,57 +200,70 @@ public class App {
 
 
 
-    public static String leerContrasenaOculta() {
-        StringBuilder contrasena = new StringBuilder();
-        try {
-            // Leer carácter por carácter
-            int caracter;
-            while ((caracter = System.in.read()) != '\n' && caracter != '\r') {  // Hasta Enter
-                if (caracter == '\b') {  // Backspace: borrar último "*"
-                    if (contrasena.length() > 0) {
-                        contrasena.deleteCharAt(contrasena.length() - 1);
-                        System.out.print("\b \b");  // Borra el "*" en pantalla
-                    }
-                } else {
-                    contrasena.append((char) caracter);
-                    System.out.print("*");  // Imprime "*" en lugar del carácter real
+    /**
+ * Lee una contrasena desde consola sin mostrar los caracteres ingresados.
+ * Cada caracter se reemplaza por un asterisco (*) mientras se escribe.
+ *
+ * @return la contrasena ingresada por el usuario
+ */
+public static String leerContrasenaOculta() {
+    StringBuilder contrasena = new StringBuilder();
+    try {
+        int caracter;
+        while ((caracter = System.in.read()) != '\n' && caracter != '\r') { // hasta Enter
+            if (caracter == '\b') { // backspace: borrar el ultimo caracter
+                if (contrasena.length() > 0) {
+                    contrasena.deleteCharAt(contrasena.length() - 1);
+                    System.out.print("\b \b");
                 }
+            } else {
+                contrasena.append((char) caracter);
+                System.out.print("*");
             }
-            System.out.println();  // Nueva línea después de Enter
-        } catch (IOException e) {
-            System.err.println("Error al leer la contraseña: " + e.getMessage());
         }
-        return contrasena.toString();
+        System.out.println();
+    } catch (IOException e) {
+        System.err.println("Error al leer la contrasena: " + e.getMessage());
     }
+    return contrasena.toString();
+}
 
     /**
-     * dar alta huesped se encarga de cargar un nuevo huesped al sistema, llama a registrar huesped del gestor
+     * Da de alta a un nuevo huesped en el sistema.
+     *
+     * El metodo solicita los datos personales y de direccion del huesped,
+     * valida la informacion y registra el nuevo huesped mediante el gestor.
+     * Al finalizar, muestra un mensaje de confirmacion y pregunta si se desea
+     * cargar otro registro. Si el usuario elige "si", el proceso se repite;
+     * en caso contrario, limpia la consola y vuelve al menu principal.
      */
-    public static void darAltaHuesped(){
+    public static void darAltaHuesped() {
         Scanner scanner = new Scanner(System.in);
         HuespedDTO huespedDTO = new HuespedDTO();
-        Boolean camposVacios=false;//para controlar cuando ingresa mal los campos luego del 1er ingreso
-        DireccionDTO direccionDTO=new DireccionDTO();
-        
-        ingresarDatos(camposVacios,huespedDTO,direccionDTO);
+        Boolean camposVacios = false; // controla campos mal ingresados despues del primer intento
+        DireccionDTO direccionDTO = new DireccionDTO();
+
+        ingresarDatos(camposVacios, huespedDTO, direccionDTO);
         gestorHuesped.registrarHuesped(huespedDTO);
-        
+
         Integer opcion;
-        do{
-            System.out.println("El huésped " + huespedDTO.getNombre() +","+huespedDTO.getApellido() + 
-            " ha sido satisfactoriamente cargado al sistema. \n ¿Desea cargar otro? \n" +
-            "1. si \n 2. no");
-        
-            opcion= scanner.nextInt();
-        } while (opcion!=1 && opcion!=2);
-        if(opcion==1){
-            //vuelve a que cargue mas huespedes
+        do {
+            System.out.println("El huesped " + huespedDTO.getNombre() + "," + huespedDTO.getApellido()
+                    + " ha sido satisfactoriamente cargado al sistema. \n¿Desea cargar otro?\n"
+                    + "1. si \n2. no");
+
+            opcion = scanner.nextInt();
+        } while (opcion != 1 && opcion != 2);
+
+        if (opcion == 1) {
+            // vuelve a cargar mas huespedes
             darAltaHuesped();
-        } else{
+        } else {
             FuncionesUtiles.clearConsola();
             Menu();
         }
     }
+
 
     /**
      * Ingreso de todos los datos del huesped, validacion correspondiente
@@ -1012,7 +1032,7 @@ public class App {
     }
 
     /**
-     * es la opcion de aceptar, es decir q se hagan los cambios
+     * es la opcion de aceptar, es decir q se hagan los cambios al modificar el huesped
      * @param campos campos con key-valor
      * @param validadores campo con key-validador
      * @param noObligatorios
@@ -1205,9 +1225,18 @@ public class App {
     }
 
     /**
-     * dar de baja huesped , valida q exista el huesped y si se alojo no se puede eliminar
-     * @param huespedDTO
-     */
+ * Da de baja a un huesped del sistema.
+ *
+ * Recibe un objeto HuespedDTO con los datos del huesped a eliminar.
+ * Si el huesped no tiene registros de estadias, se muestra un mensaje
+ * de confirmacion para proceder con la baja. En caso de que el huesped
+ * haya estado alojado alguna vez, no se permite su eliminacion.
+ *
+ * El usuario puede confirmar la baja, cancelarla o continuar segun la opcion elegida.
+ *
+ * @param huespedDTO objeto con los datos del huesped a dar de baja
+ */
+
         public static void darBajaHuesped(HuespedDTO huespedDTO){ //el huesped me lo pasa el CU12
             Scanner scanner = new Scanner(System.in);
 
@@ -1246,8 +1275,14 @@ public class App {
 
 
     /**
-     * reserva  de la habitacion desdefecha-hastafecha
+     * Permite realizar una reserva de habitacion.
+     *
+     * Solicita al usuario las fechas de ingreso y egreso, validando que el formato sea correcto y que la fecha de inicio sea anterior a la fecha de salida. Luego pide elegir el tipo de habitacion entre las opciones disponibles y muestra su estado segun las fechas elegidas.
+     *
+     * Si las fechas no son validas, da la posibilidad de volver a ingresarlas
+     * o regresar al menu principal.
      */
+
 
     public static void reservarHabitacion(){
         System.out.println("RESERVAR HABITACION");
@@ -1326,7 +1361,7 @@ public class App {
                     break;
             }
 
-            funcionesUtiles.clearConsola();
+            FuncionesUtiles.clearConsola();
             System.out.println("FECHAS SELECCIONADAS: "+FuncionesUtiles.convertirDateAString(desdeFecha)+" hasta el "+FuncionesUtiles.convertirDateAString(hastaFecha));
             System.out.println("HABITACION SELECCIONADA: "+nombreTipoHabitacion);
 
@@ -1354,11 +1389,17 @@ public class App {
     }
 
     /**
-     * se muestra el estado de habitaciones
-     * @param tipoHabitacion
-     * @param desdeFecha
-     * @param hastaFecha
+     * Muestra el estado de las habitaciones segun el tipo y el rango de fechas indicado.
+     *
+     * Llama al gestor de habitaciones para mostrar la disponibilidad
+     * y luego permite al usuario elegir entre realizar una reserva
+     * o volver a ingresar los datos de busqueda.
+     *
+     * @param tipoHabitacion tipo de habitacion a consultar
+     * @param desdeFecha fecha inicial del rango
+     * @param hastaFecha fecha final del rango
      */
+
     public static void mostrarEstadoHabitaciones(String tipoHabitacion, Date desdeFecha, Date hastaFecha){
         Scanner scanner = new Scanner(System.in);
 
@@ -1385,6 +1426,15 @@ public class App {
             reservarHabitacion();
         }
     }
+    /**
+     * Valida una fecha ingresada y la convierte en un objeto Date.
+     * Si la fecha no tiene el formato correcto, devuelve null.
+     *
+     * @param fechaIngresada texto con la fecha a validar
+     * @param formatter formato esperado para la fecha
+     * @return objeto Date si la conversion fue exitosa, null en caso contrario
+     */
+
     public static Date validarFecha(String fechaIngresada, SimpleDateFormat formatter){
         try {
             return formatter.parse(fechaIngresada);
@@ -1392,24 +1442,19 @@ public class App {
             return null; // devuelve null si no se pudo parsear
         }
     }
+    /**
+     * Verifica que la primera fecha sea anterior a la segunda.
+     *
+     * @param desdeFecha fecha de inicio
+     * @param hastaFecha fecha de fin
+     * @return true si la primera fecha es anterior a la segunda, false en caso contrario
+     */
+
     public static boolean validarAmbasFechas(Date desdeFecha, Date hastaFecha){
         if(desdeFecha.before(hastaFecha)){
             return true;    
         } else {
             return false;
-        }
-    }
-
-    public static void clearConsola() {
-        try {
-            if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
-            }
-        } catch (IOException | InterruptedException ex) {
-            System.out.println("No se pudo limpiar la consola.");
         }
     }
 
