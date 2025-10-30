@@ -1,4 +1,5 @@
 package Main;
+
 import java.io.IOException;
 import java.text.ParseException; 
 import java.text.SimpleDateFormat;
@@ -80,18 +81,14 @@ public class App {
      */
     public static void ingresaOpcion(){
         Scanner scanner = new Scanner(System.in);
-        boolean entradaValida=false;
+        //boolean entradaValida=false;
         int opcion= scanner.nextInt();
         funcionesUtiles.clearConsola();
-        do{
-            if(opcion<1 || opcion>=5){
-                funcionesUtiles.clearConsola();
-                System.out.println("--------------- Ingrese una opcion correcta!");
-                Menu();
-            } else{
-                entradaValida=true;
-            }
-        } while(!entradaValida);
+        if(opcion<1 || opcion>5){
+            funcionesUtiles.clearConsola();
+            System.out.println("--------------- Ingrese una opcion correcta!");
+            Menu();
+        }
 
         funcionesUtiles.clearConsola();
         switch (opcion) {
@@ -753,28 +750,28 @@ public class App {
 
         System.out.print("Ingrese apellido: ");
         String apellidoHuesped = scanner.nextLine();
-        if(!funcionesUtiles.contieneSoloLetras(apellidoHuesped) && !apellidoHuesped.isEmpty()){
+        while(!funcionesUtiles.contieneSoloLetras(apellidoHuesped) && !apellidoHuesped.isEmpty()){
             //funcionesUtiles.clearConsola();
             System.out.print("Ingrese apellido valido: ");
             apellidoHuesped = scanner.nextLine();
         }
         System.out.print("Ingrese nombre: ");
         String nombreHuesped = scanner.nextLine();
-        if(!funcionesUtiles.contieneSoloLetras(nombreHuesped) && !nombreHuesped.isEmpty()){
+        while(!funcionesUtiles.contieneSoloLetras(nombreHuesped) && !nombreHuesped.isEmpty()){
             //funcionesUtiles.clearConsola();
             System.out.print("Ingrese nombre valido: ");
             nombreHuesped = scanner.nextLine();
         }
         System.out.print("Ingrese Tipo de documento: ");
         String tipoDoc = scanner.nextLine();
-        if(!funcionesUtiles.contieneSoloLetras(tipoDoc) && !tipoDoc.isEmpty()){
+        while(!funcionesUtiles.contieneSoloLetras(tipoDoc) && !tipoDoc.isEmpty()){
             //funcionesUtiles.clearConsola();
             System.out.print("Ingrese tipo de documento valido: ");
             tipoDoc = scanner.nextLine();
         }
         System.out.print("Ingrese su documento: ");
         String numDoc = scanner.nextLine();
-        if(!funcionesUtiles.contieneSoloNumeros(numDoc) &&  !numDoc.isEmpty()){
+        while(!funcionesUtiles.contieneSoloNumeros(numDoc) &&  !numDoc.isEmpty()){
             //funcionesUtiles.clearConsola();
             System.out.print("Ingrese numero de documento valido: ");
             numDoc = scanner.nextLine();
@@ -791,7 +788,7 @@ public class App {
             System.out.println("  N° documento: " + huespedDTO.getNumeroDocumento());
             System.out.println("DESEA MODIFICAR EL HUESPED? - indique SI o NO ");
 
-            String opcion1 = scanner.nextLine();
+            String opcion1 = scanner.next();
 
 
             if ( opcion1.equalsIgnoreCase("si")){
@@ -799,16 +796,13 @@ public class App {
                 modificarHuesped1(huespedDTO,gestorHuesped); //aca llamo a modificar huesped1 con Huesped DTO Y HuespedDto debe tener todos los campos
 
             }
-            else{
-                Menu();
-            }
         }
         FuncionesUtiles.clearConsola();
         System.out.println("\n ");
         System.out.println("\n");
         System.out.println(" presione 1. si desea volver a buscar un huesped ");
         System.out.println("presione 2. para volver al menu ");
-        String opc = scanner.nextLine();
+        String opc = scanner.next();
         while (opc.equalsIgnoreCase("1") && opc.equalsIgnoreCase("2")) {
             System.out.print("Ingrese opcion valida - 1. 2. ");
             opc = scanner.nextLine();
@@ -1190,7 +1184,7 @@ public class App {
         }
         if (op.equalsIgnoreCase("si")){
             System.out.println("Se cancela la modificacin del huesped");
-            Menu();
+            //Menu();
         }
         else{ //vuelve a mostrar hasta el boton aceptar borrar cancelar
             modificarHuesped(campos, huespedDTO,gestorHuesped,validadores,noObligatorios,huespedDNI,dniNOMod,tipoNomod);

@@ -134,108 +134,88 @@ public class HuespedDAO implements HuespedDAOInterfaz {
         }
     }
 
-
-    public HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc,String numDoc){
-        String rutaArchivo = "infoBuscarHuespedes.csv"; // Cambia por la ruta real de tu archivo
-        boolean encontrado = false;
-        HuespedDTO huespedRetorno = new HuespedDTO();
-        HuespedDTO huespedDTO;
+    //cumple con la consigna del tp stream/lambda
+    public HuespedDTO buscarDatos(String nombreHuesped, String apellidoHuesped, String tipoDoc, String numDoc) {
+        String rutaArchivo = "infoBuscarHuespedes.csv";
         List<HuespedDTO> listaHuespedes = new ArrayList<>();
 
-
         try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
-            String linea;
-            boolean primeraLinea = true; // para saltar encabezado
-            int i = 0;
-            while ((linea = br.readLine()) != null) {
-                // saltear encabezado
-                if (primeraLinea) {
-                    primeraLinea = false;
-                    continue;
-                }
-                String[] datos = linea.split(",");
+            List<String> lineas = br.lines().skip(1).toList(); //leo todo el archivo por completo
 
-                if (datos.length >= 19) {
-                    String apellido = datos[0].trim();
-                    String nombre = datos[1].trim();
-                    String tipo = datos[2].trim();
-                    String documento = datos[3].trim();
+            //Uso de Stream y lambda para leer el archivo
+            listaHuespedes = lineas.stream()
+                    .map(linea -> linea.split(","))
+                    .filter(datos -> datos.length >= 19) //por lo menos tiene que haber 19 datos
+                    .filter(datos -> {
+                        String apellido = datos[0].trim();
+                        String nombre = datos[1].trim();
+                        String tipo = datos[2].trim();
+                        String documento = datos[3].trim();
 
-                    // Coincide si el campo ingresado no está vacío y coincide con el del archivo DAO
-                    boolean coincideNombre = (nombreHuesped == null || nombreHuesped.isEmpty()) || nombre.equalsIgnoreCase(nombreHuesped);
-                    boolean coincideApellido = (apellidoHuesped == null || apellidoHuesped.isEmpty()) || apellido.equalsIgnoreCase(apellidoHuesped);
-                    boolean coincideTipo = (tipoDoc == null || tipoDoc.isEmpty()) || tipo.equalsIgnoreCase(tipoDoc);
-                    boolean coincideDocumento = (numDoc == null || numDoc.isEmpty()) || documento.equalsIgnoreCase(numDoc);
+                        boolean coincideNombre = (nombreHuesped == null || nombreHuesped.isEmpty()) || nombre.equalsIgnoreCase(nombreHuesped);
+                        boolean coincideApellido = (apellidoHuesped == null || apellidoHuesped.isEmpty()) || apellido.equalsIgnoreCase(apellidoHuesped);
+                        boolean coincideTipo = (tipoDoc == null || tipoDoc.isEmpty()) || tipo.equalsIgnoreCase(tipoDoc);
+                        boolean coincideDocumento = (numDoc == null || numDoc.isEmpty()) || documento.equalsIgnoreCase(numDoc);
 
-                    // Mostrar si todos los campos ingresados coinciden
-                    if (coincideNombre && coincideApellido && coincideTipo && coincideDocumento ) {
-                        i++;
-                        huespedDTO = new HuespedDTO();
-                        System.out.println((i)+": ");
-                        System.out.println("  Apellido: " + apellido);
-                        huespedDTO.setApellido(apellido);
-                        System.out.println("  Nombre: " + nombre);
-                        huespedDTO.setNombre(nombre);
-                        System.out.println("  Tipo documento: " + tipo);
-                        huespedDTO.setTipoDocumento(tipo);
-                        System.out.println("  N° documento: " + documento);
-                        huespedDTO.setNumeroDocumento(documento);
-
-                        //sigo cargando los datos del huesped
-                        String fechaTexto = datos[6].trim(); // "20/05/1995"
-                        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-
-                        try {
-                            Date fNacimiento = formato.parse(fechaTexto);
-                            huespedDTO.setFechaNacimiento(fNacimiento);
-                        } catch (ParseException e) {
-                            System.out.println("Error al convertir la fecha: " + fechaTexto);
-                        }
-
-                        huespedDTO.setTelefono(datos[15].trim());
-                        huespedDTO.setEmail(datos[16].trim());
-
-                        DireccionDTO direccionDTO = getDireccionDTO(datos);
-                        huespedDTO.setDireccionHuesped(direccionDTO);
-                        //aca hago el set en huesped
-
+                        return coincideNombre && coincideApellido && coincideTipo && coincideDocumento;
+                    }) //me fijo que coincida algun dato y si no se ingreso ninguno entonces envio todos los huespedes
+                    .map(datos -> {
+                        HuespedDTO huespedDTO = new HuespedDTO();
+                        huespedDTO.setApellido(datos[0].trim());
+                        huespedDTO.setNombre(datos[1].trim());
+                        huespedDTO.setTipoDocumento(datos[2].trim());
+                        huespedDTO.setNumeroDocumento(datos[3].trim());
                         huespedDTO.setCuit(datos[4].trim());
                         huespedDTO.setPosicionIva(datos[5].trim());
+                        try {
+                            SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+                            huespedDTO.setFechaNacimiento(formato.parse(datos[6].trim()));
+                        } catch (ParseException e) {
+                            System.out.println("Error al convertir la fecha: " + datos[6]);
+                        }
+                        huespedDTO.setTelefono(datos[15].trim());
+                        huespedDTO.setEmail(datos[16].trim());
+                        huespedDTO.setDireccionHuesped(getDireccionDTO(datos));
                         huespedDTO.setOcupacion(datos[17].trim());
                         huespedDTO.setNacionalidad(datos[18].trim());
+                        return huespedDTO;
+                    }) //el/los huesped/es que coincide cargo todos sus datos y lo retorno
+                    .toList();
 
-
-
-                        System.out.println("---------------------------");
-                        encontrado = true;
-                        listaHuespedes.add(huespedDTO);
-                    }
-                }
+            if (listaHuespedes.isEmpty()) {
+                System.out.println("0 coincidencias");
+                return new HuespedDTO();
             }
-            if (!encontrado)
-            {
-                System.out.println(i+" coincidencias");
-            }else
-            {
-                Scanner scanner = new Scanner(System.in);
-                System.out.print("ingrese el numero del huesped que buscaba: ");
-                String huespedNum = scanner.nextLine();
 
-                while(!(FuncionesUtiles.esUnSoloNumero(huespedNum)) || (Integer.parseInt(huespedNum)>i || Integer.parseInt(huespedNum)<=0) ){
-                    System.out.println("----ingrese un numero valido----- ");
-                    System.out.println("ingrese el numero del huesped que buscaba: ");
-                    huespedNum = scanner.nextLine();
-                }
-                return listaHuespedes.get(Integer.parseInt(huespedNum)-1); //ACA ME ESTA DEVOLVIENDO EL HUESPED ELEGIDO
+            // muestro todos los huespedes que hayan coincidido
+            //aunque tome todos los datos solo muestro los de busqueda ya que los demas datos son para cu ModificarHUesped
+            for (int i = 0; i < listaHuespedes.size(); i++) {
+                HuespedDTO h = listaHuespedes.get(i);
+                System.out.println((i + 1) + ": " + h.getApellido() + ", " + h.getNombre() +
+                        " - " + h.getTipoDocumento() + " " + h.getNumeroDocumento());
+            }
 
-               }
-            //4.A.1. El sistema pasa a ejecutar el CU11 “Dar alta de Huésped” 4.A.2 El CU termina.
-        }
-        catch (IOException e) {
+            //huesped a usar
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Ingrese el número del huésped que buscaba: ");
+            String huespedNum = scanner.nextLine();
+
+            while (!(FuncionesUtiles.contieneSoloNumeros(huespedNum)) ||
+                    (Integer.parseInt(huespedNum) > listaHuespedes.size() || Integer.parseInt(huespedNum) <= 0)) {
+                System.out.println("---- Ingrese un número válido ----");
+                System.out.print("Ingrese el número del huésped que buscaba: ");
+                huespedNum = scanner.nextLine();
+            }
+
+            return listaHuespedes.get(Integer.parseInt(huespedNum) - 1); //retorno todos los datos obtenidos del huesped para asi usarlo en otros cu's
+
+        } catch (IOException e) {
             System.out.println("Error al leer el archivo: " + e.getMessage());
         }
-        return huespedRetorno;
+
+        return new HuespedDTO(); //por si no hubo cincidencia
     }
+
     /**
      *
      * @param rutaArchivo
