@@ -18,28 +18,59 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
 
     private HabitacionDAO() { }
 
+    /**
+     * Devuelve la única instancia de HabitacionDAO.
+     * Si todavía no fue creada, la instancia se genera y se guarda.
+     *
+     * @return instancia única de HabitacionDAO
+     */
     public static synchronized HabitacionDAO getInstancia() {
         if (instancia == null) {
             instancia = new HabitacionDAO();
         }
         return instancia;
     }
+    /**
+     * Elimina un elemento de la base de datos.
+     */
     public void delete(){
 
     }
+    /**
+     * Crea un nuevo elemento de la base de datos.
+     */
     public  void create(){
 
     } 
+    /**
+     * Actualiza un elemento de la base de datos.
+     */
     public  void update(){
 
     }
+    /**
+     * Lee un elemento de la base de datos.
+     */
     public  void read(){
         
     }
+
+    /**
+     * mostrar estado de las habitaciones
+     * @param tipoHabitacion
+     * @param desdeFecha
+     * @param hastaFecha
+     */
     public void muestraEstado(String tipoHabitacion, Date desdeFecha, Date hastaFecha){
         mostrarGrillaHabitaciones(tipoHabitacion,desdeFecha, hastaFecha);
         //abrirArchivoCsvHabitaciones(desdeFecha,hastaFecha);    
-    } 
+    }
+
+    /**
+     * abrir el archivo de las habitaciones
+     * @param desdeFecha
+     * @param hastaFecha
+     */
     public void abrirArchivoCsvHabitaciones(Date desdeFecha, Date hastaFecha){
         String FECHA_FORMATO = "dd/MM/yyyy";
         String NOMBRE_ARCHIVO = "infoHabitaciones.csv";
@@ -92,6 +123,12 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
         }
     }
 
+    /**
+     * mostrar la grilla de las habitaciones
+     * @param tipoHabitacion
+     * @param desdeFecha
+     * @param hastaFecha
+     */
     public void mostrarGrillaHabitaciones(String tipoHabitacion, Date desdeFecha, Date hastaFecha) {
     String FECHA_FORMATO = "dd/MM/yyyy";
     String NOMBRE_ARCHIVO = "infoHabitaciones.csv";
@@ -232,6 +269,7 @@ public class HabitacionDAO implements HabitacionDAOInterfaz {
  * Define la prioridad de un estado. Un número más alto
  * tiene mayor prioridad (se mostrará sobre los otros).
  */
+
 private int getPrioridadEstado(String estado) {
     switch (estado.toLowerCase()) {
         case "fueradeservicio": // O como lo tengas escrito
@@ -247,7 +285,13 @@ private int getPrioridadEstado(String estado) {
             return 0; // Otros estados
     }
 }
-@Override
+
+    /**
+     * muestra el estado de las habitaciones
+     * @param desdeFecha
+     * @param hastaFecha
+     */
+    @Override
 public void muestraEstado(Date desdeFecha, Date hastaFecha) {
     throw new UnsupportedOperationException("Unimplemented method 'muestraEstado'");
 }

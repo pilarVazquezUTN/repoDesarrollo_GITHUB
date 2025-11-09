@@ -5,6 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class FuncionesUtiles {
+
+
+    /**
+     * convierte el string a Date
+     * @param fechaString
+     * @return
+     */
     public Date convertirStringADate(String fechaString) {
         
         // 1. Define el formato EXACTO del String de entrada. 
@@ -34,11 +41,20 @@ public class FuncionesUtiles {
             System.out.flush();
     }
 
+    /**
+     * valida q solo sea un numero lo q ingresa en string
+     * @param valor
+     * @return
+     */
     public static boolean esUnSoloNumero(String valor) {
         return valor.matches("[0-9]"); // solo un dígito entre 0 y 9
     }
 
-
+    /**
+     * convierte el tipo DATE a string
+     * @param fechaDate
+     * @return
+     */
     public static String convertirDateAString(Date fechaDate) {
         // 1. Define el formato de salida deseado.
         String formatoSalida = "dd/MM/yyyy"; 
@@ -50,7 +66,11 @@ public class FuncionesUtiles {
         return formateador.format(fechaDate);
     }
 
-
+    /**
+     * valida q solo haya letras
+     * @param palabra
+     * @return
+     */
     public static boolean contieneSoloLetras(String palabra){
         boolean soloLetras=true;
         if(palabra==null || palabra.isEmpty()){
@@ -61,7 +81,11 @@ public class FuncionesUtiles {
         return palabra.matches(regex);
     }
 
-
+    /**
+     * solo numeros
+     * @param palabra
+     * @return
+     */
     public static boolean contieneSoloNumeros(String palabra){
         boolean soloLetras=true;
         if(palabra==null || palabra.isEmpty()){
@@ -72,7 +96,11 @@ public class FuncionesUtiles {
         return palabra.matches(regex);
     }
 
-
+    /**
+     * valida q sea mail valido
+     * @param email
+     * @return
+     */
     public static boolean emailValido(String email){
         boolean soloLetras=true;
         if(email==null){
