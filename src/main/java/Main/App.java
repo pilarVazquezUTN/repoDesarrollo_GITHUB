@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import Classes.Huesped.HuespedDTO;
+import Classes.Reserva.GestorReservaInterfaz;
 import Classes.Usuario.GestorUsuario;
 import Classes.Usuario.UsuarioDAO;
 import Classes.Usuario.UsuarioDTO;
@@ -120,7 +121,7 @@ public class App {
      * Si los datos son correctos, se concede el acceso y se muestra el menu principal.
      * Si el usuario no existe o la contrasena es incorrecta, se vuelve a pedir la autenticacion.
      */
-    
+
 
     public static void autenticarHuesped(){
         Scanner scanner = new Scanner(System.in);
@@ -155,7 +156,9 @@ public class App {
         // Llamamos al Gestor
         if (gestorUsuario.autenticarUsuario(usuarioDAO, usuarioDTO)) {
             System.out.println("Usuario Encontrado. Acceso concedido.\n");
+
             Menu();
+           // cancelarReserva(); //ESTO ES DE PRUEBA!!!!!!!!!!!!!!!!!!!!!!!!!
         } else {
             System.out.println("Usuario no encontrado. Se vuelve a Autenticación de Usuario.\n");
             autenticarHuesped();
@@ -1461,6 +1464,41 @@ public static String leerContrasenaOculta() {
     }
 
 
+
+    //metodos cancelar reserva cu06
+
+    public static void ingresoDatosCancelacion (String apellido, String nombre){
+
+        System.out.println("Proceso cancelacion de reserva \n");
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Ingrese apellido");
+        apellido = scanner.nextLine();
+
+        System.out.println("Ingrese nombre");
+        nombre = scanner.nextLine();
+
+        while (apellido.equalsIgnoreCase("")) {
+            System.out.println("Apellido no puede ser vacio");
+            apellido = scanner.nextLine();
+        }
+    }
+
+
+    public static void cancelarReserva(GestorReservaInterfaz gestorReserva){
+
+        String apellido="", nombre="";
+
+        ingresoDatosCancelacion(apellido,nombre);
+
+/*        if (gestorReserva.cancelarReserva() ){
+            "No existen reservas para los criterios de busqueda"
+
+        }
+
+*/
+
+    }
 
 
 }

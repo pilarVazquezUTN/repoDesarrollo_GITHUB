@@ -1,19 +1,12 @@
 package Classes.Reserva;
 
-/**
- * Clase que gestiona las acciones relacionadas con las reservas.
- * Permite asignar, cancelar e ingresar reservas, y manejar el check-out.
- */
-public class GestorReserva {
-    private String idEmpleado;
+public class GestorReservaImplem implements GestorReservaInterfaz{
+String id_empleado;
+   
 
-    /**
-     * Asigna el id del empleado que realiza la operacion.
-     *
-     * @param idEmpleado identificador del empleado
-     */
+
     public void setIdEmpleado(String idEmpleado) {
-        this.idEmpleado = idEmpleado;
+    id_empleado = idEmpleado;
     }
 
     /**
@@ -22,7 +15,7 @@ public class GestorReserva {
      * @return id del empleado
      */
     public String getIdEmpleado() {
-        return idEmpleado;
+  return  id_empleado;
     }
 
     /**
@@ -53,3 +46,11 @@ public class GestorReserva {
 
     }
 }
+
+
+
+
+
+
+
+
