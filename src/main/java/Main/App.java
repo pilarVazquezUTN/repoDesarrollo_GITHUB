@@ -120,6 +120,7 @@ public class App {
      * Si los datos son correctos, se concede el acceso y se muestra el menu principal.
      * Si el usuario no existe o la contrasena es incorrecta, se vuelve a pedir la autenticacion.
      */
+    
 
     public static void autenticarHuesped(){
         Scanner scanner = new Scanner(System.in);
