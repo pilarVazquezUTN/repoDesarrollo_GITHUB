@@ -110,4 +110,13 @@ public class FuncionesUtiles {
 
         return email.matches(regex);
     }
+
+    public static boolean tipoDocumentoValido(String tipoDoc){
+        boolean tipoDocValido=false;
+
+        if(tipoDoc.equals("DNI") || tipoDoc.equals("LE") || tipoDoc.equals("LC") || tipoDoc.equals("PASAPORTE")){
+            tipoDocValido=true;
+        }
+        return tipoDocValido;
+    }
 }

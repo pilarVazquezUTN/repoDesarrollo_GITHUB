@@ -309,7 +309,7 @@ public static String leerContrasenaOculta() {
 
         
         if(camposVacios){
-            if(huespedDTO.getTipoDocumento().isEmpty() || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getTipoDocumento())){
+            if(huespedDTO.getTipoDocumento().isEmpty() || !FuncionesUtiles.tipoDocumentoValido(huespedDTO.getTipoDocumento())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Tipo de Documento: ");
                 huespedDTO.setTipoDocumento(scanner.nextLine().toUpperCase());
             } else{
@@ -567,13 +567,21 @@ public static String leerContrasenaOculta() {
             System.out.print("Ingrese su email: ");
             huespedDTO.setEmail(scanner.nextLine().toUpperCase());
         } else{
-            if(FuncionesUtiles.emailValido(emailHuesped)){
+            if(emailHuesped=="" || FuncionesUtiles.emailValido(emailHuesped)){
+                System.out.println("Su email: "+huespedDTO.getEmail());
+            } else {
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Email: ");
+                huespedDTO.setEmail(scanner.nextLine());
+            }
+            /*
+            * if(FuncionesUtiles.emailValido(emailHuesped)){
                 System.out.println("Su email: "+huespedDTO.getEmail());
             } else{
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Email: ");
                 huespedDTO.setEmail(scanner.nextLine());
             }
-            
+            */
+
         }
         /*
         if(!huespedDTO.getEmail().isEmpty()){
