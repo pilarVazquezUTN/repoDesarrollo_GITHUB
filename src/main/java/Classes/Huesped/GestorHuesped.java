@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class GestorHuesped {
+public class GestorHuesped implements GestorHuespedInterfaz{
     private String idEmpleado;
     HuespedDAO huespedDAO = (HuespedDAO) DAOFactory.create(DAOFactory.HUESPED);
 

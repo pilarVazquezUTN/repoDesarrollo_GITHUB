@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Predicate;
 
+import Classes.Huesped.GestorHuespedInterfaz;
 import Classes.Huesped.HuespedDTO;
 import Classes.Reserva.GestorReservaInterfaz;
 import Classes.Usuario.GestorUsuario;
@@ -23,7 +24,7 @@ import Classes.DAOFactory;
 
 
 public class App {
-    static GestorHuesped gestorHuesped=new GestorHuesped();
+    static GestorHuespedInterfaz gestorHuesped=new GestorHuesped();
     static GestorUsuario gestorUsuario= new GestorUsuario();
     static GestorHabitacion gestorHabitacion= new GestorHabitacion();
     static FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
@@ -867,7 +868,7 @@ public static String leerContrasenaOculta() {
      * @param dniNOMod
      * @param tipoNomod
      */
-    public static void modificarHuesped(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuesped gestorHuesped, Map<String, Predicate<String>> validadores,
+    public static void modificarHuesped(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuespedInterfaz gestorHuesped, Map<String, Predicate<String>> validadores,
     Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod ) {
         Scanner sc = new Scanner(System.in);
         muestraCamposIngresados(campos);
@@ -912,7 +913,7 @@ public static String leerContrasenaOculta() {
      * @param huespedDTO
      * @param gestorHuesped
      */
-    public static void modificarHuesped1 (HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
+    public static void modificarHuesped1 (HuespedDTO huespedDTO, GestorHuespedInterfaz gestorHuesped) {
         String dniNOMod = huespedDTO.getNumeroDocumento(); //son los no modficados asi dsp busco en q parte de el archivo esta
         String tipoNomod=huespedDTO.getTipoDocumento();
 
@@ -1207,7 +1208,7 @@ public static String leerContrasenaOculta() {
      * @param tipoNomod
      */
 
-    public static void opcionCancelar(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuesped gestorHuesped, Map<String, Predicate<String>> validadores,
+    public static void opcionCancelar(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuespedInterfaz gestorHuesped, Map<String, Predicate<String>> validadores,
                                       Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod )  {
         Scanner sc = new Scanner(System.in);
         System.out.println("¿Desea cancelar la modificacion del huesped?");
