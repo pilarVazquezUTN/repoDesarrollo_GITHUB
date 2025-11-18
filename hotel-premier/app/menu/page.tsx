@@ -10,13 +10,7 @@ const cormorant = Cormorant_Garamond({
 export default function Menu() {
   return (
     <main className=" bg-gray-200">
-
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <h1 className={`${cormorant.className} text-5xl font-serif text-indigo-950 mb-6`}>
-                Hola este es el menu
-            </h1>
-        </div>
-        
+      {/* CARRE DE IMAGENES DE HOTEL */}
     </main>
   );
 }
