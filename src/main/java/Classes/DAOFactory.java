@@ -69,7 +69,7 @@ public class DAOFactory {
             case PAGO:
                 return PagoDAO.getInstancia();
             case RESERVA:
-                return ReservaDAO.getInstancia();
+               // return ReservaDAO.getInstancia();
             case PERSONA_JURIDICA:
                 return PersonaJuridicaDAO.getInstancia();
             case USUARIO:

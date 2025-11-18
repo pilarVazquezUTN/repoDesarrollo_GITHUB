@@ -1,5 +1,7 @@
 package Main;
 
+
+
 import java.io.IOException;
 import java.text.ParseException; 
 import java.text.SimpleDateFormat;
@@ -11,7 +13,7 @@ import java.util.function.Predicate;
 
 import Classes.Huesped.GestorHuespedInterfaz;
 import Classes.Huesped.HuespedDTO;
-import Classes.Reserva.GestorReservaImplem;
+import Classes.Reserva.GestorReservaService;
 import Classes.Reserva.GestorReservaInterfaz;
 import Classes.Usuario.GestorUsuario;
 import Classes.Usuario.UsuarioDAO;
@@ -22,14 +24,19 @@ import Classes.Direccion.DireccionDTO;
 import Classes.FuncionesUtiles;
 import Classes.Validador;
 import Classes.DAOFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
+@SpringBootApplication
 public class App {
+
+
     static GestorHuespedInterfaz gestorHuesped=new GestorHuesped();
     static GestorUsuario gestorUsuario= new GestorUsuario();
     static GestorHabitacion gestorHabitacion= new GestorHabitacion();
     static FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
-    static GestorReservaInterfaz gestorReserva= new GestorReservaImplem();
+    //static GestorReservaInterfaz gestorReserva= new GestorReservaService();
 
 
 
@@ -37,7 +44,7 @@ public class App {
 
     
     public static void main(String[] args) {
-
+        SpringApplication.run(App.class, args);
         /*
 // --- CÓDIGO DE PRUEBA DE CONEXIÓN ---
         System.out.println("Intentando conectar a PostgreSQL...");
@@ -1519,7 +1526,7 @@ public static String leerContrasenaOculta() {
         String apellido="", nombre="";
 
         ingresoDatosCancelacion(apellido,nombre);
-        gestorReserva.reservasHuesped(apellido);
+        gestorReserva.reservas(apellido);
 /*
 
 
