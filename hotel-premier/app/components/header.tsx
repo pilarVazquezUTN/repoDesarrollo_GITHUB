@@ -29,6 +29,7 @@ export default function Header() {
         <Link href="/darAltaHuesped" className="hover:text-gray-500">Dar alta Huésped</Link>
         <Link href="/darBajaHuesped" className="hover:text-gray-500">Dar baja Huésped</Link>
         <Link href="/listarIngresos" className="hover:text-gray-500">Listar Ingresos</Link>
+        <Link href="/cancelarReserva" className="hover:text-gray-500">Cancelar Reserva</Link>
       </nav>
     </header>
   );
