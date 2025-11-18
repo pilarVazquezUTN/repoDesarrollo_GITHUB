@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Predicate;
 
-import Classes.ConexionDataBase;
 import Classes.Huesped.GestorHuespedInterfaz;
 import Classes.Huesped.HuespedDTO;
 import Classes.Reserva.GestorReservaImplem;
@@ -178,8 +177,8 @@ public class App {
         if (gestorUsuario.autenticarUsuario(usuarioDAO, usuarioDTO)) {
             System.out.println("Usuario Encontrado. Acceso concedido.\n");
 
-            //Menu();
-            cancelarReserva(gestorReserva); //ESTO ES DE PRUEBA!!!!!!!!!!!!!!!!!!!!!!!!!
+            Menu();
+            //cancelarReserva(gestorReserva); //ESTO ES DE PRUEBA!!!!!!!!!!!!!!!!!!!!!!!!!
         } else {
             System.out.println("Usuario no encontrado. Se vuelve a Autenticación de Usuario.\n");
             autenticarHuesped();

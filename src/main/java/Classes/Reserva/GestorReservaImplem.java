@@ -8,7 +8,7 @@ import java.util.List;
 
 public class GestorReservaImplem implements GestorReservaInterfaz{
 String id_empleado;
-    ReservaDAO reservaDAO = (ReservaDAO) DAOFactory.create(DAOFactory.RESERVA);
+
 
 
 
@@ -64,7 +64,6 @@ String id_empleado;
      */
     public List<ReservaDTO> reservasHuesped(String apellido) {
         List<ReservaDTO> listaReservas = new ArrayList<>();
-        listaReservas= reservaDAO.read(apellido);
         return  listaReservas;
     }
 }
