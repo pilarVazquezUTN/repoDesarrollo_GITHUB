@@ -48,7 +48,13 @@ public interface GestorReservaInterfaz {
 
     public void realizarCheckIn() ;
 
-    public List<ReservaDTO> reservasHuesped(String apellido) ;  //metodo que devulve todas las reservas en base a un apellido
+
+    /**
+     * metodo que trae todas las reservas de ld bdd
+     * @param apellido
+     * @return
+     */
+    public List<ReservaDTO> reservas(String apellido) ;  //metodo que devulve todas las reservas en base a un apellido
 
 
 
