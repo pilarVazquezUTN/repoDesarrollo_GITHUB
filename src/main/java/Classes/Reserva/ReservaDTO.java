@@ -1,6 +1,10 @@
 package Classes.Reserva;
 
+
+
+
 import java.util.Date;
+
 
 public class ReservaDTO {
     private Date fechaDesde;
@@ -9,6 +13,25 @@ public class ReservaDTO {
     private String nombre;
     private String apellido;
     private int telefono;
+    private int numeroHab;
+    private String tipoHab;
+
+    public void setNumeroHab(int numeroHab) {
+        this.numeroHab = numeroHab;
+    }
+    public int getNumeroHab() {
+        return numeroHab;
+    }
+
+    public void setTipoHab(String tipoHab) {
+        this.tipoHab = tipoHab;
+
+    }
+
+    public String getTipoHab() {
+        return tipoHab;
+    }
+
 
     /**
      *

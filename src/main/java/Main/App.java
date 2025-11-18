@@ -9,7 +9,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Predicate;
 
+import Classes.Huesped.GestorHuespedInterfaz;
 import Classes.Huesped.HuespedDTO;
+import Classes.Reserva.GestorReservaImplem;
+import Classes.Reserva.GestorReservaInterfaz;
 import Classes.Usuario.GestorUsuario;
 import Classes.Usuario.UsuarioDAO;
 import Classes.Usuario.UsuarioDTO;
@@ -22,11 +25,11 @@ import Classes.DAOFactory;
 
 
 public class App {
-    static GestorHuesped gestorHuesped=new GestorHuesped();
+    static GestorHuespedInterfaz gestorHuesped=new GestorHuesped();
     static GestorUsuario gestorUsuario= new GestorUsuario();
     static GestorHabitacion gestorHabitacion= new GestorHabitacion();
     static FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
-
+    static GestorReservaInterfaz gestorReserva= new GestorReservaImplem();
 
 
 
@@ -34,6 +37,24 @@ public class App {
 
     
     public static void main(String[] args) {
+
+        /*
+// --- CÓDIGO DE PRUEBA DE CONEXIÓN ---
+        System.out.println("Intentando conectar a PostgreSQL...");
+        try (java.sql.Connection conn = ConexionDataBase.getConnection()) {
+            if (conn != null) {
+                System.out.println(" ¡CONEXIÓN EXITOSA! Ya puedes usar la base de datos.");
+            } else {
+                // Este else solo se ejecuta si getConnection retorna null sin lanzar excepción,
+                // pero el manejo de errores en getConnection ya cubre la falla.
+            }
+        } catch (Exception e) {
+            System.err.println("⚠ Fallo crítico en la prueba de conexión.");
+            e.printStackTrace();
+        }
+        // --- FIN DEL CÓDIGO DE PRUEBA ---
+
+*/
         Bienvenida();
     }
 
@@ -121,6 +142,7 @@ public class App {
      * Si el usuario no existe o la contrasena es incorrecta, se vuelve a pedir la autenticacion.
      */
 
+
     public static void autenticarHuesped(){
         Scanner scanner = new Scanner(System.in);
         String nombreUsuario;
@@ -154,7 +176,9 @@ public class App {
         // Llamamos al Gestor
         if (gestorUsuario.autenticarUsuario(usuarioDAO, usuarioDTO)) {
             System.out.println("Usuario Encontrado. Acceso concedido.\n");
+
             Menu();
+            //cancelarReserva(gestorReserva); //ESTO ES DE PRUEBA!!!!!!!!!!!!!!!!!!!!!!!!!
         } else {
             System.out.println("Usuario no encontrado. Se vuelve a Autenticación de Usuario.\n");
             autenticarHuesped();
@@ -304,7 +328,7 @@ public static String leerContrasenaOculta() {
 
         
         if(camposVacios){
-            if(huespedDTO.getTipoDocumento().isEmpty() || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getTipoDocumento())){
+            if(huespedDTO.getTipoDocumento().isEmpty() || !FuncionesUtiles.tipoDocumentoValido(huespedDTO.getTipoDocumento())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Tipo de Documento: ");
                 huespedDTO.setTipoDocumento(scanner.nextLine().toUpperCase());
             } else{
@@ -562,13 +586,21 @@ public static String leerContrasenaOculta() {
             System.out.print("Ingrese su email: ");
             huespedDTO.setEmail(scanner.nextLine().toUpperCase());
         } else{
-            if(FuncionesUtiles.emailValido(emailHuesped)){
+            if(emailHuesped=="" || FuncionesUtiles.emailValido(emailHuesped)){
+                System.out.println("Su email: "+huespedDTO.getEmail());
+            } else {
+                System.out.print("Error en campo. Ingrese CORRECTAMENTE su Email: ");
+                huespedDTO.setEmail(scanner.nextLine());
+            }
+            /*
+            * if(FuncionesUtiles.emailValido(emailHuesped)){
                 System.out.println("Su email: "+huespedDTO.getEmail());
             } else{
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Email: ");
                 huespedDTO.setEmail(scanner.nextLine());
             }
-            
+            */
+
         }
         /*
         if(!huespedDTO.getEmail().isEmpty()){
@@ -863,7 +895,7 @@ public static String leerContrasenaOculta() {
      * @param dniNOMod
      * @param tipoNomod
      */
-    public static void modificarHuesped(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuesped gestorHuesped, Map<String, Predicate<String>> validadores,
+    public static void modificarHuesped(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuespedInterfaz gestorHuesped, Map<String, Predicate<String>> validadores,
     Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod ) {
         Scanner sc = new Scanner(System.in);
         muestraCamposIngresados(campos);
@@ -908,7 +940,7 @@ public static String leerContrasenaOculta() {
      * @param huespedDTO
      * @param gestorHuesped
      */
-    public static void modificarHuesped1 (HuespedDTO huespedDTO, GestorHuesped gestorHuesped) {
+    public static void modificarHuesped1 (HuespedDTO huespedDTO, GestorHuespedInterfaz gestorHuesped) {
         String dniNOMod = huespedDTO.getNumeroDocumento(); //son los no modficados asi dsp busco en q parte de el archivo esta
         String tipoNomod=huespedDTO.getTipoDocumento();
 
@@ -1203,7 +1235,7 @@ public static String leerContrasenaOculta() {
      * @param tipoNomod
      */
 
-    public static void opcionCancelar(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuesped gestorHuesped, Map<String, Predicate<String>> validadores,
+    public static void opcionCancelar(Map<String, String> campos,HuespedDTO huespedDTO, GestorHuespedInterfaz gestorHuesped, Map<String, Predicate<String>> validadores,
                                       Set<String> noObligatorios, HuespedDTO huespedDNI, String dniNOMod, String tipoNomod )  {
         Scanner sc = new Scanner(System.in);
         System.out.println("¿Desea cancelar la modificacion del huesped?");
@@ -1460,6 +1492,41 @@ public static String leerContrasenaOculta() {
     }
 
 
+
+    //metodos cancelar reserva cu06
+
+    public static void ingresoDatosCancelacion (String apellido, String nombre){
+
+        System.out.println("Proceso cancelacion de reserva \n");
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Ingrese apellido");
+        apellido = scanner.nextLine();
+
+        System.out.println("Ingrese nombre");
+        nombre = scanner.nextLine();
+
+        while (apellido.equalsIgnoreCase("")) {
+            System.out.println("Apellido no puede ser vacio");
+            apellido = scanner.nextLine();
+        }
+    }
+
+
+    public static void cancelarReserva(GestorReservaInterfaz gestorReserva){
+    //el apellido solamente necesito!!
+
+        String apellido="", nombre="";
+
+        ingresoDatosCancelacion(apellido,nombre);
+        gestorReserva.reservasHuesped(apellido);
+/*
+
+
+
+*/
+
+    }
 
 
 }
