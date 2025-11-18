@@ -1,6 +1,9 @@
 package Classes.Direccion;
 
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
+@Entity
+@Table(name="direccion")
 public class Direccion {
     private String calle;
     private String numero;

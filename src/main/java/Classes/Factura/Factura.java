@@ -1,7 +1,10 @@
 package Classes.Factura;
 
 import java.util.Date;
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
+@Entity
+@Table(name="factura")
 public class Factura {
     private Date fecha;
     private float total;
