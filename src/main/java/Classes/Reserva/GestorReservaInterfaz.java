@@ -1,5 +1,7 @@
 package Classes.Reserva;
 
+import java.util.List;
+
 /**
  * Clase que gestiona las acciones relacionadas con las reservas.
  * Permite asignar, cancelar e ingresar reservas, y manejar el check-out.
@@ -13,11 +15,16 @@ public interface GestorReservaInterfaz {
      */
     public void setIdEmpleado(String idEmpleado) ;
 
+
+
+
+
     /**
      * Devuelve el id del empleado asociado.
      *
      * @return id del empleado
      */
+
     public String getIdEmpleado() ;
     /**
      * Registra una nueva reserva.
@@ -38,4 +45,11 @@ public interface GestorReservaInterfaz {
      * Realiza el proceso de check-out de una reserva.
      */
     public void realizarCheckOut() ;
+
+    public void realizarCheckIn() ;
+
+    public List<ReservaDTO> reservasHuesped(String apellido) ;  //metodo que devulve todas las reservas en base a un apellido
+
+
+
 }

@@ -1,7 +1,14 @@
 package Classes.Reserva;
 
+import Classes.DAOFactory;
+import Classes.Huesped.HuespedDAO;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class GestorReservaImplem implements GestorReservaInterfaz{
 String id_empleado;
+    ReservaDAO reservaDAO = (ReservaDAO) DAOFactory.create(DAOFactory.RESERVA);
 
 
 
@@ -44,6 +51,21 @@ String id_empleado;
      */
     public void realizarCheckOut() {
 
+    }
+    public void realizarCheckIn() {
+
+    }
+
+
+    /**
+     * busca reservas con el apellido pasado por parametro
+     * @param apellido
+     * @return
+     */
+    public List<ReservaDTO> reservasHuesped(String apellido) {
+        List<ReservaDTO> listaReservas = new ArrayList<>();
+        listaReservas= reservaDAO.read(apellido);
+        return  listaReservas;
     }
 }
 

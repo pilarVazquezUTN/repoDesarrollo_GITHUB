@@ -9,8 +9,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Predicate;
 
+import Classes.ConexionDataBase;
 import Classes.Huesped.GestorHuespedInterfaz;
 import Classes.Huesped.HuespedDTO;
+import Classes.Reserva.GestorReservaImplem;
 import Classes.Reserva.GestorReservaInterfaz;
 import Classes.Usuario.GestorUsuario;
 import Classes.Usuario.UsuarioDAO;
@@ -28,7 +30,7 @@ public class App {
     static GestorUsuario gestorUsuario= new GestorUsuario();
     static GestorHabitacion gestorHabitacion= new GestorHabitacion();
     static FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
-
+    static GestorReservaInterfaz gestorReserva= new GestorReservaImplem();
 
 
 
@@ -36,6 +38,24 @@ public class App {
 
     
     public static void main(String[] args) {
+
+        /*
+// --- CÓDIGO DE PRUEBA DE CONEXIÓN ---
+        System.out.println("Intentando conectar a PostgreSQL...");
+        try (java.sql.Connection conn = ConexionDataBase.getConnection()) {
+            if (conn != null) {
+                System.out.println(" ¡CONEXIÓN EXITOSA! Ya puedes usar la base de datos.");
+            } else {
+                // Este else solo se ejecuta si getConnection retorna null sin lanzar excepción,
+                // pero el manejo de errores en getConnection ya cubre la falla.
+            }
+        } catch (Exception e) {
+            System.err.println("⚠ Fallo crítico en la prueba de conexión.");
+            e.printStackTrace();
+        }
+        // --- FIN DEL CÓDIGO DE PRUEBA ---
+
+*/
         Bienvenida();
     }
 
@@ -158,8 +178,8 @@ public class App {
         if (gestorUsuario.autenticarUsuario(usuarioDAO, usuarioDTO)) {
             System.out.println("Usuario Encontrado. Acceso concedido.\n");
 
-            Menu();
-           // cancelarReserva(); //ESTO ES DE PRUEBA!!!!!!!!!!!!!!!!!!!!!!!!!
+            //Menu();
+            cancelarReserva(gestorReserva); //ESTO ES DE PRUEBA!!!!!!!!!!!!!!!!!!!!!!!!!
         } else {
             System.out.println("Usuario no encontrado. Se vuelve a Autenticación de Usuario.\n");
             autenticarHuesped();
@@ -1495,15 +1515,15 @@ public static String leerContrasenaOculta() {
 
 
     public static void cancelarReserva(GestorReservaInterfaz gestorReserva){
+    //el apellido solamente necesito!!
 
         String apellido="", nombre="";
 
         ingresoDatosCancelacion(apellido,nombre);
+        gestorReserva.reservasHuesped(apellido);
+/*
 
-/*        if (gestorReserva.cancelarReserva() ){
-            "No existen reservas para los criterios de busqueda"
 
-        }
 
 */
 
