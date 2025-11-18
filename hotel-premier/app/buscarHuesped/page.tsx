@@ -1,4 +1,4 @@
-import Tabla from "../facturar/tabla/page";
+import Tabla from "../tabla/page";
 
 export default function BuscarHuesped() {
     return (
