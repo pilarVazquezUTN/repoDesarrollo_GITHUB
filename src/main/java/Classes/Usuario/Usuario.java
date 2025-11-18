@@ -5,5 +5,5 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 @Table(name="usuario")
 public class Usuario {
     String nombre;
-    String contraseña;
+    String contrasenia;
 }

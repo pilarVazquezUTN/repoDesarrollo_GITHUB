@@ -4,7 +4,7 @@ calle VARCHAR(20),
 numero INTEGER,
 departamento VARCHAR(10),
 piso INTEGER,
-cod_postal INTEGER,
+codigoPostal INTEGER,
 localidad VARCHAR(20),
 provincia VARCHAR(20),
 pais VARCHAR(20)
@@ -13,10 +13,10 @@ pais VARCHAR(20)
 --uso la distribucion plana
 
 CREATE TABLE habitacion(
-nro_habitacion integer primary key,
+numero integer primary key,
 precio integer,
 tipohabitacion varchar(30),
-capacidadPersonas integer,
+cantidadPersonas integer,
 estado boolean,
 camasKingSize integer,
 camaDoble integer,
@@ -26,14 +26,14 @@ camasIndividuales integer
 
 create table huesped(
 tipoDocumento varchar(20),
-dni varchar(50),
+numeroDocumento varchar(50),
 telefono varchar(50),
 nacionalidad varchar(50),
 cuit varchar(50),
 apellido varchar(40),
 fechaNacimiento date, 
 email varchar(40),
-posIVA varchar(40),
+posicionIva varchar(40),
 nombre varchar (40),
 ocupacion varchar(40),
 id_direccion integer,
@@ -43,8 +43,8 @@ constraint fk_id_direccion foreign key (id_direccion) references direccion (id_d
 );
 CREATE TABLE estadia(
 id_estadia INTEGER primary key,
-check_in Date,
-check_out Date,
+checkin Date,
+checkout Date,
 nro_habitacion integer,
 constraint fk_nrohab foreign key (nro_habitacion) references habitacion(nro_habitacion)
 );
@@ -137,6 +137,7 @@ dni varchar(50),
 cuit varchar(50),
 razonSocial varchar(40),
 nombre varchar(40),
+tipoPersona varchar(40),
 
 id_direccion integer,
 tipoDoc varchar(20),
