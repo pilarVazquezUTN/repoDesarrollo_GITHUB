@@ -14,23 +14,38 @@ export default function EstadoHabitacion() {
   };
 
   const [tipoSeleccionado, setTipoSeleccionado] = useState<"" | TipoHabitacion>("");
+  
  {/* esta constante despues se remplaza por la base de datos */}
-    const fechas = [
-        "01/12/2024",
-        "02/12/2024",
-        "03/12/2024",
-        "04/12/2024",
-        "05/12/2024",
-    ];
+
+    const [desdeFecha, setDesdeFecha] = useState("");
+    const [hastaFecha, setHastaFecha] = useState("");
+
+    function generarFechas(desde: string, hasta: string): string[] {
+        const fechas: string[] = [];
+        const inicio = new Date(desde);
+        const fin = new Date(hasta);
+
+        while (inicio <= fin) {
+            const dia = inicio.getDate().toString().padStart(2, "0");
+            const mes = (inicio.getMonth() + 1).toString().padStart(2, "0");
+            const año = inicio.getFullYear();
+            fechas.push(`${dia}/${mes}/${año}`);
+            inicio.setDate(inicio.getDate() + 1);
+        }
+
+        return fechas;
+    }
+    const fechasMostradas = desdeFecha && hastaFecha ? generarFechas(desdeFecha, hastaFecha) : [];
+
     return (
         <main className="flex gap-8 px-6 py-6 items-start">
             {/*  Formulario a la izquierda */}
             <form className="flex flex-col justify-center">
                 <label className="text-indigo-950 font-medium mb-1">Desde Fecha:</label>
-                <input type="date" pattern="\d{2}/\d{2}/\d{4}" placeholder="Desde Fecha" className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950" />
+                <input type="date" pattern="\d{2}/\d{2}/\d{4}" placeholder="Desde Fecha" onChange={(e) => setDesdeFecha(e.target.value)} className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950" />
 
                 <label className="text-indigo-950 font-medium mb-1">Hasta Fecha:</label>
-                <input type="date" pattern="\d{2}/\d{2}/\d{4}" placeholder="Hasta Fecha" className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950" />
+                <input type="date" pattern="\d{2}/\d{2}/\d{4}" placeholder="Hasta Fecha" onChange={(e) => setHastaFecha(e.target.value)} className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950" />
 
                 <label className="text-indigo-950 font-medium mb-1">Tipo de Habitación:</label>
                 <select name="tipoHabitacion" value={tipoSeleccionado} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTipoSeleccionado(e.target.value as TipoHabitacion)} className="p-2 border rounded mb-4 text-gray-400 focus:text-indigo-950">
@@ -62,7 +77,7 @@ export default function EstadoHabitacion() {
                                 ))}
                             </tr>
 
-                            {fechas.map((fecha, i) => (
+                            {fechasMostradas.map((fecha, i) => (
                                 <tr key={fecha}>
                                     <td className="p-2 border text-center font-medium">{fecha}</td>
                                     {habitacionesPorTipo[tipoSeleccionado]?.map((num) => (
