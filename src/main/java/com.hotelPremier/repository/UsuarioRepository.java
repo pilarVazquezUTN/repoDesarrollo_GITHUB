@@ -1,3 +1,5 @@
+package com.hotelPremier.repository;
+
 import java.util.*;
 
 import org.springframework.data.repository.CrudRepository;

@@ -1,5 +1,6 @@
-//package com.hotelPremier.service;
+package com.hotelPremier.service;//package com.hotelPremier.service;
 
+import com.hotelPremier.repository.HuespedRepository;
 import org.springframework.stereotype.Service;
 
 import Classes.Huesped.Huesped;
@@ -17,6 +18,21 @@ public class HuespedServiceImpl implements HuespedService {
 
     @Override
     public List<Huesped> findAll(){
+
+    }
+
+    @Override
+    public List<Huesped> findByCategory(String DNI) {
+        //return List.of();
+    }
+
+    @Override
+    public Huesped addHuesped(Huesped huesped) {
+        return null;
+    }
+
+    @Override
+    public void deleteHuesped(long DNI) {
 
     }
 
