@@ -13,7 +13,7 @@ export default function cancelarReserva() {
         <input type="text" placeholder="Nombres" className="p-2 border rounded text-black" />
 
         <nav> 
-          <Link href="/mostrarGrilla"> 
+          <Link href="/cancelarReserva/mostrarReservas"> 
             <button className="mt-10 px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800 transition cursor-pointer">Aceptar</button>
           </Link>
         </nav>
