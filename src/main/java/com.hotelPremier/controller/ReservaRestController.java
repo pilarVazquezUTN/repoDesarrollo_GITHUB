@@ -1,6 +1,9 @@
-package Classes.Reserva;
+//package com.hotelPremier.controller;
 
 import org.springframework.web.bind.annotation.*;
+
+import Classes.Reserva.GestorReservaService;
+import Classes.Reserva.ReservaDTO;
 
 import java.util.List;
 
