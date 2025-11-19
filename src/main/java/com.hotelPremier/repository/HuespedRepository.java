@@ -1,4 +1,4 @@
-//package com.hotelPremier.repository;
+package com.hotelPremier.repository;
 
 import java.util.List;
 
