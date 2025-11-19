@@ -1,9 +1,0 @@
-package classes.factura;
-
-public interface FacturaDAOInterfaz {
-
-    void delete();
-    void create();
-    void update();
-    void read();
-}
