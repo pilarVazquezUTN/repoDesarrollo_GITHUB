@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import { format, parseISO, eachDayOfInterval, isAfter } from "date-fns";
 
 export default function EstadoHabitacion() {
     type TipoHabitacion = "Individual" | "DobleEstandar" | "SuiteDoble" | "DobleSuperior" | "SuperiorFamilyPlan";
@@ -21,19 +22,14 @@ export default function EstadoHabitacion() {
     const [hastaFecha, setHastaFecha] = useState("");
 
     function generarFechas(desde: string, hasta: string): string[] {
-        const fechas: string[] = [];
-        const inicio = new Date(desde);
-        const fin = new Date(hasta);
+        const inicio = parseISO(desde);
+        const fin = parseISO(hasta);
 
-        while (inicio <= fin) {
-            const dia = inicio.getDate().toString().padStart(2, "0");
-            const mes = (inicio.getMonth() + 1).toString().padStart(2, "0");
-            const año = inicio.getFullYear();
-            fechas.push(`${dia}/${mes}/${año}`);
-            inicio.setDate(inicio.getDate() + 1);
-        }
+        // Validación: si inicio es después de fin, devolvemos array vacío
+        if (isAfter(inicio, fin)) return [];
 
-        return fechas;
+        const intervalo = eachDayOfInterval({ start: inicio, end: fin });
+        return intervalo.map((fecha) => format(fecha, "dd/MM/yyyy"));
     }
     const fechasMostradas = desdeFecha && hastaFecha ? generarFechas(desdeFecha, hastaFecha) : [];
 
