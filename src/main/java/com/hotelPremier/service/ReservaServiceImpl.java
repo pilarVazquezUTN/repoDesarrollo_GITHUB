@@ -1,7 +1,7 @@
 package com.hotelPremier.service;
 
 import com.hotelPremier.classes.reserva.Reserva;
-import com.hotelPremier.repository.HuespedRepository;
+import com.hotelPremier.repository.HuespedRepositoryDAO;
 import com.hotelPremier.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

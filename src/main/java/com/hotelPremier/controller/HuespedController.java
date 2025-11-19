@@ -3,6 +3,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.hotelPremier.service.HuespedService;
+
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -28,27 +30,35 @@ public class HuespedController {
     @Autowired 
     private HuespedService huespedService;
 
-    @GetMapping("/buscarHuesped")
+    /*
+        los end path van en plural.
+        no se pone dar baja/alta, se pone solo el huespedes y se va cambiando el get/post/ etc.
+    */
+    @GetMapping("/huespedes")
     public ResponseEntity<List<HuespedDTO>> getHuesped(
-        @RequestParam(value="DNI") String DNI)
-        List<Huesped> listaHuespedes=null;
+        @RequestParam(value="DNI") String DNI) { 
+        List<HuespedDTO> listaHuespedes=null;
         if(DNI.equals("listaHuespedes")){
             listaHuespedes=huespedService.findAll();
         } else{
             listaHuespedes=huespedService.findByCategory(DNI);
         }
-    )
+
+        return new ResponseEntity<>(listaHuespedes, HttpStatus.OK);
+    }
     
-    @PostMapping("/darAltaHuesped")
-    public ResponseEntity<Huesped> addHuesped(@RequestBody Huesped huesped) {
-        Huesped addedHuesped = huespedService.addHuesped(huesped);
+    @PostMapping("/huespedes")
+    public ResponseEntity<HuespedDTO> addHuesped(@RequestBody HuespedDTO huesped) {
+        HuespedDTO addedHuesped = huespedService.addHuesped(huesped);
         return new ResponseEntity<>(addedHuesped, HttpStatus.OK);
 
     }
-    @DeleteMapping("/darBajaHuesped")
+    @DeleteMapping("/huespedes")
     public ResponseEntity<HuespedDTO> deleteHuesped(@PathVariable long DNI) {
         huespedService.deleteHuesped(DNI);
-        return new ResponseEntity<>(Response.noErrorResponse(), HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); 
+        /*
+        se puede devolver el usuario que eliminamos. */
 
     }
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.hotelPremier.classes.huesped.Huesped;
 
 @Repository
-public interface HuespedRepository extends CrudRepository<Huesped,Long>{
+public interface HuespedRepositoryDAO extends CrudRepository<Huesped,Long>{
 
     @Override
     List<Huesped> findAll();

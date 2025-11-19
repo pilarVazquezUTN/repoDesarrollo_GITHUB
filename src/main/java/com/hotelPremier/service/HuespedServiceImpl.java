@@ -1,9 +1,10 @@
 package com.hotelPremier.service;//package com.hotelPremier.service;
 
-import com.hotelPremier.repository.HuespedRepository;
+import com.hotelPremier.repository.HuespedRepositoryDAO;
 import org.springframework.stereotype.Service;
 
 import com.hotelPremier.classes.huesped.Huesped;
+import com.hotelPremier.classes.huesped.HuespedDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Optional;
 public class HuespedServiceImpl implements HuespedService {
 
     @Autowired
-    private HuespedRepository huespedRepository;
+    private HuespedRepositoryDAO huespedRepository;
 
     @Override
     public List<Huesped> findAll(){
@@ -34,6 +35,12 @@ public class HuespedServiceImpl implements HuespedService {
     @Override
     public void deleteHuesped(long DNI) {
 
+    }
+
+    @Override
+    public HuespedDTO addHuesped(HuespedDTO huespedDTO) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addHuesped'");
     }
 
 }

@@ -2,13 +2,13 @@ package com.hotelPremier.service;
 
 import java.util.List;
 
-import com.hotelPremier.classes.huesped.Huesped;
+import com.hotelPremier.classes.huesped.HuespedDTO;
 
-//@Service
+
 public interface HuespedService {
-    List<Huesped> findAll();
-    List<Huesped> findByCategory(String DNI);
+    List<HuespedDTO> findAll();
+    List<HuespedDTO> findByCategory(String DNI);
 
-    Huesped addHuesped(Huesped huesped);
+    HuespedDTO addHuesped(HuespedDTO huespedDTO);
     void deleteHuesped(long DNI);
 }
