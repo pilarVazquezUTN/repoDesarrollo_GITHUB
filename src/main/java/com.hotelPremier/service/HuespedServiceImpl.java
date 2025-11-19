@@ -26,4 +26,14 @@ public class HuespedServiceImpl implements HuespedService {
         //return List.of();
     }
 
+    @Override
+    public Huesped addHuesped(Huesped huesped) {
+        return null;
+    }
+
+    @Override
+    public void deleteHuesped(long DNI) {
+
+    }
+
 }
