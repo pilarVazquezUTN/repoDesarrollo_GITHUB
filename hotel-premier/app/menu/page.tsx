@@ -1,16 +1,24 @@
-import { Cormorant_Garamond } from "next/font/google";
-import Image from "next/image";
-import Link from "next/link";
+'use client'; // Mantén esto si usas el carrusel o el menú con hooks
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["700"],
-});
+import MenuOptionsGrid from './components/menuOptionsGrid'; // Importa tus opciones de menú
+import ImageCarousel from './components/imageCarousel';   // Importa el nuevo carrusel
 
-export default function Menu() {
+export default function MenuPage() {
+  // Define las rutas de tus imágenes (asegúrate que los nombres coincidan exactamente)
+  const carouselImages = [
+    '/habitacionHotelPremierNosotras.png',
+    '/fachadaHotelPremier.png', 
+    '/piletaHotelPremierNosotras.png',
+  ];
+
   return (
-    <main className=" bg-gray-200">
-      {/* CARRE DE IMAGENES DE HOTEL */}
+    <main className="min-h-screen bg-gray-100 p-10 flex flex-col items-center">
+      
+      {/* Carrusel de Imágenes */}
+      <ImageCarousel images={carouselImages} />
+
+      <MenuOptionsGrid /> {/* Aquí se renderizan tus botones de menú */}
+
     </main>
   );
 }

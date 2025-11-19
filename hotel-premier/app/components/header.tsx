@@ -36,7 +36,6 @@ export default function Header() {
       
 
       <nav className="flex flex-wrap gap-6 text-lg">
-        <Link href="/menu" className="hover:text-gray-500">Inicio</Link>
         <Link href="/reservarHabitacion" className="hover:text-gray-500">Reservar Habitación</Link>
         <Link href="/buscarHuesped" className="hover:text-gray-500">Buscar Huésped</Link>
         <Link href="/estadoHabitacion" className="hover:text-gray-500">Estado de la Habitación</Link>
