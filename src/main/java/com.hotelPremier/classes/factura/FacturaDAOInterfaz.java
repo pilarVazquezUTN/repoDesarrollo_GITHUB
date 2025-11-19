@@ -1,4 +1,4 @@
-package Classes.Factura;
+package classes.factura;
 
 public interface FacturaDAOInterfaz {
 

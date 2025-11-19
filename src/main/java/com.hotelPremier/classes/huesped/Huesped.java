@@ -1,9 +1,9 @@
-package Classes.Huesped;
+package classes.huesped;
 //import Classes.Estadia.*;
 import java.util.Calendar;
 import java.util.Date;
 
-import Classes.Direccion.DireccionDTO;
+import classes.direccion.DireccionDTO;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity

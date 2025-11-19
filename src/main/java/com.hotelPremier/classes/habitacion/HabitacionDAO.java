@@ -1,11 +1,11 @@
-package Classes.Habitacion;
+package classes.habitacion;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-import Classes.FuncionesUtiles;
+import classes.FuncionesUtiles;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

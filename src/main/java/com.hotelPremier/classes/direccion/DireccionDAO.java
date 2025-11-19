@@ -1,4 +1,4 @@
-package Classes.Direccion;
+package classes.direccion;
 
 public class DireccionDAO implements DireccionDAOInterfaz {
     private static DireccionDAO instancia; // única instancia

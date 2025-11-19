@@ -1,16 +1,16 @@
-package Classes;
+package classes;
 
 
-import Classes.Direccion.DireccionDAO;
-import Classes.Estadia.EstadiaDAO;
-import Classes.Factura.FacturaDAO;
-import Classes.Factura.NotaDeCreditoDAO;
-import Classes.Habitacion.HabitacionDAO;
-import Classes.Huesped.HuespedDAO;
-import Classes.MedioDePago.MedioDePagoDAO;
-import Classes.Pago.PagoDAO;
-import Classes.ResponsablePago.PersonaJuridicaDAO;
-import Classes.Usuario.UsuarioDAO;
+import classes.Direccion.DireccionDAO;
+import classes.Estadia.EstadiaDAO;
+import classes.Factura.FacturaDAO;
+import classes.Factura.NotaDeCreditoDAO;
+import classes.Habitacion.HabitacionDAO;
+import classes.Huesped.HuespedDAO;
+import classes.MedioDePago.MedioDePagoDAO;
+import classes.Pago.PagoDAO;
+import classes.ResponsablePago.PersonaJuridicaDAO;
+import classes.Usuario.UsuarioDAO;
 
 /**
  * Es una clase que implementa el patrón Factory.

@@ -1,9 +1,9 @@
 package com.hotelPremier.service;//package com.hotelPremier.service;
 
-import com.hotelPremier.repository.HuespedRepository;
+import com.hotelPremier.repository.huespedRepository;
 import org.springframework.stereotype.Service;
 
-import Classes.Huesped.Huesped;
+import classes.huesped.huesped;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;

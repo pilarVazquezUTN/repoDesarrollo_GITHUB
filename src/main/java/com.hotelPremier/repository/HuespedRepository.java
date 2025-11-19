@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import Classes.Huesped.Huesped;
+import classes.Huesped.Huesped;
 
 @Repository
 public interface HuespedRepository extends CrudRepository<Huesped,Long>{

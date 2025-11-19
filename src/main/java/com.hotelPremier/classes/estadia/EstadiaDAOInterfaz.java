@@ -1,4 +1,4 @@
-package Classes.Estadia;
+package classes.estadia;
 
 public interface EstadiaDAOInterfaz {
     void delete();

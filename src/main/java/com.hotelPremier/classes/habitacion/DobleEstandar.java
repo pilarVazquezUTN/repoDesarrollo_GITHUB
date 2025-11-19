@@ -1,4 +1,4 @@
-package Classes.Habitacion;
+package classes.habitacion;
 
 public class DobleEstandar  extends Habitacion {
     private boolean camasIndividuales;

@@ -1,7 +1,7 @@
-package Classes.Usuario;
+package classes.usuario;
 
-import Classes.Excepciones.UsuarioNoExistenteException;
-import Classes.Usuario.UsuarioDTO;
+import classes.Excepciones.UsuarioNoExistenteException;
+import classes.usuario.usuarioDTO;
 
 public interface UsuarioDAOInterfaz {
     boolean buscarUsuario(UsuarioDTO usuarioDTO)  throws UsuarioNoExistenteException;

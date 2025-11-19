@@ -1,4 +1,4 @@
-package Classes.Habitacion;
+package classes.habitacion;
 
 import java.util.Date;
 

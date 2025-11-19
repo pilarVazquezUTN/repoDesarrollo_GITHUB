@@ -1,4 +1,4 @@
-package Classes.Excepciones;
+package classes.excepciones;
 
 /**
  * Excepcion personalizada que indica que no se encontro ningun huesped

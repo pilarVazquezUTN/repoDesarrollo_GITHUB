@@ -1,9 +1,9 @@
-package Classes.Habitacion;
+package classes.habitacion;
 
 import java.util.ArrayList;
 
-import Classes.Reserva.Reserva;
-import Classes.Estadia.Estadia;
+import classes.reserva.Reserva;
+import classes.estadia.Estadia;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity

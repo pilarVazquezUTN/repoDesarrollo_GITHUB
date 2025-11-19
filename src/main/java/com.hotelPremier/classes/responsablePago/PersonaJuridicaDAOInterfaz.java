@@ -1,4 +1,4 @@
-package Classes.ResponsablePago;
+package classes.responsablePago;
 
 public interface PersonaJuridicaDAOInterfaz {
     void delete();

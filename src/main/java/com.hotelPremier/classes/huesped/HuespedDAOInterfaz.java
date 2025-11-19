@@ -1,8 +1,8 @@
-package Classes.Huesped;
+package classes.huesped;
 
-import Classes.Direccion.DireccionDTO;
-import Classes.Excepciones.HuespedNoEncontradoException;
-import Classes.Huesped.HuespedDTO;
+import classes.direccion.DireccionDTO;
+import classes.excepciones.HuespedNoEncontradoException;
+import classes.huesped.HuespedDTO;
 
 import java.util.List;
 import java.util.Map;

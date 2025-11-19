@@ -1,4 +1,4 @@
-package Classes.ResponsablePago;
+package classes.responsablePago;
 
 public class PersonaJuridicaDAO implements PersonaJuridicaDAOInterfaz {
     private static PersonaJuridicaDAO instancia; // única instancia

@@ -1,4 +1,4 @@
-package Classes.Excepciones;
+package classes.excepciones;
 
 /**
  * Excepcion  para cuando el usuario ingresado no existe

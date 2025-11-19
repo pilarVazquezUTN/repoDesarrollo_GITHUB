@@ -1,4 +1,4 @@
-package Classes.Direccion;
+package classes.direccion;
 
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 

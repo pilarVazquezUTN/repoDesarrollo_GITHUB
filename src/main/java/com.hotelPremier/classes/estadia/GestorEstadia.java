@@ -1,4 +1,4 @@
-package Classes.Estadia;
+package classes.estadia;
 
 public class GestorEstadia {
     private String id_empleado;

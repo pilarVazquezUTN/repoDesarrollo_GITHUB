@@ -1,10 +1,10 @@
-package Classes.Habitacion;
+package classes.habitacion;
 
 import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import Classes.DAOFactory;
+import classes.DAOFactory;
 
 public class GestorHabitacion {
     private HabitacionDAO habitacionDAO = (HabitacionDAO) DAOFactory.create(DAOFactory.HABITACION);

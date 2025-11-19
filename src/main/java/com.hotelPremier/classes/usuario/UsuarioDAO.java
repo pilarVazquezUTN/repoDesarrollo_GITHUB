@@ -1,10 +1,10 @@
-package Classes.Usuario;
+package classes.usuario;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import Classes.Excepciones.UsuarioNoExistenteException;
+import classes.excepciones.UsuarioNoExistenteException;
 
 public class UsuarioDAO implements UsuarioDAOInterfaz {
     private static UsuarioDAO instancia; // unica instancia

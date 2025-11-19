@@ -4,7 +4,7 @@ package classes.reserva;
 import java.util.ArrayList;
 import java.util.Date;
 
-import Classes.Habitacion.Habitacion;
+import classes.habitacion.habitacion;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 import java.util.Date;
 

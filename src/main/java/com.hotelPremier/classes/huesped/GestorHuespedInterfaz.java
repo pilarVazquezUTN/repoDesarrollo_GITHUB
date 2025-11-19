@@ -1,6 +1,6 @@
-package Classes.Huesped;
+package classes.huesped;
 
-import Classes.Direccion.DireccionDTO;
+import classes.direccion.DireccionDTO;
 
 import java.util.List;
 import java.util.Map;

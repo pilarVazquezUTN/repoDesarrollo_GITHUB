@@ -1,4 +1,4 @@
-package Classes.Huesped;
+package classes.huesped;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,10 +13,10 @@ import java.text.ParseException;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
-import Classes.Direccion.DireccionDTO;
-import Classes.Excepciones.HuespedNoEncontradoException;
-import Classes.FuncionesUtiles;
-import Classes.Huesped.GestorHuesped;
+import classes.direccion.DireccionDTO;
+import classes.excepciones.HuespedNoEncontradoException;
+import classes.FuncionesUtiles;
+import classes.huesped.GestorHuesped;
 
 import static java.lang.Class.forName;
 

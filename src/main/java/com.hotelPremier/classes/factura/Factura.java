@@ -1,4 +1,4 @@
-package Classes.Factura;
+package classes.factura;
 
 import java.util.Date;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+

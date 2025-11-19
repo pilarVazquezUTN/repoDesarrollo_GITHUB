@@ -2,7 +2,7 @@ package com.hotelPremier.service;
 
 import java.util.List;
 
-import Classes.Huesped.Huesped;
+import classes.huesped.huesped;
 
 //@Service
 public interface HuespedService {

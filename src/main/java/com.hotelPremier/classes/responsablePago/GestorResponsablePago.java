@@ -1,4 +1,4 @@
-package Classes.ResponsablePago;
+package classes.responsablePago;
 
 /**
  * Clase que maneja las operaciones relacionadas con los responsables de pago.

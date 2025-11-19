@@ -1,9 +1,9 @@
-package Classes.Huesped;
+package classes.huesped;
 
-import Classes.Direccion.DireccionDTO;
-import Classes.Excepciones.HuespedNoEncontradoException;
-import Classes.Validador;
-import Classes.DAOFactory;
+import classes.direccion.DireccionDTO;
+import classes.excepciones.HuespedNoEncontradoException;
+import classes.Validador;
+import classes.DAOFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

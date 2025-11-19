@@ -1,4 +1,4 @@
-package Classes.Pago;
+package classes.pago;
 
 public interface PagoDAOInterfaz {
     void delete();

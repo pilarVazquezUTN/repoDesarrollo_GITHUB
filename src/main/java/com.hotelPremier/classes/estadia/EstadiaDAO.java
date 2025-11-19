@@ -1,4 +1,4 @@
-package Classes.Estadia;
+package classes.estadia;
 
 public class EstadiaDAO implements EstadiaDAOInterfaz {
     private static EstadiaDAO instancia; // única instancia

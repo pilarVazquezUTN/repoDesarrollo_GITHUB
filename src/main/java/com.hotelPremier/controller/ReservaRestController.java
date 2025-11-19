@@ -1,4 +1,4 @@
-//package com.hotelPremier.controller;
+package com.hotelPremier.controller;
 
 import org.springframework.web.bind.annotation.*;
 

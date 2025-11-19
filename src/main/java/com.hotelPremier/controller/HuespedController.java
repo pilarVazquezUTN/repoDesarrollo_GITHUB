@@ -1,5 +1,4 @@
 package com.hotelPremier.controller;
-
 import java.util.List;
 import java.util.Set;
 
@@ -19,8 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import Classes.Huesped.Huesped;
-import Classes.Huesped.HuespedDTO;
+
+import classes.huesped.huesped;
+import classes.huesped.huespedDTO;
 
 @RestController
 public class HuespedController {
@@ -29,15 +29,16 @@ public class HuespedController {
     private HuespedService huespedService;
 
     @GetMapping("/buscarHuesped")
-    public ResponseEntity<List<HuespedDTO>> getHuesped(@RequestParam(value="DNI") String DNI) {
-        List<Huesped> listaHuespedes = null;
-        if (category.equals("listaHuespedes")) {
-            listaHuespedes = huespedService.findAll();
-        } else {
-            listaHuespedes = huespedService.findByCategory(DNI);
+    public ResponseEntity<List<HuespedDTO>> getHuesped(
+        @RequestParam(value="DNI") String DNI)
+        List<Huesped> listaHuespedes=null;
+        if(DNI.equals("listaHuespedes")){
+            listaHuespedes=huespedService.findAll();
+        } else{
+            listaHuespedes=huespedService.findByCategory(DNI);
         }
-    }
-
+    )
+    
     @PostMapping("/darAltaHuesped")
     public ResponseEntity<Huesped> addHuesped(@RequestBody Huesped huesped) {
         Huesped addedHuesped = huespedService.addHuesped(huesped);
