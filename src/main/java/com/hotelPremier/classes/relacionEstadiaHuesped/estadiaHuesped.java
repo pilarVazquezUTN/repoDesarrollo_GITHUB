@@ -1,21 +1,27 @@
 package com.hotelPremier.classes.relacionEstadiaHuesped;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.hotelPremier.classes.estadia.Estadia;
+import com.hotelPremier.classes.huesped.Huesped;
+import jakarta.persistence.*;
+
 
 @Entity
-@Table(name="estadiaHuesped")
+@Table(name="estadiahuesped")
 public class estadiaHuesped {
-    @Id 
-    @ManyToOne
-    private Integer id_estadia;
-    @Id 
-    @ManyToOne
-    private String dni;
-    @Id 
-    @ManyToOne
-    private String tipoDocumento;
+
+  @EmbeddedId
+  estadiaHuespedID idEstadiaHuesped;
+
+  @ManyToOne
+  @MapsId("idEstadia")
+  @JoinColumn(name = "id_estadia")
+  private Estadia estadia;
+
+  @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "dni", referencedColumnName = "dni"),
+            @JoinColumn(name = "tipoDocumento", referencedColumnName = "tipoDocumento")
+    })
+    private Huesped huesped;
+
 }

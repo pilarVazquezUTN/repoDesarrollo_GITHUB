@@ -11,6 +11,8 @@ import com.hotelPremier.classes.huesped.HuespedDTO;
 import com.hotelPremier.classes.direccion.Direccion;
 import com.hotelPremier.classes.direccion.DireccionDTO;
 import com.hotelPremier.classes.huesped.Huesped;
+import com.hotelPremier.classes.reserva.Reserva;
+import com.hotelPremier.classes.reserva.ReservaDTO;
 
 public class FuncionesUtiles {
 
@@ -128,7 +130,7 @@ public class FuncionesUtiles {
         return tipoDocValido;
     }
 
-    public static List<HuespedDTO> mapToDTOList(List<Huesped> listaHuespedes) {
+    public  List<HuespedDTO> mapToDTOList(List<Huesped> listaHuespedes) {
 
         if (listaHuespedes == null || listaHuespedes.isEmpty()) {
             return new ArrayList<>();
@@ -144,14 +146,14 @@ public class FuncionesUtiles {
 
      /** Mapea una única Entidad Reserva a un único ReservaDTO.
      */
-    public static HuespedDTO mapToDTO(Huesped huesped) {
+    public   HuespedDTO mapToDTO(Huesped huesped) {
         HuespedDTO huespedDTO = new HuespedDTO();
         //DireccionDTO direccionDTO = new DireccionDTO();
         //Direccion direccion = huesped.getDireccionHuesped();
 
         huespedDTO.setNombre(huesped.getNombre());
         huespedDTO.setApellido(huesped.getApellido());
-        huespedDTO.setNumeroDocumento(huesped.getNumeroDocumento());
+      //  huespedDTO.setNumeroDocumento(huesped.getNumeroDocumento());
         huespedDTO.setFechaNacimiento(huesped.getFechaNacimiento());
         huespedDTO.setTelefono(huesped.getTelefono());
         huespedDTO.setEmail(huesped.getEmail());
@@ -163,4 +165,16 @@ public class FuncionesUtiles {
 
         return huespedDTO;
     }
+
+
+
+
+
+
+
+
+
+
+
+
 }

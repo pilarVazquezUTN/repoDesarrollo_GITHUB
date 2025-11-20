@@ -77,7 +77,7 @@ public class GestorHuesped implements GestorHuespedInterfaz{
         campos.put("apellido", huespedDTO.getApellido());
         campos.put("nombre", huespedDTO.getNombre());
         campos.put("tipoDocumento", huespedDTO.getTipoDocumento());
-        campos.put("numeroDocumento", huespedDTO.getNumeroDocumento());
+        campos.put("numeroDocumento", huespedDTO.getDni());
         campos.put("CUIT", huespedDTO.getCuit());
         campos.put("posicionIva", huespedDTO.getPosicionIva());
         campos.put("fechaNacimiento", formato.format(huespedDTO.getFechaNacimiento())); //hacer el format

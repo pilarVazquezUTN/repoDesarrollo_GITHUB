@@ -15,48 +15,50 @@ pais VARCHAR(20)
 CREATE TABLE habitacion(
 numero integer primary key,
 precio integer,
-tipohabitacion varchar(30),
+tipohabitacion varchar(40),
 cantidadPersonas integer,
-estado boolean,
+estado varchar(40),
 camasKingSize integer,
 camaDoble integer,
 camasIndividuales integer
-) ;
+)
+
 
 
 create table huesped(
+dni varchar(40),
 tipoDocumento varchar(20),
 numeroDocumento varchar(50),
 telefono varchar(50),
 nacionalidad varchar(50),
 cuit varchar(50),
 apellido varchar(40),
-fechaNacimiento date, 
+fechaNacimiento date,
 email varchar(40),
 posicionIva varchar(40),
 nombre varchar (40),
-ocupacion varchar(40), 
+ocupacion varchar(40),
 id_direccion integer,
 constraint pk_tipo_nrodoc primary key (tipoDocumento,dni),
 constraint fk_id_direccion foreign key (id_direccion) references direccion (id_direccion)
 
-);
+)
 CREATE TABLE estadia(
 id_estadia INTEGER primary key,
 checkin Date,
 checkout Date,
 nro_habitacion integer,
-constraint fk_nrohab foreign key (nro_habitacion) references habitacion(nro_habitacion)
-);
---estadiaHuesped: entre estadia y huesped nueva relacion 
+constraint fk_nrohab foreign key (nro_habitacion) references habitacion(numero)
+)
+--estadiaHuesped: entre estadia y huesped nueva relacion
 create table estadiaHuesped(
 id_estadia integer,
 dni varchar(50),
 tipoDocumento varchar(40),
 constraint pk_tipodoc_dni_idestad primary key (id_estadia, dni, tipoDocumento ),
 constraint fk_idestadia foreign key (id_estadia) references estadia(id_estadia),
-constraint fk_tipodoc_dni foreign key (tipoDocumento, dni ) references huesped (tipodocumento , dni) 
-);
+constraint fk_tipodoc_dni foreign key (tipoDocumento, dni ) references huesped (tipodocumento , dni)
+)
 
 
 --por ser debil
@@ -68,7 +70,7 @@ precio FLOAT,
 constraint pk_servicio_estadia primary key(id_servicio,id_estadia),
 constraint fk_estadia foreign key (id_estadia) references estadia(id_estadia)
 
-);
+)
 
 
 
@@ -80,24 +82,24 @@ create table reserva(
 id_reserva integer,
 apellido varchar(40),
 nombre varchar(40),
-telefono integer,
+telefono varchar(40),
 fecha_desde date,
 fecha_hasta date,
-estado varchar(40), 
+estado varchar(40),
 nro_habitacion integer,
-constraint fk_nrohab foreign key (nro_habitacion) references habitacion(nro_habitacion)
-);
+constraint fk_nrohab foreign key (nro_habitacion) references habitacion(numero)
+)
 
 create table notaDeCredito(
 id_notaCredito integer primary key,
 monto float
-);
+)
 
 create table pago(
 id_pago integer primary key,
 monto float,
 fecha date
-);
+)
 
 create table medio_pago(
 id_mediodepago integer primary key,
@@ -112,7 +114,7 @@ tipocambio float,
 tipoMoneda varchar(40),
 id_pago integer,
 constraint fk_idpago foreign key (id_pago) references pago (id_pago)
-);
+)
 
 
 create table factura(
@@ -127,7 +129,7 @@ id_pago integer,
 constraint fk_id_estadia foreign key (id_estadia) references estadia (id_estadia),
 constraint fk_idnotacredito foreign key (id_notacredito) references notadecredito (id_notacredito),
 constraint fk_idpago foreign key (id_pago) references pago (id_pago)
-);
+)
 
 
 
@@ -146,7 +148,7 @@ nro_factura integer,
 constraint fk_id_direccion foreign key (id_direccion) references direccion (id_direccion),
 constraint fk_dni_tipo foreign key (dni, tipoDoc) references huesped (dni, tipodocumento),
 constraint fk_nrofactura foreign key (nro_factura) references factura (nro_factura)
-);
+)
 
 
 
@@ -154,15 +156,15 @@ Create table usuario (
 nombre varchar(40)  primary key,
 contrasenia varchar(40)
 
-);
+)
 
 INSERT INTO usuario (nombre, contrasenia) VALUES
 ('pilar', 'vazquez135'),
 ('Ernestina', 'Solorzano852'),
 ('Guillermina', 'Fornari147'),
-('Victoria', 'Sovrano28316');
+('Victoria', 'Sovrano28316')
 
-INSERT INTO direccion (id_direccion, calle, numero, departamento, piso, cod_postal, localidad, provincia, pais) VALUES
+INSERT INTO direccion (id_direccion, calle, numero, departamento, piso, codigoPostal, localidad, provincia, pais) VALUES
 (1,'AV. CORRIENTES',1234,'A',2,1000,'CENTRO','BUENOS AIRES','ARGENTINA'),
 (2,'SANTA FE',2234,'A',1,3000,'CENTRO','SANTA FE','ARGENTINA'),
 (3,'MARCO SASTRE',786,'A',1,3000,'SANTA FE','SANTA FE','ARGENTINA'),
@@ -175,12 +177,12 @@ INSERT INTO direccion (id_direccion, calle, numero, departamento, piso, cod_post
 (10,'SAAVEDRA',123,'A',2,1000,'BUENOS AIRES','BUENOS AIRES','ARGENTINA'),
 (11,'LOS MOLINOS',4568,'A',4,1400,'TUCUMAN','TUCUMAN','ARGENTINA'),
 (12,'LAS ALMENDRAS',12,'O',4,1200,'LAS ALMENAS','SANTA FE','ARGENTINA'),
-(13,'LAS MACETAS',2345,'B',7,3000,'SANTA FE CAPITAL','SANTA FE','ARGENTINA');
+(13,'LAS MACETAS',2345,'B',7,3000,'SANTA FE CAPITAL','SANTA FE','ARGENTINA')
 
 
 INSERT INTO huesped (
     tipodocumento, dni, telefono, nacionalidad, cuit,
-    apellido, fechanacimiento, email, posiva, nombre,
+    apellido, fechanacimiento, email, posicionIva, nombre,
     ocupacion, id_direccion
 ) VALUES
 ('DNI','12345678','1155555555','ARGENTINA','20123456789','PÉREZ','1995-05-20','JUANPEREZ@MAIL.COM','RESPONSABLE INSCRIPTO','JUAN','INGENIERO',1),
@@ -195,14 +197,30 @@ INSERT INTO huesped (
 ('DNI','22862121','114785523','ARGENTINA','20228621217','MASSA','1972-04-28',NULL,'RESPONSABLE INSCRIPTO','SERGIO','ROBAR',10),
 ('DNI','45411489','3457896523','ARGENTINA','20454114899','MARTINEZ','2000-10-04',NULL,'CONSUMIDOR FINAL','RITA','DOCENTE',11),
 ('DNI','20245589','3426789789','ARGENTINA','21202455899','MARTINEZ','1975-09-15','oscarcito@gmail.com','CONSUMIDOR FINAL','OSCAR','ABOGADO',12),
-('DNI','18534526','3425789987','ARGENTINA','27185345263','ARGENTO','1971-07-20','PAOLITA@GMAIL.COM','CONSUMIDOR FINAL','PAOLA','ACTRIZ',13);
+('DNI','18534526','3425789987','ARGENTINA','27185345263','ARGENTO','1971-07-20','PAOLITA@GMAIL.COM','CONSUMIDOR FINAL','PAOLA','ACTRIZ',13)
+
+
+INSERT INTO habitacion (numero, precio, tipohabitacion, cantidadPersonas, estado, camasKingSize, camaDoble, camasIndividuales) VALUES
+-- Habitaciones de las reservas anteriores:
+(101, 50000, 'IndividualEstndar', 1, 'ocupada', 0, 0, 1),
+(205, 80000, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(102, 45000, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(310, 120000, 'Suite', 1, 'ocupada', 1, 0, 0),
+(401, 65000, 'DobleSuperior', 2, 'libre', 1, 0, 0)
 
 
 
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 
+(1001, 'PÉREZ', 'JUAN', '1155555555', '2025-12-15', '2025-12-20', 'Confirmada', 101),
 
+(1002, 'PEREYRA', 'PILAR', '3425789789', '2026-01-05', '2026-01-10', 'Confirmada', 205),
 
+(1003, 'SOVRANO', 'VICTORIA', '543428547896', '2025-11-25', '2025-11-27', 'Pendiente', 102),
 
+(1004, 'DASILVA', 'VALENTIN', '543424023698', '2026-02-14', '2026-02-20', 'Confirmada', 310),
+
+(1007, 'AYALA', 'FERNANDA', '3424458808', '2025-12-24', '2025-12-28', 'Confirmada', 401);
 
 
 

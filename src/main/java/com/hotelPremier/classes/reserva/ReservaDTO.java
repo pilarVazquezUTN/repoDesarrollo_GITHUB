@@ -8,7 +8,7 @@ public class ReservaDTO {
     private String estado;
     private String nombre;
     private String apellido;
-    private int telefono;
+    private String telefono;
     private int numeroHab;
     private String tipoHab;
 
@@ -33,7 +33,7 @@ public class ReservaDTO {
      *
      * @param telefono
      */
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
@@ -41,7 +41,7 @@ public class ReservaDTO {
      *
      * @return
      */
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 

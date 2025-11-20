@@ -68,7 +68,7 @@ public class HuespedDAO implements HuespedDAOInterfaz {
      * Chequea que el Tipo y Número de Documento no existan en el archivo de registro.
      */
     String tipoDocBuscado = huespedDTO.getTipoDocumento().trim();
-    String numDocBuscado = huespedDTO.getNumeroDocumento().trim();
+    String numDocBuscado = huespedDTO.getDni().trim();
     String RUTA_ARCHIVO = "infoBuscarHuespedes.csv";
     Boolean existeDoc = false;
 
@@ -123,7 +123,7 @@ public class HuespedDAO implements HuespedDAOInterfaz {
         String nombre = huespedDTO.getNombre();
         String apellido = huespedDTO.getApellido();
         String tipoDoc = huespedDTO.getTipoDocumento();
-        String numDoc = huespedDTO.getNumeroDocumento();
+        String numDoc = huespedDTO.getDni();
         String cuit = huespedDTO.getCuit();
         String posIva = huespedDTO.getPosicionIva();
         String telefono = huespedDTO.getTelefono();
@@ -206,7 +206,7 @@ public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped
                     h.setApellido(datos[0].trim());
                     h.setNombre(datos[1].trim());
                     h.setTipoDocumento(datos[2].trim());
-                    h.setNumeroDocumento(datos[3].trim());
+                    h.setDni(datos[3].trim());
                     h.setCuit(datos[4].trim());
                     h.setPosicionIva(datos[5].trim());
                     try {
@@ -242,7 +242,7 @@ public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped
                 .filter(h -> (tipoDoc == null || tipoDoc.isEmpty())
                         || h.getTipoDocumento().equalsIgnoreCase(tipoDoc))
                 .filter(h -> (numDoc == null || numDoc.isEmpty())
-                        || h.getNumeroDocumento().equalsIgnoreCase(numDoc))
+                        || h.getDni().equalsIgnoreCase(numDoc))
                 .toList();
 
         // 🔹 Si no se encontró ningún huésped con los filtros → excepción
@@ -351,7 +351,7 @@ public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped
 
             // Convertir el huesped a texto (como está guardado en el archivo)
             SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-            String textoHuesped = huesped.getApellido() +","+ huesped.getNombre() +","+ huesped.getTipoDocumento() +","+ huesped.getNumeroDocumento() +","+ huesped.getCuit() +","+ huesped.getPosicionIva() +","+ formato.format(huesped.getFechaNacimiento() ) +","+ huesped.getDireccionHuesped().getCalle() +","+ huesped.getDireccionHuesped().getNumero() +","+ huesped.getDireccionHuesped().getDepartamento() +","+ huesped.getDireccionHuesped().getPiso() +","+ huesped.getDireccionHuesped().getCodigoPostal() +","+ huesped.getDireccionHuesped().getLocalidad() +","+ huesped.getDireccionHuesped().getProvincia() +","+ huesped.getDireccionHuesped().getPais() +","+ huesped.getTelefono() +","+ huesped.getEmail() +","+ huesped.getOcupacion() +","+ huesped.getNacionalidad();;
+            String textoHuesped = huesped.getApellido() +","+ huesped.getNombre() +","+ huesped.getTipoDocumento() +","+ huesped.getDni() +","+ huesped.getCuit() +","+ huesped.getPosicionIva() +","+ formato.format(huesped.getFechaNacimiento() ) +","+ huesped.getDireccionHuesped().getCalle() +","+ huesped.getDireccionHuesped().getNumero() +","+ huesped.getDireccionHuesped().getDepartamento() +","+ huesped.getDireccionHuesped().getPiso() +","+ huesped.getDireccionHuesped().getCodigoPostal() +","+ huesped.getDireccionHuesped().getLocalidad() +","+ huesped.getDireccionHuesped().getProvincia() +","+ huesped.getDireccionHuesped().getPais() +","+ huesped.getTelefono() +","+ huesped.getEmail() +","+ huesped.getOcupacion() +","+ huesped.getNacionalidad();;
 
             // Filtrar las líneas que NO coincidan con el huesped a eliminar
             String encabezado = lineas.get(0);
@@ -417,7 +417,7 @@ public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped
 
                     Date fecha = formato.parse(FechaNacimiento);
 
-                    if (apellido == huespedDTO.getApellido() && nombre == huespedDTO.getNombre() && tipo == huespedDTO.getTipoDocumento() && documento == huespedDTO.getNumeroDocumento() && cuit == huespedDTO.getCuit() && posicionIva == huespedDTO.getPosicionIva() && fecha == huespedDTO.getFechaNacimiento() && calle == huespedDTO.getDireccionHuesped().getCalle() && numero == huespedDTO.getDireccionHuesped().getNumero() && departamento == huespedDTO.getDireccionHuesped().getDepartamento() && piso == huespedDTO.getDireccionHuesped().getPiso() && codigoPostal == huespedDTO.getDireccionHuesped().getCodigoPostal() && localidad == huespedDTO.getDireccionHuesped().getLocalidad() && provincia == huespedDTO.getDireccionHuesped().getProvincia() && pais == huespedDTO.getDireccionHuesped().getPais() && telefono == huespedDTO.getTelefono() && email == huespedDTO.getEmail() && ocupacion == huespedDTO.getOcupacion() && nacionalidad == huespedDTO.getNacionalidad()) {
+                    if (apellido == huespedDTO.getApellido() && nombre == huespedDTO.getNombre() && tipo == huespedDTO.getTipoDocumento() && documento == huespedDTO.getDni() && cuit == huespedDTO.getCuit() && posicionIva == huespedDTO.getPosicionIva() && fecha == huespedDTO.getFechaNacimiento() && calle == huespedDTO.getDireccionHuesped().getCalle() && numero == huespedDTO.getDireccionHuesped().getNumero() && departamento == huespedDTO.getDireccionHuesped().getDepartamento() && piso == huespedDTO.getDireccionHuesped().getPiso() && codigoPostal == huespedDTO.getDireccionHuesped().getCodigoPostal() && localidad == huespedDTO.getDireccionHuesped().getLocalidad() && provincia == huespedDTO.getDireccionHuesped().getProvincia() && pais == huespedDTO.getDireccionHuesped().getPais() && telefono == huespedDTO.getTelefono() && email == huespedDTO.getEmail() && ocupacion == huespedDTO.getOcupacion() && nacionalidad == huespedDTO.getNacionalidad()) {
                         encontrado = true;
                     }
                 }

@@ -31,7 +31,7 @@ public class HuespedServiceImpl{
     
     public List<HuespedDTO> findByCategory(String DNI) {
         
-        return List();
+        return null;
     }
 
     

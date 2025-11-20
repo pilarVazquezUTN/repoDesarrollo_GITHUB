@@ -1,10 +1,14 @@
 package com.hotelPremier.classes.responsablePago;
 
+import com.hotelPremier.classes.direccion.Direccion;
+import com.hotelPremier.classes.factura.Factura;
+import com.hotelPremier.classes.huesped.Huesped;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
-@Table(name="responsablePago")
+@Table(name="responsablepago")
 public class ResponsablePago {
+
     @Id
     private Integer id_responsablePago; 
     
@@ -13,12 +17,21 @@ public class ResponsablePago {
     private String razonSocial;
     private String nombre;
     private String tipoPersona;
+
+
     @OneToOne
-    private Integer id_direccion;
-    @OneToOne 
-    private String tipoDoc;
+    @JoinColumn(name = "id_direccion" )
+    private Direccion direccion;
+
+
     @OneToOne
-    private String dni;
+    @JoinColumns({
+            @JoinColumn(name = "tipoDocumento", referencedColumnName = "tipoDocumento"),
+            @JoinColumn(name = "dni", referencedColumnName = "numeroDocumento")
+    })
+    private Huesped huesped;
+
     @ManyToOne
-    private String nro_factura;
+    @JoinColumn(name = "nro_factura")
+    private Factura nro_factura;
 }

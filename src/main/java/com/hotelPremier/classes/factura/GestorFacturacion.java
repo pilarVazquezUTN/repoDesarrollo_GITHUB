@@ -1,6 +1,7 @@
 package com.hotelPremier.classes.factura;
 
 import com.hotelPremier.classes.huesped.Huesped;
+import com.hotelPremier.classes.notadecredito.NotaDeCredito;
 import com.hotelPremier.classes.reserva.Reserva;
 import com.hotelPremier.classes.responsablePago.ResponsablePago;
 
@@ -38,7 +39,7 @@ public class GestorFacturacion {
 
     }
 
-    public void emitirNotaDeCredito(){
+   /* public void emitirNotaDeCredito(){
 
     }
 
@@ -47,5 +48,5 @@ public class GestorFacturacion {
     }
     public NotaDeCredito crearNotaDeCredito(){
         return null;
-    }
+    }*/
 }

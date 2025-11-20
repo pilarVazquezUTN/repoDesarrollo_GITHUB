@@ -109,7 +109,7 @@ String id_empleado;
         //  Copia de datos (de Entidad a DTO)
         // ¡Debes mapear todos los campos que necesite tu DTO!
 
-        dto.setNumeroHab(entidad.getNro_habitacion());
+       // dto.setNumeroHab(entidad.getNro_habitacion());
         dto.setNombre(entidad.getNombre());
         dto.setApellido(entidad.getApellido());
         //dto.setTipoHab(entidad.getTipohab); """"""ESTOOOOOO NOSEEEEEEEEE PROBARRRRRR!!!!!"""""""""""

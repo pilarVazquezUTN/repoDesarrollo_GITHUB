@@ -26,9 +26,11 @@ public class Reserva {
 
     private String apellido;
 
-    private int telefono;
+    private String telefono;
 
-    private int nro_habitacion ;
+    @ManyToOne
+     @JoinColumn(name = "nro_habitacion")
+     private Habitacion nro_habitacion;
     
     public void cancelar(){
 
@@ -45,14 +47,11 @@ public class Reserva {
         return fecha_desde;
     }
 
-    public int getNro_habitacion() {
-        return nro_habitacion;
-    }
 
     public String getApellido() {
         return apellido;
     }
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 

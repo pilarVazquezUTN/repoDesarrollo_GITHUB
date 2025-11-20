@@ -4,7 +4,6 @@ package com.hotelPremier.classes;
 import com.hotelPremier.classes.direccion.DireccionDAO;
 import com.hotelPremier.classes.estadia.EstadiaDAO;
 import com.hotelPremier.classes.factura.FacturaDAO;
-import com.hotelPremier.classes.factura.NotaDeCreditoDAO;
 import com.hotelPremier.classes.habitacion.HabitacionDAO;
 import com.hotelPremier.classes.huesped.HuespedDAO;
 import com.hotelPremier.classes.medioDePago.MedioDePagoDAO;
@@ -59,7 +58,7 @@ public class DAOFactory {
             case FACTURA:
                 return FacturaDAO.getInstancia();
             case NOTA_DE_CREDITO:
-                return NotaDeCreditoDAO.getInstancia();
+                //return NotaDeCreditoDAO.getInstancia();
             case HABITACION:
                 return HabitacionDAO.getInstancia();
             case HUESPED:

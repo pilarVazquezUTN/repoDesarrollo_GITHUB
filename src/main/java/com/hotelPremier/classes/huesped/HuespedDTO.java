@@ -10,7 +10,7 @@ public class HuespedDTO {
     private String apellido;
     private String nombre;
     private String tipoDocumento;
-    private String numeroDocumento;
+    private String dni;
     private Date fechaNacimiento;
     private String telefono;
     private String email;
@@ -45,12 +45,9 @@ public class HuespedDTO {
         this.tipoDocumento = tipoDocumento;
     }
 
-    /**
-     *
-     * @param numeroDocumento
-     */
-    public void setNumeroDocumento(String numeroDocumento) {
-        this.numeroDocumento = numeroDocumento;
+
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 
     /**
@@ -145,8 +142,9 @@ public class HuespedDTO {
      *
      * @return
      */
-    public String getNumeroDocumento() {
-        return this.numeroDocumento;
+
+    public String getDni() {
+        return this.dni;
     }
 
     /**

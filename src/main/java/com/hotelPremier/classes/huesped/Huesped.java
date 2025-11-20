@@ -3,6 +3,7 @@ package com.hotelPremier.classes.huesped;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.hotelPremier.classes.direccion.Direccion;
 import com.hotelPremier.classes.direccion.DireccionDTO;
 
 import com.hotelPremier.classes.estadia.Estadia;
@@ -13,16 +14,23 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 @Entity
 @Table(name = "huesped") // 2. (Opcional) Especifica el nombre de la tabla
 public class Huesped {
+
+
     private String apellido;
     private String nombre;
-    @Id
-    private String tipoDocumento;
-    @Id
-    private String numeroDocumento;
+
+    @EmbeddedId
+    HuespedID huespedID;
+
     private Date fechaNacimiento;
     private String telefono;
     private String email;
-    private DireccionDTO direccionHuesped;
+
+    @OneToOne
+    @JoinColumn(name = "id_direccion")
+    private Direccion direccion;
+
+    //  private DireccionDTO direccionHuesped;
     private String cuit;
     private String posicionIva;
     private String ocupacion;
@@ -44,17 +52,8 @@ public class Huesped {
      *
      * @param tipoDocumento
      */
-    public void setTipoDocumento(String tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
-    }
 
-    /**
-     *
-     * @param numeroDocumento
-     */
-    public void setNumeroDocumento(String numeroDocumento) {
-        this.numeroDocumento = numeroDocumento;
-    }
+
 
     /**
      *
@@ -80,13 +79,6 @@ public class Huesped {
         this.email = email;
     }
 
-    /**
-     *
-     * @param direccionHuesped
-     */
-    public void setDireccionHuesped(DireccionDTO direccionHuesped) {
-        this.direccionHuesped = direccionHuesped;
-    }
 
     /**
      *
@@ -140,17 +132,11 @@ public class Huesped {
      *
      * @return
      */
-    public String getTipoDocumento() {
-        return this.tipoDocumento;
-    }
 
     /**
      *
      * @return
      */
-    public String getNumeroDocumento() {
-        return this.numeroDocumento;
-    }
 
     /**
      *
@@ -195,10 +181,7 @@ public class Huesped {
     /**
      *
      * @return
-     */
-    public DireccionDTO getDireccionHuesped() {
-        return this.direccionHuesped;
-    }
+ */
 
     /**
      *
@@ -216,13 +199,7 @@ public class Huesped {
         return this.telefono;
     }
 
-    /**
-     *
-     * @return
-     */
-    public EstadiaDTO[] getEstadiaHuesped() {
-        return estadiaHuesped;
-    }
+
 
 }
 

@@ -345,17 +345,17 @@ public static String leerContrasenaOculta() {
             System.out.print("Ingrese Tipo de Documento: ");
             huespedDTO.setTipoDocumento(scanner.nextLine().toUpperCase());
         } 
-        
+
         if(camposVacios){
-            if(huespedDTO.getNumeroDocumento().isEmpty() || !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getNumeroDocumento())){
+            if(huespedDTO.getDni().isEmpty() || !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getDni())){
                 System.out.print("Error en campo. Ingrese CORRECTAMENTE su Numero de Documento: ");
-                huespedDTO.setNumeroDocumento(scanner.nextLine().toUpperCase());
+                huespedDTO.setDni(scanner.nextLine().toUpperCase());
             } else{
-                System.out.println("Su Numero de Documento: "+huespedDTO.getNumeroDocumento());    
+                System.out.println("Su Numero de Documento: "+huespedDTO.getDni());
             }
         } else{
             System.out.print("Ingrese su numero de documento: ");
-            huespedDTO.setNumeroDocumento(scanner.nextLine());
+            huespedDTO.setDni(scanner.nextLine());
         } 
         
 
@@ -685,14 +685,14 @@ public static String leerContrasenaOculta() {
         FuncionesUtiles.clearConsola();
 
         if(huespedDTO.getNombre().isEmpty() || huespedDTO.getApellido().isEmpty() || huespedDTO.getTipoDocumento().isEmpty() || 
-        huespedDTO.getNumeroDocumento().isEmpty() || (huespedDTO.getDireccionHuesped()).getCalle().isEmpty() || 
+        huespedDTO.getDni().isEmpty() || (huespedDTO.getDireccionHuesped()).getCalle().isEmpty() ||
         (huespedDTO.getDireccionHuesped()).getNumero().isEmpty() || (huespedDTO.getDireccionHuesped()).getDepartamento().isEmpty() || 
         (huespedDTO.getDireccionHuesped()).getPiso().isEmpty() || (huespedDTO.getDireccionHuesped()).getCodigoPostal().isEmpty() || 
         (huespedDTO.getDireccionHuesped()).getLocalidad().isEmpty() || (huespedDTO.getDireccionHuesped()).getProvincia().isEmpty() ||
         (huespedDTO.getDireccionHuesped()).getPais().isEmpty() || huespedDTO.getTelefono().isEmpty() || 
         huespedDTO.getOcupacion().isEmpty() || huespedDTO.getNacionalidad().isEmpty() || huespedDTO.getFechaNacimiento()==null ||
         !FuncionesUtiles.contieneSoloLetras(huespedDTO.getNombre()) || !FuncionesUtiles.contieneSoloLetras(huespedDTO.getApellido()) ||
-        !FuncionesUtiles.contieneSoloLetras(huespedDTO.getTipoDocumento()) || !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getNumeroDocumento()) || 
+        !FuncionesUtiles.contieneSoloLetras(huespedDTO.getTipoDocumento()) || !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getDni()) ||
         !FuncionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getCalle()) || 
         !FuncionesUtiles.contieneSoloNumeros(huespedDTO.getDireccionHuesped().getNumero()) ||
         !FuncionesUtiles.contieneSoloLetras(huespedDTO.getDireccionHuesped().getDepartamento()) ||
@@ -774,7 +774,7 @@ public static String leerContrasenaOculta() {
         huespedDTO.setNombre(huespedDTO.getNombre());
         huespedDTO.setApellido(huespedDTO.getApellido());
         huespedDTO.setTipoDocumento(huespedDTO.getTipoDocumento());
-        huespedDTO.setNumeroDocumento(huespedDTO.getNumeroDocumento());
+        huespedDTO.setDni(huespedDTO.getDni());
         huespedDTO.setCuit(huespedDTO.getCuit());
         huespedDTO.setPosicionIva(huespedDTO.getPosicionIva());
         huespedDTO.setFechaNacimiento(huespedDTO.getFechaNacimiento());
@@ -858,7 +858,7 @@ public static String leerContrasenaOculta() {
             for (int i = 0; i < listaHuespedDTOs.size(); i++) {
                 HuespedDTO h = listaHuespedDTOs.get(i);
                 System.out.println((i + 1) + ". " + h.getApellido() + ", " + h.getNombre()
-                        + " - " + h.getTipoDocumento() + " " + h.getNumeroDocumento());
+                        + " - " + h.getTipoDocumento() + " " + h.getDni());
             }
 
             // Pregunto si quiere modificar alguno
@@ -916,7 +916,7 @@ public static String leerContrasenaOculta() {
             System.out.println("DNInomod " + dniNOMod);
             System.out.println("tipoDNInomod: " + tipoNomod);
            System.out.println("Tipo de documento: " + huespedDNI.getTipoDocumento());
-           System.out.println("Numero de documento: " + huespedDNI.getNumeroDocumento());
+           System.out.println("Numero de documento: " + huespedDNI.getDni());
             opcionAceptar(campos,validadores, noObligatorios,huespedDNI,dniNOMod,tipoNomod,huespedDTO);
         }
         //cancelar
@@ -948,7 +948,7 @@ public static String leerContrasenaOculta() {
      * @param gestorHuesped
      */
     public static void modificarHuesped1 (HuespedDTO huespedDTO, GestorHuespedInterfaz gestorHuesped) {
-        String dniNOMod = huespedDTO.getNumeroDocumento(); //son los no modficados asi dsp busco en q parte de el archivo esta
+        String dniNOMod = huespedDTO.getDni(); //son los no modficados asi dsp busco en q parte de el archivo esta
         String tipoNomod=huespedDTO.getTipoDocumento();
 
         Scanner sc = new Scanner(System.in);
@@ -1028,7 +1028,7 @@ public static String leerContrasenaOculta() {
 
                     }
                     if (campo.equals("numeroDocumento")){
-                        huespedDNI.setNumeroDocumento(huespedDTO.getNumeroDocumento());
+                        huespedDNI.setDni(huespedDTO.getDni());
                     }
 
 
@@ -1052,7 +1052,7 @@ public static String leerContrasenaOculta() {
 
                     }
                     else if (campo.equals("numeroDocumento") ){
-                        huespedDNI.setNumeroDocumento(input);
+                        huespedDNI.setDni(input);
                     }
                     ingresado = true;
                 }
@@ -1132,7 +1132,7 @@ public static String leerContrasenaOculta() {
 
                             }
                             else if (campo.equals("numeroDocumento") ){
-                                huespedDNI.setNumeroDocumento(input);
+                                huespedDNI.setDni(input);
                             }
                             ingresado = true;
                         }
@@ -1198,10 +1198,10 @@ public static String leerContrasenaOculta() {
 
 
                     System.out.println(huespedDNI.getTipoDocumento());
-                    System.out.println(huespedDNI.getNumeroDocumento());
+                    System.out.println(huespedDNI.getDni());
 
 
-                    gestorHuesped.modificarDatosHuespedArchivo(campos,huespedDTO, "infoBuscarHuespedes.csv", huespedDTO.getDireccionHuesped(), huespedDNI.getTipoDocumento(), huespedDNI.getNumeroDocumento());
+                    gestorHuesped.modificarDatosHuespedArchivo(campos,huespedDTO, "infoBuscarHuespedes.csv", huespedDTO.getDireccionHuesped(), huespedDNI.getTipoDocumento(), huespedDNI.getDni());
                 }
 
             }else{ //opcion de q le quiere modificar el doc al huesped q eligio y ese doc no esta en el archivo
@@ -1292,12 +1292,12 @@ public static String leerContrasenaOculta() {
             if(huespedDTO.getApellido() == null){System.out.println(" no existe el huesped buscado");}
             else{
                 if (!gestorHuesped.seAlojo(huespedDTO)){
-                    System.out.println("los datos del huesped: "+huespedDTO.getNombre()+" "+huespedDTO.getApellido()+" "+huespedDTO.getTipoDocumento()+" "+huespedDTO.getNumeroDocumento()+" seran eliminados del sistema");
+                    System.out.println("los datos del huesped: "+huespedDTO.getNombre()+" "+huespedDTO.getApellido()+" "+huespedDTO.getTipoDocumento()+" "+huespedDTO.getDni()+" seran eliminados del sistema");
                     System.out.println("presione 1 si desea ELIMINAR o 2 si desea CANCELAR");
                     opcion = scanner.nextInt();
                     if(opcion==1){
                         if(gestorHuesped.eliminarHuesped(huespedDTO)){
-                            System.out.println("los datos del huesped: "+huespedDTO.getNombre()+" "+huespedDTO.getApellido()+" "+huespedDTO.getTipoDocumento()+" "+huespedDTO.getNumeroDocumento()+" seran eliminados del sistema");
+                            System.out.println("los datos del huesped: "+huespedDTO.getNombre()+" "+huespedDTO.getApellido()+" "+huespedDTO.getTipoDocumento()+" "+huespedDTO.getDni()+" seran eliminados del sistema");
                         }else {
                             System.out.println("no existe huesped a eliminar");
                         }
