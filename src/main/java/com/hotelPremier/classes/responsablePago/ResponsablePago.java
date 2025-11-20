@@ -6,16 +6,20 @@ import com.hotelPremier.classes.huesped.Huesped;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
-@Table(name="responsablepago")
+@Table(name="\"responsablePago\"")
 public class ResponsablePago {
 
     @Id
+    @Column(name="\"id_responsablePago\"")
     private Integer id_responsablePago; 
     
-    
+    @Column(name="cuit")
     private String cuit;
+    @Column(name="\"razonSocial\"")
     private String razonSocial;
+    @Column(name="nombre")
     private String nombre;
+    @Column(name="\"tipoPersona\"")
     private String tipoPersona;
 
 
@@ -26,8 +30,8 @@ public class ResponsablePago {
 
     @OneToOne
     @JoinColumns({
-            @JoinColumn(name = "tipoDocumento", referencedColumnName = "tipoDocumento"),
-            @JoinColumn(name = "dni", referencedColumnName = "numeroDocumento")
+            @JoinColumn(name = "tipoDoc", referencedColumnName = "tipoDocumento"),
+            @JoinColumn(name = "dni", referencedColumnName = "dni")
     })
     private Huesped huesped;
 

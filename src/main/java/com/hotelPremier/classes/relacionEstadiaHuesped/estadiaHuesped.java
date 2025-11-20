@@ -6,11 +6,11 @@ import jakarta.persistence.*;
 
 
 @Entity
-@Table(name="estadiahuesped")
+@Table(name="\"estadiaHuesped\"")
 public class estadiaHuesped {
 
   @EmbeddedId
-  estadiaHuespedID idEstadiaHuesped;
+  estadiaHuespedID id_estadia;
 
   @ManyToOne
   @MapsId("idEstadia")
@@ -19,9 +19,33 @@ public class estadiaHuesped {
 
   @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "dni", referencedColumnName = "dni"),
-            @JoinColumn(name = "tipoDocumento", referencedColumnName = "tipoDocumento")
+            @JoinColumn(name = "dni", referencedColumnName = "dni", insertable=false, updatable=false),
+            @JoinColumn(name = "tipoDocumento", referencedColumnName = "tipoDocumento",insertable=false, updatable=false)
     })
     private Huesped huesped;
+
+    public estadiaHuespedID getId_estadia() {
+        return id_estadia;
+    }
+
+    public void setId_estadia(estadiaHuespedID id_estadia) {
+        this.id_estadia = id_estadia;
+    }
+
+    public Estadia getEstadia() {
+        return estadia;
+    }
+
+    public void setEstadia(Estadia estadia) {
+        this.estadia = estadia;
+    }
+
+    public Huesped getHuesped() {
+        return huesped;
+    }
+
+    public void setHuesped(Huesped huesped) {
+        this.huesped = huesped;
+    }
 
 }

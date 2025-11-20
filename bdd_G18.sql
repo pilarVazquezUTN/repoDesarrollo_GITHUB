@@ -10,7 +10,7 @@ provincia VARCHAR(20),
 pais VARCHAR(20)
 )
 
---uso la distribucion plana
+--uso la distribucion plana 
 
 CREATE TABLE habitacion(
 numero integer primary key,
@@ -28,7 +28,7 @@ camasIndividuales integer
 create table huesped(
 dni varchar(40),
 tipoDocumento varchar(20),
-numeroDocumento varchar(50),
+--numeroDocumento varchar(50),
 telefono varchar(50),
 nacionalidad varchar(50),
 cuit varchar(50),

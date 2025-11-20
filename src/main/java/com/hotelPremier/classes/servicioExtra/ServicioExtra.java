@@ -13,11 +13,12 @@ public class ServicioExtra {
 
 
     @ManyToOne
-    @JoinColumn(name = "id_estadia")
+    @JoinColumn(name = "id_estadia",insertable = false, updatable = false)
     private Estadia estadia; // La Entidad completa
 
-
+    @Column(name="tipo_servicio")
     private String tipo_servicio ;
+    @Column(name="precio")
     private Float precio ;
 
 

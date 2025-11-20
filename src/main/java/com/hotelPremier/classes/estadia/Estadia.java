@@ -7,10 +7,13 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
 @Table(name="estadia")
-public class Estadia {
+public class Estadia { 
     @Id
+    @Column(name="id_estadia")
     private Integer id_estadia;
+    @Column(name="checkin")
     private Date checkin;
+    @Column(name="checkout")
     private Date checkout;
 
     @ManyToOne //de estadia a habitacion

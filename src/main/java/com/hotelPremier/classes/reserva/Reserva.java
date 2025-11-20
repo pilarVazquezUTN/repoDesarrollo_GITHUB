@@ -13,19 +13,20 @@ import java.util.Date;
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //manejo automatico de el id, incremental
+    @Column(name="id_reserva")
     private int id_reserva;
 
-
+    @Column(name="fecha_desde")
     private Date fecha_desde;
-
+    @Column(name="fecha_hasta")
     private Date fecha_hasta;
-
+    @Column(name="estado")
     private String estado;
-
+    @Column(name="nombre")
     private String nombre;
-
+    @Column(name="apellido")
     private String apellido;
-
+    @Column(name="telefono")
     private String telefono;
 
     @ManyToOne

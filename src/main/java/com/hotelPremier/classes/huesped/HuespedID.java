@@ -7,10 +7,10 @@ import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 @Embeddable
 public class HuespedID implements Serializable {
-
+    @Column(name = "tipo_documento")
     private String tipoDocumento;
 
-   @Column(name = "dni")
+   @Column(name = "dni") 
    private String dni;
 
     public void setTipoDocumento(String tipoDocumento) {
@@ -26,4 +26,16 @@ public class HuespedID implements Serializable {
         return dni;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HuespedID that = (HuespedID) o;
+        return tipoDocumento.equals(that.tipoDocumento) && dni.equals(that.dni);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(tipoDocumento, dni);
+    }
 }

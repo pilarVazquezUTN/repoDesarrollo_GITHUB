@@ -6,7 +6,7 @@ public class DireccionDTO {
     private String localidad;
     private String departamento;
     private String piso;
-    private String codigoPostal;
+    private Integer codigoPostal;
     private String provincia;
     private String pais;
 
@@ -54,7 +54,7 @@ public class DireccionDTO {
      *
      * @param codigoPostal
      */
-    public void setCodigoPostal(String codigoPostal) {
+    public void setCodigoPostal(Integer codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
 
@@ -118,7 +118,7 @@ public class DireccionDTO {
      *
      * @return retorna cp
      */
-    public String getCodigoPostal() {
+    public Integer getCodigoPostal() {
         return this.codigoPostal;
     }
 

@@ -7,13 +7,23 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 public class Direccion {
     @Id
     private Integer id_direccion;
+
+    @Column(name="calle")
     private String calle;
+    
+    @Column(name="numero")
     private String numero;
+    @Column(name="localidad")
     private String localidad;
+    @Column(name="departamento")
     private String departamento;
+    @Column(name="piso")
     private String piso;
-    private String codigoPostal;
+    @Column(name="\"codigoPostal\"")
+    private Integer codigoPostal;
+    @Column(name="provincia")
     private String provincia;
+    @Column(name="pais")
     private String pais;
 
     /**
@@ -27,7 +37,7 @@ public class Direccion {
      * @param provincia
      * @param pais
      */
-    public Direccion(String calle, String numero, String localidad, String departamento, String piso, String codigoPostal, String provincia, String pais) {
+    public Direccion(String calle, String numero, String localidad, String departamento, String piso, Integer codigoPostal, String provincia, String pais) {
         this.calle = calle;
         this.numero = numero;
         this.localidad = localidad;
@@ -80,7 +90,7 @@ public class Direccion {
      * retorna cp
      * @return
      */
-    public String getCodigoPostal() {
+    public Integer getCodigoPostal() {
         return codigoPostal;
     }
     /**
@@ -142,7 +152,7 @@ public class Direccion {
      * set de codigo postal
      * @param codigoPostal
      */
-    public void setCodigoPostal(String codigoPostal) {
+    public void setCodigoPostal(Integer codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
 

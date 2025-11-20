@@ -11,17 +11,22 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 @Table(name="factura")
 public class Factura {
     @Id 
+    @Column(name="nro_factura")
     private Integer nro_factura;
+    @Column(name="fecha")
     private Date fecha;
+    @Column(name="total")
     private float total;
+    @Column(name="tipo")
     private String tipo;
+    @Column(name="estado")
     private String estado;
     @ManyToOne
     @JoinColumn(name = "id_estadia") // nombre de la columna FK
     private Estadia estadia;
 
     @ManyToOne
-    @JoinColumn(name = "id_notacredito")
+    @JoinColumn(name = "\"id_notaCredito\"")
     private NotaDeCredito notaCredito;
 
     @OneToOne

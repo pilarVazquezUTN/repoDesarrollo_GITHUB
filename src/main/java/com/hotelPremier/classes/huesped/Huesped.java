@@ -13,28 +13,64 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
 @Table(name = "huesped") // 2. (Opcional) Especifica el nombre de la tabla
-public class Huesped {
+public class Huesped { 
 
-
+    @Column(name="apellido")
     private String apellido;
+    @Column(name="nombre")
     private String nombre;
 
     @EmbeddedId
     HuespedID huespedID;
 
+    @Column(name="\"fechaNacimiento\"")
     private Date fechaNacimiento;
+    @Column(name="telefono")
     private String telefono;
+    @Column(name="email")
     private String email;
+  
 
     @OneToOne
     @JoinColumn(name = "id_direccion")
     private Direccion direccion;
 
-    //  private DireccionDTO direccionHuesped;
+    @Column(name="cuit")
     private String cuit;
+    @Column(name="\"posicionIva\"")
     private String posicionIva;
+    @Column(name="ocupacion")
     private String ocupacion;
+    @Column(name="nacionalidad")
     private String nacionalidad;
+
+
+
+
+
+
+
+
+
+
+    public String getDni() {
+        return this.huespedID.getDni();
+    }
+
+    public String getTipoDocumento() {
+        return this.huespedID.getTipoDocumento();
+    }
+
+    // Setters del ID compuesto
+    public void setDni(String dni) {
+        if (this.huespedID == null) this.huespedID = new HuespedID();
+        this.huespedID.setDni(dni);
+    }
+
+    public void setTipoDocumento(String tipoDocumento) {
+        if (this.huespedID == null) this.huespedID = new HuespedID();
+        this.huespedID.setTipoDocumento(tipoDocumento);
+    }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;

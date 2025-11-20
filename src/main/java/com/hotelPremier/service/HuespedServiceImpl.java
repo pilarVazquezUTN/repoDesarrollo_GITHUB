@@ -29,7 +29,7 @@ public class HuespedServiceImpl{
     }
 
     
-    public List<HuespedDTO> findByCategory(String DNI) {
+    public List<HuespedDTO> findByDni(String DNI) {
         
         return null;
     }

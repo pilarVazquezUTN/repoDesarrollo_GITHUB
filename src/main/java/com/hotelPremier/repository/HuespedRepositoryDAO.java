@@ -12,6 +12,6 @@ public interface HuespedRepositoryDAO extends CrudRepository<Huesped,Long>{
 
     @Override
     List<Huesped> findAll();
-    List<Huesped> findByCategory(String DNI);
+    List<Huesped> findByDni(String DNI);
     
 }
