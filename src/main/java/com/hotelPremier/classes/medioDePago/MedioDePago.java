@@ -6,6 +6,10 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 @Entity
 @Table(name="medio_pago")
 public class MedioDePago {
+    @Id 
+    private Integer id_mediodepago;
     private int monto;
     private Date fecha;
+    @ManyToOne
+    private Integer id_pago; 
 }

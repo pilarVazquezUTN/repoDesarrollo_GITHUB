@@ -5,6 +5,8 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 @Entity
 @Table(name="direccion")
 public class Direccion {
+    @Id
+    private Integer id_direccion;
     private String calle;
     private String numero;
     private String localidad;

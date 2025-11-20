@@ -2,7 +2,8 @@ package com.hotelPremier.controller;
 import java.util.List;
 import java.util.Set;
 
-import com.hotelPremier.service.HuespedService;
+
+import com.hotelPremier.service.HuespedServiceImpl;
 
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ import com.hotelPremier.classes.huesped.HuespedDTO;
 public class HuespedController {
     
     @Autowired 
-    private HuespedService huespedService;
+    private HuespedServiceImpl huespedService;
 
     /*
         los end path van en plural.

@@ -8,11 +8,14 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
 @Table(name="habitacion")
-public abstract class Habitacion  {
+public class Habitacion  {
+    @Id 
     private int numero;
     private String estado;
     private float precio;
     private int cantidadPersonas;
-    private ArrayList<Reserva> listaReservas= new ArrayList<>();
-    private ArrayList<Estadia> listaEstadias= new ArrayList<>();
+    private String tipohabitacion;
+    private Integer camasKingSize;
+    private Integer camaDoble;
+    private Integer camasIndividuales;
 } 

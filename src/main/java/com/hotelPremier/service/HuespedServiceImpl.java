@@ -7,37 +7,39 @@ import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.huesped.HuespedDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import com.hotelPremier.classes.FuncionesUtiles;
+
 
 
 @Service
-public class HuespedServiceImpl implements HuespedService {
+public class HuespedServiceImpl{
+
+    FuncionesUtiles funcionesUtiles = new FuncionesUtiles();
 
     @Autowired
     private HuespedRepositoryDAO huespedRepository;
 
-    @Override
-    public List<Huesped> findAll(){
-
+    public List<HuespedDTO> findAll(){
+        /* huespedRepository.findAll() nos devuelve un Huesped. Hay que pasarlo a HuespedDTO */
+        return funcionesUtiles.mapToDTOList(huespedRepository.findAll()); 
     }
 
-    @Override
-    public List<Huesped> findByCategory(String DNI) {
-        //return List.of();
+    
+    public List<HuespedDTO> findByCategory(String DNI) {
+        
+        return List();
     }
 
-    @Override
-    public Huesped addHuesped(Huesped huesped) {
-        return null;
-    }
-
-    @Override
+    
     public void deleteHuesped(long DNI) {
 
     }
 
-    @Override
+    
     public HuespedDTO addHuesped(HuespedDTO huespedDTO) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addHuesped'");

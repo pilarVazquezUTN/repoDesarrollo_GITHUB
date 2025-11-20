@@ -35,7 +35,7 @@ fechaNacimiento date,
 email varchar(40),
 posicionIva varchar(40),
 nombre varchar (40),
-ocupacion varchar(40),
+ocupacion varchar(40), 
 id_direccion integer,
 constraint pk_tipo_nrodoc primary key (tipoDocumento,dni),
 constraint fk_id_direccion foreign key (id_direccion) references direccion (id_direccion)
@@ -48,8 +48,8 @@ checkout Date,
 nro_habitacion integer,
 constraint fk_nrohab foreign key (nro_habitacion) references habitacion(nro_habitacion)
 );
---entre estadia y huesped nueva relacion 
-create table genera(
+--estadiaHuesped: entre estadia y huesped nueva relacion 
+create table estadiaHuesped(
 id_estadia integer,
 dni varchar(50),
 tipoDocumento varchar(40),
@@ -151,8 +151,8 @@ constraint fk_nrofactura foreign key (nro_factura) references factura (nro_factu
 
 
 Create table usuario (
-nombre varchar(40),
-contrasenia varchar(40) primary key
+nombre varchar(40)  primary key,
+contrasenia varchar(40)
 
 );
 

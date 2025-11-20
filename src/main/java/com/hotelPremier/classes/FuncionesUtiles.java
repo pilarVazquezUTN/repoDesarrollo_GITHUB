@@ -2,7 +2,15 @@ package com.hotelPremier.classes;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.hotelPremier.classes.huesped.HuespedDTO;
+import com.hotelPremier.classes.direccion.Direccion;
+import com.hotelPremier.classes.direccion.DireccionDTO;
+import com.hotelPremier.classes.huesped.Huesped;
 
 public class FuncionesUtiles {
 
@@ -118,5 +126,41 @@ public class FuncionesUtiles {
             tipoDocValido=true;
         }
         return tipoDocValido;
+    }
+
+    public static List<HuespedDTO> mapToDTOList(List<Huesped> listaHuespedes) {
+
+        if (listaHuespedes == null || listaHuespedes.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // Usa Java Streams para un mapeo conciso y funcional:
+        return listaHuespedes.stream()
+                // Por cada 'entidad' en la lista, llama a 'mapToDTO'
+                .map(this::mapToDTO)
+                .collect(Collectors.toList()); // Recolecta en la lista final
+    }
+
+
+     /** Mapea una única Entidad Reserva a un único ReservaDTO.
+     */
+    public static HuespedDTO mapToDTO(Huesped huesped) {
+        HuespedDTO huespedDTO = new HuespedDTO();
+        //DireccionDTO direccionDTO = new DireccionDTO();
+        //Direccion direccion = huesped.getDireccionHuesped();
+
+        huespedDTO.setNombre(huesped.getNombre());
+        huespedDTO.setApellido(huesped.getApellido());
+        huespedDTO.setNumeroDocumento(huesped.getNumeroDocumento());
+        huespedDTO.setFechaNacimiento(huesped.getFechaNacimiento());
+        huespedDTO.setTelefono(huesped.getTelefono());
+        huespedDTO.setEmail(huesped.getEmail());
+        /* que hacemos aca con direccion y el tema de la FK. */
+        huespedDTO.setCuit(huesped.getCuit());
+        huespedDTO.setPosicionIva(huesped.getPosicionIva());
+        huespedDTO.setOcupacion(huesped.getOcupacion());
+        huespedDTO.setNacionalidad(huesped.getNacionalidad());
+
+        return huespedDTO;
     }
 }
