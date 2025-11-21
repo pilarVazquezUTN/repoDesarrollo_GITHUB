@@ -25,7 +25,7 @@ public class HuespedID implements Serializable {
     public String getDni() {
         return dni;
     }
-
+ 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
