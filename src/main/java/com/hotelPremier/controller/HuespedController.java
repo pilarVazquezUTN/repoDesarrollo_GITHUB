@@ -37,9 +37,12 @@ public class HuespedController {
     */
     @GetMapping("/huespedes")
     public ResponseEntity<List<HuespedDTO>> getHuesped(
+
         @RequestParam(value="dni") String dni) {
+
         List<HuespedDTO> listaHuespedes=null;
-        if(dni.equals("listaHuespedes")){
+
+        if(dni.isEmpty()){
             listaHuespedes=huespedService.findAll();
         } else{
             listaHuespedes=huespedService.findByCategory(dni);

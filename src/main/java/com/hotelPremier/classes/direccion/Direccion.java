@@ -37,7 +37,7 @@ public class Direccion {
      * @param provincia
      * @param pais
      */
-    public Direccion(String calle, String numero, String localidad, String departamento, String piso, Integer codigoPostal, String provincia, String pais) {
+  /*  public Direccion(String calle, String numero, String localidad, String departamento, String piso, Integer codigoPostal, String provincia, String pais) {
         this.calle = calle;
         this.numero = numero;
         this.localidad = localidad;
@@ -47,7 +47,7 @@ public class Direccion {
         this.provincia = provincia;
         this.pais = pais;
     }
-
+*/
     /**
      * retorna la calle
      * @return

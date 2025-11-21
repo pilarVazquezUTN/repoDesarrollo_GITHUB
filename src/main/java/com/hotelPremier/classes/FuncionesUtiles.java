@@ -153,7 +153,7 @@ public class FuncionesUtiles {
 
         huespedDTO.setNombre(huesped.getNombre());
         huespedDTO.setApellido(huesped.getApellido());
-      //  huespedDTO.setNumeroDocumento(huesped.getNumeroDocumento());
+        //huespedDTO.setNumeroDocumento(huesped.getNumeroDocumento());
         huespedDTO.setFechaNacimiento(huesped.getFechaNacimiento());
         huespedDTO.setTelefono(huesped.getTelefono());
         huespedDTO.setEmail(huesped.getEmail());
