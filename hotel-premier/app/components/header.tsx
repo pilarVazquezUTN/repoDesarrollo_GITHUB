@@ -35,7 +35,7 @@ export default function Header() {
       </Link>
       
 
-      <nav className="flex flex-wrap gap-6 text-lg">
+      <nav className="flex gap-6 text-lg overflow-x-auto whitespace-nowrap">
         <Link href="/reservarHabitacion" className="hover:text-gray-500">Reservar Habitación</Link>
         <Link href="/buscarHuesped" className="hover:text-gray-500">Buscar Huésped</Link>
         <Link href="/estadoHabitacion" className="hover:text-gray-500">Estado de la Habitación</Link>
