@@ -16,14 +16,24 @@ public class Habitacion  {
     private String estado;
     @Column(name="precio") 
     private float precio;
-    @Column(name="\"cantidadPersonas\"") // comillas para respetar mayúscula
+    @Column(name="cantidadpersonas") // comillas para respetar mayúscula
     private int cantidadPersonas;
     @Column(name="tipohabitacion")
     private String tipohabitacion; 
-    @Column(name="\"camasKingSize\"")
+    @Column(name="camaskingsize")
     private Integer camasKingSize;
-    @Column(name="\"camaDoble\"")
+    @Column(name="camadoble")
     private Integer camaDoble;
-    @Column(name="\"camasIndividuales\"")
+    @Column(name="camasindividuales")
     private Integer camasIndividuales;
+
+
+
+    public Integer getNumero() {
+        return numero;
+    }
+
+    public String getTipohabitacion() {
+        return  tipohabitacion ;
+    }
 } 

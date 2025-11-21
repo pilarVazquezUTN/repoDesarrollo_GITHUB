@@ -12,7 +12,6 @@ import java.util.Date;
 @Table(name = "reserva") // 2. (Opcional) Especifica el nombre de la tabla
 public class Reserva {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //manejo automatico de el id, incremental
     @Column(name="id_reserva")
     private int id_reserva;
 
@@ -32,7 +31,21 @@ public class Reserva {
     @ManyToOne
      @JoinColumn(name = "nro_habitacion")
      private Habitacion nro_habitacion;
-    
+
+
+    public void setHabitacion (Habitacion habitacion){
+        nro_habitacion=habitacion;
+    }
+
+    public String getTipo_habitacion(){
+        return nro_habitacion.getTipohabitacion();
+    }
+
+    public Integer getNumero_habitacion(){
+        return nro_habitacion.getNumero();
+    }
+
+
     public void cancelar(){
 
     }

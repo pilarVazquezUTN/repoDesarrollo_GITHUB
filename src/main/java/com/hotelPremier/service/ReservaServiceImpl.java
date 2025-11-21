@@ -22,8 +22,19 @@ public class ReservaServiceImpl  {
 
     //el service debe retornar el dto al controller
     public List<ReservaDTO> findByApellidoContainingIgnoreCase(String apellido) {
+
+        // Si apellido es nulo o está vacío → devolver TODAS las reservas
+        if (apellido == null || apellido.trim().isEmpty()) {
+            return mapDTOreserva(reservaRepository.findAll());
+        }
+
+        // Si viene un apellido  filtrar
         return mapDTOreserva(reservaRepository.findByApellidoContainingIgnoreCase(apellido));
     }
+
+
+       // return mapDTOreserva(reservaRepository.findByApellidoContainingIgnoreCase(apellido));
+
 
 
     public List<ReservaDTO> mapDTOreserva(List<Reserva> reservas) {
@@ -48,9 +59,13 @@ public class ReservaServiceImpl  {
         //dto.setNumeroHab(entidad.getNro_habitacion());
         dto.setNombre(entidad.getNombre());
         dto.setApellido(entidad.getApellido());
-        //dto.setTipoHab(entidad.getTipohab); """"""ESTOOOOOO NOSEEEEEEEEE PROBARRRRRR!!!!!"""""""""""
+        dto.setTipoHab(entidad.getTipo_habitacion());
         dto.setFechaDesde(entidad.getFecha_desde());
         dto.setFechaHasta(entidad.getFecha_hasta());
+        dto.setEstado(entidad.getEstado());
+        dto.setTelefono(entidad.getTelefono());
+        dto.setNumeroHab(entidad.getNumero_habitacion());
+
 
         return dto;
     }
