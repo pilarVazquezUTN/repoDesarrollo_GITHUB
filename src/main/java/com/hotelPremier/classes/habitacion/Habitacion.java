@@ -1,6 +1,6 @@
 package com.hotelPremier.classes.habitacion;
 
-import java.util.ArrayList;
+ import java.util.List;
 
 import com.hotelPremier.classes.reserva.Reserva;
 import com.hotelPremier.classes.estadia.Estadia;
@@ -10,30 +10,20 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 @Table(name="habitacion")
 public class Habitacion  {
     @Id 
-    private int numero;
+    private int numero; 
     
-    @Column(name="estado")
+    @Column(name="estado") 
     private String estado;
-    @Column(name="precio") 
+    @Column(name="precio")  
     private float precio;
-    @Column(name="cantidadpersonas") // comillas para respetar mayúscula
+    @Column(name="cantidadpersonas") // comillas para respetar mayúsculaaaaaaaaaa
     private int cantidadPersonas;
-    @Column(name="tipohabitacion")
-    private String tipohabitacion; 
-    @Column(name="camaskingsize")
-    private Integer camasKingSize;
-    @Column(name="camadoble")
-    private Integer camaDoble;
-    @Column(name="camasindividuales")
-    private Integer camasIndividuales;
+    
+    private List<Estadia> listaestadias;
 
 
 
     public Integer getNumero() {
         return numero;
-    }
-
-    public String getTipohabitacion() {
-        return  tipohabitacion ;
     }
 } 

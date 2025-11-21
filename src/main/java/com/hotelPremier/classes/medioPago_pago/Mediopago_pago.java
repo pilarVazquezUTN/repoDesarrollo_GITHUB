@@ -25,6 +25,7 @@ public class Mediopago_pago {
     @JoinColumn(name="id_mediodepago")
     MedioDePago mediodepago;
 
+    
 
 
     public void setIdPago(Integer id_pago){

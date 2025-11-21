@@ -1,6 +1,6 @@
 package com.hotelPremier.classes.medioDePago;
 
-public class MonedaExtranjera {
+public class MonedaExtranjera extends MedioDePago{
     private String tipoMoneda;
 }
 

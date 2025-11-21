@@ -1,6 +1,7 @@
 package com.hotelPremier.classes.medioDePago;
 
 import java.util.Date;
+import java.util.List;
 
 import com.hotelPremier.classes.pago.Pago;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
@@ -16,25 +17,9 @@ public class MedioDePago {
     @Column(name="fecha")
     private Date fecha;
 
-    @ManyToOne
-    @JoinColumn(name = "id_pago")
-    private Pago pago;
+    private List<Pago> listaPago;
 
-    @Column(name="tipomediodepago")
-    private String tipomediodepago;
-
-    @Column(name="plazo")
-    private Date plazo;
-
-    @Column(name="banco")
-    private String banco;
-    @Column(name="cuotas")
-    private Integer cuotas;
-    @Column(name="dnititular")
-    private String dniTitular;
-    @Column(name="tipocambio")
-    private String tipocambio;
-    @Column(name="tipomoneda")
-    private  String tipoMoneda;
-
+    public void setIdMedioDePago(Integer id_mediodepago){
+        this.id_mediodepago=id_mediodepago;
+    }
 }

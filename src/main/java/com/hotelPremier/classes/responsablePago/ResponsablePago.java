@@ -1,5 +1,7 @@
 package com.hotelPremier.classes.responsablePago;
 
+import java.util.List;
+
 import com.hotelPremier.classes.direccion.Direccion;
 import com.hotelPremier.classes.factura.Factura;
 import com.hotelPremier.classes.huesped.Huesped;
@@ -13,6 +15,7 @@ public class ResponsablePago {
     @Column(name="id_responsablepago")
     private Integer id_responsablePago; 
     
+    /* 
     @Column(name="cuit")
     private String cuit;
     @Column(name="razonsocial")
@@ -21,6 +24,8 @@ public class ResponsablePago {
     private String nombre;
     @Column(name="tipopersona")
     private String tipoPersona;
+    */
+    
 
 
     @OneToOne
@@ -38,4 +43,5 @@ public class ResponsablePago {
     @ManyToOne
     @JoinColumn(name = "nro_factura")
     private Factura nro_factura;
+
 }

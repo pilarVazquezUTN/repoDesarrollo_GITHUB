@@ -2,13 +2,13 @@ package com.hotelPremier.classes.huesped;
 //import Classes.Estadia.*;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import com.hotelPremier.classes.direccion.Direccion;
 import com.hotelPremier.classes.direccion.DireccionDTO;
-
 import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.estadia.EstadiaDTO;
-
+import com.hotelPremier.classes.reserva.Reserva;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
@@ -44,6 +44,7 @@ public class Huesped {
     @Column(name="nacionalidad")
     private String nacionalidad;
 
+    private List<Estadia> listaestadia;
 
 
 

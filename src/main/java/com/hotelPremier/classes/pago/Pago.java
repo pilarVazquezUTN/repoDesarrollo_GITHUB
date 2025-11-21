@@ -1,6 +1,9 @@
 package com.hotelPremier.classes.pago;
 
 import java.util.Date;
+import java.util.List;
+
+import com.hotelPremier.classes.medioDePago.MedioDePago;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
@@ -16,4 +19,5 @@ public class Pago {
     @Column(name="fecha")
     private Date  fecha;
 
+    private List<MedioDePago> listamediodepago;
 }

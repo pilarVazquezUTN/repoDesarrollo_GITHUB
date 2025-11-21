@@ -1,10 +1,12 @@
 package com.hotelPremier.classes.factura;
 
 import java.util.Date;
+import java.util.List;
 
 import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.notadecredito.NotaDeCredito;
 import com.hotelPremier.classes.pago.Pago;
+import com.hotelPremier.classes.responsablePago.ResponsablePago;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
@@ -32,6 +34,13 @@ public class Factura {
     @OneToOne
     @JoinColumn(name = "id_pago")
     private Pago pago;
+
+    private List<Pago> listapago;
+    private List<ResponsablePago> listaresponsablepago;
+
+
+
+
     /**
      * Agrega un consumo a la facutura
      */

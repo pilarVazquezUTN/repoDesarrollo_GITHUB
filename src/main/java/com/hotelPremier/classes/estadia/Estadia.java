@@ -1,8 +1,12 @@
 package com.hotelPremier.classes.estadia;
 
 import java.util.Date;
-
+import java.util.List;
 import com.hotelPremier.classes.habitacion.Habitacion;
+import com.hotelPremier.classes.huesped.Huesped;
+import com.hotelPremier.classes.servicioExtra.ServicioExtra;
+
+import com.hotelPremier.classes.factura.Factura;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
@@ -19,6 +23,12 @@ public class Estadia {
     @ManyToOne //de estadia a habitacion
     @JoinColumn(name = "nro_habitacion")
     private Habitacion habitacion;
+
+    private List<Huesped> listahuesped;
+    private List<Factura> listafactura;
+    private List<ServicioExtra> listaserviciosextra;
+
+    private ServicioExtra servicioExtra;
 
 
     public Integer getId_estadia() {

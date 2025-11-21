@@ -1,6 +1,9 @@
 
 package com.hotelPremier.classes.notadecredito;
 
+import java.util.List;
+
+import com.hotelPremier.classes.factura.Factura;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,8 +19,5 @@ public class NotaDeCredito {
     @Column(name="monto")
     private float monto;
 
-
-
-
-
+    private List<Factura> listafactura;
 }
