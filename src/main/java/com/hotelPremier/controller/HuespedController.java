@@ -37,12 +37,12 @@ public class HuespedController {
     */
     @GetMapping("/huespedes")
     public ResponseEntity<List<HuespedDTO>> getHuesped(
-        @RequestParam(value="DNI") String DNI) { 
+        @RequestParam(value="dni") String dni) {
         List<HuespedDTO> listaHuespedes=null;
-        if(DNI.equals("listaHuespedes")){
+        if(dni.equals("listaHuespedes")){
             listaHuespedes=huespedService.findAll();
         } else{
-            listaHuespedes=huespedService.findByCategory(DNI);
+            listaHuespedes=huespedService.findByCategory(dni);
         }
 
         return new ResponseEntity<>(listaHuespedes, HttpStatus.OK);
@@ -55,8 +55,8 @@ public class HuespedController {
 
     }
     @DeleteMapping("/huespedes")
-    public ResponseEntity<HuespedDTO> deleteHuesped(@PathVariable long DNI) {
-        huespedService.deleteHuesped(DNI);
+    public ResponseEntity<HuespedDTO> deleteHuesped(@PathVariable String dni) {
+        huespedService.deleteHuesped(dni);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); 
         /*
         se puede devolver el usuario que eliminamos. */

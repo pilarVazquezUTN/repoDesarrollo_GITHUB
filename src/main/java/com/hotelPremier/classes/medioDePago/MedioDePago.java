@@ -30,10 +30,11 @@ public class MedioDePago {
     private String banco;
     @Column(name="cuotas")
     private Integer cuotas;
-    @Column(name="\"dniTitular\"")
+    @Column(name="dniTitular")
     private String dniTitular;
     @Column(name="tipocambio")
     private String tipocambio;
-    @Column(name="\"tipoMoneda\"") 
+    @Column(name="tipoMoneda")
+    private  String tipoMoneda;
 
 }

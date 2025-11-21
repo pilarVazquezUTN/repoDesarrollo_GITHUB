@@ -87,7 +87,7 @@ public class GestorHuesped implements GestorHuespedInterfaz{
         campos.put("numero", d.getNumero());
         campos.put("departamento", d.getDepartamento());
         campos.put("piso", d.getPiso());
-        campos.put("codigoPostal", d.getCodigoPostal());
+        //campos.put("codigoPostal", d.getCodigoPostal());
         campos.put("localidad", d.getLocalidad());
         campos.put("provincia", d.getProvincia());
         campos.put("pais", d.getPais());

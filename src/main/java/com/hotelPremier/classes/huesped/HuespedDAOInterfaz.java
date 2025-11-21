@@ -23,9 +23,9 @@ public interface HuespedDAOInterfaz {
 
     boolean eliminarHuespued(HuespedDTO huesped);
 
-    boolean existeHuesped(HuespedDTO huespedDTO);
+   // boolean existeHuesped(HuespedDTO huespedDTO);
 
-    boolean buscarHuespedyReemplazar(String tipodoc, String tipoDoc);
+    //boolean buscarHuespedyReemplazar(String tipodoc, String tipoDoc);
 
-    boolean seAlojo(HuespedDTO huespedDTO);
+    //boolean seAlojo(HuespedDTO huespedDTO);
 }

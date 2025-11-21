@@ -29,13 +29,13 @@ public class HuespedServiceImpl{
     }
 
     
-    public List<HuespedDTO> findByDni(String DNI) {
+    public List<HuespedDTO> findByDni(String dni) {
         
         return null;
     }
 
     
-    public void deleteHuesped(long DNI) {
+    public void deleteHuesped(String dni) {
 
     }
 
@@ -45,4 +45,7 @@ public class HuespedServiceImpl{
         throw new UnsupportedOperationException("Unimplemented method 'addHuesped'");
     }
 
+    public List<HuespedDTO> findByCategory(String dni) {
+        return null;
+    }
 }

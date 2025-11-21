@@ -140,17 +140,18 @@ public class HuespedDAO implements HuespedDAOInterfaz {
         String numeroCalle = huespedDTO.getDireccionHuesped().getNumero();
         String departamento = huespedDTO.getDireccionHuesped().getDepartamento();
         String piso = huespedDTO.getDireccionHuesped().getPiso();
-        String codPostal = huespedDTO.getDireccionHuesped().getCodigoPostal();
+        Integer codPostal = huespedDTO.getDireccionHuesped().getCodigoPostal();
         String localidad = huespedDTO.getDireccionHuesped().getLocalidad();
         String provincia = huespedDTO.getDireccionHuesped().getProvincia();
         String pais = huespedDTO.getDireccionHuesped().getPais();
 
-        // 3. Concatenar todos los datos en una sola línea separada por comas (CSV)
+      /*  // 3. Concatenar todos los datos en una sola línea separada por comas (CSV)
         String lineaDatos = String.join(",", 
             nombre, apellido, tipoDoc, numDoc, cuit, posIva, fechaNacStr,  
             calle, numeroCalle, departamento, piso, codPostal, localidad, provincia, pais, 
             telefono, email, ocupacion, nacionalidad
-        );
+        );*/
+        String lineaDatos=null;
 
         // 4. Escribir la línea en el archivo
         try (PrintWriter out = new PrintWriter(new FileWriter(RUTA_ARCHIVO, true))) {
@@ -216,7 +217,7 @@ public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped
                     }
                     h.setTelefono(datos[15].trim());
                     h.setEmail(datos[16].trim());
-                    h.setDireccionHuesped(getDireccionDTO(datos));
+                   // h.setDireccionHuesped(getDireccionDTO(datos));
                     h.setOcupacion(datos[17].trim());
                     h.setNacionalidad(datos[18].trim());
                     return h;
@@ -324,7 +325,7 @@ public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped
      * @param datos DATOS Q LEGGAN  Y ARMO EL DTO
      * @return
      */
-    private static DireccionDTO getDireccionDTO(String[] datos) {
+ /*   private static DireccionDTO getDireccionDTO(String[] datos) {
         DireccionDTO direccionDTO = new DireccionDTO();
         direccionDTO.setCalle(datos[7].trim());
         direccionDTO.setNumero(datos[8].trim());
@@ -335,8 +336,7 @@ public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped
         direccionDTO.setProvincia(datos[13].trim());
         direccionDTO.setPais(datos[14].trim());
         return direccionDTO;
-    }
-
+    }*/
     /**
      * se elimina un huesped del archivo
      * @param huesped
@@ -382,7 +382,7 @@ public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped
      * @param huespedDTO
      * @return true o false dependiendo si existe
      */
-    public boolean existeHuesped(HuespedDTO huespedDTO) {
+    /*public boolean existeHuesped(HuespedDTO huespedDTO) {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         boolean encontrado = false;
         String rutaArchivo = "infoBuscarHuespedes.txt";
@@ -439,12 +439,17 @@ public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped
 
      return true;
     }
+    */
     public boolean seAlojo(HuespedDTO huespedDTO) {
         if(huespedDTO.getEstadiaHuesped() == null){
             return false;
         }
         return true;
 
+
     }
+
+
 }
+
 

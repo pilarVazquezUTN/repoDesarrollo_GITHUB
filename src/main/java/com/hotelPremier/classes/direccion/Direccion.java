@@ -19,7 +19,7 @@ public class Direccion {
     private String departamento;
     @Column(name="piso")
     private String piso;
-    @Column(name="\"codigoPostal\"")
+    @Column(name="codigopostal")
     private Integer codigoPostal;
     @Column(name="provincia")
     private String provincia;

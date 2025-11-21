@@ -28,7 +28,7 @@ camasIndividuales integer
 create table huesped(
 dni varchar(40),
 tipoDocumento varchar(20),
---numeroDocumento varchar(50),
+numeroDocumento varchar(50),
 telefono varchar(50),
 nacionalidad varchar(50),
 cuit varchar(50),

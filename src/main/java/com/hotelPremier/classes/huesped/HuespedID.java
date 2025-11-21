@@ -7,7 +7,7 @@ import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 @Embeddable
 public class HuespedID implements Serializable {
-    @Column(name = "tipo_documento")
+    @Column(name = "tipoDocumento") //PONGO tipoDocumento porq en el .sql esta asi
     private String tipoDocumento;
 
    @Column(name = "dni") 

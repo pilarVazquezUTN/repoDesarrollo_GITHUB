@@ -12,7 +12,7 @@ import com.hotelPremier.classes.usuario.UsuarioDTO;
 public interface UsuarioRepository extends CrudRepository<Usuario,Long>{
     @Override
     List<Usuario> findAll();
-    List<Usuario> findByCategory(String category);
-    List<Usuario> buscarUsuario(UsuarioDTO usuarioDTO);
+    List<Usuario> findBynombre(String nombre);
+   // List<Usuario> buscarUsuario(UsuarioDTO usuarioDTO);
     //Set<Usuario> usuarioEncontrado();
 }
