@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 
 @Entity
-@Table(name="\"estadiaHuesped\"")
+@Table(name="estadiahuesped")
 public class estadiaHuesped {
 
   @EmbeddedId
@@ -20,7 +20,7 @@ public class estadiaHuesped {
   @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "dni", referencedColumnName = "dni", insertable=false, updatable=false),
-            @JoinColumn(name = "tipoDocumento", referencedColumnName = "tipoDocumento",insertable=false, updatable=false)
+            @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento",insertable=false, updatable=false)
     })
     private Huesped huesped;
 

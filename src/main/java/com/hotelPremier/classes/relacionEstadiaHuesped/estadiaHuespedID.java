@@ -12,7 +12,7 @@ public class estadiaHuespedID implements Serializable {
     private Integer idEstadia;
     @Column(name = "dni")
     private String dni;
-    @Column(name = "tipoDocumento")
+    @Column(name = "tipodocumento")
     private String tipoDocumento;
 
     // Getters y Setters

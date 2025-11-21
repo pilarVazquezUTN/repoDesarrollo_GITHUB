@@ -7,10 +7,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="notaDeCredito")
+@Table(name="notadecredito")
 public class NotaDeCredito {
     @Id
-    @Column(name="id_notaCredito")
+    @Column(name="id_notacredito")
     private Integer id_notadecredito;
 
     @Column(name="monto")

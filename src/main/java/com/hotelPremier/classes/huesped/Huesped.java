@@ -23,7 +23,7 @@ public class Huesped {
     @EmbeddedId
     HuespedID huespedID;
 
-    @Column(name="\"fechaNacimiento\"")
+    @Column(name="fechanacimiento")
     private Date fechaNacimiento;
     @Column(name="telefono")
     private String telefono;
@@ -37,7 +37,7 @@ public class Huesped {
 
     @Column(name="cuit")
     private String cuit;
-    @Column(name="\"posicionIva\"")
+    @Column(name="posicioniva")
     private String posicionIva;
     @Column(name="ocupacion")
     private String ocupacion;

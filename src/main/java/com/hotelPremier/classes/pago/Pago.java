@@ -11,7 +11,7 @@ public class Pago {
     private Integer id_pago;
     @Column(name="monto")
     private float monto;
-    @Column(name="medioPago")
+    @Column(name="mediopago")
     private String medioPago;
     @Column(name="fecha")
     private Date  fecha;
