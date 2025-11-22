@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import CancelarAltaHuepsed from "../carteles/cancelarAltaHuesped";
-
+import CargarOtroHuesped from "../carteles/huespedCargadoSatisfacoriamente";
 export default function DarAltaHuesped(){
-    const [open, setOpen] = useState(false); {/*hace que el cartel se muestre o no*/}
-
+    const [openCancelar, setOpenCancelar] = useState(false);
+    const [openAceptar, setOpenAceptar] = useState(false);
     return(
         <main className="flex gap-80 px-6 py-6 items-start justify-center"> 
 
@@ -83,17 +83,27 @@ export default function DarAltaHuesped(){
                 {/* BOTON PARA ABRIR EL CARTEL DE FACTURAR A UN TERCERO */}
                         <button type="button" className="px-4 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"
                         onClick={() => 
-                            setOpen(true)
+                            setOpenCancelar(true)
                         } 
                         >
                             Cancelar
                         </button>
                         {/* MOSTRAR CARTEL SOLO SI open === true */}
-                        {open && (
-                            <CancelarAltaHuepsed onClose={() => setOpen(false)} />
+                        {openCancelar && (
+                            <CancelarAltaHuepsed onClose={() => setOpenCancelar(false)} />
                         )}
 
-                    <button type="button" className="px-4 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition">Aceptar</button>
+                    <button type="button" className="px-4 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"
+                        onClick={() => 
+                            setOpenAceptar(true)
+                        } 
+                        >
+                            Aceptar
+                        </button>
+                        {/* MOSTRAR CARTEL SOLO SI open === true */}
+                        {openAceptar && (
+                            <CargarOtroHuesped onClose={() => setOpenAceptar(false)} />
+                        )}
 
 
                 </div>
