@@ -1,7 +1,6 @@
 "use client";
 import Tabla from "../tabla/page";
 import { useState } from "react";
-import Link from "next/link";
 import FacturarUnTerceroModal from "../carteles/facturarUnTercero"; 
 
 export default function Facturar() {
@@ -26,11 +25,11 @@ export default function Facturar() {
                     <p className="text-indigo-950 font-bold ">seleccione una persona como responsable de pago</p>
                     <Tabla />
                     <div className=" mt-6 justify-center sticky bottom-0 flex gap-4 ">
-                        {/* NO VA LINK SOLO QUE QUERIA PROBAR COMPLETAR FACTURA */}
+                        {/* NO VA LINK SOLO QUE QUERIA PROBAR COMPLETAR FACTURA 
                         <Link href="/facturar/completarFactura"> 
                             
                         </Link>
-                        
+                        */}
                         
                         {/* BOTON PARA ABRIR EL CARTEL DE FACTURAR A UN TERCERO */}
                         <button  className="px-4 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"
