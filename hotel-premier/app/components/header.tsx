@@ -36,14 +36,90 @@ export default function Header() {
       
 
       <nav className="flex gap-6 text-lg overflow-x-auto whitespace-nowrap">
-        <Link href="/reservarHabitacion" className="hover:text-gray-500">Reservar Habitación</Link>
-        <Link href="/buscarHuesped" className="hover:text-gray-500">Buscar Huésped</Link>
-        <Link href="/estadoHabitacion" className="hover:text-gray-500">Estado de la Habitación</Link>
-        <Link href="/facturar" className="hover:text-gray-500">Facturar</Link>
-        <Link href="/darAltaHuesped" className="hover:text-gray-500">Dar alta Huésped</Link>
-        <Link href="/darBajaHuesped" className="hover:text-gray-500">Dar baja Huésped</Link>
-        <Link href="/listarIngresos" className="hover:text-gray-500">Listar Ingresos</Link>
-        <Link href="/cancelarReserva" className="hover:text-gray-500">Cancelar Reserva</Link>
+        
+        <Link
+          href="/reservarHabitacion"
+          className={` ${
+            pathname === "/reservarHabitacion"
+              ? "text-gray-500"
+              : "hover:text-gray-500"
+          }`}
+        >
+          Reservar Habitación
+        </Link>
+
+        <Link  
+          href="/buscarHuesped"
+          className={` ${
+              pathname === "/buscarHuesped"
+                ? "text-gray-500"
+                : "hover:text-gray-500"
+            }`}
+        >
+            Buscar Huésped
+        </Link>
+
+        <Link 
+          href="/estadoHabitacion"
+          className={` ${
+              pathname === "/estadoHabitacion"
+                ? "text-gray-500"
+                : "hover:text-gray-500"
+            }`}
+          >
+              Estado de la Habitación
+        </Link>
+
+        <Link href="/facturar"
+          className={` ${
+              pathname === "/facturar"
+                ? "text-gray-500"
+                : "hover:text-gray-500"
+            }`}
+        >
+          Facturar
+        </Link>
+
+        <Link href="/darAltaHuesped"
+          className={` ${
+                pathname === "/darAltaHuesped"
+                  ? "text-gray-500"
+                  : "hover:text-gray-500"
+            }`}
+        >
+          Dar alta Huésped
+        </Link>
+
+        <Link href="/darBajaHuesped"
+          className={` ${
+                pathname === "/darBajaHuesped"
+                  ? "text-gray-500"
+                  : "hover:text-gray-500"
+            }`}
+        >
+          Dar baja Huésped
+        </Link>
+
+        <Link href="/listarIngresos" 
+          className={` ${
+                pathname === "/listarIngresos"
+                  ? "text-gray-500"
+                  : "hover:text-gray-500"
+              }`}
+        >
+          Listar Ingresos
+        </Link>
+
+        <Link href="/cancelarReserva"
+          className={` ${
+                pathname === "/cancelarReserva"
+                  ? "text-gray-500"
+                  : "hover:text-gray-500"
+              }`}
+        >
+          Cancelar Reserva
+        </Link>
+
       </nav>
     </header>
   );
