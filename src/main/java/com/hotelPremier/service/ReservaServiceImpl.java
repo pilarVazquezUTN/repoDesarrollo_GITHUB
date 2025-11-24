@@ -59,7 +59,7 @@ public class ReservaServiceImpl  {
         //dto.setNumeroHab(entidad.getNro_habitacion());
         dto.setNombre(entidad.getNombre());
         dto.setApellido(entidad.getApellido());
-        dto.setTipoHab(entidad.getTipo_habitacion());
+       // dto.setTipoHab(entidad.getTipo_habitacion());
         dto.setFechaDesde(entidad.getFecha_desde());
         dto.setFechaHasta(entidad.getFecha_hasta());
         dto.setEstado(entidad.getEstado());

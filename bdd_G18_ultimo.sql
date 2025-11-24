@@ -10,7 +10,7 @@ provincia VARCHAR(20),
 pais VARCHAR(20)
 );
 
---uso la distribucion plana 
+--uso la distribucion plana
 
 CREATE TABLE habitacion(
 numero integer primary key,
@@ -50,15 +50,6 @@ checkout Date,
 nro_habitacion integer,
 constraint fk_nrohab foreign key (nro_habitacion) references habitacion(numero)
 );
---estadiaHuesped: entre estadia y huesped nueva relacion
-create table estadiaHuesped(
-id_estadia integer,
-dni varchar(50),
-tipoDocumento varchar(40),
-constraint pk_tipodoc_dni_idestad primary key (id_estadia, dni, tipoDocumento ),
-constraint fk_idestadia foreign key (id_estadia) references estadia(id_estadia),
-constraint fk_tipodoc_dni foreign key (tipoDocumento, dni ) references huesped (tipodocumento , dni)
-);
 
 
 --por ser debil
@@ -71,12 +62,6 @@ constraint pk_servicio_estadia primary key(id_servicio,id_estadia),
 constraint fk_estadia foreign key (id_estadia) references estadia(id_estadia)
 
 );
-
-
-
-
-
-
 
 create table reserva(
 id_reserva integer,
@@ -94,14 +79,27 @@ create table notaDeCredito(
 id_notaCredito integer primary key,
 monto float
 );
+create table factura(
+nro_factura integer primary key,
+fecha date,
+total float,
+estado varchar(40),
+tipo varchar(2),
+id_estadia integer,
+id_notacredito integer,
+id_pago integer,
+constraint fk_id_estadia foreign key (id_estadia) references estadia (id_estadia),
+constraint fk_idnotacredito foreign key (id_notacredito) references notadecredito (id_notacredito)
 
+);
 create table pago(
 id_pago integer primary key,
 monto float,
-fecha date
+fecha date,
+nro_factura integer,
+constraint fk_nrofactura foreign key (nro_factura) references factura (nro_factura)
 );
 
---por relacion entre n-n
 create table medio_pago(
 id_mediodepago integer primary key,
 tipomediodepago varchar(40), --aca pongo el tipo mediodepago
@@ -117,31 +115,12 @@ id_pago integer,
 constraint fk_idpago foreign key (id_pago) references pago (id_pago)
 );
 
-create table mediopago_pago(
-    id_pago integer,
-    id_mediodepago integer,
-    constraint pk_id_pago_mediopago primary key (id_pago, id_mediodepago),
-    constraint fk_idpago foreign key (id_pago) references pago(id_pago),
-    constraint fk_mediopago foreign key (id_mediodepago) references medio_pago(id_mediodepago) 
-);
 
 
 
 
 
-create table factura(
-nro_factura integer primary key,
-fecha date,
-total float,
-estado varchar(40),
-tipo varchar(2),
-id_estadia integer,
-id_notacredito integer,
-id_pago integer,
-constraint fk_id_estadia foreign key (id_estadia) references estadia (id_estadia),
-constraint fk_idnotacredito foreign key (id_notacredito) references notadecredito (id_notacredito),
-constraint fk_idpago foreign key (id_pago) references pago (id_pago)
-);
+
 
 
 
@@ -232,4 +211,4 @@ INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_
 
 
 
-GRANT ALL PRIVILEGES ON DATABASE hotelpremier TO pili; 
+GRANT ALL PRIVILEGES ON DATABASE hotelpremier TO pili;

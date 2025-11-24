@@ -28,4 +28,5 @@ public class Habitacion  {
     public Integer getNumero() {
         return numero;
     }
+
 } 

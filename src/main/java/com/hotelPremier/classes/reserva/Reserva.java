@@ -37,9 +37,9 @@ public class Reserva {
         nro_habitacion=habitacion;
     }
 
-    public String getTipo_habitacion(){
+    /*public String getTipo_habitacion(){
         return nro_habitacion.getTipohabitacion();
-    }
+    }*/
 
     public Integer getNumero_habitacion(){
         return nro_habitacion.getNumero();
