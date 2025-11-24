@@ -12,13 +12,13 @@ public class Direccion {
     private String calle;
     
     @Column(name="numero")
-    private String numero;
+    private Integer numero;
     @Column(name="localidad")
     private String localidad;
     @Column(name="departamento")
     private String departamento;
     @Column(name="piso")
-    private String piso;
+    private Integer piso;
     @Column(name="codigopostal")
     private Integer codigoPostal;
     @Column(name="provincia")
@@ -60,7 +60,7 @@ public class Direccion {
      * retorna el numero
      * @return
      */
-    public String getNumero() {
+    public Integer getNumero() {
         return numero;
     }
 
@@ -82,7 +82,7 @@ public class Direccion {
      * retorna piso
      * @return
      */
-    public String getPiso() {
+    public Integer getPiso() {
         return piso;
     }
 
@@ -120,7 +120,7 @@ public class Direccion {
      * set de numero
      * @param numero
      */
-    public void setNumero(String numero) {
+    public void setNumero(Integer numero) {
         this.numero = numero;
     }
 
@@ -144,7 +144,7 @@ public class Direccion {
      * set de piso
      * @param piso
      */
-    public void setPiso(String piso) {
+    public void setPiso(Integer piso) {
         this.piso = piso;
     }
 
