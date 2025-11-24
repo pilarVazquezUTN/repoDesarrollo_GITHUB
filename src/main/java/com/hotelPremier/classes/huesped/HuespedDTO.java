@@ -1,12 +1,15 @@
 package com.hotelPremier.classes.huesped;
 
 import java.util.Date;
+import java.util.List;
 
+import com.hotelPremier.classes.direccion.Direccion;
 import com.hotelPremier.classes.direccion.DireccionDTO;
-
+import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.estadia.EstadiaDTO;
 
 public class HuespedDTO {
+    //private HuespedID huespedID;
     private String apellido;
     private String nombre;
     private String tipoDocumento;
@@ -19,7 +22,7 @@ public class HuespedDTO {
     private String posicionIva;
     private String ocupacion;
     private String nacionalidad;
-    private EstadiaDTO [] estadiaHuesped;
+    private List<EstadiaDTO> estadiaHuesped;
 
     /**
      *
@@ -195,6 +198,7 @@ public class HuespedDTO {
         return this.direccionHuesped;
     }
 
+
     /**
      *
      * @return
@@ -215,7 +219,8 @@ public class HuespedDTO {
      *
      * @return
      */
-    public EstadiaDTO[] getEstadiaHuesped() {
-        return estadiaHuesped;
+
+    public void setListaEstadia(List<EstadiaDTO> lista){
+        this.estadiaHuesped=lista;
     }
 }

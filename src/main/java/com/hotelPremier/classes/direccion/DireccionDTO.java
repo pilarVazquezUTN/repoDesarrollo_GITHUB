@@ -1,14 +1,22 @@
 package com.hotelPremier.classes.direccion;
 
 public class DireccionDTO {
+    private Integer id_direccionDTO;
     private String calle;
-    private String numero;
+    private Integer numero;
     private String localidad;
     private String departamento;
-    private String piso;
+    private Integer piso;
     private Integer codigoPostal;
     private String provincia;
     private String pais;
+
+    public void setID(Integer id){
+        this.id_direccionDTO=id;
+    }
+    public Integer getID(){
+        return this.id_direccionDTO;
+    }
 
     /**
      *
@@ -22,7 +30,7 @@ public class DireccionDTO {
      *
      * @param numero
      */
-    public void setNumero(String numero) {
+    public void setNumero(Integer numero) {
         this.numero = numero;
     }
 
@@ -46,7 +54,7 @@ public class DireccionDTO {
      *
      * @param piso
      */
-    public void setPiso(String piso) {
+    public void setPiso(Integer piso) {
         this.piso = piso;
     }
 
@@ -86,7 +94,7 @@ public class DireccionDTO {
      *
      * @return retorna numero calle
      */
-    public String getNumero() {
+    public Integer getNumero() {
         return this.numero;
     }
 
@@ -110,7 +118,7 @@ public class DireccionDTO {
      *
      * @return retorna piso
      */
-    public String getPiso() {
+    public Integer getPiso() {
         return this.piso;
     }
 

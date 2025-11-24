@@ -18,7 +18,7 @@ public class Estadia {
     private Integer id_estadia;
 
     @Temporal(TemporalType.DATE) //guarda fecha sin hora
-    @Column(name="checkin")
+    @Column(name="checkin") 
     private Date checkin;
 
     @Temporal(TemporalType.DATE) //guarda fecha sin hora

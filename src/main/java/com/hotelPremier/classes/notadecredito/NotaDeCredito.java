@@ -2,7 +2,6 @@
 package com.hotelPremier.classes.notadecredito;
 
 import java.util.List;
-
 import com.hotelPremier.classes.factura.Factura;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,5 +20,5 @@ public class NotaDeCredito {
     private float monto;
 
     @OneToMany(mappedBy = "notacredito")
-    private List<Factura> listafactura;
+    private List<Factura> listafactura; //NO PUEDE SER NULL
 }

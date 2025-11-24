@@ -10,9 +10,12 @@ import java.util.stream.Collectors;
 import com.hotelPremier.classes.huesped.HuespedDTO;
 import com.hotelPremier.classes.direccion.Direccion;
 import com.hotelPremier.classes.direccion.DireccionDTO;
+import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.reserva.Reserva;
 import com.hotelPremier.classes.reserva.ReservaDTO;
+
+//import com.hotelpremier.classes.estadia.EstadiaDTO;
 
 public class FuncionesUtiles {
 
@@ -148,21 +151,38 @@ public class FuncionesUtiles {
      */
     public   HuespedDTO mapToDTO(Huesped huesped) {
         HuespedDTO huespedDTO = new HuespedDTO();
-        //DireccionDTO direccionDTO = new DireccionDTO();
-        //Direccion direccion = huesped.getDireccionHuesped();
+        DireccionDTO direccionDTO = new DireccionDTO();
 
         huespedDTO.setNombre(huesped.getNombre());
         huespedDTO.setApellido(huesped.getApellido());
-        //huespedDTO.setNumeroDocumento(huesped.getNumeroDocumento());
+        huespedDTO.setDni(huesped.getDni());
+        huespedDTO.setTipoDocumento(huesped.getTipoDocumento());
         huespedDTO.setFechaNacimiento(huesped.getFechaNacimiento());
         huespedDTO.setTelefono(huesped.getTelefono());
         huespedDTO.setEmail(huesped.getEmail());
-        /* que hacemos aca con direccion y el tema de la FK. */
+        
+        direccionDTO.setID(huesped.getDireccionID());
+        direccionDTO.setCalle(huesped.getDireccionCalle());
+        direccionDTO.setNumero(huesped.getDireccionNumero());
+        direccionDTO.setLocalidad(huesped.getDireccionLocalidad());
+        direccionDTO.setDepartamento(huesped.getDireccionDepto());
+        direccionDTO.setPiso(huesped.getDireccionPiso());
+        direccionDTO.setCodigoPostal(huesped.getDireccionCodigoPostal());
+        direccionDTO.setProvincia(huesped.getDireccionProvincia());
+        direccionDTO.setPais(huesped.getDireccionPais());
+        huespedDTO.setDireccionHuesped(direccionDTO);
+
         huespedDTO.setCuit(huesped.getCuit());
         huespedDTO.setPosicionIva(huesped.getPosicionIva());
         huespedDTO.setOcupacion(huesped.getOcupacion());
         huespedDTO.setNacionalidad(huesped.getNacionalidad());
 
+
+        /* 
+        for (EstadiaDTO e : estadias) {
+            System.out.println(h.getNombre() + " " + h.getApellido());
+        }
+        */
         return huespedDTO;
     }
 

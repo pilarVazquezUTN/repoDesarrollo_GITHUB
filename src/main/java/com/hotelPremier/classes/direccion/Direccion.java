@@ -48,6 +48,15 @@ public class Direccion {
         this.pais = pais;
     }
 */
+
+
+    public void setID(Integer id){
+        this.id_direccion=id;
+    }
+    public Integer getID(){
+        return this.id_direccion;
+    }
+
     /**
      * retorna la calle
      * @return

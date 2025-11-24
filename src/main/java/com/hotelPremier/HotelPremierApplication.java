@@ -8,3 +8,4 @@ public class HotelPremierApplication {
         SpringApplication.run(HotelPremierApplication.class, args);
     }
 }
+ 

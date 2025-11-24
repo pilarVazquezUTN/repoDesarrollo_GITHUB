@@ -15,10 +15,14 @@ public class Reserva {
     @Column(name="id_reserva")
     private int id_reserva;
 
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
     @Column(name="fecha_desde")
     private Date fecha_desde;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
     @Column(name="fecha_hasta")
     private Date fecha_hasta;
+    
     @Column(name="estado")
     private String estado;
     @Column(name="nombre")

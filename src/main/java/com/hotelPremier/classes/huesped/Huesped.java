@@ -159,6 +159,42 @@ public class Huesped {
         this.nacionalidad = nacionalidad;
     }
 
+    public void setDireccion(Direccion direc){
+        this.direccion=direc;
+    }
+
+    public Direccion getDireccion(){
+        return this.direccion;
+    }
+    
+    public Integer getDireccionID(){
+        return this.direccion.getID();
+    }
+    public String getDireccionCalle(){
+        return this.direccion.getCalle();
+    }
+    public Integer getDireccionNumero(){
+        return this.direccion.getNumero();
+    }
+    public String getDireccionLocalidad(){
+        return this.direccion.getLocalidad();
+    }
+    public String getDireccionDepto(){
+        return this.direccion.getDepartamento();
+    }
+    public Integer getDireccionPiso(){
+        return this.direccion.getPiso();
+    }
+    public Integer getDireccionCodigoPostal(){
+        return this.direccion.getCodigoPostal();
+    }
+    public String getDireccionProvincia(){
+        return this.direccion.getProvincia();
+    }
+    public String getDireccionPais(){
+        return this.direccion.getPais();
+    }
+
     /**
      *
      * @return
@@ -247,6 +283,9 @@ public class Huesped {
     }
 
 
+    public List<Estadia> getListaEstadia(){
+        return this.listaestadia;
+    }
 
 }
 

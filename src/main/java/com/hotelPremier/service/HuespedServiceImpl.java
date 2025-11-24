@@ -46,8 +46,7 @@ public class HuespedServiceImpl{
     }
 
     public List<HuespedDTO> findByCategory(String dni) {
-
-            return funcionesUtiles.mapToDTOList(huespedRepository.findByHuespedID_Dni(dni));
-
+        
+        return funcionesUtiles.mapToDTOList(huespedRepository.findByHuespedID_Dni(dni));
     }
 }
