@@ -23,6 +23,7 @@ public class Huesped {
     @EmbeddedId
     HuespedID huespedID;
 
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
     @Column(name="fechanacimiento")
     private Date fechaNacimiento;
     @Column(name="telefono")

@@ -29,7 +29,6 @@ public class ResponsablePago {
     private Huesped huesped;
     
     @OneToMany(mappedBy = "responsablepago")
-    //@JoinColumn(name = "nro_factura")
     private List<Factura>  listafactura;
 
 }

@@ -15,8 +15,11 @@ public class Factura {
     @Id 
     @Column(name="nro_factura") 
     private Integer nro_factura;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
     @Column(name="fecha")
     private Date fecha;
+
     @Column(name="total")
     private float total;
     @Column(name="tipo")
