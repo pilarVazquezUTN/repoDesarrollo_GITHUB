@@ -44,6 +44,15 @@ public class Huesped {
     @Column(name="nacionalidad")
     private String nacionalidad;
 
+    @ManyToMany
+    @JoinTable(
+        name= "relac_estadia_huesped",
+        joinColumns ={
+            @JoinColumn(name ="tipodocumento"),
+            @JoinColumn(name="dni")
+        }, 
+        inverseJoinColumns = @JoinColumn(name = "id_estadia")
+    )
     private List<Estadia> listaestadia;
 
 

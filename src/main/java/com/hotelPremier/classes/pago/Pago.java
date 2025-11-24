@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.hotelPremier.classes.medioDePago.MedioDePago;
+
+import com.hotelPremier.classes.factura.Factura;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
@@ -19,5 +21,16 @@ public class Pago {
     @Column(name="fecha")
     private Date  fecha;
 
+    @ManyToOne
+    @JoinColumn(name = "factura")
+    private Factura factura;
+
+
+    @ManyToMany
+    @JoinTable(
+        name="mediopago_pago",
+        joinColumns = @JoinColumn(name= "id_pago"),
+        inverseJoinColumns = @JoinColumn(name= "id_mediodepago")
+    )
     private List<MedioDePago> listamediodepago;
 }

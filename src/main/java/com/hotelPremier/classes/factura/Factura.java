@@ -23,20 +23,27 @@ public class Factura {
     private String tipo;
     @Column(name="estado")
     private String estado;
-    @ManyToOne
-    @JoinColumn(name = "id_estadia") // nombre de la columna FK
-    private Estadia estadia;
+    
+    
+    
+    @ManyToMany
+    @JoinTable(
+        name = "relac_estadias_facturas",  // nombre de la columna FK
+        joinColumns = @JoinColumn(name = "nro_factura"),
+        inverseJoinColumns = @JoinColumn(name= "id_estadia")
+    )
+    private List<Estadia> listaestadia;
 
     @ManyToOne
     @JoinColumn(name = "id_notacredito")
-    private NotaDeCredito notaCredito;
+    private NotaDeCredito notacredito;
 
-    @OneToOne
-    @JoinColumn(name = "id_pago")
-    private Pago pago;
-
+    @OneToMany(mappedBy = "factura")
     private List<Pago> listapago;
-    private List<ResponsablePago> listaresponsablepago;
+
+    @ManyToOne //(mappedBy = "nro_factura")
+    @JoinColumn(name="responsablepago")  
+    private ResponsablePago responsablepago;
 
 
 

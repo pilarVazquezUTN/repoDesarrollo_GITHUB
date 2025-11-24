@@ -148,10 +148,6 @@ constraint fk_idpago foreign key (id_pago) references pago (id_pago)
 create table responsablePago(
 id_responsablePago integer primary key,
 dni varchar(50),
-cuit varchar(50),
-razonSocial varchar(40),
-nombre varchar(40),
-tipoPersona varchar(40),
 
 id_direccion integer,
 tipoDoc varchar(20),

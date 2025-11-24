@@ -7,6 +7,7 @@ import com.hotelPremier.classes.factura.Factura;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,5 +20,6 @@ public class NotaDeCredito {
     @Column(name="monto")
     private float monto;
 
+    @OneToMany(mappedBy = "notacredito")
     private List<Factura> listafactura;
 }

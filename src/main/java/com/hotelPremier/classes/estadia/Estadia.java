@@ -8,6 +8,7 @@ import com.hotelPremier.classes.servicioExtra.ServicioExtra;
 
 import com.hotelPremier.classes.factura.Factura;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import jakarta.websocket.OnMessage;
 
 @Entity
 @Table(name="estadia")
@@ -24,11 +25,18 @@ public class Estadia {
     @JoinColumn(name = "nro_habitacion")
     private Habitacion habitacion;
 
+    @ManyToMany(mappedBy = "listaestadia")
     private List<Huesped> listahuesped;
+
+    @ManyToMany(mappedBy = "listaestadia")
     private List<Factura> listafactura;
+
+    @OneToMany(mappedBy = "estadia")
     private List<ServicioExtra> listaserviciosextra;
 
-    private ServicioExtra servicioExtra;
+
+
+    
 
 
     public Integer getId_estadia() {

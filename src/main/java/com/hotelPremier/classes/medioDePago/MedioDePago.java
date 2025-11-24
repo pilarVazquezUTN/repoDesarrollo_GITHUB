@@ -17,8 +17,15 @@ public class MedioDePago {
     @Column(name="fecha")
     private Date fecha;
 
-    private List<Pago> listaPago;
-
+    //se pone mappedBY= aca va el nombre de la variable en Pago, que seria listamdiodepago.
+    @ManyToMany(mappedBy = "listamediodepago")
+    private List<Pago> listapago;
+    
+    
+    /* CONSTRUCTORES */
+    
+    /* GETTERS Y SETTERS */
+    
     public void setIdMedioDePago(Integer id_mediodepago){
         this.id_mediodepago=id_mediodepago;
     }

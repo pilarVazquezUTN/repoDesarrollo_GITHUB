@@ -14,18 +14,6 @@ public class ResponsablePago {
     @Id
     @Column(name="id_responsablepago")
     private Integer id_responsablePago; 
-    
-    /* 
-    @Column(name="cuit")
-    private String cuit;
-    @Column(name="razonsocial")
-    private String razonSocial;
-    @Column(name="nombre")
-    private String nombre;
-    @Column(name="tipopersona")
-    private String tipoPersona;
-    */
-    
 
 
     @OneToOne
@@ -39,9 +27,9 @@ public class ResponsablePago {
             @JoinColumn(name = "dni", referencedColumnName = "dni")
     })
     private Huesped huesped;
-
-    @ManyToOne
-    @JoinColumn(name = "nro_factura")
-    private Factura nro_factura;
+    
+    @OneToMany(mappedBy = "responsablepago")
+    //@JoinColumn(name = "nro_factura")
+    private List<Factura>  listafactura;
 
 }

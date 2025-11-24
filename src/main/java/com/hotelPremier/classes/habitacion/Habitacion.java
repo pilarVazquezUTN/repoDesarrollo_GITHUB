@@ -19,6 +19,8 @@ public class Habitacion  {
     @Column(name="cantidadpersonas") // comillas para respetar mayúsculaaaaaaaaaa
     private int cantidadPersonas;
     
+
+    @OneToMany(mappedBy = "habitacion")
     private List<Estadia> listaestadias;
 
 
