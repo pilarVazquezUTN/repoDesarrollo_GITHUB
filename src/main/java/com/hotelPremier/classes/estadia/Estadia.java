@@ -49,5 +49,29 @@ public class Estadia {
     public void setId_estadia(Integer id_estadia) {
         this.id_estadia = id_estadia;
     }
+    public Date getCheckin() {
+        return checkin;
+    }
+    public void setCheckin(Date checkin) {
+        this.checkin = checkin;
+    }
+    public Date getCheckout() {
+        return checkout;
+    }
+    public void setCheckout(Date checkout) {
+        this.checkout = checkout;
+    }
+    public Habitacion getHabitacion() {
+        return habitacion;
+    }
+    public void setHabitacion(Habitacion habitacion) {
+        this.habitacion = habitacion;
+    }
+    public List<Huesped> getListahuesped() {
+        return listahuesped;
 
+    }
+    public void setListahuesped(List<Huesped> listahuesped) {
+        this.listahuesped = listahuesped;
+    }
 }

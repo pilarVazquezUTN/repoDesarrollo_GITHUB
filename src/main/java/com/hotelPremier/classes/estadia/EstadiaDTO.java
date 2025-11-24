@@ -13,11 +13,15 @@ public class EstadiaDTO {
     private Integer id_estadiaDTO;
     private Date checkin; 
     private Date checkout;
+
+    //no estamos seguras!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     private DobleEstandarDTO dobleestandarDTO;
     private DobleSuperiorDTO doblesuperiorDTO;
     private IndividualEstandarDTO individualestandarDTO;
     private SuiteDTO suiteDTO;
     private SuperiorFamilyPlanDTO superiorfamilyplanDTO;
+
+
     private List<HuespedDTO> listahuesped;
     private List<FacturaDTO> listafactura;
     private List<ServicioExtra> listaservicioextra;

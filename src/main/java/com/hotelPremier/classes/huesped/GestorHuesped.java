@@ -84,9 +84,9 @@ public class GestorHuesped implements GestorHuespedInterfaz{
 
          d = huespedDTO.getDireccionHuesped();
         campos.put("calle", d.getCalle());
-        campos.put("numero", d.getNumero());
+        //campos.put("numero", d.getNumero());
         campos.put("departamento", d.getDepartamento());
-        campos.put("piso", d.getPiso());
+        //campos.put("piso", d.getPiso());
         //campos.put("codigoPostal", d.getCodigoPostal());
         campos.put("localidad", d.getLocalidad());
         campos.put("provincia", d.getProvincia());
