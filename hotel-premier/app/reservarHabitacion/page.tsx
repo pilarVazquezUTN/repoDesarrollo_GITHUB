@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { format, parseISO, eachDayOfInterval, isAfter } from "date-fns";
 import { usePathname } from "next/navigation";
+import OcuparHabitacionIgualmente from "../carteles/ocuparHabitacionIgualmente";
+
 
 export default function ReservarHabitacion({ ocultarTabla = false }) {
 
@@ -56,7 +58,8 @@ export default function ReservarHabitacion({ ocultarTabla = false }) {
         const fechasMostradas = desdeFecha && hastaFecha ? generarFechas(desdeFecha, hastaFecha) : [];
         //estadoHabitacion
 
-        const pathname = usePathname();//para poder negarle la tabla de habitaciones disponibles a estadoHabitacion
+        const pathname = usePathname();//para solo mostrar en ciertas pages
+        const [mostrarCartelOH, setMostrarCartelOH] = useState(false);
 
         const [seleccionados, setSeleccionados] = useState<string[]>([]);//seleccion dentro de la tabla1
         
@@ -95,62 +98,76 @@ export default function ReservarHabitacion({ ocultarTabla = false }) {
             {/*  Tabla a la derecha */}
             <section className="flex-2 max-h-[800px]">
                 {tipoSeleccionado && (
-                    <><table className="w-full border-collapse border shadow-lg">
-                        <thead className="bg-indigo-950 text-white sticky top-0 z-10">
-                            <tr>
-                                <th className="p-2 text-white sticky top-0">Fecha</th>
-                                <th colSpan={habitacionesPorTipo[tipoSeleccionado]?.length} className="border p-2 sticky top-0">Habitaciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr>
-                                <td className="p-2 border text-center font-semibold"></td>
-                                {habitacionesPorTipo[tipoSeleccionado]?.map((num) => (
-                                    <td key={num} className="p-2 border text-center">{num}</td>
-                                ))}
-                            </tr>
-
-                            {fechasMostradas.map((fecha, i) => (
-                                <tr key={fecha}>
-                                    <td className="p-2 border text-center font-medium">{fecha}</td>
-                                    {habitacionesPorTipo[tipoSeleccionado]?.map((num) => {
-                                        const key = `${fecha}|${num}`;
-                                        const seleccionado = seleccionados.includes(key);
-
-                                        return (
-                                            <td
-                                                key={num}
-                                                className={`p-4 border cursor-pointer ${
-                                                    seleccionado ? "bg-green-500" : "bg-white"
-                                                }`}
-                                                onClick={() => toggleSeleccion(fecha, num)}
-                                            ></td>
-                                        );
-                                    })}
+                    <>
+                        <table className="w-full border-collapse border shadow-lg">
+                            <thead className="bg-indigo-950 text-white sticky top-0 z-10">
+                                <tr>
+                                    <th className="p-2 text-white sticky top-0">Fecha</th>
+                                    <th colSpan={habitacionesPorTipo[tipoSeleccionado]?.length} className="border p-2 sticky top-0">Habitaciones</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td className="p-2 border text-center font-semibold"></td>
+                                    {habitacionesPorTipo[tipoSeleccionado]?.map((num) => (
+                                        <td key={num} className="p-2 border text-center">{num}</td>
+                                    ))}
+                                </tr>
+
+                                {fechasMostradas.map((fecha, i) => (
+                                    <tr key={fecha}>
+                                        <td className="p-2 border text-center font-medium">{fecha}</td>
+                                        {habitacionesPorTipo[tipoSeleccionado]?.map((num) => {
+                                            const key = `${fecha}|${num}`;
+                                            const seleccionado = seleccionados.includes(key);
+
+                                            return (
+                                                <td
+                                                    key={num}
+                                                    className={`p-4 border cursor-pointer ${
+                                                        seleccionado ? "bg-green-500" : "bg-white"
+                                                    }`}
+                                                    onClick={() => toggleSeleccion(fecha, num)}
+                                                ></td>
+                                            );
+                                        })}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        
+                        <li className="flex items-center gap-2 mt-4 flex-wrap justify-center">
+                            <span className="w-4 h-4 rounded-full bg-red-500"></span>
+                            <span className="text-sm text-indigo-950">RESERVADA</span>
+
+                            <span className="w-4 h-4 rounded-full bg-white border border-gray-400"></span>
+                            <span className="text-sm text-indigo-950">DISPONIBLE</span>
+
+                            <span className="w-4 h-4 rounded-full bg-gray-700"></span>
+                            <span className="text-sm text-indigo-950">FUERA DE SERVICIO</span>
+
+                            <span className="w-4 h-4 rounded-full bg-blue-900"></span>
+                            <span className="text-sm text-indigo-950">OCUPADA</span>
+
+                            <span className="w-4 h-4 rounded-full bg-green-500"></span>
+                            <span className="text-sm text-indigo-950">SELECCIONADA</span>
+
+                        </li><button className="block mx-auto mt-6 px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800 transition"
+                            onClick={() => {
+                                if (pathname === "/ocuparHabitacion") {
+                                    setMostrarCartelOH(true);
+                                } else {
+                                    console.log("Comportamiento normal del botón aceptar");
+                                }
+                            }}
+                        >
+                            Aceptar
+                        </button>
+                        {mostrarCartelOH && <OcuparHabitacionIgualmente onClose={() => setMostrarCartelOH(false)}/>}
+                    </>
                     
-                    <li className="flex items-center gap-2 mt-4 flex-wrap justify-center">
-                        <span className="w-4 h-4 rounded-full bg-red-500"></span>
-                        <span className="text-sm text-indigo-950">RESERVADA</span>
 
-                        <span className="w-4 h-4 rounded-full bg-white border border-gray-400"></span>
-                        <span className="text-sm text-indigo-950">DISPONIBLE</span>
-
-                        <span className="w-4 h-4 rounded-full bg-gray-700"></span>
-                        <span className="text-sm text-indigo-950">FUERA DE SERVICIO</span>
-
-                        <span className="w-4 h-4 rounded-full bg-blue-900"></span>
-                        <span className="text-sm text-indigo-950">OCUPADA</span>
-
-                        <span className="w-4 h-4 rounded-full bg-green-500"></span>
-                        <span className="text-sm text-indigo-950">SELECCIONADA</span>
-
-                    </li><button className="block mx-auto mt-6 px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800 transition">Aceptar</button></>
-            
                 )}
                 
             </section>
