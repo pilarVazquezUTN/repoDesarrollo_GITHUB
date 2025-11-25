@@ -1,4 +1,36 @@
-export default function Tabla() {
+export type TipoHuesped = {
+    id: number;
+    nombre: string;
+    apellido: string;
+    dni: string;
+    tipoDocumento: string;
+    fechaNacimiento: string;
+    nacionalidad: string;
+    ocupacion: string;
+    email: string;
+    telefono: string;
+
+    direccionHuesped: {
+        calle: string;
+        numero: number;
+        piso: number | null;
+        departamento: string | null;
+        codigoPostal: number;
+        localidad: string;
+        provincia: string;
+        pais: string;
+    };
+
+    cuit: string;
+    posicionIva: string;
+    huespedID: number | null;
+};
+
+type TablaProps = {
+    huespedes: TipoHuesped[];
+};
+
+export default function Tabla({huespedes}: TablaProps) {
     return (
         <section className="flex-1 overflow-y-auto max-h-[400px]">
             <table className="w-full border-collapse border shadow-lg">
@@ -13,20 +45,17 @@ export default function Tabla() {
                 </thead>
                 <tbody>
                     {/* Repetí esta fila para cada resultado SON EJEMPLOS EN REALIDAD LA TABLA ES DINAMICA  EN BASE A LA BDD*/}
-                    <tr className="bg-white hover:bg-indigo-100">
-                        <td className="p-2 border text-center"><input type="radio" name="seleccion" /></td>
-                        <td className="p-2 border">Gómez</td>
-                        <td className="p-2 border">Lucía</td>
-                        <td className="p-2 border">DNI</td>
-                        <td className="p-2 border">12345678</td>
-                    </tr>
-                    <tr className="bg-white hover:bg-indigo-100">
-                        <td className="p-3 border text-center"><input type="radio" name="seleccion" /></td>
-                        <td className="p-3 border">Gómez</td>
-                        <td className="p-3 border">Lucía</td>
-                        <td className="p-3 border">DNI</td>
-                        <td className="p-3 border">12445678</td>
-                    </tr>
+                    {huespedes.map((h) => (
+                        <tr key={h.dni} className="bg-white hover:bg-indigo-100">
+                            <td className="p-2 border text-center">
+                                <input type="radio" name="seleccion" />
+                            </td>
+                            <td className="p-2 border">{h.apellido}</td>
+                            <td className="p-2 border">{h.nombre}</td>
+                            <td className="p-2 border">{h.tipoDocumento}</td>
+                            <td className="p-2 border">{h.dni}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </section>

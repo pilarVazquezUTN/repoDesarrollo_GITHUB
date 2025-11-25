@@ -1,10 +1,29 @@
+"use client"
+import { useEffect, useState } from "react";
 import Tabla from "../tabla/page";
+import axios from "axios";
+import { TipoHuesped } from "../tabla/page";
 
 export default function BuscarHuesped() {
+
+    const [dni, setDni] = useState("");
+    const [huespedes, setHuespedes] = useState<TipoHuesped[]>([]);
+
+    // ✅ FUNCIÓN CORRECTA
+    const buscarHuesped = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.get(`http://localhost:8080/huespedes?dni=${dni}`);
+            setHuespedes(response.data);
+        } catch (error) {
+            console.log("error al cargar huespedes:", error);
+        }
+    };
     return (
     <main className="flex gap-8 px-6 py-6 items-start">
         {/*  Formulario a la izquierda */}
-        <form className="flex flex-col  justify-center">
+        <form onSubmit={buscarHuesped} className="flex flex-col  justify-center">
 
             <label className="text-indigo-950 font-medium mb-1">Apellido:</label>
             <input type="text" placeholder="Apellido" className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950" />
@@ -21,13 +40,13 @@ export default function BuscarHuesped() {
             </select>
 
             <label className="text-indigo-950 font-medium mb-1">Número de Documento:</label>
-            <input type="text" placeholder="Número de Documento" className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950" />
+            <input type="text" placeholder="Número de Documento" value={dni} onChange={(e) => setDni(e.target.value)} className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950" />
 
             <button className="self-center px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800 transition">Buscar</button>
 
         </form>
         <section className="flex-1 flex flex-col">
-            <Tabla />
+            <Tabla huespedes={huespedes}/>
             {/*  Tabla a la derecha */}
             <div className=" mt-6 justify-center sticky bottom-0 flex gap-4 ">
                 <button className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800 transition">Cancelar</button>

@@ -26,6 +26,7 @@ import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.huesped.HuespedDTO;
 
 @RestController
+
 public class HuespedController {
     
     @Autowired 
