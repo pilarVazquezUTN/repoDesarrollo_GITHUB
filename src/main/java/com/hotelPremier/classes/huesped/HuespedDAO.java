@@ -137,9 +137,9 @@ public class HuespedDAO implements HuespedDAOInterfaz {
 
         // Obtener y formatear datos de Dirección (Asumimos que no es null después de ingresarDatos)   
         String calle = huespedDTO.getDireccionHuesped().getCalle();
-        String numeroCalle = huespedDTO.getDireccionHuesped().getNumero();
+        Integer numeroCalle = huespedDTO.getDireccionHuesped().getNumero();
         String departamento = huespedDTO.getDireccionHuesped().getDepartamento();
-        String piso = huespedDTO.getDireccionHuesped().getPiso();
+        Integer piso = huespedDTO.getDireccionHuesped().getPiso();
         Integer codPostal = huespedDTO.getDireccionHuesped().getCodigoPostal();
         String localidad = huespedDTO.getDireccionHuesped().getLocalidad();
         String provincia = huespedDTO.getDireccionHuesped().getProvincia();
@@ -441,9 +441,9 @@ public List<HuespedDTO> buscarDatos(String nombreHuesped, String apellidoHuesped
     }
     */
     public boolean seAlojo(HuespedDTO huespedDTO) {
-        if(huespedDTO.getEstadiaHuesped() == null){
+       /* if(huespedDTO.getEstadiaHuesped() == null){
             return false;
-        }
+        }*/
         return true;
 
 

@@ -19,9 +19,9 @@ public class Huesped {
     private String apellido;
     @Column(name="nombre")
     private String nombre;
-
     @EmbeddedId
     HuespedID huespedID;
+
 
     @Temporal(TemporalType.DATE) //guarda fecha sin hora
     @Column(name="fechanacimiento")
@@ -47,16 +47,18 @@ public class Huesped {
 
     @ManyToMany
     @JoinTable(
-        name= "relac_estadia_huesped",
-        joinColumns ={
-            @JoinColumn(name ="tipodocumento"),
-            @JoinColumn(name="dni")
-        }, 
-        inverseJoinColumns = @JoinColumn(name = "id_estadia")
+            name = "relac_estadia_huesped",
+            joinColumns = {
+                    @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento"),
+                    @JoinColumn(name = "dni", referencedColumnName = "dni")
+            },
+            inverseJoinColumns = @JoinColumn(name = "id_estadia")
     )
     private List<Estadia> listaestadia;
 
-
+    public Huesped() {
+        this.huespedID = new HuespedID();
+    }
 
 
 

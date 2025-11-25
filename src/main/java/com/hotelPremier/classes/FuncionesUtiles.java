@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.hotelPremier.classes.estadia.EstadiaDTO;
 import com.hotelPremier.classes.huesped.HuespedDTO;
 import com.hotelPremier.classes.direccion.Direccion;
 import com.hotelPremier.classes.direccion.DireccionDTO;
@@ -177,12 +178,24 @@ public class FuncionesUtiles {
         huespedDTO.setOcupacion(huesped.getOcupacion());
         huespedDTO.setNacionalidad(huesped.getNacionalidad());
 
+        //recibo un huesped q tiene una lista de estadias, obtengo la lista y hago un for por las estadias
+        //defino una list de estadias
 
-        /* 
-        for (EstadiaDTO e : estadias) {
-            System.out.println(h.getNombre() + " " + h.getApellido());
+        List<Estadia> listaEstadias = new ArrayList<>();
+        listaEstadias=huesped.getListaEstadia();
+
+        List<EstadiaDTO> listaEstadiaHuespedDTO = new ArrayList<>();
+
+       //ahora recorro cada estadia, obtengo los datos y lo paso listaDTO
+        for(Estadia estadialist : listaEstadias){
+            EstadiaDTO estadiaDTO = new EstadiaDTO();
+            estadiaDTO.setCheckin(estadialist.getCheckin());
+            estadiaDTO.setCheckout(estadialist.getCheckout());
+
+            listaEstadiaHuespedDTO.add(estadiaDTO);
+
         }
-        */
+        huespedDTO.setListaEstadia(listaEstadiaHuespedDTO);
         return huespedDTO;
     }
 
