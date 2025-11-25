@@ -86,7 +86,7 @@ public class HuespedServiceImpl {
     }
 
     public void deleteHuesped(String dni) {
-
+        
     }
 
 }

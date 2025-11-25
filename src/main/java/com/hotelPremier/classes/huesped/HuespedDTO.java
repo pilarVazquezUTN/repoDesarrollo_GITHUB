@@ -25,6 +25,7 @@ public class HuespedDTO {
     private List<EstadiaDTO> estadiaHuesped;
     //private List<Estadia> listaestadia;
 
+
      
     public HuespedDTO() {
         this.huespedID = new HuespedID();

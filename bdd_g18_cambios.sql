@@ -1,5 +1,5 @@
 CREATE TABLE direccion (
-id_direccion INTEGER primary key,
+id_direccion SERIAL primary key,
 calle VARCHAR(20),
 numero INTEGER,
 departamento VARCHAR(10),
@@ -264,3 +264,7 @@ VALUES (2004,
 
 
 GRANT ALL PRIVILEGES ON DATABASE hotelpremier6 TO pili;
+
+-- Esto actualiza la secuencia al valor máximo que existe actualmente en la tabla
+--pili: agregue esto porque sino me crea el id 1, ahora con esta funcion arranca desde el ultimo+1
+SELECT setval('direccion_id_direccion_seq', (SELECT MAX(id_direccion) FROM direccion));

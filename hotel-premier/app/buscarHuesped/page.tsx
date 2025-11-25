@@ -4,7 +4,7 @@ import Tabla from "../tabla/page";
 import axios from "axios";
 import { TipoHuesped } from "../tabla/page";
 
-export default function BuscarHuesped() {
+export default function BuscarHuesped() { 
 
     const [dni, setDni] = useState("");
     const [nombre, setNombre] = useState("");
