@@ -12,27 +12,33 @@ public class HuespedDTO {
     private HuespedID huespedID;
     private String apellido;
     private String nombre;
-    private String tipoDocumento;
-    private String dni;
+    //private String tipoDocumento;
+    //private String dni;
     private Date fechaNacimiento;
     private String telefono;
     private String email;
     private DireccionDTO direccionHuesped;
-    private String cuit;
+    private String cuit; 
     private String posicionIva;
     private String ocupacion;
     private String nacionalidad;
     private List<EstadiaDTO> estadiaHuesped;
+    //private List<Estadia> listaestadia;
 
-
-    public void setHuespedID(HuespedID id){
-        if (this.huespedID == null) this.huespedID = new HuespedID();
-        this.huespedID.setDni(dni);
-        this.huespedID.setTipoDocumento(tipoDocumento);
+     
+    public HuespedDTO() {
+        this.huespedID = new HuespedID();
     }
+    
+    
     public HuespedID getHuespedID(){
         return this.huespedID;
     }
+    public void setHuespedID(HuespedID id){
+        this.huespedID.setDni(id.getDni());
+        this.huespedID.setTipoDocumento(id.getTipoDocumento());
+    }
+    
 
     /**
      *
@@ -50,18 +56,10 @@ public class HuespedDTO {
         this.apellido = apellido;
     }
 
-    /**
-     *
-     * @param tipoDocumento
-     */
-    public void setTipoDocumento(String tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
-    }
+    
 
 
-    public void setDni(String dni) {
-        this.dni = dni;
-    }
+    
 
     /**
      *
@@ -143,22 +141,9 @@ public class HuespedDTO {
         return this.apellido;
     }
 
-    /**
-     *
-     * @return
-     */
-    public String getTipoDocumento() {
-        return this.tipoDocumento;
-    }
+    
 
-    /**
-     *
-     * @return
-     */
-
-    public String getDni() {
-        return this.dni;
-    }
+    
 
     /**
      *

@@ -30,9 +30,6 @@ public interface HuespedRepositoryDAO extends JpaRepository<Huesped,HuespedID>{
         AND   (:apellido IS NULL OR h.apellido ILIKE :apellido)
         AND   (:tipoDocumento IS NULL OR h.huespedID.tipoDocumento = :tipoDocumento)
     """)
-    // OR LOWER(h.nombre)
-    // OR LOWER(h.apellido)
-    //
     List<Huesped> buscarHuespedes(
         @Param("dni") String dni, 
         @Param("nombre") String nombre, 

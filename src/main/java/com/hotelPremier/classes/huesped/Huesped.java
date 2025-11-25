@@ -49,8 +49,8 @@ public class Huesped {
     @JoinTable(
             name = "relac_estadia_huesped",
             joinColumns = {
-                    @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento"),
-                    @JoinColumn(name = "dni", referencedColumnName = "dni")
+                @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento"),
+                @JoinColumn(name = "dni", referencedColumnName = "dni")
             },
             inverseJoinColumns = @JoinColumn(name = "id_estadia")
     )
@@ -86,6 +86,10 @@ public class Huesped {
     }
     public HuespedID getHuespedID(){
         return this.huespedID;
+    }
+    public void setHuespedID(HuespedID id){
+        this.huespedID.setDni(id.getDni());
+        this.huespedID.setTipoDocumento(id.getTipoDocumento());
     }
 
     public void setNombre(String nombre) {

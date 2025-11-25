@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-25T11:45:44-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
+    date = "2025-11-25T16:57:10-0300",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
 public class ClassMapperImpl implements ClassMapper {
@@ -71,8 +71,6 @@ public class ClassMapperImpl implements ClassMapper {
         huespedDTO.setHuespedID( huesped.getHuespedID() );
         huespedDTO.setNombre( huesped.getNombre() );
         huespedDTO.setApellido( huesped.getApellido() );
-        huespedDTO.setTipoDocumento( huesped.getTipoDocumento() );
-        huespedDTO.setDni( huesped.getDni() );
         huespedDTO.setFechaNacimiento( huesped.getFechaNacimiento() );
         huespedDTO.setTelefono( huesped.getTelefono() );
         huespedDTO.setEmail( huesped.getEmail() );
@@ -93,8 +91,7 @@ public class ClassMapperImpl implements ClassMapper {
 
         Huesped huesped = new Huesped();
 
-        huesped.setDni( huespedDto.getDni() );
-        huesped.setTipoDocumento( huespedDto.getTipoDocumento() );
+        huesped.setHuespedID( huespedDto.getHuespedID() );
         huesped.setNombre( huespedDto.getNombre() );
         huesped.setApellido( huespedDto.getApellido() );
         huesped.setFechaNacimiento( huespedDto.getFechaNacimiento() );
