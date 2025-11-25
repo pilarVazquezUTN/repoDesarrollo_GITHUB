@@ -9,7 +9,7 @@ import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.estadia.EstadiaDTO;
 
 public class HuespedDTO {
-    //private HuespedID huespedID;
+    private HuespedID huespedID;
     private String apellido;
     private String nombre;
     private String tipoDocumento;
@@ -23,6 +23,16 @@ public class HuespedDTO {
     private String ocupacion;
     private String nacionalidad;
     private List<EstadiaDTO> estadiaHuesped;
+
+
+    public void setHuespedID(HuespedID id){
+        if (this.huespedID == null) this.huespedID = new HuespedID();
+        this.huespedID.setDni(dni);
+        this.huespedID.setTipoDocumento(tipoDocumento);
+    }
+    public HuespedID getHuespedID(){
+        return this.huespedID;
+    }
 
     /**
      *
