@@ -158,19 +158,20 @@ public class FuncionesUtiles {
         huespedDTO.setApellido(huesped.getApellido());
         huespedDTO.setDni(huesped.getDni());
         huespedDTO.setTipoDocumento(huesped.getTipoDocumento());
+        huespedDTO.setHuespedID(huesped.getHuespedID());
         huespedDTO.setFechaNacimiento(huesped.getFechaNacimiento());
         huespedDTO.setTelefono(huesped.getTelefono());
         huespedDTO.setEmail(huesped.getEmail());
         
-        direccionDTO.setID(huesped.getDireccionID());
-        direccionDTO.setCalle(huesped.getDireccionCalle());
-        direccionDTO.setNumero(huesped.getDireccionNumero());
-        direccionDTO.setLocalidad(huesped.getDireccionLocalidad());
-        direccionDTO.setDepartamento(huesped.getDireccionDepto());
-        direccionDTO.setPiso(huesped.getDireccionPiso());
-        direccionDTO.setCodigoPostal(huesped.getDireccionCodigoPostal());
-        direccionDTO.setProvincia(huesped.getDireccionProvincia());
-        direccionDTO.setPais(huesped.getDireccionPais());
+        direccionDTO.setID(huesped.getDireccion().getID());
+        direccionDTO.setCalle(huesped.getDireccion().getCalle());
+        direccionDTO.setNumero(huesped.getDireccion().getNumero());
+        direccionDTO.setLocalidad(huesped.getDireccion().getLocalidad());
+        direccionDTO.setDepartamento(huesped.getDireccion().getDepartamento());
+        direccionDTO.setPiso(huesped.getDireccion().getPiso());
+        direccionDTO.setCodigoPostal(huesped.getDireccion().getCodigoPostal());
+        direccionDTO.setProvincia(huesped.getDireccion().getProvincia());
+        direccionDTO.setPais(huesped.getDireccion().getPais());
         huespedDTO.setDireccionHuesped(direccionDTO);
 
         huespedDTO.setCuit(huesped.getCuit());

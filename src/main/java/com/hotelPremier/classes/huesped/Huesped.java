@@ -84,6 +84,9 @@ public class Huesped {
         if (this.huespedID == null) this.huespedID = new HuespedID();
         this.huespedID.setTipoDocumento(tipoDocumento);
     }
+    public HuespedID getHuespedID(){
+        return this.huespedID;
+    }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -169,34 +172,6 @@ public class Huesped {
         return this.direccion;
     }
     
-    public Integer getDireccionID(){
-        return this.direccion.getID();
-    }
-    public String getDireccionCalle(){
-        return this.direccion.getCalle();
-    }
-    public Integer getDireccionNumero(){
-        return this.direccion.getNumero();
-    }
-    public String getDireccionLocalidad(){
-        return this.direccion.getLocalidad();
-    }
-    public String getDireccionDepto(){
-        return this.direccion.getDepartamento();
-    }
-    public Integer getDireccionPiso(){
-        return this.direccion.getPiso();
-    }
-    public Integer getDireccionCodigoPostal(){
-        return this.direccion.getCodigoPostal();
-    }
-    public String getDireccionProvincia(){
-        return this.direccion.getProvincia();
-    }
-    public String getDireccionPais(){
-        return this.direccion.getPais();
-    }
-
     /**
      *
      * @return

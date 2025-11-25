@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
+import com.hotelPremier.classes.direccion.Direccion;
 import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.huesped.HuespedDTO;
 import com.hotelPremier.classes.huesped.HuespedID;
@@ -18,4 +18,5 @@ public interface HuespedRepositoryDAO extends JpaRepository<Huesped,HuespedID>{
     List<Huesped> findByHuespedID_Dni(String dni);
     //HuespedDTO addHuesped(HuespedDTO huespedDTO);  
     Huesped save(Huesped huesped);
+    void save(Direccion direccion);
 }

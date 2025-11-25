@@ -55,6 +55,7 @@ public class HuespedServiceImpl{
         huesped.setNombre(huespedDTO.getNombre());
         huesped.setApellido(huespedDTO.getApellido());
         huesped.setCuit(huespedDTO.getCuit());
+
         direccion.setID(huespedDTO.getDireccionHuesped().getID());
         direccion.setCalle(huespedDTO.getDireccionHuesped().getCalle());
         direccion.setCodigoPostal(huespedDTO.getDireccionHuesped().getCodigoPostal());
@@ -64,6 +65,7 @@ public class HuespedServiceImpl{
         direccion.setPais(huespedDTO.getDireccionHuesped().getPais());
         direccion.setPiso(huespedDTO.getDireccionHuesped().getPiso());
         direccion.setProvincia(huespedDTO.getDireccionHuesped().getProvincia());
+        
         huesped.setDni(huespedDTO.getHuespedID().getDni());
         huesped.setTipoDocumento(huespedDTO.getHuespedID().getTipoDocumento());
         huesped.setEmail(huespedDTO.getEmail());
@@ -73,7 +75,7 @@ public class HuespedServiceImpl{
         huesped.setPosicionIva(huespedDTO.getPosicionIva());
         huesped.setTelefono(huespedDTO.getTelefono());
 
-
+        huespedRepository.save(direccion);
         huespedRepository.save(huesped);
         return huespedDTO;
     }
