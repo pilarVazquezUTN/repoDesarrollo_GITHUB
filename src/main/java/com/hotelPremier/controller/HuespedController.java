@@ -49,7 +49,7 @@ public class HuespedController {
         tipoDocumento = (tipoDocumento != null && tipoDocumento.isEmpty()) ? null : tipoDocumento;
 
         return ResponseEntity.ok(
-                huespedService.buscarHuespedes(dni, nombre, apellido, tipoDocumento)
+            huespedService.buscarHuespedes(dni, nombre, apellido, tipoDocumento)
         );
     }
     

@@ -3,6 +3,7 @@ package com.hotelPremier.service;
 import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.huesped.HuespedDTO;
 import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.repository.DireccionRepository;
 import com.hotelPremier.repository.HuespedRepositoryDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class HuespedServiceImpl {
 
     @Autowired
     private ClassMapper mapper;
+
+    @Autowired
+    private DireccionRepository direccionRepository;
 
 
     // ============================
@@ -48,6 +52,15 @@ public class HuespedServiceImpl {
             String tipoDocumento
     ) {
 
+        // 1. Preparamos los Strings para la búsqueda parcial (LIKE)
+        if (nombre != null) {
+            nombre = "%" + nombre + "%"; // Agregamos los porcentajes aquí
+        }
+        
+        if (apellido != null) {
+            apellido = "%" + apellido + "%"; // Agregamos los porcentajes aquí
+        }
+
         // El repositorio devuelve List<Huesped>
         List<Huesped> lista = huespedRepository.buscarHuespedes(
                 dni, nombre, apellido, tipoDocumento
@@ -58,20 +71,22 @@ public class HuespedServiceImpl {
     }
 
 
-    // ============================
-    // 4) AGREGAR HUESPED
-    // ============================
-    public HuespedDTO addHuesped(HuespedDTO dto) {
+    public HuespedDTO addHuesped(HuespedDTO huespedDTO) {
 
+        
         // MapStruct convierte DTO → Entity
-        Huesped entity = mapper.toEntity(dto);
+        Huesped huesped = mapper.toEntity(huespedDTO);
+        direccionRepository.save(huesped.getDireccion());
 
         // Guardar en DB
-        Huesped saved = huespedRepository.save(entity);
+        Huesped saved = huespedRepository.save(huesped);
 
         // Convertimos de vuelta a DTO
         return mapper.toDTO(saved);
     }
-    public void deleteHuesped(String dni) { }
+
+    public void deleteHuesped(String dni) {
+
+    }
 
 }
