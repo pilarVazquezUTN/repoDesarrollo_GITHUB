@@ -37,19 +37,20 @@ public class HuespedController {
         no se pone dar baja/alta, se pone solo el huespedes y se va cambiando el get/post/ etc.
     */
     @GetMapping("/huespedes")
-    public ResponseEntity<List<HuespedDTO>> getHuesped(
+    public ResponseEntity<List<HuespedDTO>> getHuespedes(
+            @RequestParam(required = false) String dni,
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String apellido,
+            @RequestParam(required = false) String tipoDocumento
+    ) {
+        dni = (dni != null && dni.isEmpty()) ? null : dni;
+        nombre = (nombre != null && nombre.isEmpty()) ? null : nombre;
+        apellido = (apellido != null && apellido.isEmpty()) ? null : apellido;
+        tipoDocumento = (tipoDocumento != null && tipoDocumento.isEmpty()) ? null : tipoDocumento;
 
-        @RequestParam(value="dni") String dni) {
-
-        List<HuespedDTO> listaHuespedes=null;
-
-        if(dni.isEmpty()){
-            listaHuespedes=huespedService.findAll();
-        } else{
-            listaHuespedes=huespedService.findByCategory(dni);
-        }
-
-        return new ResponseEntity<>(listaHuespedes, HttpStatus.OK);
+        return ResponseEntity.ok(
+                huespedService.buscarHuespedes(dni, nombre, apellido, tipoDocumento)
+        );
     }
     
     @PostMapping("/huespedes")
