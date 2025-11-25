@@ -13,8 +13,16 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
+<<<<<<< HEAD
     date = "2025-11-25T16:57:10-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+||||||| 68cab8e
+    date = "2025-11-25T11:45:44-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
+=======
+    date = "2025-11-25T15:55:36-0300",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+>>>>>>> 53c60fa7660352b7aba69b83d0487c6e13dfda31
 )
 @Component
 public class ClassMapperImpl implements ClassMapper {
