@@ -6,6 +6,8 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 @Table(name="direccion")
 public class Direccion {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Column(name = "id_direccion")
     private Integer id_direccion;
 
     @Column(name="calle")

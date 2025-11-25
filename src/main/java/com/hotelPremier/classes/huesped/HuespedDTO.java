@@ -17,7 +17,7 @@ public class HuespedDTO {
     private Date fechaNacimiento;
     private String telefono;
     private String email;
-    private DireccionDTO direccionHuesped;
+    private DireccionDTO direccion;
     private String cuit; 
     private String posicionIva;
     private String ocupacion;
@@ -87,10 +87,10 @@ public class HuespedDTO {
 
     /**
      *
-     * @param direccionHuesped
+     * @param direccion
      */
-    public void setDireccionHuesped(DireccionDTO direccionHuesped) {
-        this.direccionHuesped = direccionHuesped;
+    public void setdireccion(DireccionDTO direccion) {
+        this.direccion = direccion;
     }
 
     /**
@@ -189,8 +189,8 @@ public class HuespedDTO {
      *
      * @return
      */
-    public DireccionDTO getDireccionHuesped() {
-        return this.direccionHuesped;
+    public DireccionDTO getdireccion() {
+        return this.direccion;
     }
 
 

@@ -32,7 +32,7 @@ public class Huesped {
     private String email;
   
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_direccion")
     private Direccion direccion;
 

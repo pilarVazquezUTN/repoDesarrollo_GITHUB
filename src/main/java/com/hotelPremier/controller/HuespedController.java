@@ -57,7 +57,6 @@ public class HuespedController {
     public ResponseEntity<HuespedDTO> addHuesped(@RequestBody HuespedDTO huesped) {
         HuespedDTO addedHuesped = huespedService.addHuesped(huesped);
         return new ResponseEntity<>(addedHuesped, HttpStatus.OK);
-
     }
     @DeleteMapping("/huespedes")
     public ResponseEntity<HuespedDTO> deleteHuesped(@PathVariable String dni) {

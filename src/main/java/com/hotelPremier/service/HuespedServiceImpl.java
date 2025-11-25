@@ -76,7 +76,7 @@ public class HuespedServiceImpl {
         
         // MapStruct convierte DTO → Entity
         Huesped huesped = mapper.toEntity(huespedDTO);
-        direccionRepository.save(huesped.getDireccion());
+        //direccionRepository.save(huesped.getDireccion());
 
         // Guardar en DB
         Huesped saved = huespedRepository.save(huesped);

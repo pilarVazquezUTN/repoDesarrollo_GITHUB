@@ -1,5 +1,7 @@
 package com.hotelPremier.classes.mapper;
 
+import com.hotelPremier.classes.direccion.Direccion;
+import com.hotelPremier.classes.direccion.DireccionDTO;
 import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.estadia.EstadiaDTO;
 import com.hotelPremier.classes.huesped.Huesped;
@@ -13,16 +15,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-<<<<<<< HEAD
-    date = "2025-11-25T16:57:10-0300",
+    date = "2025-11-25T18:05:35-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
-||||||| 68cab8e
-    date = "2025-11-25T11:45:44-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
-=======
-    date = "2025-11-25T15:55:36-0300",
-    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
->>>>>>> 53c60fa7660352b7aba69b83d0487c6e13dfda31
 )
 @Component
 public class ClassMapperImpl implements ClassMapper {
@@ -82,6 +76,7 @@ public class ClassMapperImpl implements ClassMapper {
         huespedDTO.setFechaNacimiento( huesped.getFechaNacimiento() );
         huespedDTO.setTelefono( huesped.getTelefono() );
         huespedDTO.setEmail( huesped.getEmail() );
+        huespedDTO.setdireccion( direccionToDireccionDTO( huesped.getDireccion() ) );
         huespedDTO.setCuit( huesped.getCuit() );
         huespedDTO.setPosicionIva( huesped.getPosicionIva() );
         huespedDTO.setOcupacion( huesped.getOcupacion() );
@@ -109,6 +104,7 @@ public class ClassMapperImpl implements ClassMapper {
         huesped.setPosicionIva( huespedDto.getPosicionIva() );
         huesped.setOcupacion( huespedDto.getOcupacion() );
         huesped.setNacionalidad( huespedDto.getNacionalidad() );
+        huesped.setDireccion( direccionDTOToDireccion( huespedDto.getdireccion() ) );
 
         return huesped;
     }
@@ -141,6 +137,26 @@ public class ClassMapperImpl implements ClassMapper {
         return reservaDTO;
     }
 
+    protected DireccionDTO direccionToDireccionDTO(Direccion direccion) {
+        if ( direccion == null ) {
+            return null;
+        }
+
+        DireccionDTO direccionDTO = new DireccionDTO();
+
+        direccionDTO.setID( direccion.getID() );
+        direccionDTO.setCalle( direccion.getCalle() );
+        direccionDTO.setNumero( direccion.getNumero() );
+        direccionDTO.setLocalidad( direccion.getLocalidad() );
+        direccionDTO.setDepartamento( direccion.getDepartamento() );
+        direccionDTO.setPiso( direccion.getPiso() );
+        direccionDTO.setCodigoPostal( direccion.getCodigoPostal() );
+        direccionDTO.setProvincia( direccion.getProvincia() );
+        direccionDTO.setPais( direccion.getPais() );
+
+        return direccionDTO;
+    }
+
     protected EstadiaDTO estadiaToEstadiaDTO(Estadia estadia) {
         if ( estadia == null ) {
             return null;
@@ -165,5 +181,25 @@ public class ClassMapperImpl implements ClassMapper {
         }
 
         return list1;
+    }
+
+    protected Direccion direccionDTOToDireccion(DireccionDTO direccionDTO) {
+        if ( direccionDTO == null ) {
+            return null;
+        }
+
+        Direccion direccion = new Direccion();
+
+        direccion.setID( direccionDTO.getID() );
+        direccion.setCalle( direccionDTO.getCalle() );
+        direccion.setNumero( direccionDTO.getNumero() );
+        direccion.setLocalidad( direccionDTO.getLocalidad() );
+        direccion.setDepartamento( direccionDTO.getDepartamento() );
+        direccion.setPiso( direccionDTO.getPiso() );
+        direccion.setCodigoPostal( direccionDTO.getCodigoPostal() );
+        direccion.setProvincia( direccionDTO.getProvincia() );
+        direccion.setPais( direccionDTO.getPais() );
+
+        return direccion;
     }
 }
