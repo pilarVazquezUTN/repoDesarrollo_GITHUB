@@ -4,7 +4,7 @@ import { useState } from "react";
 import { format, parseISO, eachDayOfInterval, isAfter } from "date-fns";
 import { usePathname } from "next/navigation";
 
-export default function ReservarHabitacion() {
+export default function ReservarHabitacion({ ocultarTabla = false }) {
 
     const [filas, setFilas] = useState([
         { id: 1, numero: 3, desde: "02/12/2024", hasta: "02/12/2024", checked: false },
@@ -156,7 +156,7 @@ export default function ReservarHabitacion() {
             </section>
             {/*TERMINA MI ESTADO HABITACION */}
             {/*tabla para ir viendo las habitaciones que se seleccionaron y poder trabajar con ella TENER EN CUENTA QUE AMBAS TABLAS TRABAJAN EN CONJUNTO, ES DECIR, SI SE ELIMINA DE ESTA TABLA TIENE QUE DESELECCIONARSE DE LA OTRA*/}
-            {pathname !== "/estadoHabitacion" &&(
+            {!ocultarTabla &&(
                 <section className="flex-1  max-h-[50px]">
                     <h2 className="bg-indigo-950 text-white font-bold sticky top-0 text-center mb-0">Habitaciones Disponibles:</h2>
                     <table className="w-full ">
