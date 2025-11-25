@@ -8,11 +8,7 @@ import com.hotelPremier.classes.reserva.ReservaDTO;
 
 import java.util.List;
 
-
 @RestController
-// 2. Define la URL base de tu API
-@RequestMapping("/api/reservas")
-@CrossOrigin(origins = "http://localhost:8080")
 public class ReservaController {
 
     private final ReservaServiceImpl reservaService;
@@ -28,7 +24,7 @@ public class ReservaController {
      * Mapea a: GET http://localhost:8080/api/reservas?apellido=Perez
      */
 
-    @GetMapping
+    @GetMapping ("/reservas")
     public List<ReservaDTO> getReservas(
             // @RequestParam mapea el parámetro 'apellido' de la URL
             @RequestParam(required = false) String apellido) {
@@ -39,5 +35,13 @@ public class ReservaController {
         return reservaService.findByApellidoContainingIgnoreCase(apellido);
 
     }
+
+
+
+
+
+
+
+
 }
 
