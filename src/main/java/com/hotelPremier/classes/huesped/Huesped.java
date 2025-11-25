@@ -45,7 +45,7 @@ public class Huesped {
     @Column(name="nacionalidad")
     private String nacionalidad;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "relac_estadia_huesped",
             joinColumns = {
@@ -266,6 +266,9 @@ public class Huesped {
 
     public List<Estadia> getListaEstadia(){
         return this.listaestadia;
+    }
+    public void setListaEstadia(List<Estadia> lista){
+        this.listaestadia=lista;
     }
 
 }

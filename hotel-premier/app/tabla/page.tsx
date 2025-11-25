@@ -44,16 +44,17 @@ export default function Tabla({huespedes}: TablaProps) {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* Repetí esta fila para cada resultado SON EJEMPLOS EN REALIDAD LA TABLA ES DINAMICA  EN BASE A LA BDD*/}
                     {huespedes.map((h) => (
-                        <tr key={h.dni} className="bg-white hover:bg-indigo-100">
+                        <tr key={h.huespedID?.dni} className="bg-white hover:bg-indigo-100">
                             <td className="p-2 border text-center">
                                 <input type="radio" name="seleccion" />
                             </td>
                             <td className="p-2 border">{h.apellido}</td>
                             <td className="p-2 border">{h.nombre}</td>
-                            <td className="p-2 border">{h.tipoDocumento}</td>
-                            <td className="p-2 border">{h.dni}</td>
+
+                            {/* CAMPOS ANIDADOS CORRECTOS */}
+                            <td className="p-2 border">{h.huespedID?.tipoDocumento}</td>
+                            <td className="p-2 border">{h.huespedID?.dni}</td>
                         </tr>
                     ))}
                 </tbody>

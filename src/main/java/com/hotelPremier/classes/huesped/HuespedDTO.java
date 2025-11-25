@@ -22,7 +22,7 @@ public class HuespedDTO {
     private String posicionIva;
     private String ocupacion;
     private String nacionalidad;
-    private List<EstadiaDTO> estadiaHuesped;
+    private List<EstadiaDTO> listaestadia;
     //private List<Estadia> listaestadia;
 
 
@@ -217,6 +217,9 @@ public class HuespedDTO {
      */
 
     public void setListaEstadia(List<EstadiaDTO> lista){
-        this.estadiaHuesped=lista;
+        this.listaestadia=lista;
+    }
+    public List<EstadiaDTO> getListaEstadia(){
+        return this.listaestadia;
     }
 }

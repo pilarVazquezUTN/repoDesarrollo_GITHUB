@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-25T19:38:13-0300",
+    date = "2025-11-25T19:59:11-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
@@ -105,6 +105,7 @@ public class ClassMapperImpl implements ClassMapper {
         huesped.setOcupacion( huespedDto.getOcupacion() );
         huesped.setNacionalidad( huespedDto.getNacionalidad() );
         huesped.setDireccion( direccionDTOToDireccion( huespedDto.getdireccion() ) );
+        huesped.setListaEstadia( estadiaDTOListToEstadiaList( huespedDto.getListaEstadia() ) );
 
         return huesped;
     }
@@ -201,5 +202,28 @@ public class ClassMapperImpl implements ClassMapper {
         direccion.setPais( direccionDTO.getPais() );
 
         return direccion;
+    }
+
+    protected Estadia estadiaDTOToEstadia(EstadiaDTO estadiaDTO) {
+        if ( estadiaDTO == null ) {
+            return null;
+        }
+
+        Estadia estadia = new Estadia();
+
+        return estadia;
+    }
+
+    protected List<Estadia> estadiaDTOListToEstadiaList(List<EstadiaDTO> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<Estadia> list1 = new ArrayList<Estadia>( list.size() );
+        for ( EstadiaDTO estadiaDTO : list ) {
+            list1.add( estadiaDTOToEstadia( estadiaDTO ) );
+        }
+
+        return list1;
     }
 }
