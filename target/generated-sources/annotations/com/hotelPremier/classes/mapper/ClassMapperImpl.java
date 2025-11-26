@@ -6,8 +6,6 @@ import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.estadia.EstadiaDTO;
 import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.huesped.HuespedDTO;
-import com.hotelPremier.classes.reserva.Reserva;
-import com.hotelPremier.classes.reserva.ReservaDTO;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -15,52 +13,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-25T19:59:11-0300",
-    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-11-26T01:06:52-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class ClassMapperImpl implements ClassMapper {
-
-    @Override
-    public ReservaDTO toDTO(Reserva reserva) {
-        if ( reserva == null ) {
-            return null;
-        }
-
-        ReservaDTO reservaDTO = new ReservaDTO();
-
-        reservaDTO.setTelefono( reserva.getTelefono() );
-        reservaDTO.setNombre( reserva.getNombre() );
-        reservaDTO.setApellido( reserva.getApellido() );
-        reservaDTO.setEstado( reserva.getEstado() );
-
-        return reservaDTO;
-    }
-
-    @Override
-    public Reserva toEntity(ReservaDTO dto) {
-        if ( dto == null ) {
-            return null;
-        }
-
-        Reserva reserva = new Reserva();
-
-        return reserva;
-    }
-
-    @Override
-    public List<ReservaDTO> toDTOs(List<Huesped> reservas) {
-        if ( reservas == null ) {
-            return null;
-        }
-
-        List<ReservaDTO> list = new ArrayList<ReservaDTO>( reservas.size() );
-        for ( Huesped huesped : reservas ) {
-            list.add( huespedToReservaDTO( huesped ) );
-        }
-
-        return list;
-    }
 
     @Override
     public HuespedDTO toDTO(Huesped huesped) {
@@ -95,6 +52,8 @@ public class ClassMapperImpl implements ClassMapper {
         Huesped huesped = new Huesped();
 
         huesped.setHuespedID( huespedDto.getHuespedID() );
+        huesped.setDni( huespedDto.getDni() );
+        huesped.setTipoDocumento( huespedDto.getTipoDocumento() );
         huesped.setNombre( huespedDto.getNombre() );
         huesped.setApellido( huespedDto.getApellido() );
         huesped.setFechaNacimiento( huespedDto.getFechaNacimiento() );
@@ -122,20 +81,6 @@ public class ClassMapperImpl implements ClassMapper {
         }
 
         return list;
-    }
-
-    protected ReservaDTO huespedToReservaDTO(Huesped huesped) {
-        if ( huesped == null ) {
-            return null;
-        }
-
-        ReservaDTO reservaDTO = new ReservaDTO();
-
-        reservaDTO.setTelefono( huesped.getTelefono() );
-        reservaDTO.setNombre( huesped.getNombre() );
-        reservaDTO.setApellido( huesped.getApellido() );
-
-        return reservaDTO;
     }
 
     protected DireccionDTO direccionToDireccionDTO(Direccion direccion) {

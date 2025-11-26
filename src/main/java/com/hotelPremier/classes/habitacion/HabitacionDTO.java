@@ -1,36 +1,31 @@
 package com.hotelPremier.classes.habitacion;
 
- import java.util.List;
-
-import com.hotelPremier.classes.reserva.Reserva;
 import com.hotelPremier.classes.estadia.Estadia;
-import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import java.util.List;
 
-@Entity
-@Table(name="habitacion")
-public class Habitacion  {
-    @Id 
-    private int numero; 
-    
-    @Column(name="estado") 
+public class HabitacionDTO {
+
+    private int numero;
+
+
     private String estado;
-    @Column(name="precio")  
+
     private float precio;
-    @Column(name="cantidadpersonas") // comillas para respetar mayúsculaaaaaaaaaa
+
     private int cantidadPersonas;
-    
 
-    @OneToMany(mappedBy = "habitacion")
-    private List<Estadia> listaestadias;
-
-
+    private String tipoHab;
 
     // GETTERS y SETTERS
 
-    public Integer getNumero() {
-        return numero;
+    public void setTipoHab(String tipoHab) {
+        this.tipoHab = tipoHab;
+    }
+    public String getTipoHab() {
+        return tipoHab;
     }
 
+    public int getNumero() { return numero; }
     public void setNumero(int numero) { this.numero = numero; }
 
     public String getEstado() { return estado; }
@@ -41,4 +36,4 @@ public class Habitacion  {
 
     public int getCantidadPersonas() { return cantidadPersonas; }
     public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
-} 
+}

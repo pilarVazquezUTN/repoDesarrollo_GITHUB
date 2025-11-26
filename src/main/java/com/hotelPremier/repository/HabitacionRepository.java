@@ -1,4 +1,14 @@
 package com.hotelPremier.repository;
 
-public class HabitacionRepository {
+import com.hotelPremier.classes.habitacion.Habitacion;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface HabitacionRepository extends JpaRepository<Habitacion,Integer> {
+
+    List<Habitacion> findAll();
+
 }

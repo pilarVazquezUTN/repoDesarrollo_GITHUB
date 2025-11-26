@@ -38,27 +38,33 @@ public class Reserva {
 
 
     public void setHabitacion (Habitacion habitacion){
+
         nro_habitacion=habitacion;
     }
 
-    /*public String getTipo_habitacion(){
+   /* public String getTipo_habitacion(){
         return nro_habitacion.getTipohabitacion();
-    }*/
+    }
+*/
+
+    public void setNro_habitacion(Habitacion nro_habitacion) {
+        this.nro_habitacion = nro_habitacion;
+    }
 
     public Integer getNumero_habitacion(){
         return nro_habitacion.getNumero();
     }
 
 
-    public void cancelar(){
-
-    }
-    public void confirmar(){
-
-    }
-
     public String getNombre() {
         return nombre;
+    }
+   public void setNombre(String nombre) {
+        this.nombre = nombre;
+   }
+
+    public void setFecha_desde(Date fecha_desde) {
+        this.fecha_desde = fecha_desde;
     }
 
     public Date getFecha_desde() {
@@ -76,6 +82,11 @@ public class Reserva {
     public String getEstado() {
         return estado;
     }
+
+    public void setFecha_hasta(Date fecha_hasta) {
+        this.fecha_hasta = fecha_hasta;
+    }
+
     public Date getFecha_hasta() {
         return fecha_hasta;
     }

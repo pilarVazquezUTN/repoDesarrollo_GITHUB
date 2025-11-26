@@ -39,7 +39,17 @@ public class HuespedDTO {
         this.huespedID.setDni(id.getDni());
         this.huespedID.setTipoDocumento(id.getTipoDocumento());
     }
-    
+
+    public String getDni() {
+        return this.huespedID.getDni();
+    }
+
+    public String getTipoDocumento() {
+        return this.huespedID.getTipoDocumento();
+    }
+
+
+
 
     /**
      *

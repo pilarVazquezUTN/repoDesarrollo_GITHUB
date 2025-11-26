@@ -3,8 +3,8 @@ import java.util.Date;
 
 
 public class ReservaDTO {
-    private Date fechaDesde;
-    private Date fechaHasta;
+    private Date fecha_desde;
+    private Date fecha_hasta;
     private String estado;
     private String nombre;
     private String apellido;
@@ -13,8 +13,10 @@ public class ReservaDTO {
     private String tipoHab;
 
     public void setNumeroHab(int numeroHab) {
+
         this.numeroHab = numeroHab;
     }
+
     public int getNumeroHab() {
         return numeroHab;
     }
@@ -98,7 +100,7 @@ public class ReservaDTO {
      * @return
      */
     public Date getFechaDesde() {
-        return fechaDesde;
+        return fecha_desde;
     }
 
     /**
@@ -106,7 +108,7 @@ public class ReservaDTO {
      * @param fechaDesde
      */
     public void setFechaDesde(Date fechaDesde) {
-        this.fechaDesde = fechaDesde;
+        this.fecha_desde = fechaDesde;
     }
 
     /**
@@ -114,7 +116,7 @@ public class ReservaDTO {
      * @return
      */
     public Date getFechaHasta() {
-        return fechaHasta;
+        return fecha_hasta;
     }
 
     /**
@@ -122,6 +124,6 @@ public class ReservaDTO {
      * @param fechaHasta
      */
     public void setFechaHasta(Date fechaHasta) {
-        this.fechaHasta = fechaHasta;
+        this.fecha_hasta = fechaHasta;
     }
 }
