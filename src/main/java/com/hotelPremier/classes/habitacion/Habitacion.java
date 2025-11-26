@@ -3,6 +3,8 @@ package com.hotelPremier.classes.habitacion;
  import java.util.List;
 
 import com.hotelPremier.classes.reserva.Reserva;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hotelPremier.classes.estadia.Estadia;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
@@ -26,6 +28,7 @@ public class Habitacion  {
     private String tipohabitacion;
 
     @OneToMany(mappedBy = "habitacion")
+    @JsonBackReference
     private List<Estadia> listaestadias;
 
 
@@ -67,5 +70,9 @@ public class Habitacion  {
         if (this instanceof Suite) return "Suite";
         
         return null;
+    }
+
+    public List<Estadia> getListaEstadia() {
+        return listaestadias;
     }
 } 

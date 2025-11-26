@@ -1,7 +1,9 @@
 package com.hotelPremier.service;
 
+import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.habitacion.Habitacion;
 import com.hotelPremier.classes.habitacion.HabitacionDTO;
+import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.repository.HabitacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,27 @@ public class HabitacionService {
         return mapper.toDTOsHabitacion(habitaciones);
     }
 */
+    public List<Huesped> obtenerHuespedesPorHabitacion(Integer nroHabitacion) {
 
+        Habitacion habitacion = habitacionRepository.findById(nroHabitacion)
+                .orElse(null);
+
+        if (habitacion == null) {
+            // si no existe, devuelvo lista vacía
+            return List.of();
+        }
+        
+
+        List<Estadia> estadias = habitacion.getListaEstadia();
+        if (estadias == null) {
+            return List.of();
+        }
+
+        return estadias.stream()
+                .filter(e -> e.getListahuesped() != null) // evitar null
+                .flatMap(e -> e.getListahuesped().stream())
+                .distinct()
+                .toList();
+    }
 
 }
