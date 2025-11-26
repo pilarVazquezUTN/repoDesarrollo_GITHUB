@@ -20,7 +20,7 @@ public class Reserva {
     private Date fecha_desde;
 
     @Temporal(TemporalType.DATE) //guarda fecha sin hora
-    @Column(name="fecha_hasta")
+    @Column(name="fecha_hasta") 
     private Date fecha_hasta;
     
     @Column(name="estado")
@@ -47,11 +47,11 @@ public class Reserva {
     }
 */
 
-    public void setNro_habitacion(Habitacion nro_habitacion) {
+    public void setNumeroHabitacion(Habitacion nro_habitacion) {
         this.nro_habitacion = nro_habitacion;
     }
 
-    public Integer getNumero_habitacion(){
+    public Integer getNumeroHabitacion(){
         return nro_habitacion.getNumero();
     }
 
@@ -63,11 +63,11 @@ public class Reserva {
         this.nombre = nombre;
    }
 
-    public void setFecha_desde(Date fecha_desde) {
+    public void setFechaDesde(Date fecha_desde) {
         this.fecha_desde = fecha_desde;
     }
 
-    public Date getFecha_desde() {
+    public Date getFechaDesde() {
         return fecha_desde;
     }
 
@@ -83,11 +83,11 @@ public class Reserva {
         return estado;
     }
 
-    public void setFecha_hasta(Date fecha_hasta) {
+    public void setFechaHasta(Date fecha_hasta) {
         this.fecha_hasta = fecha_hasta;
     }
 
-    public Date getFecha_hasta() {
+    public Date getFechaHasta() {
         return fecha_hasta;
     }
 

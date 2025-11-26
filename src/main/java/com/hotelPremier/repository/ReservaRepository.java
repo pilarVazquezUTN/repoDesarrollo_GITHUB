@@ -1,6 +1,10 @@
 package com.hotelPremier.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.sql.Date;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +15,13 @@ import com.hotelPremier.classes.reserva.Reserva;
 public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 
 
-    List<Reserva> findByApellidoContainingIgnoreCase(String apellido);
+    //List<Reserva> findByApellidoContainingIgnoreCase(String apellido);
+
+    @Query("""
+        SELECT r 
+        FROM Reserva r 
+        WHERE  r.fecha_desde = :fechadesde
+            AND r.fecha_hasta = :fechahasta
+    """)
+    List<Reserva>  buscarReservas(@Param("fechadesde") Date fechaDesde, @Param("fechahasta") Date fechaHasta);
 }

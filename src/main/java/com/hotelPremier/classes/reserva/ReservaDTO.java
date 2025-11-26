@@ -1,26 +1,34 @@
 package com.hotelPremier.classes.reserva;
 import java.util.Date;
 
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+
 
 public class ReservaDTO {
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
     private Date fecha_desde;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
     private Date fecha_hasta;
+
     private String estado;
     private String nombre;
     private String apellido;
     private String telefono;
-    private int numeroHab;
-    private String tipoHab;
+    private Integer nro_habitacion;
+    //private String tipoHab;
+ 
+    public void setNumeroHabitacion(int numeroHab) {
 
-    public void setNumeroHab(int numeroHab) {
-
-        this.numeroHab = numeroHab;
+        this.nro_habitacion = numeroHab;
     }
 
-    public int getNumeroHab() {
-        return numeroHab;
+    public int getNumeroHabitacion() {
+        return nro_habitacion;
     }
 
+    /* 
     public void setTipoHab(String tipoHab) {
         this.tipoHab = tipoHab;
 
@@ -29,6 +37,7 @@ public class ReservaDTO {
     public String getTipoHab() {
         return tipoHab;
     }
+    */
 
 
     /**

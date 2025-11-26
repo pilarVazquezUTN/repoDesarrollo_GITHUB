@@ -8,6 +8,8 @@ import com.hotelPremier.classes.habitacion.Habitacion;
 import com.hotelPremier.classes.habitacion.HabitacionDTO;
 import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.huesped.HuespedDTO;
+import com.hotelPremier.classes.reserva.Reserva;
+import com.hotelPremier.classes.reserva.ReservaDTO;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-26T12:55:31-0300",
+    date = "2025-11-26T16:07:59-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
@@ -119,6 +121,20 @@ public class ClassMapperImpl implements ClassMapper {
         return list;
     }
 
+    @Override
+    public List<ReservaDTO> toDtosReserva(List<Reserva> reserva) {
+        if ( reserva == null ) {
+            return null;
+        }
+
+        List<ReservaDTO> list = new ArrayList<ReservaDTO>( reserva.size() );
+        for ( Reserva reserva1 : reserva ) {
+            list.add( reservaToReservaDTO( reserva1 ) );
+        }
+
+        return list;
+    }
+
     protected DireccionDTO direccionToDireccionDTO(Direccion direccion) {
         if ( direccion == null ) {
             return null;
@@ -206,5 +222,25 @@ public class ClassMapperImpl implements ClassMapper {
         }
 
         return list1;
+    }
+
+    protected ReservaDTO reservaToReservaDTO(Reserva reserva) {
+        if ( reserva == null ) {
+            return null;
+        }
+
+        ReservaDTO reservaDTO = new ReservaDTO();
+
+        if ( reserva.getNumeroHabitacion() != null ) {
+            reservaDTO.setNumeroHabitacion( reserva.getNumeroHabitacion() );
+        }
+        reservaDTO.setTelefono( reserva.getTelefono() );
+        reservaDTO.setNombre( reserva.getNombre() );
+        reservaDTO.setApellido( reserva.getApellido() );
+        reservaDTO.setEstado( reserva.getEstado() );
+        reservaDTO.setFechaDesde( reserva.getFechaDesde() );
+        reservaDTO.setFechaHasta( reserva.getFechaHasta() );
+
+        return reservaDTO;
     }
 }
