@@ -20,8 +20,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
     @Query("""
         SELECT r 
         FROM Reserva r 
-        WHERE  r.fecha_desde = :fechadesde
-            AND r.fecha_hasta = :fechahasta
+        WHERE  r.fecha_desde <= :fechahasta
+            AND r.fecha_hasta >= :fechadesde
     """)
     List<Reserva>  buscarReservas(@Param("fechadesde") Date fechaDesde, @Param("fechahasta") Date fechaHasta);
 }

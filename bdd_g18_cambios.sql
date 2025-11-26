@@ -204,63 +204,63 @@ INSERT INTO huesped (
 
 INSERT INTO habitacion (numero, precio, tipohabitacion, cantidadPersonas, estado, camasKingSize, camaDoble, camasIndividuales) VALUES
 -- Habitaciones de las reservas anteriores:
-(101, 50000, 'IndividualEstandar', 1, 'ocupada', 0, 0, 1),
-(205, 80000, 'DobleEstandar', 2, 'libre', 0, 1, 0),
-(102, 45000, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
-(310, 120000, 'Suite', 1, 'ocupada', 1, 0, 0),
-(401, 65000, 'DobleSuperior', 2, 'libre', 1, 0, 0);
+(1, 50000, 'IndividualEstandar', 1, 'ocupada', 0, 0, 1),
+(11, 80000, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(37, 45000, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(47, 120000, 'Suite', 1, 'ocupada', 1, 0, 0),
+(29, 65000, 'DobleSuperior', 2, 'libre', 1, 0, 0);
 
 
 INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 (1001, 'PÉREZ', 'JUAN', '1155555555',
         TO_DATE('15/12/2025','DD/MM/YYYY'),
         TO_DATE('20/12/2025','DD/MM/YYYY'),
-        'Confirmada', 101),
+        'Confirmada', 1),
 
 (1002, 'PEREYRA', 'PILAR', '3425789789',
         TO_DATE('05/01/2026','DD/MM/YYYY'),
         TO_DATE('10/01/2026','DD/MM/YYYY'),
-        'Confirmada', 205),
+        'Confirmada', 11),
 
 (1003, 'SOVRANO', 'VICTORIA', '543428547896',
         TO_DATE('25/11/2025','DD/MM/YYYY'),
         TO_DATE('27/11/2025','DD/MM/YYYY'),
-        'Pendiente', 102),
+        'Pendiente', 37),
 
 (1004, 'DASILVA', 'VALENTIN', '543424023698',
         TO_DATE('14/02/2026','DD/MM/YYYY'),
         TO_DATE('20/02/2026','DD/MM/YYYY'),
-        'Confirmada', 310),
+        'Confirmada', 47),
 
 (1007, 'AYALA', 'FERNANDA', '3424458808',
         TO_DATE('24/12/2025','DD/MM/YYYY'),
         TO_DATE('28/12/2025','DD/MM/YYYY'),
-        'Confirmada', 401);
+        'Confirmada', 29);
 
 
 INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
 VALUES (2001,
         TO_DATE('15/12/2025','DD/MM/YYYY'),
         TO_DATE('20/12/2025','DD/MM/YYYY'),
-        101);
+        1);
 
 INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
 VALUES (2002,
         TO_DATE('05/01/2026','DD/MM/YYYY'),
         TO_DATE('10/01/2026','DD/MM/YYYY'),
-        205);
+        11);
 
 INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
 VALUES (2003,
         TO_DATE('24/12/2025','DD/MM/YYYY'),
         TO_DATE('28/12/2025','DD/MM/YYYY'),
-        401);
+        29);
 
 INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
 VALUES (2004,
         TO_DATE('14/02/2026','DD/MM/YYYY'),
         TO_DATE('20/02/2026','DD/MM/YYYY'),
-        310);
+        47);
 
 
 GRANT ALL PRIVILEGES ON DATABASE hotelpremier6 TO pili;

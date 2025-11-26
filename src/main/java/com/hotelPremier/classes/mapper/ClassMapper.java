@@ -43,9 +43,6 @@ public interface ClassMapper {
 
         List<HuespedDTO> toDtos(List<Huesped> huesped);
 
-        
+
         List<ReservaDTO> toDtosReserva( List<Reserva> reserva );
-
-
-
 }
