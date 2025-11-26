@@ -14,6 +14,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }) {
         { id: 3, numero: 5, desde: "03/12/2024", hasta: "05/12/2024", checked: false },
         { id: 4, numero: 8, desde: "01/12/2024", hasta: "01/12/2024", checked: false },
     ]);
+    
     //FUNCION PARA SABER QUE FUNCIONES ESTAN TILDADAS PARA ELIMINAR
     const toggleCheck = (id:number) => { //ACTUALIZO EL ESTADO DE MI CHECKBOX EN MI CODIGO PARA QUE SE SEPA QUE ESTA SELECCIONADA (PASA DE {... checked: false} A {... checked: true} )
         setFilas(prev => //ESTADO DE LAS FILAS
