@@ -1,23 +1,30 @@
 package com.hotelPremier.controller;
 
+import com.hotelPremier.service.HabitacionService;
+import com.hotelPremier.service.ReservaService;
 import com.hotelPremier.service.ReservaServiceImpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.classes.reserva.GestorReservaService;
 import com.hotelPremier.classes.reserva.ReservaDTO;
 
+import java.sql.Date;
 import java.util.List;
 
 @RestController
 public class ReservaController {
 
-    private final ReservaServiceImpl reservaService;
+    @Autowired
+    ClassMapper classMapper;
 
+    @Autowired
+    ReservaService reservaService;
 
-
-    public ReservaController(ReservaServiceImpl reservaService) {
-        this.reservaService = reservaService;
-    }
 
     /**
      * Endpoint para obtener la lista de reservas.
@@ -25,15 +32,12 @@ public class ReservaController {
      */
 
     @GetMapping ("/reservas")
-    public List<ReservaDTO> getReservas(
-            // @RequestParam mapea el parámetro 'apellido' de la URL
-            @RequestParam(required = false) String apellido) {
-
-        // 5. Llama al servicio, que maneja la lógica de búsqueda y el mapeo a DTOs
-
-        //esto me devuelve del service un DTO
-        return reservaService.findByApellidoContainingIgnoreCase(apellido);
-
+    public ResponseEntity<List<ReservaDTO>> getReservas(        
+        @RequestParam Date fechaDesde,
+        @RequestParam Date fechaHasta
+    ){
+        List<ReservaDTO> listaReservas = reservaService.getReservas(fechaDesde,fechaHasta);
+        return new ResponseEntity<>(listaReservas, HttpStatus.OK);
     }
 
 
