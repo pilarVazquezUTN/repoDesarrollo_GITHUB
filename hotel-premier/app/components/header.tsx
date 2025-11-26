@@ -59,17 +59,6 @@ export default function Header() {
             Buscar Huésped
         </Link>
 
-        <Link 
-          href="/estadoHabitacion"
-          className={` ${
-              pathname === "/estadoHabitacion"
-                ? "text-gray-500"
-                : "hover:text-gray-500"
-            }`}
-          >
-              Estado de la Habitación
-        </Link>
-
         <Link href="/facturar"
           className={` ${
               pathname === "/facturar"
