@@ -5,11 +5,13 @@ import java.util.List;
 import com.hotelPremier.classes.habitacion.Habitacion;
 import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.servicioExtra.ServicioExtra;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hotelPremier.classes.factura.Factura;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 import jakarta.websocket.OnMessage;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!
 
+@JsonIgnoreProperties({"listahuesped", "habitacion"}) //JSIGNORE!!!!
 @Entity
 @Table(name="estadia")
 public class Estadia { 
@@ -26,6 +28,7 @@ public class Estadia {
     private Date checkout;
 
     @ManyToOne //de estadia a habitacion
+    @JsonManagedReference
     @JoinColumn(name = "nro_habitacion")
     private Habitacion habitacion;
 

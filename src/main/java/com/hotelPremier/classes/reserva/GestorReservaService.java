@@ -113,8 +113,8 @@ String id_empleado;
         dto.setNombre(entidad.getNombre());
         dto.setApellido(entidad.getApellido());
         //dto.setTipoHab(entidad.getTipohab); """"""ESTOOOOOO NOSEEEEEEEEE PROBARRRRRR!!!!!"""""""""""
-        dto.setFechaDesde(entidad.getFecha_desde());
-        dto.setFechaHasta(entidad.getFecha_hasta());
+      //  dto.setFechaDesde(entidad.getFecha_desde());
+        //dto.setFechaHasta(entidad.getFecha_hasta());
 
 
 

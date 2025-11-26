@@ -136,6 +136,8 @@ contrasenia varchar(40)
 
 );
 
+
+
 INSERT INTO usuario (nombre, contrasenia) VALUES
 ('pilar', 'vazquez135'),
 ('Ernestina', 'Solorzano852'),

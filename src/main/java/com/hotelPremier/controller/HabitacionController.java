@@ -1,5 +1,6 @@
 package com.hotelPremier.controller;
 
+import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.huesped.HuespedDTO;
 import com.hotelPremier.classes.habitacion.*;
 import com.hotelPremier.classes.mapper.ClassMapper;
@@ -11,11 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/habitaciones")
 public class HabitacionController {
     @Autowired
     ClassMapper classMapper;
@@ -35,5 +39,9 @@ public class HabitacionController {
         return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
     }
 
+    @GetMapping("/{nro}/huespedes")
+    public List<Huesped> getHuespedesDeHabitacion(@PathVariable Integer nro) {
+        return habitacionService.obtenerHuespedesPorHabitacion(nro);
+    }
 
 }
