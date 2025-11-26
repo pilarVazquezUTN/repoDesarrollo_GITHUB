@@ -1,28 +1,27 @@
 package com.hotelPremier.classes.habitacion;
 
 import com.hotelPremier.classes.estadia.Estadia;
+
+import com.hotelPremier.classes.estadia.EstadiaDTO;
+
 import java.util.List;
 
 public class HabitacionDTO {
 
-    private int numero;
-
-
+    private Integer numero;
     private String estado;
-
     private float precio;
-
-    private int cantidadPersonas;
-
-    private String tipoHab;
+    private Integer cantidadPersonas;
+    private String tipohabitacion;// cuando mapea con los DTO se le asigna un tipo.
+    private List<EstadiaDTO> listaestadias;
 
     // GETTERS y SETTERS
 
     public void setTipoHab(String tipoHab) {
-        this.tipoHab = tipoHab;
+        this.tipohabitacion = tipoHab;
     }
     public String getTipoHab() {
-        return tipoHab;
+        return tipohabitacion;
     }
 
     public int getNumero() { return numero; }

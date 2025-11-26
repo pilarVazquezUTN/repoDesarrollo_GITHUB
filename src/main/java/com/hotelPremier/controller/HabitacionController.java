@@ -1,8 +1,18 @@
 package com.hotelPremier.controller;
 
+import com.hotelPremier.classes.huesped.HuespedDTO;
+import com.hotelPremier.classes.habitacion.*;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.service.HabitacionService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -12,6 +22,18 @@ public class HabitacionController {
 
     @Autowired
     HabitacionService habitacionService;
+
+    @GetMapping("/habitaciones")
+    public ResponseEntity<List<HabitacionDTO>> getHabitaciones(
+        @RequestParam String tipo
+    ){
+        /*
+        switch segun el tipo de habitacion que me entre y de ahi llamo a cada controller.
+        */
+        
+        List<HabitacionDTO> listaHabitaciones = habitacionService.getHabitaciones(tipo);
+        return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
+    }
 
 
 }

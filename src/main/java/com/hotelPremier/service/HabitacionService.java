@@ -20,8 +20,8 @@ public class HabitacionService {
 
 
     //llama al repo para la bdd y devuelve el dto
-    public List<HabitacionDTO> obtenerHabitaciones() {
-        return mapper.toDTOsHabitacion(habitacionRepository.findAll());
+    public List<HabitacionDTO> getHabitaciones(String tipoHabitacion) {
+        return mapper.toDTOsHabitacion( habitacionRepository.buscarPorTipoHabitacion(tipoHabitacion) );
     }
 
 
