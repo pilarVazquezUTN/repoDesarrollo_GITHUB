@@ -204,7 +204,7 @@ INSERT INTO huesped (
 
 INSERT INTO habitacion (numero, precio, tipohabitacion, cantidadPersonas, estado, camasKingSize, camaDoble, camasIndividuales) VALUES
 -- Habitaciones de las reservas anteriores:
-(101, 50000, 'IndividualEstndar', 1, 'ocupada', 0, 0, 1),
+(101, 50000, 'IndividualEstandar', 1, 'ocupada', 0, 0, 1),
 (205, 80000, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (102, 45000, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
 (310, 120000, 'Suite', 1, 'ocupada', 1, 0, 0),
