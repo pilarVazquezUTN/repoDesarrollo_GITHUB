@@ -10,7 +10,9 @@ import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.estadia.EstadiaDTO;
 import com.hotelPremier.classes.reserva.Reserva;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!!
 
+@JsonIgnoreProperties("listaestadia")//!!!!!!
 @Entity
 @Table(name = "huesped") // 2. (Opcional) Especifica el nombre de la tabla
 public class Huesped { 
@@ -59,11 +61,6 @@ public class Huesped {
     public Huesped() {
         this.huespedID = new HuespedID();
     }
-
-
-
-
-
 
 
     public String getDni() {
