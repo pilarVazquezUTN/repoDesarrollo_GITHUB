@@ -29,7 +29,7 @@ export default function ErrorDniExistente({ mensaje, onCorregir, onAceptar }: Pr
             className="px-4 py-2 rounded-lg border border-black bg-white hover:bg-gray-100"
             onClick={onAceptar}
           >
-            Aceptar
+            Aceptar Igualmente
           </button>
         </div>
       </div>
