@@ -23,4 +23,13 @@ public class HabitacionService {
     public List<HabitacionDTO> obtenerHabitaciones() {
         return mapper.toDTOsHabitacion(habitacionRepository.findAll());
     }
+
+
+    /*public List<HabitacionDTO> obtenerPorTipo(String tipo) {
+        List<Habitacion> habitaciones = habitacionRepository.findByTipo(tipo);
+        return mapper.toDTOsHabitacion(habitaciones);
+    }
+*/
+
+
 }

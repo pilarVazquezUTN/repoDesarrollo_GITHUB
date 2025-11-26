@@ -82,7 +82,7 @@ public class GestorHuesped implements GestorHuespedInterfaz{
         campos.put("posicionIva", huespedDTO.getPosicionIva());
         campos.put("fechaNacimiento", formato.format(huespedDTO.getFechaNacimiento())); //hacer el format
 
-         d = huespedDTO.getDireccionHuesped();
+       //  d = huespedDTO.getDireccionHuesped();
         campos.put("calle", d.getCalle());
         //campos.put("numero", d.getNumero());
         campos.put("departamento", d.getDepartamento());
@@ -173,9 +173,6 @@ public class GestorHuesped implements GestorHuespedInterfaz{
      * @param huespedDTO
      * @return
      */
-    public boolean seAlojo (HuespedDTO huespedDTO) {
-        return huespedDAO.seAlojo(huespedDTO);
-    }
 
     /**
      * busca los datos del huesped

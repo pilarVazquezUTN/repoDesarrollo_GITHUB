@@ -21,14 +21,14 @@ public interface ClassMapper {
       //  Reserva toEntityReserva(ReservaDTO dto);
         //List<ReservaDTO> toDTOsReserva(List<Reserva> reservas);
 
-         // @Mapping(target = "tipoHab", expression = "java(h.getClass().getSimpleName())")
-          //HabitacionDTO toDTOHab(Habitacion h);
-
+          @Mapping(target = "tipoHab", expression = "java(h.getTipo())")
+          HabitacionDTO toDTOHab(Habitacion h);
+           List<HabitacionDTO> toDTOsHabitacion(List<Habitacion> habitaciones);
           //List<HabitacionDTO> toDTOsHabitacion(List<Habitacion> habitaciones);
 
           //HabitacionDTO toDTOHabitacion(Habitacion habitacion);
          //Habitacion toEntityHabitacion(HabitacionDTO dto);
-         List<HabitacionDTO> toDTOsHabitacion(List<Habitacion> habitaciones);
+
 //         List<Habitacion> toEntityHabitacion(List<HabitacionDTO> dtos);
 
         //@Mapping(source = "id.tipodocumento", target = "tipodocumento")

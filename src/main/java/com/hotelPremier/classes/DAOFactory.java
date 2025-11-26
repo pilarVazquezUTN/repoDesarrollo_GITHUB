@@ -62,7 +62,7 @@ public class DAOFactory {
             case HABITACION:
                 return HabitacionDAO.getInstancia();
             case HUESPED:
-                return HuespedDAO.getInstancia();
+                //return HuespedDAO.getInstancia();
             case MEDIO_DE_PAGO:
                 return MedioDePagoDAO.getInstancia();
             case PAGO:

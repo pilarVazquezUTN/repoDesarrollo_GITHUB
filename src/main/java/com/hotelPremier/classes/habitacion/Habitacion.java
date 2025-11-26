@@ -7,11 +7,17 @@ import com.hotelPremier.classes.estadia.Estadia;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
+
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipohabitacion")
+
 @Table(name="habitacion")
 public class Habitacion  {
     @Id 
     private int numero; 
-    
+
+
+
     @Column(name="estado") 
     private String estado;
     @Column(name="precio")  
@@ -41,4 +47,15 @@ public class Habitacion  {
 
     public int getCantidadPersonas() { return cantidadPersonas; }
     public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
+
+
+
+    public String getTipo(){
+        if (this instanceof IndividualEstandar) return "IndividualEstandar";
+        if (this instanceof DobleEstandar) return "DobleEstandar";
+        if (this instanceof DobleSuperior) return "DobleSuperior";
+        if (this instanceof SuperiorFamilyPlan) return "SuperiorFamilyPlan";
+        if (this instanceof Suite) return "Suite";
+return null;
+    }
 } 

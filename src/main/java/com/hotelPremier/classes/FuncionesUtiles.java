@@ -133,7 +133,7 @@ public class FuncionesUtiles {
         }
         return tipoDocValido;
     }
-
+/*
     public  List<HuespedDTO> mapToDTOList(List<Huesped> listaHuespedes) {
 
         if (listaHuespedes == null || listaHuespedes.isEmpty()) {
@@ -150,7 +150,7 @@ public class FuncionesUtiles {
 
      /** Mapea una única Entidad Reserva a un único ReservaDTO.
      */
-    public   HuespedDTO mapToDTO(Huesped huesped) {
+    /*public   HuespedDTO mapToDTO(Huesped huesped) {
         HuespedDTO huespedDTO = new HuespedDTO();
         DireccionDTO direccionDTO = new DireccionDTO();
 
@@ -202,7 +202,7 @@ public class FuncionesUtiles {
 
 
 
-
+*/
 
 
 

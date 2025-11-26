@@ -4,6 +4,8 @@ import com.hotelPremier.classes.direccion.Direccion;
 import com.hotelPremier.classes.direccion.DireccionDTO;
 import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.estadia.EstadiaDTO;
+import com.hotelPremier.classes.habitacion.Habitacion;
+import com.hotelPremier.classes.habitacion.HabitacionDTO;
 import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.huesped.HuespedDTO;
 import java.util.ArrayList;
@@ -13,11 +15,45 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-26T01:06:52-0300",
+    date = "2025-11-26T09:44:26-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class ClassMapperImpl implements ClassMapper {
+
+    @Override
+    public HabitacionDTO toDTOHab(Habitacion h) {
+        if ( h == null ) {
+            return null;
+        }
+
+        HabitacionDTO habitacionDTO = new HabitacionDTO();
+
+        if ( h.getNumero() != null ) {
+            habitacionDTO.setNumero( h.getNumero() );
+        }
+        habitacionDTO.setEstado( h.getEstado() );
+        habitacionDTO.setPrecio( h.getPrecio() );
+        habitacionDTO.setCantidadPersonas( h.getCantidadPersonas() );
+
+        habitacionDTO.setTipoHab( h.getTipo() );
+
+        return habitacionDTO;
+    }
+
+    @Override
+    public List<HabitacionDTO> toDTOsHabitacion(List<Habitacion> habitaciones) {
+        if ( habitaciones == null ) {
+            return null;
+        }
+
+        List<HabitacionDTO> list = new ArrayList<HabitacionDTO>( habitaciones.size() );
+        for ( Habitacion habitacion : habitaciones ) {
+            list.add( toDTOHab( habitacion ) );
+        }
+
+        return list;
+    }
 
     @Override
     public HuespedDTO toDTO(Huesped huesped) {

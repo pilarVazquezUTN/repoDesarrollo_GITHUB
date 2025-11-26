@@ -10,5 +10,6 @@ import java.util.List;
 public interface HabitacionRepository extends JpaRepository<Habitacion,Integer> {
 
     List<Habitacion> findAll();
+   // List<Habitacion> findByTipo(String tipo);
 
 }
