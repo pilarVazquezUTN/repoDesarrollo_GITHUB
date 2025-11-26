@@ -19,12 +19,12 @@ public class ReservaDTO {
     private Integer nro_habitacion;
     //private String tipoHab;
  
-    public void setNumeroHabitacion(int numeroHab) {
+    public void setNro_habitacion(int numeroHab) {
 
         this.nro_habitacion = numeroHab;
     }
 
-    public int getNumeroHabitacion() {
+    public int getNro_habitacion() {
         return nro_habitacion;
     }
 
@@ -108,7 +108,7 @@ public class ReservaDTO {
      *
      * @return
      */
-    public Date getFechaDesde() {
+    public Date getFecha_desde() {
         return fecha_desde;
     }
 
@@ -116,7 +116,7 @@ public class ReservaDTO {
      *
      * @param fechaDesde
      */
-    public void setFechaDesde(Date fechaDesde) {
+    public void setFecha_desde(Date fechaDesde) {
         this.fecha_desde = fechaDesde;
     }
 
@@ -124,7 +124,7 @@ public class ReservaDTO {
      *
      * @return
      */
-    public Date getFechaHasta() {
+    public Date getFecha_hasta() {
         return fecha_hasta;
     }
 
@@ -132,7 +132,7 @@ public class ReservaDTO {
      *
      * @param fechaHasta
      */
-    public void setFechaHasta(Date fechaHasta) {
+    public void setFecha_hasta(Date fechaHasta) {
         this.fecha_hasta = fechaHasta;
     }
 }

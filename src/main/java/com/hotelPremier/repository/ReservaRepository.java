@@ -15,7 +15,7 @@ import com.hotelPremier.classes.reserva.Reserva;
 public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 
 
-    //List<Reserva> findByApellidoContainingIgnoreCase(String apellido);
+    List<Reserva> findByApellidoContainingIgnoreCase(String apellido);
 
     @Query("""
         SELECT r 
@@ -24,4 +24,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
             AND r.fecha_hasta = :fechahasta
     """)
     List<Reserva>  buscarReservas(@Param("fechadesde") Date fechaDesde, @Param("fechahasta") Date fechaHasta);
+
+
+
+
 }

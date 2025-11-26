@@ -17,27 +17,20 @@ public interface ClassMapper {
 
 
 
-        //ReservaDTO toDTOReserva(Reserva reserva);
-      //  Reserva toEntityReserva(ReservaDTO dto);
-        //List<ReservaDTO> toDTOsReserva(List<Reserva> reservas);
+
 
           @Mapping(target = "tipoHab", expression = "java(h.getTipo())")
           HabitacionDTO toDTOHab(Habitacion h);
            List<HabitacionDTO> toDTOsHabitacion(List<Habitacion> habitaciones);
-          //List<HabitacionDTO> toDTOsHabitacion(List<Habitacion> habitaciones);
-
-          //HabitacionDTO toDTOHabitacion(Habitacion habitacion);
-         //Habitacion toEntityHabitacion(HabitacionDTO dto);
+           //Habitacion toEntityHabitacion(HabitacionDTO dto);
 
 //         List<Habitacion> toEntityHabitacion(List<HabitacionDTO> dtos);
 
-        //@Mapping(source = "id.tipodocumento", target = "tipodocumento")
-        //@Mapping(source = "id.dni", target = "dni")
+
         @Mapping(source = "huespedID", target = "huespedID")
         HuespedDTO toDTO(Huesped huesped);
 
-        //@Mapping(source = "tipodocumento", target = "id.tipodocumento")
-        //@Mapping(source = "dni", target = "id.dni")
+
         @Mapping(source = "huespedID", target = "huespedID")
         Huesped toEntity(HuespedDTO huespedDto);
 
@@ -46,6 +39,10 @@ public interface ClassMapper {
         
         List<ReservaDTO> toDtosReserva( List<Reserva> reserva );
 
+    @Mapping(target = "nro_habitacion", source = "nro_habitacion.numero")
+         ReservaDTO toDTOReserva(Reserva reserva);
 
+    @Mapping(target = "nro_habitacion", ignore = true)
+        Reserva toEntityReserva(ReservaDTO dto);
 
 }

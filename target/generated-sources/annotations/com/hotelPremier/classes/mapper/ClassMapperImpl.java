@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-26T16:07:59-0300",
-    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-11-26T17:22:36-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class ClassMapperImpl implements ClassMapper {
@@ -129,10 +129,50 @@ public class ClassMapperImpl implements ClassMapper {
 
         List<ReservaDTO> list = new ArrayList<ReservaDTO>( reserva.size() );
         for ( Reserva reserva1 : reserva ) {
-            list.add( reservaToReservaDTO( reserva1 ) );
+            list.add( toDTOReserva( reserva1 ) );
         }
 
         return list;
+    }
+
+    @Override
+    public ReservaDTO toDTOReserva(Reserva reserva) {
+        if ( reserva == null ) {
+            return null;
+        }
+
+        ReservaDTO reservaDTO = new ReservaDTO();
+
+        Integer numero = reservaNro_habitacionNumero( reserva );
+        if ( numero != null ) {
+            reservaDTO.setNro_habitacion( numero );
+        }
+        reservaDTO.setTelefono( reserva.getTelefono() );
+        reservaDTO.setNombre( reserva.getNombre() );
+        reservaDTO.setApellido( reserva.getApellido() );
+        reservaDTO.setEstado( reserva.getEstado() );
+        reservaDTO.setFecha_desde( reserva.getFecha_desde() );
+        reservaDTO.setFecha_hasta( reserva.getFecha_hasta() );
+
+        return reservaDTO;
+    }
+
+    @Override
+    public Reserva toEntityReserva(ReservaDTO dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        Reserva reserva = new Reserva();
+
+        reserva.setNombre( dto.getNombre() );
+        reserva.setFecha_desde( dto.getFecha_desde() );
+        reserva.setApellido( dto.getApellido() );
+        reserva.setTelefono( dto.getTelefono() );
+        reserva.setEstado( dto.getEstado() );
+        reserva.setFecha_hasta( dto.getFecha_hasta() );
+
+        return reserva;
     }
 
     protected DireccionDTO direccionToDireccionDTO(Direccion direccion) {
@@ -224,23 +264,18 @@ public class ClassMapperImpl implements ClassMapper {
         return list1;
     }
 
-    protected ReservaDTO reservaToReservaDTO(Reserva reserva) {
+    private Integer reservaNro_habitacionNumero(Reserva reserva) {
         if ( reserva == null ) {
             return null;
         }
-
-        ReservaDTO reservaDTO = new ReservaDTO();
-
-        if ( reserva.getNumeroHabitacion() != null ) {
-            reservaDTO.setNumeroHabitacion( reserva.getNumeroHabitacion() );
+        Habitacion nro_habitacion = reserva.getNro_habitacion();
+        if ( nro_habitacion == null ) {
+            return null;
         }
-        reservaDTO.setTelefono( reserva.getTelefono() );
-        reservaDTO.setNombre( reserva.getNombre() );
-        reservaDTO.setApellido( reserva.getApellido() );
-        reservaDTO.setEstado( reserva.getEstado() );
-        reservaDTO.setFechaDesde( reserva.getFechaDesde() );
-        reservaDTO.setFechaHasta( reserva.getFechaHasta() );
-
-        return reservaDTO;
+        Integer numero = nro_habitacion.getNumero();
+        if ( numero == null ) {
+            return null;
+        }
+        return numero;
     }
 }
