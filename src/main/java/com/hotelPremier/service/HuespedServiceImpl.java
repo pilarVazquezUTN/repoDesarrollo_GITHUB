@@ -65,6 +65,7 @@ public class HuespedServiceImpl {
         List<Huesped> lista = huespedRepository.buscarHuespedes(
                 dni, nombre, apellido, tipoDocumento
         );
+        
 
         // MapStruct convierte a DTO
         return mapper.toDtos(lista);
@@ -86,7 +87,7 @@ public class HuespedServiceImpl {
     }
 
     public void deleteHuesped(String dni) {
-        
+
     }
 
 }

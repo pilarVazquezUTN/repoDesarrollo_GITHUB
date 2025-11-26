@@ -2,8 +2,8 @@ export type TipoHuesped = {
     id: number;
     nombre: string;
     apellido: string;
-    dni: string;
-    tipoDocumento: string;
+    //dni: string;
+    //tipoDocumento: string;
     fechaNacimiento: string;
     nacionalidad: string;
     ocupacion: string;
@@ -23,7 +23,10 @@ export type TipoHuesped = {
 
     cuit: string;
     posicionIva: string;
-    huespedID: number | null;
+    huespedID:{
+        tipoDocumento: string;
+        dni: string;
+    };
 };
 
 type TablaProps = {
@@ -45,7 +48,7 @@ export default function Tabla({huespedes}: TablaProps) {
                 </thead>
                 <tbody>
                     {huespedes.map((h) => (
-                        <tr key={h.huespedID?.dni} className="bg-white hover:bg-indigo-100">
+                        <tr key={h.huespedID.tipoDocumento + h.huespedID.dni} className="bg-white hover:bg-indigo-100">
                             <td className="p-2 border text-center">
                                 <input type="radio" name="seleccion" />
                             </td>
@@ -53,7 +56,7 @@ export default function Tabla({huespedes}: TablaProps) {
                             <td className="p-2 border">{h.nombre}</td>
 
                             {/* CAMPOS ANIDADOS CORRECTOS */}
-                            <td className="p-2 border">{h.huespedID?.tipoDocumento}</td>
+                            <td className="p-2 border">{h.huespedID?.tipoDocumento}</td> 
                             <td className="p-2 border">{h.huespedID?.dni}</td>
                         </tr>
                     ))}
