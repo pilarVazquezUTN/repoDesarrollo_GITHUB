@@ -18,7 +18,7 @@ export default function DarAltaHuesped(){
         tipoDocumento: "",
         dni: "",
         cuit: "",
-        posiva: "",
+        posicionIva: "",
         calle: "",
         numero: "",
         departamento: "",
@@ -69,7 +69,7 @@ export default function DarAltaHuesped(){
             nombre: formData.nombre,
             apellido: formData.apellido,
             cuit: formData.cuit,
-            posiva: formData.posiva,
+            posicionIva: formData.posicionIva,
             fechaNacimiento: formData.fechaNacimiento, 
             telefono: formData.telefono,
             email: formData.email, 
@@ -107,13 +107,13 @@ export default function DarAltaHuesped(){
         
         const camposRequeridos = [
             "apellido", "nombre", "tipoDocumento", "dni",
-            "posiva", "calle", "numero",
+            "posicionIva", "calle", "numero",
             "codigoPostal", "localidad", "provincia", "pais",
             "fechaNacimiento", "telefono", "ocupacion", "nacionalidad"
         ];
 
         // 🔥 VALIDACIÓN ESPECIAL: CUIT obligatorio si es RESPONSABLE INSCRIPTO
-        if (formData.posiva === "RESPONSABLE INSCRIPTO" && formData.cuit.trim() === "") {
+        if (formData.posicionIva === "RESPONSABLE INSCRIPTO" && formData.cuit.trim() === "") {
             camposRequeridos.push("cuit");
         }
 
@@ -185,7 +185,7 @@ export default function DarAltaHuesped(){
                 <input name="cuit" value={formData.cuit} onChange={handleChange} type="text" placeholder="XX-XXXXXXXX-X" className={getInputClass("cuit")} />
                 
                 <label className="text-indigo-950 font-medium mb-1">Posicion frente al IVA*:</label>
-                <input name="posiva" value={formData.posiva} onChange={handleChange} type="text" placeholder="Ej: RESPONSABLE INSCRIPTO" className={getInputClass("posiva")} />
+                <input name="posicionIva" value={formData.posicionIva} onChange={handleChange} type="text" placeholder="Ej: RESPONSABLE INSCRIPTO" className={getInputClass("posicionIva")} />
 
                 <p className="mt-3">Campos obligatorios*</p>
             </form>

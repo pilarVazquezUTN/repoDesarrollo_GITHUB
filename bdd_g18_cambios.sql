@@ -63,7 +63,7 @@ constraint fk_estadia foreign key (id_estadia) references estadia(id_estadia)
 );
 
 create table reserva(
-id_reserva integer,
+id_reserva integer primary key,
 apellido varchar(40),
 nombre varchar(40),
 telefono varchar(40),

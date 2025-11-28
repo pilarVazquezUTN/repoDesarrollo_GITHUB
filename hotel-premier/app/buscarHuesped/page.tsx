@@ -121,8 +121,8 @@ export default function BuscarHuesped() {
                 <option value="" className="text-gray-400">Seleccionar tipo</option>
                 <option value="DNI">DNI</option>
                 <option value="PASAPORTE">PASAPORTE</option>
-                <option value="CUIT">LE</option>
-                <option value="CUIT">LC</option>
+                <option value="LE">LE</option>
+                <option value="LC">LC</option>
             </select>
 
             <label className="text-indigo-950 font-medium mb-1">Número de Documento:</label>
