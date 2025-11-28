@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import OcuparHabitacionIgualmente from "../carteles/ocuparHabitacionIgualmente";
 import CartelHabitacionNoDisponible from "../carteles/CartelHabitacionNoDisponible";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan  } from "@fortawesome/free-solid-svg-icons";
 
 // Tipos
 type TipoHabitacion = "IndividualEstandar" | "DobleEstandar" | "Suite" | "DobleSuperior" | "SuperiorFamilyPlan";
@@ -156,6 +158,11 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
 
   const eliminarSeleccionados = () => setSeleccionados([]);
 
+  const deleteSeleccionado = (sel: string) => {
+    const nuevosSeleccionados = seleccionados.filter((item) => item !== sel);
+    setSeleccionados(nuevosSeleccionados);
+  };
+
   // =========================
   // RENDER
   // =========================
@@ -301,6 +308,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           <table className="w-full border-collapse border shadow-lg">
             <thead className="bg-indigo-950 text-white">
               <tr>
+                <th className="p-3 border">Eliminar</th>
                 <th className="p-3 border">Habitación</th>
                 <th className="p-3 border">Fecha</th>
               </tr>
@@ -311,6 +319,13 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
                 const fechaMostrar = format(parseISO(fecha),"dd/MM/yyyy");
                 return (
                   <tr key={sel} className="bg-white hover:bg-indigo-100">
+                    <td className="p-3 border text-center"><button
+                        onClick={() => deleteSeleccionado(sel)}   // <-- tu función
+                        className=" text-white p-1 rounded hover:bg-red-700"
+                    >
+                        <FontAwesomeIcon icon={faTrashCan} className="text-black" />
+                      </button>
+                    </td>
                     <td className="p-3 border text-center">{num}</td>
                     <td className="p-3 border text-center">{fechaMostrar}</td>
                   </tr>
