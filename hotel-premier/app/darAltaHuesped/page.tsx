@@ -137,7 +137,7 @@ export default function DarAltaHuesped(){
             });
 
             if (existe.data.length > 0) {
-                setMensajeError("¡CUIDADO! El tipo y número de documento ya existen en el sistema");
+                setMensajeError("¡CUIDADO!");
                 setOpenError(true);
                 return;
             }

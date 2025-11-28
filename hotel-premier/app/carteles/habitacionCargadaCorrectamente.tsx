@@ -15,7 +15,7 @@ export default function CartelAviso({ mensaje, onClose }: Props) {
       <div className="bg-yellow-300 border-2 border-yellow-600 rounded-xl shadow-xl p-6 max-w-sm text-center relative">
 
         {/* IMAGEN ESQUINA SUPERIOR IZQUIERDA */}
-        <img src="/imagenAdvertencia.png"  alt="Advertencia" className="absolute top-3 left-3 w-10 h-10" />
+        <img src="/imagenInformacion.png"  alt="Informacion" className="absolute top-3 left-3 w-10 h-10" />
 
         {/* Botón de cerrar */}
         <button
@@ -26,7 +26,7 @@ export default function CartelAviso({ mensaje, onClose }: Props) {
           ✕
         </button>
 
-        <p className="text-lg font-semibold">{mensaje}</p>
+        <p className="text-lg font-semibold">{"Habitacion cargada. Texto de prueba"}</p>
       </div>
     </div>
   );

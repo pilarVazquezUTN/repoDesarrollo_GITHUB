@@ -18,7 +18,7 @@ export default function BuscarHuesped() {
     const [huespedSeleccionado, setHuespedSeleccionado] = useState<Boolean>(false);
     const router = useRouter();
 
-    // Estados para errores (todos boolean)
+    // Estados para errores
     const [errorNombre, setErrorNombre] = useState(false);
     const [errorApellido, setErrorApellido] = useState(false);
     const [errorDni, setErrorDni] = useState(false);
@@ -26,7 +26,7 @@ export default function BuscarHuesped() {
     const buscarHuesped = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // VALIDACIONES --------------------------
+        // VALIDACIONES
         const soloLetras = /^[A-ZÁÉÍÓÚÑ\s]*$/;
         const soloNumeros = /^[0-9]*$/;
 
@@ -38,7 +38,6 @@ export default function BuscarHuesped() {
         setErrorApellido(apellidoInvalido);
         setErrorDni(dniInvalido);
 
-        // Si hay errores → no consultar API
         if (nombreInvalido || apellidoInvalido || dniInvalido) {
             return;
         }
@@ -47,9 +46,11 @@ export default function BuscarHuesped() {
             const response = await axios.get("http://localhost:8080/huespedes", {
                 params: {
                     dni: dni || null,
-                    nombre: nombre || null,
-                    apellido: apellido || null,
-                    tipoDocumento: tipoDoc || null
+                    tipoDocumento: tipoDoc || null,
+
+                    // 🔥 CRITERIO "EMPIEZA CON"
+                    nombre: nombre ? `${nombre}%` : null,
+                    apellido: apellido ? `${apellido}%` : null
                 }
             });
 
@@ -64,15 +65,12 @@ export default function BuscarHuesped() {
         }
     };
 
-    
-
     const irADarAltaHuesped = ()=>{
         if(!huespedSeleccionado){
             router.push("/darAltaHuesped");
             return;
         }
         router.push("/modificarHuesped");
-        
     }
 
     const setSeleccionado = () => {
@@ -152,7 +150,6 @@ export default function BuscarHuesped() {
                 <Link className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800 transition"  href="/menu">
                     Cancelar
                 </Link>
-                
                 
                 <button onClick={irADarAltaHuesped} className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800 transition"> Siguiente </button>
                 

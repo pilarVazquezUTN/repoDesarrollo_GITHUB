@@ -88,10 +88,10 @@ export default function Tabla({huespedes, setSeleccionado}: TablaProps) {
                 <thead className="bg-indigo-950 text-white sticky top-0 ">
                     <tr>
                         <th className="p-3 border ">Seleccionar</th>
-                        <th className="p-3 border" onClick={() => handleSort("apellido")}>Apellido</th>
-                        <th className="p-3 border" onClick={() => handleSort("nombre")}>Nombre</th>
-                        <th className="p-3 border" onClick={() => handleSort("tipoDocumento")}>Tipo de Documento</th>
-                        <th className="p-3 border" onClick={() => handleSort("dni")}>Número de Documento</th>
+                        <th className="p-3 border" onClick={() => handleSort("apellido")}>Apellido ↑↓</th>
+                        <th className="p-3 border" onClick={() => handleSort("nombre")}>Nombre ↑↓</th>
+                        <th className="p-3 border" onClick={() => handleSort("tipoDocumento")}>Tipo de Documento ↑↓</th>
+                        <th className="p-3 border" onClick={() => handleSort("dni")}>Número de Documento ↑↓</th>
                     </tr>
                 </thead>
                 <tbody>

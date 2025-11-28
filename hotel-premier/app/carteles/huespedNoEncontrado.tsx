@@ -15,6 +15,9 @@ export default function huespedNoEncontrado({ onClose }: Props) {
       {/* CONTENIDO DEL CARTEL */}
       <div className="relative bg-white rounded-lg shadow-lg p-6 w-140">
 
+        {/* IMAGEN ESQUINA SUPERIOR IZQUIERDA */}
+        <img src="/imagenError.png"  alt="Error" className="absolute top-3 left-3 w-10 h-10" />
+
         <h2 className="text-red-700 font-bold text-center mb-4">
           No se encontraron huéspedes con esos datos.<br />
         </h2>
