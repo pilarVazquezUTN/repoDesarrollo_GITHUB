@@ -34,9 +34,12 @@ export type TipoHuesped = {
 
 type TablaProps = {
     huespedes: TipoHuesped[];
+    setSeleccionado: ()=>void;
 };
 type SortKey = keyof TipoHuesped | "dni" | "tipoDocumento";
-export default function Tabla({huespedes}: TablaProps) {
+
+export default function Tabla({huespedes, setSeleccionado}: TablaProps) {
+
     const [sortConfig, setSortConfig] = useState<{ key: SortKey | null; direction: 'asc' | 'desc' }>({
         key: "apellido",
         direction: 'asc'
@@ -95,7 +98,7 @@ export default function Tabla({huespedes}: TablaProps) {
                     {sortedHuespedes.map((h) => (
                         <tr key={h.huespedID.tipoDocumento + h.huespedID.dni} className="bg-white hover:bg-indigo-100">
                         <td className="p-2 border text-center">
-                            <input type="radio" name="seleccion" />
+                            <input onChange={setSeleccionado} type="radio" name="seleccion" />
                         </td>
                         <td className="p-2 border">{h.apellido}</td>
                         <td className="p-2 border">{h.nombre}</td>
