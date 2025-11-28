@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/habitaciones")
 public class HabitacionController {
     @Autowired
     ClassMapper classMapper;
