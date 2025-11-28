@@ -14,7 +14,7 @@ import java.sql.Date;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class ReservaController {
 
     @Autowired

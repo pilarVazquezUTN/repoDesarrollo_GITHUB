@@ -38,12 +38,6 @@ public interface ClassMapper {
 
 
         List<ReservaDTO> toDtosReserva( List<Reserva> reserva );
-<<<<<<< HEAD
-||||||| 3789c52
-
-
-
-=======
 
     @Mapping(target = "nro_habitacion", source = "nro_habitacion.numero")
          ReservaDTO toDTOReserva(Reserva reserva);
@@ -51,5 +45,4 @@ public interface ClassMapper {
     @Mapping(target = "nro_habitacion", ignore = true)
         Reserva toEntityReserva(ReservaDTO dto);
 
->>>>>>> 0e82ff0615d3930e583b8bd7ce6874b37d78de88
 }

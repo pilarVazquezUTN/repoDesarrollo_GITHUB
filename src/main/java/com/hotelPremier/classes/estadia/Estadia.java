@@ -35,7 +35,7 @@ public class Estadia {
     @ManyToMany(mappedBy = "listaestadia")
     private List<Huesped> listahuesped;
 
-    @ManyToMany(mappedBy = "listaestadia")
+    @OneToMany(mappedBy = "estadia")
     private List<Factura> listafactura;
 
     @OneToMany(mappedBy = "estadia")

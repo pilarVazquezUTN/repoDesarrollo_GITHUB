@@ -33,9 +33,11 @@ public class Reserva {
     private String telefono;
 
     @ManyToOne
-     @JoinColumn(name = "nro_habitacion")
-     private Habitacion nro_habitacion;
+    @JoinColumn(name = "nro_habitacion")
+    private Habitacion nro_habitacion;
 
+
+    
 
     public void setHabitacion (Habitacion habitacion){
 

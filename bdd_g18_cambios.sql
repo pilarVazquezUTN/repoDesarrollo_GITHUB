@@ -86,7 +86,6 @@ estado varchar(40),
 tipo varchar(2),
 id_estadia integer,
 id_notacredito integer,
-id_pago integer,
 constraint fk_id_estadia foreign key (id_estadia) references estadia (id_estadia),
 constraint fk_idnotacredito foreign key (id_notacredito) references notadecredito (id_notacredito)
 

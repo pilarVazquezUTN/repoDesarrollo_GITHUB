@@ -21,7 +21,7 @@ public class Pago {
     @Column(name="fecha")
     private Date  fecha;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "factura")
     private Factura factura;
 

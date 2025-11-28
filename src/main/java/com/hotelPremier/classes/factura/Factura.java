@@ -29,22 +29,19 @@ public class Factura {
     
     
     
-    @ManyToMany
-    @JoinTable(
-        name = "relac_estadias_facturas",  // nombre de la columna FK
-        joinColumns = @JoinColumn(name = "nro_factura"),
-        inverseJoinColumns = @JoinColumn(name= "id_estadia")
-    )
-    private List<Estadia> listaestadia;
+    @ManyToOne
+    @JoinColumn(name = "id_estadia")
+    private Estadia estadia;
 
     @ManyToOne
     @JoinColumn(name = "id_notacredito")
     private NotaDeCredito notacredito;
 
-    @OneToMany(mappedBy = "factura")
-    private List<Pago> listapago;
+    @OneToOne
+    @JoinColumn(name = "pago")
+    private Pago pago;
 
-    @ManyToOne //(mappedBy = "nro_factura")
+    @ManyToOne 
     @JoinColumn(name="responsablepago")  
     private ResponsablePago responsablepago;
 
