@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import com.hotelPremier.classes.habitacion.Habitacion;
 import com.hotelPremier.classes.huesped.Huesped;
+import com.hotelPremier.classes.reserva.Reserva;
 import com.hotelPremier.classes.servicioExtra.ServicioExtra;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hotelPremier.classes.factura.Factura;
@@ -40,6 +41,10 @@ public class Estadia {
 
     @OneToMany(mappedBy = "estadia")
     private List<ServicioExtra> listaserviciosextra;
+
+    @OneToOne
+    @JoinColumn(name = "id_reserva")
+    private Reserva reserva;
 
 
 

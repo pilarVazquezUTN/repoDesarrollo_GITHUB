@@ -1,5 +1,7 @@
 package com.hotelPremier.classes.direccion;
 
+import com.hotelPremier.classes.huesped.Huesped;
+import com.hotelPremier.classes.responsablePago.ResponsablePago;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
@@ -28,7 +30,18 @@ public class Direccion {
     @Column(name="pais")
     private String pais;
 
-    /**
+    @OneToOne
+    @JoinColumns({
+            @JoinColumn(name = "dni", referencedColumnName = "dni"),
+            @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento")
+    })
+    private Huesped huesped;
+
+    @OneToOne
+    @JoinColumn(name = " id_responsablePago")  // columna FK en esta tabla
+    private ResponsablePago responsablePago;
+
+   /* /**
      * constructor de direccion
      * @param calle
      * @param numero

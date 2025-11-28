@@ -9,6 +9,7 @@ import com.hotelPremier.classes.direccion.DireccionDTO;
 import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.estadia.EstadiaDTO;
 import com.hotelPremier.classes.reserva.Reserva;
+import com.hotelPremier.classes.responsablePago.ResponsablePago;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!!
 
@@ -57,6 +58,13 @@ public class Huesped {
             inverseJoinColumns = @JoinColumn(name = "id_estadia")
     )
     private List<Estadia> listaestadia;
+
+
+    @OneToOne
+    @JoinColumn(name = "id_responsablepago")
+    private ResponsablePago responsablePago;
+
+
 
     public Huesped() {
         this.huespedID = new HuespedID();
