@@ -12,9 +12,17 @@ type TipoHabitacion = "IndividualEstandar" | "DobleEstandar" | "Suite" | "DobleS
 
 interface ReservaDTO {
   id: number;
-  numeroHabitacion: number;
-  fechaDesde: string;
-  fechaHasta: string;
+  nro_habitacion: number;
+  fecha_desde: string;
+  fecha_hasta: string;
+}
+
+interface HabitacionDTO {
+  numero:number;
+  estado:string;
+  precio:number;
+  cantidadPersonas: number;
+  tipoHab: TipoHabitacion;
 }
 
 interface Props {
@@ -35,19 +43,20 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const [seleccionados, setSeleccionados] = useState<string[]>([]);
   const [mostrarCartelOH, setMostrarCartelOH] = useState(false);
   const [mostrarCartel, setMostrarCartel] = useState(false);
+  const [habitaciones, setHabitaciones] = useState<HabitacionDTO[] | []>([]);
 
   const pathname = usePathname();
 
   // =========================
   // CONFIGURACIÓN HABITACIONES
   // =========================
-  const habitacionesPorTipo: Record<TipoHabitacion, number[]> = {
-    IndividualEstandar: [1,2,3,4,5,6,7,8,9,10],
-    DobleEstandar: [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28],
-    DobleSuperior: [29,30,31,32,33,34,35,36],
-    SuperiorFamilyPlan: [37,38,39,40,41,42,43,44,45,46],
-    Suite: [47,48],
-  };
+  const TipoHabitacion = {
+    IndividualEstandar: "IndividualEstandar" ,
+    DobleEstandar: "DobleEstandar",
+    SuperiorFamilyPlan: "SuperiorFamilyPlan",
+    Suite: "Suite",
+    DobleSuperior: "DobleSuperior"
+  }
 
   // =========================
   // VALIDAR FECHAS
@@ -79,19 +88,37 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   // FETCH RESERVAS
   // =========================
   useEffect(() => {
+    
     const fetchReservas = async () => {
       if (fechasValidas && tipoSeleccionado) {
         try {
+          console.log(desdeFecha);
+          console.log(hastaFecha);
           const response = await axios.get(`http://localhost:8080/reservas`, {
             params: { fechaDesde: desdeFecha, fechaHasta: hastaFecha },
           });
           setReservas(response.data);
+          console.log(response.data);
         } catch(err) {
           console.error("Error al cargar reservas:", err);
         }
       }
     };
+
+    const fetchHabitaciones = async () =>{
+      try{
+        const res = await axios.get(`http://localhost:8080/habitaciones`, {
+            params: { tipo:tipoSeleccionado },
+          });
+          setHabitaciones(res.data);
+          console.log("habitacion: " + setHabitaciones);
+
+      }catch(err) {
+          console.error("Error al cargar reservas:", err);
+        }
+    }
     fetchReservas();
+    fetchHabitaciones();
   }, [fechasValidas, tipoSeleccionado, desdeFecha, hastaFecha]);
 
   // =========================
@@ -104,7 +131,12 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const estaReservada = (fechaDate: Date, numeroHab: number) =>
     reservas.some(r => {
       const fechaFilaString = format(fechaDate,"yyyy-MM-dd");
-      return r.numeroHabitacion===numeroHab && fechaFilaString >= r.fechaDesde && fechaFilaString <= r.fechaHasta;
+      console.log("fecha fila string: " + fechaFilaString);
+      console.log("fecha Desde: " + r.fecha_desde);
+      console.log("fecha Hasta: " + r.fecha_hasta);
+      console.log("numero habitacion r:" + r.nro_habitacion);
+      console.log("numero habitacion: " + numeroHab);
+      return r.nro_habitacion===numeroHab && fechaFilaString >= r.fecha_desde && fechaFilaString <= r.fecha_hasta;
     });
 
   const toggleSeleccion = (fechaDate: Date, numeroHab: number) => {
@@ -173,11 +205,11 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           className={`p-2 border rounded mb-4 ${!fechasValidas ? "bg-gray-200 cursor-not-allowed text-gray-400" : "text-indigo-950"}`}
         >
           <option value="" disabled>Seleccionar tipo</option>
-          <option value="IndividualEstandar">Individual Estandar</option>
-          <option value="DobleEstandar">Doble Estandar</option>
-          <option value="DobleSuperior">Doble Superior</option>
-          <option value="SuperiorFamilyPlan">Superior Family Plan</option>
-          <option value="Suite">Suite</option>
+          <option value={TipoHabitacion.IndividualEstandar}>Individual Estandar</option>
+          <option value={TipoHabitacion.DobleEstandar}>Doble Estandar</option>
+          <option value={TipoHabitacion.DobleSuperior}>Doble Superior</option>
+          <option value={TipoHabitacion.SuperiorFamilyPlan}>Superior Family Plan</option>
+          <option value={TipoHabitacion.Suite}>Suite</option>
         </select>
       </form>
 
@@ -198,7 +230,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
                 <tr>
                   <th className="p-2">Fecha</th>
                   {tipoSeleccionado && (
-                    <th colSpan={habitacionesPorTipo[tipoSeleccionado].length} className="p-2">Habitaciones</th>
+                    <th colSpan={habitaciones.length} className="p-2">Habitaciones</th>
                   )}
                 </tr>
               </thead>
@@ -206,8 +238,8 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
               <tbody>
                 <tr>
                   <td className="p-2 border"></td>
-                  {tipoSeleccionado && habitacionesPorTipo[tipoSeleccionado].map(num => (
-                    <td key={num} className="p-2 border text-center">{num}</td>
+                  {tipoSeleccionado && habitaciones.map(hab => (
+                    <td key={hab?.numero} className="p-2 border text-center">{hab?.numero}</td>
                   ))}
                 </tr>
 
@@ -216,18 +248,20 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
                   return (
                     <tr key={fecha}>
                       <td className="p-2 border text-center font-medium">{fecha}</td>
-                      {tipoSeleccionado && habitacionesPorTipo[tipoSeleccionado].map(num => {
-                        const key = `${format(fechaDate,"yyyy-MM-dd")}|${num}`;
+                      {tipoSeleccionado && habitaciones.map(hab => {
+                        const key = `${format(fechaDate,"yyyy-MM-dd")}|${hab?.numero}`;
                         const seleccionado = seleccionados.includes(key);
-                        const reservada = estaReservada(fechaDate,num);
+                        const reservada = estaReservada(fechaDate,hab?.numero);
+                        console.log("reservada:" + reservada)
+                        console.log(reservas)
 
                         return (
                           <td
-                            key={num}
+                            key={hab.numero}
                             className={`p-4 border cursor-pointer
                               ${reservada ? "bg-red-500" : seleccionado ? "bg-green-500" : "bg-white"}
                             `}
-                            onClick={() => toggleSeleccion(fechaDate,num)}
+                            onClick={() => toggleSeleccion(fechaDate,hab?.numero)}
                           ></td>
                         );
                       })}
