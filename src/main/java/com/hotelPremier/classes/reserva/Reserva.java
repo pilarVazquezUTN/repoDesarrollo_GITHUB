@@ -4,6 +4,7 @@ package com.hotelPremier.classes.reserva;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.habitacion.Habitacion;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 import java.util.Date;
@@ -35,6 +36,10 @@ public class Reserva {
     @ManyToOne
     @JoinColumn(name = "nro_habitacion")
     private Habitacion nro_habitacion;
+
+    @OneToOne
+    @JoinColumn(name = "id_estadia")
+    private Estadia estadia;
 
 
     
