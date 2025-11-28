@@ -21,32 +21,32 @@ export default function MenuPage() {
 
   {/* Título */}
   <h2 className="text-3xl font-serif text-indigo-950 mb-2">Servicios</h2>
-  <div className="w-16 h-[2px] bg-yellow-600 mb-10"></div>
+  <div className="w-16 h-[2px] bg-indigo-950 mb-10"></div>
 
   {/* Grid de tarjetas */}
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
     {/* Estacionamiento */}
-    <div className="bg-white rounded-lg shadow-md px-10 py-8 flex flex-col items-center hover:shadow-lg transition">
-      <img src="/imagenEstacionamiento.png" alt="Estacionamiento" className="w-18 h-18 mb-4" />
+    <div className="bg-white rounded-lg shadow-md px-21 py-8 flex flex-col items-center hover:shadow-lg transition">
+      <img src="/imagenEstacionamiento.png" alt="Estacionamiento" className="w-25 h-23 mb-4" />
       <p className="text-indigo-950 font-medium text-lg">Estacionamiento</p>
     </div>
 
     {/* Sauna */}
-        <div className="bg-white rounded-lg shadow-md px-10 py-8 flex flex-col items-center hover:shadow-lg transition">
-          <img src="/imagenSauna.png" alt="Sauna" className="w-14 h-14 mb-4" />
+        <div className="bg-white rounded-lg shadow-md px-21 py-8 flex flex-col items-center hover:shadow-lg transition">
+          <img src="/imagenSauna.png" alt="Sauna" className="w-25 h-23 mb-4" />
           <p className="text-indigo-950 font-medium text-lg">Sauna</p>
         </div>
 
         {/* Lavado y Planchado */}
-        <div className="bg-white rounded-lg shadow-md px-10 py-8 flex flex-col items-center hover:shadow-lg transition">
-          <img src="/imagenLavanderia.png" alt="Lavado y Planchado" className="w-14 h-14 mb-4" />
+        <div className="bg-white rounded-lg shadow-md px-21 py-8 flex flex-col items-center hover:shadow-lg transition">
+          <img src="/imagenLavanderia.png" alt="Lavado y Planchado" className="w-25 h-23 mb-4" />
           <p className="text-indigo-950 font-medium text-lg">Lavado y Planchado</p>
         </div>
 
         {/* Bar */}
-        <div className="bg-white rounded-lg shadow-md px-10 py-8 flex flex-col items-center hover:shadow-lg transition">
-          <img src="/imagenBbar.png" alt="Bar" className="w-14 h-14 mb-4" />
+        <div className="bg-white rounded-lg shadow-md px-21 py-8 flex flex-col items-center hover:shadow-lg transition">
+          <img src="/imagenBar.png" alt="Bar" className="w-25 h-23 mb-4" />
           <p className="text-indigo-950 font-medium text-lg">Bar</p>
         </div>
 
