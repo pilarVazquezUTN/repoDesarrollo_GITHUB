@@ -204,12 +204,63 @@ INSERT INTO huesped (
     TO_DATE('20/07/1971','DD/MM/YYYY'),'PAOLITA@GMAIL.COM','CONSUMIDOR FINAL','PAOLA','ACTRIZ',13);
 
 INSERT INTO habitacion (numero, precio, tipohabitacion, cantidadPersonas, estado, camasKingSize, camaDoble, camasIndividuales) VALUES
--- Habitaciones de las reservas anteriores:
-(1, 50000, 'IndividualEstandar', 1, 'ocupada', 0, 0, 1),
-(11, 80000, 'DobleEstandar', 2, 'libre', 0, 1, 0),
-(37, 45000, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
-(47, 120000, 'Suite', 1, 'ocupada', 1, 0, 0),
-(29, 65000, 'DobleSuperior', 2, 'libre', 1, 0, 0);
+-- Individual Estándar (10)
+(1, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(2, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(3, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(4, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(5, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(6, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(7, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(8, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(9, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(10, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+
+-- Doble Estándar (18)
+(11, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(12, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(13, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(14, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(15, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(16, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(17, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(18, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(19, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(20, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(21, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(22, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(23, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(24, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(25, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(26, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(27, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(28, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+
+-- Doble Superior (8)
+(29, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
+(30, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
+(31, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
+(32, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
+(33, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
+(34, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
+(35, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
+(36, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
+
+-- Superior Family Plan (10)
+(37, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(38, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(39, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(40, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(41, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(42, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(43, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(44, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(45, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(46, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+
+-- Suite (2)
+(47, 128600, 'Suite', 2, 'libre', 1, 0, 0),
+(48, 128600, 'Suite', 2, 'libre', 1, 0, 0);
 
 
 INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
@@ -264,7 +315,7 @@ VALUES (2004,
         47);
 
 
-GRANT ALL PRIVILEGES ON DATABASE hotelpremier6 TO pili;
+GRANT ALL PRIVILEGES ON DATABASE hotelpremier3 TO pili;
 
 -- Esto actualiza la secuencia al valor máximo que existe actualmente en la tabla
 --pili: agregue esto porque sino me crea el id 1, ahora con esta funcion arranca desde el ultimo+1
