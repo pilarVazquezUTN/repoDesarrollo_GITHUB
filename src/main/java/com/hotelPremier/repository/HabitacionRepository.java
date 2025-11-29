@@ -20,4 +20,11 @@ public interface HabitacionRepository extends JpaRepository<Habitacion,Integer> 
         WHERE h.tipohabitacion = :tipoHabitacion            
     """) 
    List<Habitacion> buscarPorTipoHabitacion(@Param("tipoHabitacion")    String tipoHabitacion);
+
+
+
+
+
+
+
 }

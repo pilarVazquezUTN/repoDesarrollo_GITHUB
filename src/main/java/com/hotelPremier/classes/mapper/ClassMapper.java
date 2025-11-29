@@ -19,7 +19,7 @@ public interface ClassMapper {
 
 
 
-          @Mapping(target = "tipoHab", expression = "java(h.getTipo())")
+          @Mapping(target = "tipohabitacion", expression = "java(h.getTipo())")
           HabitacionDTO toDTOHab(Habitacion h);
            List<HabitacionDTO> toDTOsHabitacion(List<Habitacion> habitaciones);
            //Habitacion toEntityHabitacion(HabitacionDTO dto);

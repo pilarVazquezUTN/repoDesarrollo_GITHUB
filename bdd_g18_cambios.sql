@@ -320,3 +320,12 @@ GRANT ALL PRIVILEGES ON DATABASE hotelpremier3 TO pili;
 -- Esto actualiza la secuencia al valor máximo que existe actualmente en la tabla
 --pili: agregue esto porque sino me crea el id 1, ahora con esta funcion arranca desde el ultimo+1
 SELECT setval('direccion_id_direccion_seq', (SELECT MAX(id_direccion) FROM direccion));
+
+--AGREGAR ESTO PARA Q SE GENERE EL ID CUANDO HAGO EL INSET EN LA BDD
+ALTER TABLE reserva
+ALTER COLUMN id_reserva DROP DEFAULT;
+
+ALTER TABLE reserva
+ALTER COLUMN id_reserva
+    ADD GENERATED ALWAYS AS IDENTITY;
+

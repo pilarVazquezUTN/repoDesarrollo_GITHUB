@@ -1,5 +1,6 @@
 package com.hotelPremier.controller;
 
+import com.hotelPremier.classes.habitacion.HabitacionDTO;
 import com.hotelPremier.service.ReservaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,9 @@ import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.classes.reserva.ReservaDTO;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:3000")
@@ -39,12 +42,30 @@ public class ReservaController {
     }
 
     @PostMapping("/reservas")
-    public ResponseEntity<ReservaDTO> crearReserva(@RequestBody ReservaDTO reservaDTO) {
+    public ResponseEntity<String> crearReserva(@RequestBody List<ReservaDTO> listareservaDTO) {
 
-        ReservaDTO creada = reservaService.crearReserva(reservaDTO);
-        return ResponseEntity.ok(creada);
+        List<ReservaDTO> listaReservasguardadas = reservaService.crearReserva(listareservaDTO);
+        return ResponseEntity.ok("Reservas registradas con exito");
     }
 
+    /**
+     * recibe la fecha desde, hasta , el listado de habitacionDTO
+     * @param fechaDesde
+     * @param fechaHasta
+     * @param habitacionDTOS
+     * @return
+     */
+
+    @PostMapping("/listados")
+    public ResponseEntity<List<Map<String, Object>>> generarListado(
+            @RequestParam LocalDate fechaDesde,
+            @RequestParam LocalDate fechaHasta,
+            @RequestBody List<HabitacionDTO> habitacionDTOS) {
+
+        List<Map<String, Object>> listado = reservaService.generarListadoReservar(fechaDesde, fechaHasta, habitacionDTOS);
+
+        return ResponseEntity.ok(listado);
+    }
 
 
 

@@ -9,12 +9,14 @@ import com.hotelPremier.classes.habitacion.Habitacion;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 import java.util.Date;
 
-@Entity // 1. Marca la clase como una tabla en la BDD
+@Entity
+// 1. Marca la clase como una tabla en la BDD
 @Table(name = "reserva") // 2. (Opcional) Especifica el nombre de la tabla
 public class Reserva {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_reserva")
-    private int id_reserva;
+    private Integer id_reserva;
 
     @Temporal(TemporalType.DATE) //guarda fecha sin hora
     @Column(name="fecha_desde")
@@ -42,7 +44,9 @@ public class Reserva {
     private Estadia estadia;
 
 
-    
+    public void setId_reserva(Integer id_reserva) {
+        this.id_reserva = id_reserva;
+    }
 
     public void setHabitacion (Habitacion habitacion){
 

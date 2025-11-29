@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-28T18:26:05-0300",
-    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-11-29T14:04:25-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class ClassMapperImpl implements ClassMapper {
@@ -38,7 +38,7 @@ public class ClassMapperImpl implements ClassMapper {
         habitacionDTO.setPrecio( h.getPrecio() );
         habitacionDTO.setCantidadPersonas( h.getCantidadPersonas() );
 
-        habitacionDTO.setTipoHab( h.getTipo() );
+        habitacionDTO.setTipohabitacion( h.getTipo() );
 
         return habitacionDTO;
     }

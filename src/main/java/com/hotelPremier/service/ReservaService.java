@@ -1,9 +1,14 @@
 package com.hotelPremier.service;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.hotelPremier.classes.habitacion.Habitacion;
+import com.hotelPremier.classes.habitacion.HabitacionDTO;
 import com.hotelPremier.classes.reserva.Reserva;
 import com.hotelPremier.repository.HabitacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,27 +38,76 @@ public class ReservaService {
         return mapper.toDtosReserva( reservaRepository.buscarReservas(fechaDesde,fechaHasta) );
     }
 
-    public ReservaDTO crearReserva(ReservaDTO reservaDTO){
+    /**
+     * recibe la lista de reservasdto a cda uno lo mapea a lla entity y lo manda a la bdd
+     * @param reservasDTOList
+     * @return
+     */
+    public List<ReservaDTO> crearReserva(List<ReservaDTO> reservasDTOList){
 
-        //aca convierto la reserva dto en reserva para mandarle a la bdd
-        Reserva reserva = mapper.toEntityReserva(reservaDTO);
+        List<ReservaDTO> reservasGuardadas = new ArrayList<>();
 
+        // loop sobre cada reservaDTO de la lista
+        for (ReservaDTO reservaDTO : reservasDTOList) {
 
-
-        //AGREGO ESTO PARA QUE BUSQUE EL NUMERO DE HABITACION DE LA BASE DE DATOS Y HAGA EL SET
-        Habitacion hab = habitacionRepository
-                .findById(reservaDTO.getNro_habitacion())
-                .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
-
-        // Asignarla a la reserva
-        reserva.setHabitacion(hab);
-
-        // guardar en BD
-        Reserva guardada = reservaRepository.save(reserva);
+           //convertir la entidad
+            Reserva reserva = mapper.toEntityReserva(reservaDTO);
 
 
-        return mapper.toDTOReserva(guardada);
+            //se busca la hab
+            Habitacion hab = habitacionRepository
+                    .findById(reservaDTO.getNro_habitacion())
+                    .orElseThrow(() -> new RuntimeException(
+                            "Habitación no encontrada: " + reservaDTO.getNro_habitacion()
+                    ));
+
+            // setear habitación
+            reserva.setHabitacion(hab);
+
+            // setear estado
+            reserva.setEstado("Pendiente");
+
+            // guardarla en la bdd
+            Reserva guardada = reservaRepository.save(reserva);
+
+            // las reservas guardadas
+            reservasGuardadas.add(mapper.toDTOReserva(guardada));
+        }
+
+        //se devuelve la lista completa
+        return reservasGuardadas;
     }
 
-    
+    /**
+     * me llega una fecha desde, hasta , una lista de habitacion dto, hace una lista de map para mostrar los datos a guardar dsp en sus respectivas entidades
+     * @param fechaDesde
+     * @param fechaHasta
+     * @return
+     */
+    public List<Map<String, Object>> generarListadoReservar(
+            LocalDate fechaDesde,
+            LocalDate fechaHasta,
+            List<HabitacionDTO> habitacionDTOS) {
+
+        List<Map<String, Object>> listado = new ArrayList<>();
+
+        for (HabitacionDTO habitacionDTO : habitacionDTOS) {  //por cada habitacionDTO en la lista habitacionDTOS
+
+            Map<String, Object> datosReserva = new HashMap<>();
+
+            datosReserva.put("numeroHabitacion", habitacionDTO.getNumero());
+            datosReserva.put("tipo", habitacionDTO.getTipohabitacion());
+            datosReserva.put("fechaDesde", fechaDesde);
+            datosReserva.put("fechaHasta", fechaHasta);
+
+            listado.add(datosReserva); //este es el listado q devuelve el "gestor" para mostrar por pantalla las seleccionadas
+        }
+
+        return listado;
+    }
+
+
+
+
+
 }

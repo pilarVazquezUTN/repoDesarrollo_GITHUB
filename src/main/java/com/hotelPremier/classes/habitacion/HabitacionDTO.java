@@ -17,10 +17,10 @@ public class HabitacionDTO {
 
     // GETTERS y SETTERS
 
-    public void setTipoHab(String tipoHab) {
+    public void setTipohabitacion(String tipoHab) {
         this.tipohabitacion = tipoHab;
     }
-    public String getTipoHab() {
+    public String getTipohabitacion() {
         return tipohabitacion;
     }
 
