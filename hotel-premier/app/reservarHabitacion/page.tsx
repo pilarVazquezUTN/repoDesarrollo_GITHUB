@@ -8,6 +8,7 @@ import CartelHabitacionNoDisponible from "../carteles/CartelHabitacionNoDisponib
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan  } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 // Tipos
 type TipoHabitacion = "IndividualEstandar" | "DobleEstandar" | "Suite" | "DobleSuperior" | "SuperiorFamilyPlan";
@@ -286,13 +287,21 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
               <span className="w-4 h-4 rounded-full bg-blue-900"></span><span>OCUPADA</span>
               <span className="w-4 h-4 rounded-full bg-green-500"></span><span>SELECCIONADA</span>
             </li>
+        
+            <div className="flex justify-center gap-4 mt-6">
+            <Link href="/menu">
+              <button className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800">
+                Cancelar
+              </button>
+            </Link>
 
             <button
-              className="block mx-auto mt-6 px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
+              className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
               onClick={() => { if (pathname === "/ocuparHabitacion") setMostrarCartelOH(true); }}
-            >
-              Aceptar
+            > Aceptar
             </button>
+          </div>
+
 
             {mostrarCartelOH && <OcuparHabitacionIgualmente onClose={() => setMostrarCartelOH(false)} />}
           </>
