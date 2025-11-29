@@ -13,15 +13,25 @@ export default function ErrorDniExistente({ mensaje, onCorregir, onAceptar }: Pr
       {/* FONDO TENUE */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
 
-      {/* CONTENIDO DEL CARTEL - VISUAL DEL CARTEL BLANCO */}
+      {/* CONTENIDO DEL CARTEL */}
       <div className="relative bg-white rounded-lg shadow-lg p-6 w-140 text-center">
 
-        {/* TÍTULO (mantengo contenido pero con estilo blanco) */}
-        <h2 className="text-red-700 font-bold text-center mb-4">
-          {mensaje}
-        </h2>
+        {/* IMAGEN ESQUINA SUPERIOR IZQUIERDA */}
+        <img
+          src="/imagenError.png"
+          alt="Error"
+          className="absolute top-3 left-3 w-10 h-10"
+        />
 
-        {/* BOTONES MÁS JUNTOS COMO EL CARTEL BLANCO */}
+        {/* CONTENEDOR DEL TEXTO - con padding para centrarlo visualmente */}
+        <div className="pl-10"> 
+          <h2 className="text-red-700 font-bold text-center mb-4">
+            {mensaje}
+          </h2>
+          <h3> El tipo y número de documento ya existen en el sistema </h3>
+        </div>
+
+        {/* BOTONES */}
         <div className="mt-6 flex justify-center gap-4">
           <button
             type="button"

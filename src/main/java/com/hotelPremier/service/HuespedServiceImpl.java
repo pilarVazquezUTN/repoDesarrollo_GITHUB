@@ -5,6 +5,7 @@ import com.hotelPremier.classes.huesped.HuespedDTO;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.DireccionRepository;
 import com.hotelPremier.repository.HuespedRepositoryDAO;
+import com.hotelPremier.classes.direccion.Direccion;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,20 +53,10 @@ public class HuespedServiceImpl {
             String tipoDocumento
     ) {
 
-        // 1. Preparamos los Strings para la búsqueda parcial (LIKE)
-        if (nombre != null) {
-            nombre = "%" + nombre + "%"; // Agregamos los porcentajes aquí
-        }
-        
-        if (apellido != null) {
-            apellido = "%" + apellido + "%"; // Agregamos los porcentajes aquí
-        }
-
         // El repositorio devuelve List<Huesped>
         List<Huesped> lista = huespedRepository.buscarHuespedes(
                 dni, nombre, apellido, tipoDocumento
         );
-        
 
         // MapStruct convierte a DTO
         return mapper.toDtos(lista);
@@ -77,8 +68,9 @@ public class HuespedServiceImpl {
         
         // MapStruct convierte DTO → Entity
         Huesped huesped = mapper.toEntity(huespedDTO);
+        Direccion direccion = huesped.getDireccion();
         
-        direccionRepository.save(huesped.getDireccion());
+        direccionRepository.save(direccion);
 
         // Guardar en DB
         Huesped saved = huespedRepository.save(huesped);

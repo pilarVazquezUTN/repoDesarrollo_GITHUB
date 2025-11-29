@@ -22,6 +22,17 @@ public interface HuespedRepositoryDAO extends JpaRepository<Huesped,HuespedID>{
     Huesped save(Huesped huesped);
     //void save(Direccion direccion); ------> VA EN REPOSITORY DIRECCION.
 
+    /* QUERY PARA BUSQUEDA POR: EMPIEZA CON
+    
+            @Query("""
+            SELECT h
+            FROM Huesped h
+            WHERE (:dni IS NULL OR h.huespedID.dni = :dni)
+                AND (:nombre IS NULL OR CAST(h.nombre AS string) ILIKE CONCAT(:nombre, '%'))
+                AND (:apellido IS NULL OR CAST(h.apellido AS string) ILIKE CONCAT(:apellido, '%'))
+                AND (:tipoDocumento IS NULL OR h.huespedID.tipoDocumento = :tipoDocumento)
+            """)
+    */
     @Query("""
     SELECT h 
     FROM Huesped h

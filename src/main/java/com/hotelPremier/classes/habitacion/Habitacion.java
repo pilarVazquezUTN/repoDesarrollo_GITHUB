@@ -10,7 +10,7 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
 
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)//una clase padre tiene subclases hijas, y querés que todas se guarden juntas en una sola tabla en la base de datos.
 @DiscriminatorColumn(name = "tipohabitacion")
 
 @Table(name="habitacion")
@@ -29,8 +29,10 @@ public class Habitacion  {
 
     @OneToMany(mappedBy = "habitacion")
     @JsonBackReference
-    private List<Estadia> listaestadias;
+    private List<Estadia> listaestadias; 
 
+    @OneToMany(mappedBy = "nro_habitacion")
+    private List<Reserva> listareservas;
 
 
     // GETTERS y SETTERS

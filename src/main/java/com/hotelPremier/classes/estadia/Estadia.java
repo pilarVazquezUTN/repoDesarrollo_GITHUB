@@ -9,7 +9,6 @@ import com.hotelPremier.classes.servicioExtra.ServicioExtra;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hotelPremier.classes.factura.Factura;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
-import jakarta.websocket.OnMessage;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!
 
 @JsonIgnoreProperties({"listahuesped", "habitacion"}) //JSIGNORE!!!!
