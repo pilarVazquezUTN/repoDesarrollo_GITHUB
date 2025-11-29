@@ -6,6 +6,7 @@ import com.hotelPremier.classes.habitacion.*;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.service.HabitacionService;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,17 @@ public class HabitacionController {
         */
         
         List<HabitacionDTO> listaHabitaciones = habitacionService.getHabitaciones(tipo);
+        return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
+    }
+
+    @GetMapping("/listaHabitaciones")
+    public ResponseEntity<List<HabitacionDTO>> buscarListaHabitaciones(
+        @RequestParam String tipo,
+        @RequestParam Date fechaDesde,
+        @RequestParam Date fechaHasta
+    ){
+        
+        List<HabitacionDTO> listaHabitaciones = habitacionService.buscarListaHabitaciones(tipo,fechaDesde,fechaHasta);
         return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
     }
 

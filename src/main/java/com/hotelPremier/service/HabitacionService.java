@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.hotelPremier.classes.mapper.ClassMapper ;
 
+import java.sql.Date;
 import java.util.List;
 
 @Service
@@ -26,6 +27,9 @@ public class HabitacionService {
         return mapper.toDTOsHabitacion( habitacionRepository.buscarPorTipoHabitacion(tipoHabitacion) );
     }
 
+    public List<HabitacionDTO> buscarListaHabitaciones(String tipo, Date fechaDesde, Date fechaHasta){
+        return mapper.toDTOsHabitacion( habitacionRepository.buscarListaHabitaciones(tipo,fechaDesde,fechaHasta) );
+    }
 
     /*public List<HabitacionDTO> obtenerPorTipo(String tipo) {
         List<Habitacion> habitaciones = habitacionRepository.findByTipo(tipo);
