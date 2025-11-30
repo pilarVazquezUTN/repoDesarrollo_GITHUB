@@ -2,14 +2,15 @@ package com.hotelPremier.classes.habitacion;
 
  import java.util.List;
 
-import com.hotelPremier.classes.reserva.Reserva;
+ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+ import com.hotelPremier.classes.reserva.Reserva;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hotelPremier.classes.estadia.Estadia;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 
 @Entity
-
+//@JsonIgnoreProperties({ "listareservas", "listaestadias" })
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)//una clase padre tiene subclases hijas, y querés que todas se guarden juntas en una sola tabla en la base de datos.
 @DiscriminatorColumn(name = "tipohabitacion")
 
@@ -29,9 +30,11 @@ public class Habitacion  {
 
     @OneToMany(mappedBy = "habitacion")
     @JsonBackReference
+    @JsonIgnore
     private List<Estadia> listaestadias; 
 
     @OneToMany(mappedBy = "nro_habitacion")
+    @JsonIgnore
     private List<Reserva> listareservas;
 
 

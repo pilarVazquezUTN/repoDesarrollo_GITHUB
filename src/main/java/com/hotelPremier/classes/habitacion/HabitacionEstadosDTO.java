@@ -19,4 +19,26 @@ public class HabitacionEstadosDTO {
         this.estadias = estadias;
     }
 
+    public Habitacion getHabitacion() {
+        return habitacion;
+    }
+    public void setHabitacion(Habitacion habitacion) {
+
+        this.habitacion = habitacion;
+    }
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+
+    }
+    public List<Estadia> getEstadias() {
+        return estadias;
+    }
+    public void setEstadias(List<Estadia> estadias) {
+        this.estadias = estadias;
+    }
+
+
 }

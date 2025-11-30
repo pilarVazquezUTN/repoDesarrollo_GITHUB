@@ -3,6 +3,8 @@ package com.hotelPremier.classes.habitacion;
 import com.hotelPremier.classes.estadia.Estadia;
 
 import com.hotelPremier.classes.estadia.EstadiaDTO;
+import com.hotelPremier.classes.reserva.Reserva;
+import com.hotelPremier.classes.reserva.ReservaDTO;
 
 import java.util.List;
 
@@ -14,8 +16,23 @@ public class HabitacionDTO {
     private Integer cantidadPersonas;
     private String tipohabitacion;// cuando mapea con los DTO se le asigna un tipo.
     private List<EstadiaDTO> listaestadias;
+    private List<ReservaDTO> listaReservas;
+
 
     // GETTERS y SETTERS
+
+    public  HabitacionDTO(Habitacion  habitacion, List<ReservaDTO> reservas, List<EstadiaDTO> estadias
+
+    ){
+        this.numero=habitacion.getNumero();
+        this.estado=habitacion.getEstado();
+        this.precio=habitacion.getPrecio();
+        this.cantidadPersonas=habitacion.getCantidadPersonas();
+        this.tipohabitacion=habitacion.getTipo();
+        this.listaReservas = reservas;
+        this.listaestadias = estadias;
+
+    }
 
     public void setTipohabitacion(String tipoHab) {
         this.tipohabitacion = tipoHab;
@@ -35,4 +52,8 @@ public class HabitacionDTO {
 
     public int getCantidadPersonas() { return cantidadPersonas; }
     public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
+
+    public List<EstadiaDTO> getListaestadias() { return listaestadias; }
+    public List<ReservaDTO> getListaReservas() { return listaReservas; }
+
 }

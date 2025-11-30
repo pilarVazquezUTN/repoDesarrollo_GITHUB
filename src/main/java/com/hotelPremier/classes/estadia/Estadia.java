@@ -2,6 +2,8 @@ package com.hotelPremier.classes.estadia;
 
 import java.util.Date;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hotelPremier.classes.habitacion.Habitacion;
 import com.hotelPremier.classes.huesped.Huesped;
 import com.hotelPremier.classes.reserva.Reserva;
@@ -29,6 +31,7 @@ public class Estadia {
 
     @ManyToOne //de estadia a habitacion
     @JsonManagedReference//trabaja con el front
+    @JsonIgnore
     @JoinColumn(name = "nro_habitacion")
     private Habitacion habitacion;
 

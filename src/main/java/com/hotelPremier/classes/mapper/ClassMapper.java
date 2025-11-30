@@ -1,6 +1,8 @@
 package com.hotelPremier.classes.mapper;
 
 
+import com.hotelPremier.classes.estadia.Estadia;
+import com.hotelPremier.classes.estadia.EstadiaDTO;
 import com.hotelPremier.classes.habitacion.Habitacion;
 import com.hotelPremier.classes.habitacion.HabitacionDTO;
 import com.hotelPremier.classes.huesped.Huesped;
@@ -26,6 +28,7 @@ public interface ClassMapper {
 
 //         List<Habitacion> toEntityHabitacion(List<HabitacionDTO> dtos);
 
+        List<EstadiaDTO> toDTOsEstadia(List<Estadia> estadias);
 
         @Mapping(source = "huespedID", target = "huespedID")
         HuespedDTO toDTO(Huesped huesped);

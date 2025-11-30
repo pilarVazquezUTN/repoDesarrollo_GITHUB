@@ -4,12 +4,15 @@ package com.hotelPremier.classes.reserva;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.hotelPremier.classes.estadia.Estadia;
 import com.hotelPremier.classes.habitacion.Habitacion;
 import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 import java.util.Date;
 
 @Entity
+//@JsonIgnoreProperties("habitacion")
 // 1. Marca la clase como una tabla en la BDD
 @Table(name = "reserva") // 2. (Opcional) Especifica el nombre de la tabla
 public class Reserva {
@@ -36,6 +39,7 @@ public class Reserva {
     private String telefono;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "nro_habitacion")
     private Habitacion nro_habitacion;
 

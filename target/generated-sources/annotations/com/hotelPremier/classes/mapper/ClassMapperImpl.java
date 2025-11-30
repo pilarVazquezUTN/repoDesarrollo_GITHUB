@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-30T12:22:55-0300",
-    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
+    date = "2025-11-30T13:55:39-0300",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class ClassMapperImpl implements ClassMapper {
@@ -29,7 +29,11 @@ public class ClassMapperImpl implements ClassMapper {
             return null;
         }
 
-        HabitacionDTO habitacionDTO = new HabitacionDTO();
+        Habitacion habitacion = null;
+        List<ReservaDTO> reservas = null;
+        List<EstadiaDTO> estadias = null;
+
+        HabitacionDTO habitacionDTO = new HabitacionDTO( habitacion, reservas, estadias );
 
         if ( h.getNumero() != null ) {
             habitacionDTO.setNumero( h.getNumero() );
@@ -58,6 +62,20 @@ public class ClassMapperImpl implements ClassMapper {
     }
 
     @Override
+    public List<EstadiaDTO> toDTOsEstadia(List<Estadia> estadias) {
+        if ( estadias == null ) {
+            return null;
+        }
+
+        List<EstadiaDTO> list = new ArrayList<EstadiaDTO>( estadias.size() );
+        for ( Estadia estadia : estadias ) {
+            list.add( estadiaToEstadiaDTO( estadia ) );
+        }
+
+        return list;
+    }
+
+    @Override
     public HuespedDTO toDTO(Huesped huesped) {
         if ( huesped == null ) {
             return null;
@@ -76,7 +94,7 @@ public class ClassMapperImpl implements ClassMapper {
         huespedDTO.setPosicionIva( huesped.getPosicionIva() );
         huespedDTO.setOcupacion( huesped.getOcupacion() );
         huespedDTO.setNacionalidad( huesped.getNacionalidad() );
-        huespedDTO.setListaEstadia( estadiaListToEstadiaDTOList( huesped.getListaEstadia() ) );
+        huespedDTO.setListaEstadia( toDTOsEstadia( huesped.getListaEstadia() ) );
 
         return huespedDTO;
     }
@@ -175,6 +193,19 @@ public class ClassMapperImpl implements ClassMapper {
         return reserva;
     }
 
+    protected EstadiaDTO estadiaToEstadiaDTO(Estadia estadia) {
+        if ( estadia == null ) {
+            return null;
+        }
+
+        EstadiaDTO estadiaDTO = new EstadiaDTO();
+
+        estadiaDTO.setCheckin( estadia.getCheckin() );
+        estadiaDTO.setCheckout( estadia.getCheckout() );
+
+        return estadiaDTO;
+    }
+
     protected DireccionDTO direccionToDireccionDTO(Direccion direccion) {
         if ( direccion == null ) {
             return null;
@@ -193,32 +224,6 @@ public class ClassMapperImpl implements ClassMapper {
         direccionDTO.setPais( direccion.getPais() );
 
         return direccionDTO;
-    }
-
-    protected EstadiaDTO estadiaToEstadiaDTO(Estadia estadia) {
-        if ( estadia == null ) {
-            return null;
-        }
-
-        EstadiaDTO estadiaDTO = new EstadiaDTO();
-
-        estadiaDTO.setCheckin( estadia.getCheckin() );
-        estadiaDTO.setCheckout( estadia.getCheckout() );
-
-        return estadiaDTO;
-    }
-
-    protected List<EstadiaDTO> estadiaListToEstadiaDTOList(List<Estadia> list) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<EstadiaDTO> list1 = new ArrayList<EstadiaDTO>( list.size() );
-        for ( Estadia estadia : list ) {
-            list1.add( estadiaToEstadiaDTO( estadia ) );
-        }
-
-        return list1;
     }
 
     protected Direccion direccionDTOToDireccion(DireccionDTO direccionDTO) {
