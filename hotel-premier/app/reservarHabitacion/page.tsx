@@ -51,6 +51,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const [mostrarCartelOH, setMostrarCartelOH] = useState(false);
   const [mostrarCartel, setMostrarCartel] = useState(false);
   const [habitaciones, setHabitaciones] = useState<HabitacionDTO[] | []>([]);
+  const [rangos, setRangos] = useState<{ numero: number; desde: string; hasta: string }[]>([]);
 
   //agreggo erne
   const [mostrarCartelLista, setMostrarCartelLista] = useState(false);
@@ -107,15 +108,15 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
     const fetchReservas = async () => {
       if (fechasValidas && tipoSeleccionado) {
         try {
-          console.log(desdeFecha);
-          console.log(hastaFecha);
+          //console.log(desdeFecha);
+          //console.log(hastaFecha);
           const response = await axios.get(`http://localhost:8080/reservas`, {
             params: { fechaDesde: desdeFecha, fechaHasta: hastaFecha },
           });
           setReservas(response.data);
-          console.log(response.data);
+          //console.log(response.data);
         } catch(err) {
-          console.error("Error al cargar reservas:", err);
+          //console.error("Error al cargar reservas:", err);
         }
       }
     };
@@ -126,10 +127,10 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
             params: { tipo:tipoSeleccionado },
           });
           setHabitaciones(res.data);
-          console.log("habitacion: " + setHabitaciones);
+          //console.log("habitacion: " + setHabitaciones);
 
       }catch(err) {
-          console.error("Error al cargar reservas:", err);
+          //console.error("Error al cargar reservas:", err);
         }
     }
     fetchReservas();
@@ -146,11 +147,11 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const estaReservada = (fechaDate: Date, numeroHab: number) =>
     reservas.some(r => {
       const fechaFilaString = format(fechaDate,"yyyy-MM-dd");
-      console.log("fecha fila string: " + fechaFilaString);
-      console.log("fecha Desde: " + r.fecha_desde);
-      console.log("fecha Hasta: " + r.fecha_hasta);
-      console.log("numero habitacion r:" + r.nro_habitacion);
-      console.log("numero habitacion: " + numeroHab);
+      //console.log("fecha fila string: " + fechaFilaString);
+      //console.log("fecha Desde: " + r.fecha_desde);
+      //console.log("fecha Hasta: " + r.fecha_hasta);
+      //console.log("numero habitacion r:" + r.nro_habitacion);
+      //console.log("numero habitacion: " + numeroHab);
       return r.nro_habitacion===numeroHab && fechaFilaString >= r.fecha_desde && fechaFilaString <= r.fecha_hasta;
     });
 
@@ -171,9 +172,17 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
 
   const eliminarSeleccionados = () => setSeleccionados([]);
 
-  const deleteSeleccionado = (sel: string) => {
-    const nuevosSeleccionados = seleccionados.filter((item) => item !== sel);
-    setSeleccionados(nuevosSeleccionados);
+  const deleteSeleccionado = (ran:{ numero: number; desde: string; hasta: string }) => {
+    // 1) Convertir rango a fechas individuales
+    const fechasABorrar = eachDayOfInterval({
+      start: parseISO(ran.desde),
+      end: parseISO(ran.hasta)
+    }).map(f => `${format(f,"yyyy-MM-dd")}|${ran.numero}`);
+
+    // 2) Quitar esas fechas de "seleccionados"
+    setSeleccionados(prev =>
+      prev.filter(sel => !fechasABorrar.includes(sel))
+    );
   };
 
   //erne
@@ -192,7 +201,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
         };
       });
 
-      console.log("LISTA DTO A ENVIAR:", lista);
+      //console.log("LISTA DTO A ENVIAR:", lista);
       return lista;
     };
 
@@ -221,10 +230,68 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
         setMostrarCartelLista(true);
 
       } catch (err) {
-        console.error("Error enviando reservas:", err);
+        //console.error("Error enviando reservas:", err);
         alert("Error enviando reservas. Ver consola.");
       }
     };
+
+    // =========================
+  // HACER QUE EN LA TABLA DERECHA LAS FECHAS VAYAN DESDE HASTA
+  // =========================
+
+  function generarRangos(seleccionados: string[]) {
+    // 1) Convertir a objetos
+    const datos = seleccionados.map(sel => {
+      const [fecha, numero] = sel.split("|");
+      return {
+        fecha: fecha,
+        fechaDate: parseISO(fecha),
+        numero: Number(numero)
+      };
+    });
+
+    // 2) Ordenar primero por habitacion y luego por fecha
+    datos.sort((a, b) => {
+      if (a.numero !== b.numero) return a.numero - b.numero;
+      return a.fechaDate.getTime() - b.fechaDate.getTime();
+    });
+
+    // 3) Agrupar consecutivas
+    const resultado: any[] = [];
+    let actual = null;
+
+    for (let item of datos) {
+      if (!actual) {
+        // Primer objeto
+        actual = { numero: item.numero, desde: item.fecha, hasta: item.fecha };
+        continue;
+      }
+
+      const esMismaHab = item.numero === actual.numero;
+      const diffDias =
+        (item.fechaDate.getTime() - parseISO(actual.hasta).getTime()) /
+        (1000 * 60 * 60 * 24);
+
+      if (esMismaHab && diffDias === 1) {
+        // Extiende rango
+        actual.hasta = item.fecha;
+      } else {
+        // Cierra rango y empieza otro
+        resultado.push(actual);
+        actual = { numero: item.numero, desde: item.fecha, hasta: item.fecha };
+      }
+    }
+
+    if (actual) resultado.push(actual);
+
+    return resultado;
+  }
+
+  useEffect(() => {
+    const nuevosRangos = generarRangos(seleccionados);
+    console.log(nuevosRangos);
+    setRangos(nuevosRangos);
+  }, [seleccionados]);
 
 
   // =========================
@@ -336,8 +403,8 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
                         const key = `${format(fechaDate,"yyyy-MM-dd")}|${hab?.numero}`;
                         const seleccionado = seleccionados.includes(key);
                         const reservada = estaReservada(fechaDate,hab?.numero);
-                        console.log("reservada:" + reservada)
-                        console.log(reservas)
+                        //console.log("reservada:" + reservada)
+                        //console.log(reservas)
 
                         return (
                           <td
@@ -400,24 +467,27 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
               <tr>
                 <th className="p-3 border">Eliminar</th>
                 <th className="p-3 border">Habitación</th>
-                <th className="p-3 border">Fecha</th>
+                <th className="p-3 border">Fecha Desde</th>
+                <th className="p-3 border">Fecha Hasta</th>
               </tr>
             </thead>
             <tbody>
-              {seleccionados.map(sel => {
-                const [fecha,num] = sel.split("|");
-                const fechaMostrar = format(parseISO(fecha),"dd/MM/yyyy");
+              {rangos.map((ran,index) => {
+                const fechaDesde = format(parseISO(ran.desde),"dd/MM/yyyy");
+                const fechaHasta = format(parseISO(ran.hasta),"dd/MM/yyyy");
                 return (
-                  <tr key={sel} className="bg-white hover:bg-indigo-100">
+                  <tr key={index} className="bg-white hover:bg-indigo-100">
                     <td className="p-3 border text-center"><button
-                        onClick={() => deleteSeleccionado(sel)}   // <-- tu función
+                        onClick={() => deleteSeleccionado(ran)}   // <-- tu función
                         className=" text-white p-1 rounded hover:bg-red-700"
                     >
                         <FontAwesomeIcon icon={faTrashCan} className="text-black" />
                       </button>
                     </td>
-                    <td className="p-3 border text-center">{num}</td>
-                    <td className="p-3 border text-center">{fechaMostrar}</td>
+                    <td className="p-3 border text-center">{ran.numero}</td>
+                    <td className="p-3 border text-center">{fechaDesde}</td>
+                    <td className="p-3 border text-center">{fechaHasta}</td>
+
                   </tr>
                 );
               })}
