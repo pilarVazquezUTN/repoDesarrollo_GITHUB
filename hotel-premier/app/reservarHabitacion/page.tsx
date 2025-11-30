@@ -1,13 +1,17 @@
 'use client';
 
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { format, parseISO, eachDayOfInterval, isAfter } from "date-fns";
 import { usePathname } from "next/navigation";
 import OcuparHabitacionIgualmente from "../carteles/ocuparHabitacionIgualmente";
 import CartelHabitacionNoDisponible from "../carteles/CartelHabitacionNoDisponible";
+import habitacionesSeleccionadas from "../carteles/habitacionesSeleccionadas"
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan  } from "@fortawesome/free-solid-svg-icons";
+//erne
+import CartelListaHabitaciones from "../carteles/cartelListaHabitaciones";
 import Link from "next/link";
 
 // Tipos
@@ -47,6 +51,14 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const [mostrarCartelOH, setMostrarCartelOH] = useState(false);
   const [mostrarCartel, setMostrarCartel] = useState(false);
   const [habitaciones, setHabitaciones] = useState<HabitacionDTO[] | []>([]);
+
+  //agreggo erne
+  const [mostrarCartelLista, setMostrarCartelLista] = useState(false);
+  const [listaBackend, setListaBackend] = useState<any[]>([]);
+  const [paso, setPaso] = useState<1 | 2>(1);
+  const router = useRouter();
+
+
 
   const pathname = usePathname();
 
@@ -164,6 +176,57 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
     setSeleccionados(nuevosSeleccionados);
   };
 
+  //erne
+    // Construye lista de HabitacionDTO a partir de `seleccionados`
+    const construirHabitacionesDTO = (): HabitacionDTO[] => {
+      const lista: HabitacionDTO[] = seleccionados.map(sel => {
+        const [fecha, numero] = sel.split("|");
+        const habitacion = (Array.isArray(habitaciones) ? habitaciones : []).find(h => h.numero === Number(numero));
+
+        return {
+          numero: Number(numero),
+          estado: habitacion?.estado || "DISPONIBLE",
+          precio: habitacion?.precio ?? 0,
+          cantidadPersonas: habitacion?.cantidadPersonas ?? 1,
+          tipoHab: habitacion?.tipoHab ?? (tipoSeleccionado as TipoHabitacion)
+        };
+      });
+
+      console.log("LISTA DTO A ENVIAR:", lista);
+      return lista;
+    };
+
+    // Envía la lista al backend (query params con fechas + body con HabitacionDTO[])
+    const enviarReservasAlBack = async () => {
+      try {
+        if (!desdeFecha || !hastaFecha) {
+          alert("Debe seleccionar Fecha Desde y Fecha Hasta antes de confirmar.");
+          return;
+        }
+
+        if (seleccionados.length === 0) {
+          alert("No seleccionaste ninguna habitación.");
+          return;
+        }
+
+        const listaDTO = construirHabitacionesDTO();
+
+        const res = await axios.post(
+          `http://localhost:8080/listados?fechaDesde=${desdeFecha}&fechaHasta=${hastaFecha}`,
+          listaDTO
+        );
+
+        // guardo respuesta del backend para mostrar en cartel
+        setListaBackend(res.data || []);
+        setMostrarCartelLista(true);
+
+      } catch (err) {
+        console.error("Error enviando reservas:", err);
+        alert("Error enviando reservas. Ver consola.");
+      }
+    };
+
+
   // =========================
   // RENDER
   // =========================
@@ -228,6 +291,19 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           onClose={() => setMostrarCartel(false)}
         />
       )}
+      {/* Cartel con la lista devuelta por el backend */}
+
+         {mostrarCartelLista && (  //erne
+           <CartelListaHabitaciones
+             lista={listaBackend}
+             seleccionados={seleccionados}
+             desdeFecha={desdeFecha}
+             hastaFecha={hastaFecha}
+             onClose={() => setMostrarCartelLista(false)}
+           />
+
+       )}
+
 
       {/* TABLA ESTADO HABITACIÓN */}
       <section className="flex-2 max-h-[800px]">
@@ -297,8 +373,13 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
 
             <button
               className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
-              onClick={() => { if (pathname === "/ocuparHabitacion") setMostrarCartelOH(true); }}
-            > Aceptar
+             onClick={() => {
+               const seleccionEncoded = encodeURIComponent(JSON.stringify(seleccionados));
+                 const listaDTO = construirHabitacionesDTO();
+                   setListaBackend(listaDTO);
+                   setMostrarCartelLista(true);  //  Muestra cartel antes del push
+             }}
+             > Aceptar
             </button>
           </div>
 
@@ -351,6 +432,9 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           </button>
         </section>
       )}
+  {/* ============================ */}
+  {/* PASO 2 — FORMULARIO DATOS   */}
+  {/* ============================ */}
 
     </main>
   );
