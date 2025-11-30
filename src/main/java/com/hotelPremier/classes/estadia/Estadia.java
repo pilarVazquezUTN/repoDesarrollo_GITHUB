@@ -15,9 +15,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!
 
 @JsonIgnoreProperties({"listahuesped", "habitacion"}) //JSIGNORE!!!!
 @Entity
+
 @Table(name="estadia")
 public class Estadia { 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id_estadia")
     private Integer id_estadia;
 

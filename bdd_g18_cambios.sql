@@ -43,7 +43,7 @@ constraint fk_id_direccion foreign key (id_direccion) references direccion (id_d
 
 );
 CREATE TABLE estadia(
-id_estadia INTEGER primary key,
+id_estadia SERIAL primary key,
 checkin Date,
 checkout Date,
 nro_habitacion integer,
@@ -63,7 +63,7 @@ constraint fk_estadia foreign key (id_estadia) references estadia(id_estadia)
 );
 
 create table reserva(
-id_reserva integer primary key,
+id_reserva SERIAL primary key,
 apellido varchar(40),
 nombre varchar(40),
 telefono varchar(40),
@@ -322,7 +322,7 @@ GRANT ALL PRIVILEGES ON DATABASE hotelpremier3 TO pili;
 SELECT setval('direccion_id_direccion_seq', (SELECT MAX(id_direccion) FROM direccion));
 
 --AGREGAR ESTO PARA Q SE GENERE EL ID CUANDO HAGO EL INSET EN LA BDD
-SELECT setval(
-    pg_get_serial_sequence('reserva', 'id_reserva'),
-    (SELECT MAX(id_reserva) FROM reserva)
-);
+
+SELECT setval('reserva_id_reserva_seq',(SELECT MAX(id_reserva) FROM reserva));
+
+SELECT setval('estadia_id_estadia_seq',(SELECT MAX(id_estadia) FROM estadia));
