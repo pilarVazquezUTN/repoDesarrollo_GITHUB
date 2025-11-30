@@ -16,11 +16,12 @@ public class HabitacionDTO {
     private Integer cantidadPersonas;
     private String tipohabitacion;// cuando mapea con los DTO se le asigna un tipo.
     private List<EstadiaDTO> listaestadias;
-    private List<ReservaDTO> listaReservas;
+    private List<ReservaDTO> listareservas;
 
 
     // GETTERS y SETTERS
 
+    public HabitacionDTO(){}
     public  HabitacionDTO(Habitacion  habitacion, List<ReservaDTO> reservas, List<EstadiaDTO> estadias
 
     ){
@@ -29,31 +30,27 @@ public class HabitacionDTO {
         this.precio=habitacion.getPrecio();
         this.cantidadPersonas=habitacion.getCantidadPersonas();
         this.tipohabitacion=habitacion.getTipo();
-        this.listaReservas = reservas;
+        this.listareservas = reservas;
         this.listaestadias = estadias;
 
     }
 
-    public void setTipohabitacion(String tipoHab) {
-        this.tipohabitacion = tipoHab;
-    }
-    public String getTipohabitacion() {
-        return tipohabitacion;
-    }
+    public void setTipohabitacion(String tipoHab) { this.tipohabitacion = tipoHab; }
+    public String getTipohabitacion() {return this.tipohabitacion; }
 
-    public int getNumero() { return numero; }
-    public void setNumero(int numero) { this.numero = numero; }
+    public Integer getNumero() { return this.numero; }
+    public void setNumero(Integer numero) { this.numero = numero; }
 
-    public String getEstado() { return estado; }
+    public String getEstado() { return this.estado; }
     public void setEstado(String estado) { this.estado = estado; }
 
-    public float getPrecio() { return precio; }
+    public float getPrecio() { return this.precio; }
     public void setPrecio(float precio) { this.precio = precio; }
 
-    public int getCantidadPersonas() { return cantidadPersonas; }
+    public int getCantidadPersonas() { return this.cantidadPersonas; }
     public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
 
-    public List<EstadiaDTO> getListaestadias() { return listaestadias; }
-    public List<ReservaDTO> getListaReservas() { return listaReservas; }
+    public List<EstadiaDTO> getListaestadias() { return this.listaestadias; }
+    public List<ReservaDTO> getListaReservas() { return this.listareservas; }
 
 }

@@ -51,8 +51,12 @@ public class HabitacionController {
     }
 
     @GetMapping("/detalleHabitaciones")
-    public ResponseEntity<List<HabitacionDTO>> obtenerHabitacionesConDetalle(){
-        List<HabitacionDTO> listaHabitaciones = habitacionService.obtenerHabitacionesConDetalle();
+    public ResponseEntity<List<HabitacionDTO>> obtenerHabitacionesConDetalle(
+        @RequestParam String tipo,
+        @RequestParam Date fechaDesde,
+        @RequestParam Date fechaHasta
+    ){
+        List<HabitacionDTO> listaHabitaciones = habitacionService.obtenerHabitacionesConDetalle(tipo,fechaDesde,fechaHasta);
         return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
     }
 

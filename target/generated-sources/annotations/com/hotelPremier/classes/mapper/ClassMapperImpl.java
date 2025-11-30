@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-30T13:55:39-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
+    date = "2025-11-30T18:19:59-0300",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
 public class ClassMapperImpl implements ClassMapper {
@@ -29,18 +29,18 @@ public class ClassMapperImpl implements ClassMapper {
             return null;
         }
 
-        Habitacion habitacion = null;
-        List<ReservaDTO> reservas = null;
-        List<EstadiaDTO> estadias = null;
+        HabitacionDTO habitacionDTO = new HabitacionDTO();
 
-        HabitacionDTO habitacionDTO = new HabitacionDTO( habitacion, reservas, estadias );
-
-        if ( h.getNumero() != null ) {
-            habitacionDTO.setNumero( h.getNumero() );
-        }
+        habitacionDTO.setNumero( h.getNumero() );
         habitacionDTO.setEstado( h.getEstado() );
         habitacionDTO.setPrecio( h.getPrecio() );
         habitacionDTO.setCantidadPersonas( h.getCantidadPersonas() );
+        if ( habitacionDTO.getListaReservas() != null ) {
+            List<ReservaDTO> list = toDtosReserva( h.getListaReservas() );
+            if ( list != null ) {
+                habitacionDTO.getListaReservas().addAll( list );
+            }
+        }
 
         habitacionDTO.setTipohabitacion( h.getTipo() );
 

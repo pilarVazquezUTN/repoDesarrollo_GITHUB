@@ -17,14 +17,14 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 @Table(name="habitacion")
 public class Habitacion  {
     @Id 
-    private int numero; 
+    private Integer numero; 
 
     @Column(name="estado") 
     private String estado;
     @Column(name="precio")  
     private float precio;
     @Column(name="cantidadpersonas")
-    private int cantidadPersonas;    
+    private Integer cantidadPersonas;    
     @Column(name = "tipohabitacion", insertable=false, updatable=false)
     private String tipohabitacion;
 
@@ -38,26 +38,24 @@ public class Habitacion  {
     private List<Reserva> listareservas;
 
 
+
+    
     // GETTERS y SETTERS
 
     
-    public List<Reserva> getListaReservas(){
-        return this.listareservas;
-    }
+    public List<Reserva> getListaReservas(){ return this.listareservas;}
 
-    public Integer getNumero() {
-        return numero;
-    }
+    public List<Estadia> getListaEstadia() { return this.listaestadias; }
+    public Integer getNumero() { return this.numero; }
+    public void setNumero(Integer numero) { this.numero = numero;}
 
-    public void setNumero(int numero) { this.numero = numero; }
-
-    public String getEstado() { return estado; }
+    public String getEstado() { return this.estado; }
     public void setEstado(String estado) { this.estado = estado; }
 
-    public float getPrecio() { return precio; }
+    public float getPrecio() { return this.precio; }
     public void setPrecio(float precio) { this.precio = precio; }
 
-    public int getCantidadPersonas() { return cantidadPersonas; }
+    public int getCantidadPersonas() { return this.cantidadPersonas; }
     public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
 
 
@@ -82,7 +80,5 @@ public class Habitacion  {
         return null;
     }
 
-    public List<Estadia> getListaEstadia() {
-        return listaestadias;
-    }
+    
 } 
