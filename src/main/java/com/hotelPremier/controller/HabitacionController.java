@@ -39,7 +39,7 @@ public class HabitacionController {
         return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
     }
 
-    @GetMapping("/listaHabitaciones")
+    @GetMapping("/listaHabitaciones") 
     public ResponseEntity<List<HabitacionDTO>> buscarListaHabitaciones(
         @RequestParam String tipo,
         @RequestParam Date fechaDesde,
@@ -49,6 +49,13 @@ public class HabitacionController {
         List<HabitacionDTO> listaHabitaciones = habitacionService.buscarListaHabitaciones(tipo,fechaDesde,fechaHasta);
         return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
     }
+
+    @GetMapping("/detalleHabitaciones")
+    public ResponseEntity<List<HabitacionEstadosDTO>> obtenerHabitacionesConDetalle(){
+        List<HabitacionEstadosDTO> listaHabitaciones = habitacionService.obtenerHabitacionesConDetalle();
+        return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
+    }
+
 
     @GetMapping("/{nro}/huespedes")
     public List<Huesped> getHuespedesDeHabitacion(@PathVariable Integer nro) {

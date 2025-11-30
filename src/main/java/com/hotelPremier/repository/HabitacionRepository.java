@@ -24,7 +24,7 @@ public interface HabitacionRepository extends JpaRepository<Habitacion,Integer> 
    List<Habitacion> buscarPorTipoHabitacion(@Param("tipoHabitacion")    String tipoHabitacion);
 
 
-   @Query("""
+   @Query(""" 
         SELECT h, r, e
         FROM Habitacion h
             LEFT JOIN Reserva r 

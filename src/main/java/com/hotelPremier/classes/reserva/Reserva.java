@@ -14,7 +14,7 @@ import java.util.Date;
 @Table(name = "reserva") // 2. (Opcional) Especifica el nombre de la tabla
 public class Reserva {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_reserva")
     private Integer id_reserva;
 

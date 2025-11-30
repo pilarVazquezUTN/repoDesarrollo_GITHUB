@@ -37,6 +37,11 @@ public class Habitacion  {
 
     // GETTERS y SETTERS
 
+    
+    public List<Reserva> getListaReservas(){
+        return this.listareservas;
+    }
+
     public Integer getNumero() {
         return numero;
     }

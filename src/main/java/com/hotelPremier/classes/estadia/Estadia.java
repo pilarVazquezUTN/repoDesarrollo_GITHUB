@@ -28,7 +28,7 @@ public class Estadia {
     private Date checkout;
 
     @ManyToOne //de estadia a habitacion
-    @JsonManagedReference
+    @JsonManagedReference//trabaja con el front
     @JoinColumn(name = "nro_habitacion")
     private Habitacion habitacion;
 
