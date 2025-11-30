@@ -15,7 +15,7 @@ export default function BuscarHuesped() {
     const [tipoDoc, setTipoDoc] = useState("");
     const [huespedes, setHuespedes] = useState<TipoHuesped[]>([]);
     const [mostrarCartel, setMostrarCartel] = useState(false);
-    const [huespedSeleccionado, setHuespedSeleccionado] = useState<Boolean>(false);
+    const [huespedSeleccionado, setHuespedSeleccionado] = useState<TipoHuesped | null>(null);
     const router = useRouter();
 
     // Estados para errores
@@ -66,15 +66,16 @@ export default function BuscarHuesped() {
     };
 
     const irADarAltaHuesped = ()=>{
-        if(!huespedSeleccionado){
+        if(huespedSeleccionado===null){
             router.push("/darAltaHuesped");
             return;
         }
         router.push("/modificarHuesped");
     }
 
-    const setSeleccionado = () => {
-        setHuespedSeleccionado(true);
+    const setSeleccionado = (huesped: TipoHuesped) => {
+        setHuespedSeleccionado(huesped);
+        console.log("Huésped seleccionado:", huesped);
     }
 
     return (
