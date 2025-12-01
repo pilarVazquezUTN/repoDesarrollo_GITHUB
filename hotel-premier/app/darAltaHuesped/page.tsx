@@ -61,23 +61,7 @@ export default function DarAltaHuesped(){
             setErrores(errores.filter((campo) => campo !== name));
         }
 
-        // 🔥 Validación de tipo de dato
-        let tipoInvalido = false;
-
-        const camposSoloLetras = ["nombre", "apellido", "ocupacion", "nacionalidad", "provincia", "localidad", "pais", "calle", "departamento"];
-        const camposSoloNumeros = ["dni", "numero", "piso", "codigoPostal", "telefono", "cuit"];
-
-        if (camposSoloLetras.includes(name) && !soloLetras.test(valorMayus)) {
-            tipoInvalido = true;
-        } else if (camposSoloNumeros.includes(name) && !soloNumeros.test(valorMayus)) {
-            tipoInvalido = true;
-        }
-
-        if (tipoInvalido) {
-            if (!erroresTipo.includes(name)) setErroresTipo([...erroresTipo, name]);
-        } else {
-            if (erroresTipo.includes(name)) setErroresTipo(erroresTipo.filter(c => c !== name));
-        }
+        
     };
 
     const getInputClass = (campo: string) => {
@@ -143,7 +127,7 @@ export default function DarAltaHuesped(){
             "fechaNacimiento", "telefono", "ocupacion", "nacionalidad"
         ];
 
-        // 🔥 VALIDACIÓN ESPECIAL: CUIT obligatorio si es RESPONSABLE INSCRIPTO
+        //  VALIDACIÓN ESPECIAL: CUIT obligatorio si es RESPONSABLE INSCRIPTO
         if (formData.posicionIva === "RESPONSABLE INSCRIPTO" && formData.cuit.trim() === "") {
             camposRequeridos.push("cuit");
         }
@@ -158,10 +142,37 @@ export default function DarAltaHuesped(){
             return;
         }
 
-        // Si hay errores de tipo, no permitir envío
-        if (erroresTipo.length > 0) {
-            return;
+        //  Validación de tipo de dato
+        let tipoInvalido = false;
+
+        const nuevosErroresTipo: string[] = [];
+        const camposSoloLetras = ["nombre", "apellido", "ocupacion", "nacionalidad", "provincia", "localidad", "pais", "calle", "departamento", "posicionIva"];
+        const camposSoloNumeros = ["dni", "numero", "piso", "codigoPostal", "telefono", "cuit"];
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        for (const campo in formData) {
+        const valor = formData[campo as keyof typeof formData];
+
+            if (camposSoloLetras.includes(campo) && !soloLetras.test(valor)) {
+                nuevosErroresTipo.push(campo);
+            } else if (camposSoloNumeros.includes(campo) && !soloNumeros.test(valor)) {
+                nuevosErroresTipo.push(campo);
+            } else if (campo === "email" && valor && !emailRegex.test(valor)) {
+                nuevosErroresTipo.push(campo);
+            } else if (campo === "fechaNacimiento" && valor) {
+                const hoy = new Date();
+                const fechaIngresada = new Date(valor);
+                if (fechaIngresada > hoy) {
+                    nuevosErroresTipo.push(campo);
+                }
+            }
         }
+
+        if (nuevosErroresTipo.length > 0) {
+            setErroresTipo(nuevosErroresTipo);
+            return; // No enviamos si hay errores de tipo
+        }
+
 
         // Verificar DNI existente
         try {
@@ -236,7 +247,9 @@ export default function DarAltaHuesped(){
 
                 <label className="text-indigo-950 font-medium mb-1">Posicion frente al IVA*:</label>
                 <input name="posicionIva" value={formData.posicionIva} onChange={handleChange} type="text" placeholder="Ej: RESPONSABLE INSCRIPTO" className={getInputClass("posicionIva")} />
-
+                {erroresTipo.includes("posicionIva") && (
+                    <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
+                )}
                 <p className="mt-3">Campos obligatorios*</p>
             </form>
 
@@ -296,6 +309,9 @@ export default function DarAltaHuesped(){
             <form className="flex flex-col">
                 <label className="text-indigo-950 font-medium mb-1">Fecha de nacimiento*:</label>
                 <input name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} type="date" className={getInputClass("fechaNacimiento")} />
+                {erroresTipo.includes("fechaNacimiento") && (
+                    <p className="text-red-500 text-sm mb-3">Fecha inválida.</p>
+                )}
 
                 <label className="text-indigo-950 font-medium mb-1">Teléfono*:</label>
                 <input name="telefono" value={formData.telefono} onChange={handleChange} type="text" placeholder="telefono" className={getInputClass("telefono")} />
@@ -304,8 +320,10 @@ export default function DarAltaHuesped(){
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Email:</label>
-                <input name="email" value={formData.email} onChange={handleChange} type="text" placeholder="email" className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950 uppercase" />
-
+                <input name="email" value={formData.email} onChange={handleChange} type="text" placeholder="email" className={getInputClass("email")} />
+                {erroresTipo.includes("email") && (
+                    <p className="text-red-500 text-sm mb-3">Email inválido.</p>
+                )}
                 <label className="text-indigo-950 font-medium mb-1">Ocupación*:</label>
                 <input name="ocupacion" value={formData.ocupacion} onChange={handleChange} type="text" placeholder="ocupacion" className={getInputClass("ocupacion")} />
                 {erroresTipo.includes("ocupacion") && (
@@ -317,7 +335,7 @@ export default function DarAltaHuesped(){
                 {erroresTipo.includes("nacionalidad") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}
-                
+
                 <div className="flex flex-row gap-3 items-center">   
 
                     <button 
