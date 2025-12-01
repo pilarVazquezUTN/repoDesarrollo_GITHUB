@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-30T19:49:50-0300",
+    date = "2025-12-01T00:55:50-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
@@ -131,7 +131,7 @@ public class ClassMapperImpl implements ClassMapper {
         huesped.setOcupacion( huespedDto.getOcupacion() );
         huesped.setNacionalidad( huespedDto.getNacionalidad() );
         huesped.setDireccion( direccionDTOToDireccion( huespedDto.getdireccion() ) );
-        huesped.setListaEstadia( estadiaDTOListToEstadiaList( huespedDto.getListaEstadia() ) );
+        huesped.setListaEstadia( toEntityEstadia( huespedDto.getListaEstadia() ) );
 
         return huesped;
     }
@@ -204,6 +204,20 @@ public class ClassMapperImpl implements ClassMapper {
         return reserva;
     }
 
+    @Override
+    public List<Estadia> toEntityEstadia(List<EstadiaDTO> listaestadiaDTO) {
+        if ( listaestadiaDTO == null ) {
+            return null;
+        }
+
+        List<Estadia> list = new ArrayList<Estadia>( listaestadiaDTO.size() );
+        for ( EstadiaDTO estadiaDTO : listaestadiaDTO ) {
+            list.add( toEntity( estadiaDTO ) );
+        }
+
+        return list;
+    }
+
     protected EstadiaDTO estadiaToEstadiaDTO(Estadia estadia) {
         if ( estadia == null ) {
             return null;
@@ -255,19 +269,6 @@ public class ClassMapperImpl implements ClassMapper {
         direccion.setPais( direccionDTO.getPais() );
 
         return direccion;
-    }
-
-    protected List<Estadia> estadiaDTOListToEstadiaList(List<EstadiaDTO> list) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<Estadia> list1 = new ArrayList<Estadia>( list.size() );
-        for ( EstadiaDTO estadiaDTO : list ) {
-            list1.add( toEntity( estadiaDTO ) );
-        }
-
-        return list1;
     }
 
     private Integer reservaNro_habitacionNumero(Reserva reserva) {
