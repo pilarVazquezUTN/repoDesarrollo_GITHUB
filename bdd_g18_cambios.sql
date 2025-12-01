@@ -450,7 +450,31 @@ INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_
 (1028, 'VAZQUEZ', 'PILAR', '3425908612',
         TO_DATE('10/12/2025','DD/MM/YYYY'),
         TO_DATE('15/12/2025','DD/MM/YYYY'),
-        'Confirmada', 9);			
+        'Confirmada', 9);	
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1029, 'RODRIGUEZ', 'CARLA', '3414444444', 
+	TO_DATE('19/12/2025','DD/MM/YYYY'), 
+	TO_DATE('22/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 32);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1030, 'FERNANDEZ', 'PABLO', '3415555555', 
+	TO_DATE('20/12/2025','DD/MM/YYYY'), 
+	TO_DATE('23/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 29);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1031, 'SOLORZANO', 'ERNESTINA', '3437457594', 
+	TO_DATE('26/12/2025','DD/MM/YYYY'), 
+	TO_DATE('29/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 34);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1032, 'FORNARI', 'GUILLERMINA', '543428501478', 
+	TO_DATE('19/12/2025','DD/MM/YYYY'), 
+	TO_DATE('21/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 36);
 
 	
 
@@ -547,7 +571,37 @@ INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
 VALUES (2015,
         TO_DATE('24/12/2025','DD/MM/YYYY'),
         TO_DATE('28/12/2025','DD/MM/YYYY'),
-        9);		
+        9);
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2016,
+        TO_DATE('14/12/2025','DD/MM/YYYY'),
+        TO_DATE('18/12/2025','DD/MM/YYYY'),
+        31);	
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2017,
+        TO_DATE('04/12/2025','DD/MM/YYYY'),
+        TO_DATE('07/12/2025','DD/MM/YYYY'),
+        32);	
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2018,
+        TO_DATE('10/12/2025','DD/MM/YYYY'),
+        TO_DATE('14/12/2025','DD/MM/YYYY'),
+        34);
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2019,
+        TO_DATE('18/12/2025','DD/MM/YYYY'),
+        TO_DATE('23/12/2025','DD/MM/YYYY'),
+        35);		
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2020,
+        TO_DATE('22/12/2025','DD/MM/YYYY'),
+        TO_DATE('24/12/2025','DD/MM/YYYY'),
+        33);				
 
 
 
