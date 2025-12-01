@@ -476,6 +476,42 @@ INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_
 	TO_DATE('21/12/2025','DD/MM/YYYY'), 
 	'Confirmada', 36);
 
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1033, 'FORNARI', 'GUILLERMINA', '543428501478', 
+	TO_DATE('03/12/2025','DD/MM/YYYY'), 
+	TO_DATE('06/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 39);	
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1034, 'VAZQUEZ', 'PILAR', '3425908612',
+        TO_DATE('14/12/2025','DD/MM/YYYY'),
+        TO_DATE('16/12/2025','DD/MM/YYYY'),
+        'Confirmada', 46);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1035, 'AYALA', 'FERNANDA', '3424458808',
+        TO_DATE('20/12/2025','DD/MM/YYYY'),
+        TO_DATE('24/12/2025','DD/MM/YYYY'),
+        'Confirmada', 44);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1036, 'GARCIA', 'MARIO', '3411111111', 
+    TO_DATE('25/12/2025','DD/MM/YYYY'), 
+    TO_DATE('27/12/2025','DD/MM/YYYY'), 
+    'Confirmada', 38);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1037, 'LOPEZ', 'ANA', '3412222222', 
+	TO_DATE('29/12/2025','DD/MM/YYYY'), 
+	TO_DATE('02/01/2026','DD/MM/YYYY'), 
+	'Confirmada', 42);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1038, 'MARTINEZ', 'JUAN', '3413333333', 
+	TO_DATE('30/12/2025','DD/MM/YYYY'), 
+	TO_DATE('05/01/2026','DD/MM/YYYY'), 
+	'Pendiente', 46);
+
 	
 
 
@@ -601,7 +637,73 @@ INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
 VALUES (2020,
         TO_DATE('22/12/2025','DD/MM/YYYY'),
         TO_DATE('24/12/2025','DD/MM/YYYY'),
-        33);				
+        33);	
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2021,
+        TO_DATE('03/12/2025','DD/MM/YYYY'),
+        TO_DATE('06/12/2025','DD/MM/YYYY'),
+        37);
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2022,
+        TO_DATE('05/12/2025','DD/MM/YYYY'),
+        TO_DATE('08/12/2025','DD/MM/YYYY'),
+        43);		
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2023,
+        TO_DATE('12/12/2025','DD/MM/YYYY'),
+        TO_DATE('14/12/2025','DD/MM/YYYY'),
+        39);
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2024,
+        TO_DATE('19/12/2025','DD/MM/YYYY'),
+        TO_DATE('23/12/2025','DD/MM/YYYY'),
+        46);
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2025,
+        TO_DATE('20/12/2025','DD/MM/YYYY'),
+        TO_DATE('23/12/2025','DD/MM/YYYY'),
+        37);		
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2026,
+        TO_DATE('27/12/2025','DD/MM/YYYY'),
+        TO_DATE('02/01/2026','DD/MM/YYYY'),
+        40);
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2027,
+        TO_DATE('20/12/2025','DD/MM/YYYY'),
+        TO_DATE('24/12/2025','DD/MM/YYYY'),
+        42);	
+		
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2028,
+        TO_DATE('02/12/2025','DD/MM/YYYY'),
+        TO_DATE('04/12/2025','DD/MM/YYYY'),
+        48);		
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2029,
+        TO_DATE('15/12/2025','DD/MM/YYYY'),
+        TO_DATE('18/12/2025','DD/MM/YYYY'),
+        48);		
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2030,
+        TO_DATE('29/12/2025','DD/MM/YYYY'),
+        TO_DATE('03/01/2026','DD/MM/YYYY'),
+        48);
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2031,
+        TO_DATE('23/12/2025','DD/MM/YYYY'),
+        TO_DATE('27/12/2025','DD/MM/YYYY'),
+        47);				
 
 
 
