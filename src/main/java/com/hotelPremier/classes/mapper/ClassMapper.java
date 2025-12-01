@@ -47,4 +47,10 @@ public interface ClassMapper {
     @Mapping(target = "nro_habitacion", ignore = true)
         Reserva toEntityReserva(ReservaDTO dto);
 
+
+        //ESTADIA
+        //List<EstadiaDTO> toDtoEstadia(List<Estadia> listaestadia);
+        List<Estadia> toEntityEstadia(List<EstadiaDTO> listaestadiaDTO);
+
+
 }

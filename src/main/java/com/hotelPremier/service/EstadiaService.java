@@ -1,6 +1,7 @@
 
 package com.hotelPremier.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.hotelPremier.classes.estadia.Estadia;
@@ -18,13 +19,25 @@ public class EstadiaService {
     private EstadiaRepository estadiaRepository;
 
     @Autowired
-    private ClassMapper mapper;
+    private ClassMapper mapper; 
 
     public void guardarEstadia(EstadiaDTO estadiaDTO){
         Estadia estadia = new Estadia();
         estadia= mapper.toEntity(estadiaDTO);
         estadiaRepository.save(estadia);
 
+    }
+
+    public void guardarListaEstadia(List<EstadiaDTO> listaestadiaDTO){
+        List<Estadia> listaestadia = new ArrayList<>();
+        listaestadia = mapper.toEntityEstadia(listaestadiaDTO);
+
+        //por cada estadia, la voy cargando en la bdd.
+        //tambien actualizo cada reserva que haya superpuesto.
+        for(Estadia e : listaestadia){
+            
+            estadiaRepository.save(e);//me guardo una estadia en la bdd
+        }
     }
     //@Autowired
     //private ClassMapper
