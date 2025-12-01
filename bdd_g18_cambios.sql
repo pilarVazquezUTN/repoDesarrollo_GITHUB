@@ -208,10 +208,10 @@ INSERT INTO habitacion (numero, precio, tipohabitacion, cantidadPersonas, estado
 (1, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
 (2, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
 (3, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
-(4, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(4, 50800, 'IndividualEstandar', 1, 'FueraDeServicio', 0, 0, 1),
 (5, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
 (6, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
-(7, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
+(7, 50800, 'IndividualEstandar', 1, 'FueraDeServicio', 0, 0, 1),
 (8, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
 (9, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
 (10, 50800, 'IndividualEstandar', 1, 'libre', 0, 0, 1),
@@ -221,24 +221,24 @@ INSERT INTO habitacion (numero, precio, tipohabitacion, cantidadPersonas, estado
 (12, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (13, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (14, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
-(15, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(15, 70230, 'DobleEstandar', 2, 'FueraDeServicio', 0, 1, 0),
 (16, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (17, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (18, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (19, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
-(20, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(20, 70230, 'DobleEstandar', 2, 'FueraDeServicio', 0, 1, 0),
 (21, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (22, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (23, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (24, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
-(25, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
+(25, 70230, 'DobleEstandar', 2, 'FueraDeServicio', 0, 1, 0),
 (26, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (27, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 (28, 70230, 'DobleEstandar', 2, 'libre', 0, 1, 0),
 
 -- Doble Superior (8)
 (29, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
-(30, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
+(30, 90560, 'DobleSuperior', 2, 'FueraDeServicio', 1, 0, 0),
 (31, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
 (32, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
 (33, 90560, 'DobleSuperior', 2, 'libre', 1, 0, 0),
@@ -251,7 +251,7 @@ INSERT INTO habitacion (numero, precio, tipohabitacion, cantidadPersonas, estado
 (38, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
 (39, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
 (40, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
-(41, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
+(41, 110500, 'SuperiorFamilyPlan', 5, 'FueraDeServicio', 1, 1, 3),
 (42, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
 (43, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
 (44, 110500, 'SuperiorFamilyPlan', 5, 'libre', 1, 1, 3),
@@ -267,27 +267,44 @@ INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_
 (1001, 'PÉREZ', 'JUAN', '1155555555',
         TO_DATE('15/12/2025','DD/MM/YYYY'),
         TO_DATE('20/12/2025','DD/MM/YYYY'),
-        'Confirmada', 1),
+        'Confirmada', 1);
 
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 (1002, 'PEREYRA', 'PILAR', '3425789789',
         TO_DATE('05/01/2026','DD/MM/YYYY'),
         TO_DATE('10/01/2026','DD/MM/YYYY'),
-        'Confirmada', 11),
+        'Confirmada', 11);
 
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 (1003, 'SOVRANO', 'VICTORIA', '543428547896',
         TO_DATE('25/11/2025','DD/MM/YYYY'),
         TO_DATE('27/11/2025','DD/MM/YYYY'),
-        'Pendiente', 37),
+        'Pendiente', 37);
 
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 (1004, 'DASILVA', 'VALENTIN', '543424023698',
         TO_DATE('14/02/2026','DD/MM/YYYY'),
         TO_DATE('20/02/2026','DD/MM/YYYY'),
-        'Confirmada', 47),
+        'Confirmada', 47);
 
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1005, 'ARGENTO', 'PAOLA', '3425789987',
+		TO_DATE('19/12/2025','DD/MM/YYYY'),
+		TO_DATE('27/12/2025','DD/MM/YYYY'),
+		'Confirmada', 3);		
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1006, 'VAZQUEZ', 'PILAR', '3425908612',
+        TO_DATE('05/12/2025','DD/MM/YYYY'),
+        TO_DATE('13/12/2025','DD/MM/YYYY'),
+        'Confirmada', 1);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 (1007, 'AYALA', 'FERNANDA', '3424458808',
         TO_DATE('24/12/2025','DD/MM/YYYY'),
         TO_DATE('28/12/2025','DD/MM/YYYY'),
         'Confirmada', 29);
+
 
 
 INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
@@ -314,8 +331,21 @@ VALUES (2004,
         TO_DATE('20/02/2026','DD/MM/YYYY'),
         47);
 
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2005,
+        TO_DATE('21/12/2025','DD/MM/YYYY'),
+        TO_DATE('25/12/2025','DD/MM/YYYY'),
+        5);
 
-GRANT ALL PRIVILEGES ON DATABASE hotelpremier3 TO pili;
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2006,
+        TO_DATE('03/12/2025','DD/MM/YYYY'),
+        TO_DATE('06/12/2025','DD/MM/YYYY'),
+        5);		
+
+
+
+GRANT ALL PRIVILEGES ON DATABASE hotelpremier12 TO pili;
 
 -- Esto actualiza la secuencia al valor máximo que existe actualmente en la tabla
 --pili: agregue esto porque sino me crea el id 1, ahora con esta funcion arranca desde el ultimo+1

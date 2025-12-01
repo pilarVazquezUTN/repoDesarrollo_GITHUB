@@ -10,11 +10,12 @@ import habitacionesSeleccionadas from "../carteles/habitacionesSeleccionadas"
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan  } from "@fortawesome/free-solid-svg-icons";
-//erne
 import CartelListaHabitaciones from "../carteles/cartelListaHabitaciones";
 import Link from "next/link";
 
-// Tipos
+// =========================
+// TIPOS E INTERFACES (COINCIDEN CON TU JSON)
+// =========================
 type TipoHabitacion = "IndividualEstandar" | "DobleEstandar" | "Suite" | "DobleSuperior" | "SuperiorFamilyPlan";
 
 interface ReservaDTO {
@@ -22,14 +23,22 @@ interface ReservaDTO {
   nro_habitacion: number;
   fecha_desde: string;
   fecha_hasta: string;
+  estado: string;
+}
+
+interface EstadiaDTO {
+  checkIn: string;
+  checkOut: string;
 }
 
 interface HabitacionDTO {
-  numero:number;
-  estado:string;
-  precio:number;
+  numero: number;
+  estado: string; 
+  precio: number;
   cantidadPersonas: number;
-  tipoHab: TipoHabitacion;
+  tipohabitacion: string;
+  listaReservas: ReservaDTO[]; 
+  listaestadias: EstadiaDTO[];
 }
 
 interface Props {
@@ -46,22 +55,17 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const [tipoSeleccionado, setTipoSeleccionado] = useState<"" | TipoHabitacion>("");
   const [erroresFecha, setErroresFecha] = useState({ desdeInvalido: false, hastaInvalido: false, ordenInvalido: false });
   const [fechasValidas, setFechasValidas] = useState(false);
-  const [reservas, setReservas] = useState<ReservaDTO[]>([]);
+  
   const [seleccionados, setSeleccionados] = useState<string[]>([]);
   const [mostrarCartelOH, setMostrarCartelOH] = useState(false);
   const [mostrarCartel, setMostrarCartel] = useState(false);
+  
   const [habitaciones, setHabitaciones] = useState<HabitacionDTO[] | []>([]);
   const [rangos, setRangos] = useState<{ numero: number; desde: string; hasta: string }[]>([]);
 
-  //agreggo erne
   const [mostrarCartelLista, setMostrarCartelLista] = useState(false);
   const [listaBackend, setListaBackend] = useState<any[]>([]);
-  const [paso, setPaso] = useState<1 | 2>(1);
   const router = useRouter();
-
-
-
-  const pathname = usePathname();
 
   // =========================
   // CONFIGURACIÓN HABITACIONES
@@ -95,76 +99,82 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
     const valido = !!desde && !!hasta && !nuevosErrores.desdeInvalido && !nuevosErrores.hastaInvalido && !nuevosErrores.ordenInvalido;
     setFechasValidas(valido);
 
-    if (!valido) { setReservas([]); setSeleccionados([]); }
+    if (!valido) { setSeleccionados([]); setHabitaciones([]); }
 
     return valido;
   }
 
   // =========================
-  // FETCH RESERVAS
+  // FETCH DE DATOS
   // =========================
   useEffect(() => {
     
-    const fetchReservas = async () => {
+    const fetchDetalleHabitaciones = async () => {
       if (fechasValidas && tipoSeleccionado) {
         try {
-          //console.log(desdeFecha);
-          //console.log(hastaFecha);
-          const response = await axios.get(`http://localhost:8080/reservas`, {
-            params: { fechaDesde: desdeFecha, fechaHasta: hastaFecha },
+          const response = await axios.get(`http://localhost:8080/detalleHabitaciones`, {
+            params: { 
+                tipo: tipoSeleccionado,
+                fechaDesde: desdeFecha, 
+                fechaHasta: hastaFecha 
+            },
           });
-          setReservas(response.data);
-          //console.log(response.data);
+          setHabitaciones(response.data);
         } catch(err) {
-          //console.error("Error al cargar reservas:", err);
+          console.error("Error al cargar detalle habitaciones:", err);
+          setHabitaciones([]);
         }
       }
     };
 
-    const fetchHabitaciones = async () =>{
-      try{
-        const res = await axios.get(`http://localhost:8080/habitaciones`, {
-            params: { tipo:tipoSeleccionado },
-          });
-          setHabitaciones(res.data);
-          //console.log("habitacion: " + setHabitaciones);
-
-      }catch(err) {
-          //console.error("Error al cargar reservas:", err);
-        }
-    }
-    fetchReservas();
-    fetchHabitaciones();
+    fetchDetalleHabitaciones();
   }, [fechasValidas, tipoSeleccionado, desdeFecha, hastaFecha]);
 
   // =========================
-  // TABLA Y SELECCIÓN
+  // LÓGICA DE ESTADOS Y SELECCIÓN
   // =========================
   const fechasIntervalo = (desdeFecha && hastaFecha && fechasValidas)
     ? eachDayOfInterval({ start: parseISO(desdeFecha), end: parseISO(hastaFecha) })
     : [];
 
-  const estaReservada = (fechaDate: Date, numeroHab: number) =>
-    reservas.some(r => {
-      const fechaFilaString = format(fechaDate,"yyyy-MM-dd");
-      //console.log("fecha fila string: " + fechaFilaString);
-      //console.log("fecha Desde: " + r.fecha_desde);
-      //console.log("fecha Hasta: " + r.fecha_hasta);
-      //console.log("numero habitacion r:" + r.nro_habitacion);
-      //console.log("numero habitacion: " + numeroHab);
-      return r.nro_habitacion===numeroHab && fechaFilaString >= r.fecha_desde && fechaFilaString <= r.fecha_hasta;
-    });
+  const fechaEnRango = (fechaTarget: string, inicio: string, fin: string) => {
+    return fechaTarget >= inicio && fechaTarget <= fin;
+  };
 
-  const toggleSeleccion = (fechaDate: Date, numeroHab: number) => {
+  const toggleSeleccion = (fechaDate: Date, habitacion: HabitacionDTO) => {
     const fechaString = format(fechaDate,"yyyy-MM-dd");
-    const key = `${fechaString}|${numeroHab}`;
+    
+    // 1. CHEQUEO FUERA DE SERVICIO (MODIFICADO)
+    // Ahora muestra el cartel en lugar de hacer un return silencioso
+    if (habitacion.estado === "FueraDeServicio") {
+        setMostrarCartel(true); 
+        setTimeout(() => setMostrarCartel(false), 3000);
+        return;
+    }
 
-    if (estaReservada(fechaDate, numeroHab)) {
+    // 2. CHEQUEO ESTADÍA (Ocupada)
+    const tieneEstadia = habitacion.listaestadias?.some(e => 
+        fechaEnRango(fechaString, e.checkIn, e.checkOut)
+    );
+    if(tieneEstadia) {
+        setMostrarCartel(true); 
+        setTimeout(() => setMostrarCartel(false), 3000);
+        return;
+    }
+
+    // 3. CHEQUEO RESERVA
+    const tieneReserva = habitacion.listaReservas?.some(r => 
+        fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta)
+    );
+
+    if (tieneReserva) {
       setMostrarCartel(true);
       setTimeout(() => setMostrarCartel(false), 3000);
       return;
     }
 
+    // Si está libre, permite seleccionar
+    const key = `${fechaString}|${habitacion.numero}`;
     setSeleccionados(prev =>
       prev.includes(key) ? prev.filter(item => item!==key) : [...prev, key]
     );
@@ -173,20 +183,16 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const eliminarSeleccionados = () => setSeleccionados([]);
 
   const deleteSeleccionado = (ran:{ numero: number; desde: string; hasta: string }) => {
-    // 1) Convertir rango a fechas individuales
     const fechasABorrar = eachDayOfInterval({
       start: parseISO(ran.desde),
       end: parseISO(ran.hasta)
     }).map(f => `${format(f,"yyyy-MM-dd")}|${ran.numero}`);
 
-    // 2) Quitar esas fechas de "seleccionados"
     setSeleccionados(prev =>
       prev.filter(sel => !fechasABorrar.includes(sel))
     );
   };
 
-  //erne
-    // Construye lista de HabitacionDTO a partir de `seleccionados`
     const construirHabitacionesDTO = (): HabitacionDTO[] => {
       const lista: HabitacionDTO[] = seleccionados.map(sel => {
         const [fecha, numero] = sel.split("|");
@@ -197,50 +203,16 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           estado: habitacion?.estado || "DISPONIBLE",
           precio: habitacion?.precio ?? 0,
           cantidadPersonas: habitacion?.cantidadPersonas ?? 1,
-          tipoHab: habitacion?.tipoHab ?? (tipoSeleccionado as TipoHabitacion)
+          tipohabitacion: habitacion?.tipohabitacion ?? (tipoSeleccionado as string),
+          listaReservas: [], 
+          listaestadias: []
         };
       });
-
-      //console.log("LISTA DTO A ENVIAR:", lista);
       return lista;
     };
 
-    // Envía la lista al backend (query params con fechas + body con HabitacionDTO[])
-    const enviarReservasAlBack = async () => {
-      try {
-        if (!desdeFecha || !hastaFecha) {
-          alert("Debe seleccionar Fecha Desde y Fecha Hasta antes de confirmar.");
-          return;
-        }
-
-        if (seleccionados.length === 0) {
-          alert("No seleccionaste ninguna habitación.");
-          return;
-        }
-
-        const listaDTO = construirHabitacionesDTO();
-
-        const res = await axios.post(
-          `http://localhost:8080/listados?fechaDesde=${desdeFecha}&fechaHasta=${hastaFecha}`,
-          listaDTO
-        );
-
-        // guardo respuesta del backend para mostrar en cartel
-        setListaBackend(res.data || []);
-        setMostrarCartelLista(true);
-
-      } catch (err) {
-        //console.error("Error enviando reservas:", err);
-        alert("Error enviando reservas. Ver consola.");
-      }
-    };
-
-    // =========================
-  // HACER QUE EN LA TABLA DERECHA LAS FECHAS VAYAN DESDE HASTA
-  // =========================
 
   function generarRangos(seleccionados: string[]) {
-    // 1) Convertir a objetos
     const datos = seleccionados.map(sel => {
       const [fecha, numero] = sel.split("|");
       return {
@@ -250,19 +222,16 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
       };
     });
 
-    // 2) Ordenar primero por habitacion y luego por fecha
     datos.sort((a, b) => {
       if (a.numero !== b.numero) return a.numero - b.numero;
       return a.fechaDate.getTime() - b.fechaDate.getTime();
     });
 
-    // 3) Agrupar consecutivas
     const resultado: any[] = [];
     let actual = null;
 
     for (let item of datos) {
       if (!actual) {
-        // Primer objeto
         actual = { numero: item.numero, desde: item.fecha, hasta: item.fecha };
         continue;
       }
@@ -273,23 +242,18 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
         (1000 * 60 * 60 * 24);
 
       if (esMismaHab && diffDias === 1) {
-        // Extiende rango
         actual.hasta = item.fecha;
       } else {
-        // Cierra rango y empieza otro
         resultado.push(actual);
         actual = { numero: item.numero, desde: item.fecha, hasta: item.fecha };
       }
     }
-
     if (actual) resultado.push(actual);
-
     return resultado;
   }
 
   useEffect(() => {
     const nuevosRangos = generarRangos(seleccionados);
-    console.log(nuevosRangos);
     setRangos(nuevosRangos);
   }, [seleccionados]);
 
@@ -333,7 +297,6 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           value={tipoSeleccionado}
           onChange={(e) => setTipoSeleccionado(e.target.value as TipoHabitacion)}
           onFocus={() => {
-            // marcar campos vacíos en rojo si el usuario toca el select
             setErroresFecha(prev => ({
               desdeInvalido: prev.desdeInvalido || !desdeFecha,
               hastaInvalido: prev.hastaInvalido || !hastaFecha,
@@ -351,16 +314,14 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
         </select>
       </form>
 
-      {/* CARTEL DE HABITACIÓN NO DISPONIBLE */}
       {mostrarCartel && (
         <CartelHabitacionNoDisponible
           mensaje="La habitación seleccionada no se encuentra disponible"
           onClose={() => setMostrarCartel(false)}
         />
       )}
-      {/* Cartel con la lista devuelta por el backend */}
 
-         {mostrarCartelLista && (  //erne
+      {mostrarCartelLista && (
            <CartelListaHabitaciones
              lista={listaBackend}
              seleccionados={seleccionados}
@@ -368,9 +329,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
              hastaFecha={hastaFecha}
              onClose={() => setMostrarCartelLista(false)}
            />
-
        )}
-
 
       {/* TABLA ESTADO HABITACIÓN */}
       <section className="flex-2 max-h-[800px]">
@@ -395,24 +354,46 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
                 </tr>
 
                 {fechasIntervalo.map(fechaDate => {
-                  const fecha = format(fechaDate,"dd/MM/yyyy");
+                  const fechaString = format(fechaDate,"yyyy-MM-dd");
+                  const fechaDisplay = format(fechaDate,"dd/MM/yyyy");
+
                   return (
-                    <tr key={fecha}>
-                      <td className="p-2 border text-center font-medium">{fecha}</td>
+                    <tr key={fechaString}>
+                      <td className="p-2 border text-center font-medium">{fechaDisplay}</td>
                       {tipoSeleccionado && habitaciones.map(hab => {
-                        const key = `${format(fechaDate,"yyyy-MM-dd")}|${hab?.numero}`;
-                        const seleccionado = seleccionados.includes(key);
-                        const reservada = estaReservada(fechaDate,hab?.numero);
-                        //console.log("reservada:" + reservada)
-                        //console.log(reservas)
+                        
+                        const key = `${fechaString}|${hab?.numero}`;
+                        const esSeleccionado = seleccionados.includes(key);
+
+                        // 1. CHEQUEO FUERA DE SERVICIO
+                        const esFueraServicio = hab.estado === "FueraDeServicio";
+
+                        // 2. CHEQUEO ESTADÍA (OCUPADA)
+                        const esOcupada = !esFueraServicio && hab.listaestadias?.some(estadia => 
+                            fechaEnRango(fechaString, estadia.checkIn, estadia.checkOut)
+                        );
+
+                        // 3. CHEQUEO RESERVA
+                        const esReservada = !esFueraServicio && !esOcupada && hab.listaReservas?.some(reserva => 
+                            fechaEnRango(fechaString, reserva.fecha_desde, reserva.fecha_hasta)
+                        );
+                        
+                        let bgClass = "bg-white"; 
+                        if (esFueraServicio) {
+                            bgClass = "bg-gray-700"; 
+                        } else if (esOcupada) {
+                            bgClass = "bg-blue-900"; 
+                        } else if (esReservada) {
+                            bgClass = "bg-red-500";  
+                        } else if (esSeleccionado) {
+                            bgClass = "bg-green-500"; 
+                        }
 
                         return (
                           <td
                             key={hab.numero}
-                            className={`p-4 border cursor-pointer
-                              ${reservada ? "bg-red-500" : seleccionado ? "bg-green-500" : "bg-white"}
-                            `}
-                            onClick={() => toggleSeleccion(fechaDate,hab?.numero)}
+                            className={`p-4 border cursor-pointer ${bgClass}`}
+                            onClick={() => toggleSeleccion(fechaDate, hab)}
                           ></td>
                         );
                       })}
@@ -440,23 +421,21 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
 
             <button
               className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
-             onClick={() => {
-               const seleccionEncoded = encodeURIComponent(JSON.stringify(seleccionados));
+              onClick={() => {
                  const listaDTO = construirHabitacionesDTO();
-                   setListaBackend(listaDTO);
-                   setMostrarCartelLista(true);  //  Muestra cartel antes del push
-             }}
-             > Aceptar
+                 setListaBackend(listaDTO);
+                 setMostrarCartelLista(true);
+              }}
+              > Aceptar
             </button>
           </div>
-
 
             {mostrarCartelOH && <OcuparHabitacionIgualmente onClose={() => setMostrarCartelOH(false)} />}
           </>
         )}
       </section>
 
-      {/* TABLA DERECHA OPCIONAL */}
+      {/* TABLA DERECHA */}
       {!ocultarTabla && seleccionados.length > 0 && (
         <section className="flex-1">
           <h2 className="bg-indigo-950 text-white font-bold text-center mb-0">
@@ -478,7 +457,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
                 return (
                   <tr key={index} className="bg-white hover:bg-indigo-100">
                     <td className="p-3 border text-center"><button
-                        onClick={() => deleteSeleccionado(ran)}   // <-- tu función
+                        onClick={() => deleteSeleccionado(ran)} 
                         className=" text-white p-1 rounded hover:bg-red-700"
                     >
                         <FontAwesomeIcon icon={faTrashCan} className="text-black" />
@@ -487,7 +466,6 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
                     <td className="p-3 border text-center">{ran.numero}</td>
                     <td className="p-3 border text-center">{fechaDesde}</td>
                     <td className="p-3 border text-center">{fechaHasta}</td>
-
                   </tr>
                 );
               })}
@@ -502,9 +480,6 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           </button>
         </section>
       )}
-  {/* ============================ */}
-  {/* PASO 2 — FORMULARIO DATOS   */}
-  {/* ============================ */}
 
     </main>
   );
