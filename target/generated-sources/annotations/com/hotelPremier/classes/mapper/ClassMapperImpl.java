@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-01T08:28:00-0300",
+    date = "2025-12-01T12:27:24-0300",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
@@ -30,6 +30,10 @@ public class ClassMapperImpl implements ClassMapper {
         }
 
         Estadia estadia = new Estadia();
+
+        estadia.setCheckin( estadiaDTO.getCheckin() );
+        estadia.setCheckout( estadiaDTO.getCheckout() );
+        estadia.setHabitacion( habitacionDTOToHabitacion( estadiaDTO.getHabitacion() ) );
 
         return estadia;
     }
@@ -46,12 +50,7 @@ public class ClassMapperImpl implements ClassMapper {
         habitacionDTO.setEstado( h.getEstado() );
         habitacionDTO.setPrecio( h.getPrecio() );
         habitacionDTO.setCantidadPersonas( h.getCantidadPersonas() );
-        if ( habitacionDTO.getListaReservas() != null ) {
-            List<ReservaDTO> list = toDtosReserva( h.getListaReservas() );
-            if ( list != null ) {
-                habitacionDTO.getListaReservas().addAll( list );
-            }
-        }
+        habitacionDTO.setListareservas( toDtosReserva( h.getListareservas() ) );
 
         habitacionDTO.setTipohabitacion( h.getTipo() );
 
@@ -172,10 +171,6 @@ public class ClassMapperImpl implements ClassMapper {
 
         ReservaDTO reservaDTO = new ReservaDTO();
 
-        Integer numero = reservaNro_habitacionNumero( reserva );
-        if ( numero != null ) {
-            reservaDTO.setNro_habitacion( numero );
-        }
         reservaDTO.setTelefono( reserva.getTelefono() );
         reservaDTO.setNombre( reserva.getNombre() );
         reservaDTO.setApellido( reserva.getApellido() );
@@ -205,6 +200,20 @@ public class ClassMapperImpl implements ClassMapper {
     }
 
     @Override
+    public List<Reserva> toEntityReservaLista(List<ReservaDTO> lista) {
+        if ( lista == null ) {
+            return null;
+        }
+
+        List<Reserva> list = new ArrayList<Reserva>( lista.size() );
+        for ( ReservaDTO reservaDTO : lista ) {
+            list.add( toEntityReserva( reservaDTO ) );
+        }
+
+        return list;
+    }
+
+    @Override
     public List<Estadia> toEntityEstadia(List<EstadiaDTO> listaestadiaDTO) {
         if ( listaestadiaDTO == null ) {
             return null;
@@ -218,6 +227,22 @@ public class ClassMapperImpl implements ClassMapper {
         return list;
     }
 
+    protected Habitacion habitacionDTOToHabitacion(HabitacionDTO habitacionDTO) {
+        if ( habitacionDTO == null ) {
+            return null;
+        }
+
+        Habitacion habitacion = new Habitacion();
+
+        habitacion.setListareservas( toEntityReservaLista( habitacionDTO.getListareservas() ) );
+        habitacion.setNumero( habitacionDTO.getNumero() );
+        habitacion.setEstado( habitacionDTO.getEstado() );
+        habitacion.setPrecio( habitacionDTO.getPrecio() );
+        habitacion.setCantidadPersonas( habitacionDTO.getCantidadPersonas() );
+
+        return habitacion;
+    }
+
     protected EstadiaDTO estadiaToEstadiaDTO(Estadia estadia) {
         if ( estadia == null ) {
             return null;
@@ -225,6 +250,7 @@ public class ClassMapperImpl implements ClassMapper {
 
         EstadiaDTO estadiaDTO = new EstadiaDTO();
 
+        estadiaDTO.setHabitacion( toDTOHab( estadia.getHabitacion() ) );
         estadiaDTO.setCheckin( estadia.getCheckin() );
         estadiaDTO.setCheckout( estadia.getCheckout() );
 
@@ -269,20 +295,5 @@ public class ClassMapperImpl implements ClassMapper {
         direccion.setPais( direccionDTO.getPais() );
 
         return direccion;
-    }
-
-    private Integer reservaNro_habitacionNumero(Reserva reserva) {
-        if ( reserva == null ) {
-            return null;
-        }
-        Habitacion nro_habitacion = reserva.getNro_habitacion();
-        if ( nro_habitacion == null ) {
-            return null;
-        }
-        Integer numero = nro_habitacion.getNumero();
-        if ( numero == null ) {
-            return null;
-        }
-        return numero;
     }
 }

@@ -33,7 +33,7 @@ public class Habitacion  {
     @JsonIgnore
     private List<Estadia> listaestadias; 
 
-    @OneToMany(mappedBy = "nro_habitacion")
+    @OneToMany(mappedBy = "habitacion")
     @JsonIgnore
     private List<Reserva> listareservas;
 
@@ -43,7 +43,10 @@ public class Habitacion  {
     // GETTERS y SETTERS
 
     
-    public List<Reserva> getListaReservas(){ return this.listareservas;}
+    public List<Reserva> getListareservas(){ return this.listareservas;}
+    public void setListareservas(List<Reserva> listres){
+        this.listareservas=listres;
+    }
 
     public List<Estadia> getListaEstadia() { return this.listaestadias; }
     public Integer getNumero() { return this.numero; }

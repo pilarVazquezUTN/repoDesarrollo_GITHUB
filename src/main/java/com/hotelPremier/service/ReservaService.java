@@ -1,6 +1,6 @@
 package com.hotelPremier.service;
 
-import java.sql.Date;
+import java.util.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +36,17 @@ public class ReservaService {
         Date fechaHasta
     ){
         return mapper.toDtosReserva( reservaRepository.buscarReservas(fechaDesde,fechaHasta) );
+    } 
+
+    public void delete(Reserva r){
+        reservaRepository.delete(r);
+    }
+
+    public boolean existeReserva(Date fechaDesde, Date fechaHasta){
+        
+        return !(reservaRepository.buscarReservas(fechaDesde, fechaHasta).isEmpty());
+        //si no esta vacia, existen reservas interferidas.
+        //si esta vacia, no hay reservas interferidas.
     }
 
     /**
@@ -56,9 +67,9 @@ public class ReservaService {
 
             //se busca la hab
             Habitacion hab = habitacionRepository
-                    .findById(reservaDTO.getNro_habitacion())
+                    .findById(reservaDTO.getHabitacion().getNumero())
                     .orElseThrow(() -> new RuntimeException(
-                            "Habitación no encontrada: " + reservaDTO.getNro_habitacion()
+                            "Habitación no encontrada: " + reservaDTO.getHabitacion().getNumero()
                     ));
 
             // setear habitación

@@ -17,6 +17,7 @@ public class HabitacionDTO {
     private String tipohabitacion;// cuando mapea con los DTO se le asigna un tipo.
     private List<EstadiaDTO> listaestadias;
     private List<ReservaDTO> listareservas;
+    
 
 
     // GETTERS y SETTERS
@@ -51,6 +52,9 @@ public class HabitacionDTO {
     public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
 
     public List<EstadiaDTO> getListaestadias() { return this.listaestadias; }
-    public List<ReservaDTO> getListaReservas() { return this.listareservas; }
-
+    public void setListareservas(List<ReservaDTO> listares){
+        this.listareservas=listares;
+    }
+    public List<ReservaDTO> getListareservas() { return this.listareservas; }
+ 
 }

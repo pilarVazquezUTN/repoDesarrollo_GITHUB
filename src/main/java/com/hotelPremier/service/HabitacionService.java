@@ -41,6 +41,10 @@ public class HabitacionService {
         return mapper.toDTOsHabitacion( habitacionRepository.buscarPorTipoHabitacion(tipoHabitacion) );
     }
 
+    public HabitacionDTO getHabitacion(Integer numero){
+        return mapper.toDTOHab( habitacionRepository.findByNumero(numero) );
+    }
+
     public List<HabitacionDTO> buscarListaHabitaciones(String tipo, Date fechaDesde, Date fechaHasta){ 
         return mapper.toDTOsHabitacion( habitacionRepository.buscarListaHabitaciones(tipo,fechaDesde,fechaHasta) );
     }
@@ -56,7 +60,7 @@ public class HabitacionService {
 
             // Hibernate carga las listas automáticamente con LAZY o EAGER
             //agarra las listas de cada hab
-            List<Reserva> reservas = h.getListaReservas()
+            List<Reserva> reservas = h.getListareservas()
                 .stream()//convertimos la lista a stream, para procesarlos mejor
                 .filter(r ->
                     r.getFecha_desde().compareTo(fechaHasta) <= 0 &&

@@ -41,4 +41,6 @@ public interface HabitacionRepository extends JpaRepository<Habitacion,Integer> 
         @Param("fechaHasta") Date fechaHasta
     );
 
+    Habitacion findByNumero(Integer numero);
+
 }

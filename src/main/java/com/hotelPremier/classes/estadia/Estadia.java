@@ -38,7 +38,7 @@ public class Estadia {
     private Habitacion habitacion;
 
     @ManyToMany(mappedBy = "listaestadia")
-    private List<Huesped> listahuesped;
+    private List<Huesped> listahuesped; 
 
     @OneToMany(mappedBy = "estadia")
     private List<Factura> listafactura;
@@ -56,31 +56,31 @@ public class Estadia {
 
 
     public Integer getId_estadia() {
-        return id_estadia;
+        return this.id_estadia;
     }
     public void setId_estadia(Integer id_estadia) {
         this.id_estadia = id_estadia;
     }
     public Date getCheckin() {
-        return checkin;
+        return this.checkin;
     }
     public void setCheckin(Date checkin) {
         this.checkin = checkin;
     }
     public Date getCheckout() {
-        return checkout;
+        return this.checkout;
     }
     public void setCheckout(Date checkout) {
         this.checkout = checkout;
     }
     public Habitacion getHabitacion() {
-        return habitacion;
+        return this.habitacion;
     }
     public void setHabitacion(Habitacion habitacion) {
         this.habitacion = habitacion;
     }
     public List<Huesped> getListahuesped() {
-        return listahuesped;
+        return this.listahuesped;
 
     }
     public void setListahuesped(List<Huesped> listahuesped) {

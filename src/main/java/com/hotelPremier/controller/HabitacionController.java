@@ -31,12 +31,16 @@ public class HabitacionController {
     public ResponseEntity<List<HabitacionDTO>> getHabitaciones(
         @RequestParam String tipo
     ){
-        /*
-        switch segun el tipo de habitacion que me entre y de ahi llamo a cada controller.
-        */
-        
         List<HabitacionDTO> listaHabitaciones = habitacionService.getHabitaciones(tipo);
         return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
+    }
+
+    @GetMapping("/numHabitacion")
+    public HabitacionDTO getHabitacion(
+        @RequestParam Integer numero
+    ){
+        HabitacionDTO habitacionDTO = habitacionService.getHabitacion(numero);
+        return (habitacionDTO);
     }
 
     @GetMapping("/listaHabitaciones") 

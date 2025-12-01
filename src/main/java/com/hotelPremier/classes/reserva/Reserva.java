@@ -40,8 +40,8 @@ public class Reserva {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "nro_habitacion")
-    private Habitacion nro_habitacion;
+    @JoinColumn(name = "nro_habitacion") 
+    private Habitacion habitacion;
 
     @OneToOne
     @JoinColumn(name = "id_estadia")
@@ -54,7 +54,10 @@ public class Reserva {
 
     public void setHabitacion (Habitacion habitacion){
 
-        nro_habitacion=habitacion;
+        this.habitacion=habitacion;
+    }
+    public Habitacion getHabitacion(){
+        return this.habitacion;
     }
 
    /* public String getTipo_habitacion(){
@@ -62,17 +65,10 @@ public class Reserva {
     }
 */
 
-    public void setNro_habitacion(Habitacion nro_habitacion) {
-        this.nro_habitacion = nro_habitacion;
-    }
 
-
-    public Habitacion getNro_habitacion(){
-        return nro_habitacion;
-    }
 
     public String getNombre() {
-        return nombre;
+        return this.nombre;
     }
    public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -83,7 +79,7 @@ public class Reserva {
     }
 
     public Date getFecha_desde() {
-        return fecha_desde;
+        return this.fecha_desde;
     }
 
 
@@ -93,7 +89,7 @@ public class Reserva {
 
 
     public String getApellido() {
-        return apellido;
+        return this.apellido;
     }
 
     public void setTelefono(String telefono) {

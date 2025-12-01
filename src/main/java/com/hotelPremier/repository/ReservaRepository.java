@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +25,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
     """)
     List<Reserva>  buscarReservas(@Param("fechadesde") Date fechaDesde, @Param("fechahasta") Date fechaHasta);
 
+    void delete(Reserva r);
 
-
+    //Reserva findById_reserva(Integer id_reserva);
 
 }

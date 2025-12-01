@@ -8,11 +8,14 @@ import com.hotelPremier.classes.habitacion.*;
 import com.hotelPremier.classes.servicioExtra.ServicioExtra;
 import com.hotelPremier.classes.factura.FacturaDTO;
 import com.hotelPremier.classes.huesped.HuespedDTO;
+import com.hotelPremier.classes.reserva.ReservaDTO;
 
 public class EstadiaDTO {
     private Integer id_estadiaDTO;
     private Date checkin; 
     private Date checkout;
+    private HabitacionDTO habitacion;
+    private ReservaDTO reserva;
 
     //no estamos seguras!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
     private DobleEstandarDTO dobleestandarDTO;
@@ -28,6 +31,19 @@ public class EstadiaDTO {
 
 
 
+
+    public EstadiaDTO(){}
+    public EstadiaDTO(Date checkin, Date checkout, HabitacionDTO hab){
+        this.checkin=checkin;
+        this.checkout=checkout;
+        this.habitacion=hab;
+    }
+    public HabitacionDTO getHabitacion() {
+        return this.habitacion;
+    }
+    public void setHabitacion(HabitacionDTO habitacion) {
+        this.habitacion = habitacion;
+    }
     /**
      * set de checkin
      * @param checkin
@@ -49,7 +65,7 @@ public class EstadiaDTO {
      * @return
      */
 
-    public Date getCheckIn(){
+    public Date getCheckin(){
         return this.checkin;
     }
 
@@ -57,7 +73,7 @@ public class EstadiaDTO {
      * get de checkout
      * @return
      */
-    public Date getCheckOut(){
+    public Date getCheckout(){
         return this.checkout;
     }
 }

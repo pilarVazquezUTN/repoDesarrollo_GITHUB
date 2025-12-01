@@ -41,11 +41,13 @@ public interface ClassMapper {
 
         List<ReservaDTO> toDtosReserva( List<Reserva> reserva );
 
-    @Mapping(target = "nro_habitacion", source = "nro_habitacion.numero")
+    
          ReservaDTO toDTOReserva(Reserva reserva);
 
-    @Mapping(target = "nro_habitacion", ignore = true)
+    
         Reserva toEntityReserva(ReservaDTO dto);
+        
+        List<Reserva> toEntityReservaLista(List<ReservaDTO> lista);
 
 
         //ESTADIA
