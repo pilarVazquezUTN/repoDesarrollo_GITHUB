@@ -186,7 +186,7 @@ INSERT INTO huesped (
     TO_DATE('13/11/2003','DD/MM/YYYY'),NULL,'CONSUMIDOR FINAL','FERNANDA','ODONTÓLOGA',7),
 
 ('DNI','45678901','543428501478','ARGENTINA','23456789014','FORNARI',
-    TO_DATE('22/02/2003','DD/MM/YYYY'),'GUILLEFORNARI@GMAIL.COM','RESPONSABLE INSCRIPTO','GUILLE','ESTUDIANTE',8),
+    TO_DATE('22/02/2003','DD/MM/YYYY'),'GUILLEFORNARI@GMAIL.COM','RESPONSABLE INSCRIPTO','GUILLERMINA','ESTUDIANTE',8),
 
 ('DNI','22456789','112345671','ARGENTINA',NULL,'MILEI',
     TO_DATE('20/12/1970','DD/MM/YYYY'),'ELLEON@GMAIL.COM','CONSUMIDOR FINAL','JAVIER','PRESIDENTE',9),
@@ -328,33 +328,134 @@ INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_
 
 INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 (1008, 'GARCIA', 'MARIO', '3411111111', 
-    TO_DATE('2026-01-05','DD/MM/YYYY'), 
-    TO_DATE('2026-01-10','DD/MM/YYYY'), 
+    TO_DATE('05/01/2026','DD/MM/YYYY'), 
+    TO_DATE('10/01/2026','DD/MM/YYYY'), 
     'Confirmada', 2);
 
 INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 (1009, 'LOPEZ', 'ANA', '3412222222', 
-TO_DATE('2026-01-12','DD/MM/YYYY'), 
-TO_DATE('2026-01-16','DD/MM/YYYY'), 
-'Confirmada', 3);
+	TO_DATE('12/01/2026','DD/MM/YYYY'), 
+	TO_DATE('16/01/2026','DD/MM/YYYY'), 
+	'Confirmada', 3);
 
 INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 (1010, 'MARTINEZ', 'JUAN', '3413333333', 
-TO_DATE('2026-01-08','DD/MM/YYYY'), 
-TO_DATE('2026-01-12','DD/MM/YYYY'), 
-'Pendiente', 5);
+	TO_DATE('08/01/2026','DD/MM/YYYY'), 
+	TO_DATE('12/01/2026','DD/MM/YYYY'), 
+	'Pendiente', 5);
 
 INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 (1011, 'RODRIGUEZ', 'CARLA', '3414444444', 
-TO_DATE('2026-01-15','DD/MM/YYYY'), 
-TO_DATE('2026-01-20','DD/MM/YYYY'), 
-'Confirmada', 6);
+	TO_DATE('15/01/2026','DD/MM/YYYY'), 
+	TO_DATE('20/01/2026','DD/MM/YYYY'), 
+	'Confirmada', 6);
 
 INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
 (1012, 'FERNANDEZ', 'PABLO', '3415555555', 
-TO_DATE('2026-01-18','DD/MM/YYYY'), 
-TO_DATE('2026-01-22','DD/MM/YYYY'), 
-'Confirmada', 8);
+	TO_DATE('18/01/2026','DD/MM/YYYY'), 
+	TO_DATE('22/01/2026','DD/MM/YYYY'), 
+	'Confirmada', 8);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1013, 'SOLORZANO', 'ERNESTINA', '3437457594', 
+	TO_DATE('04/12/2025','DD/MM/YYYY'), 
+	TO_DATE('07/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 18);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1014, 'FORNARI', 'GUILLERMINA', '543428501478', 
+	TO_DATE('07/12/2025','DD/MM/YYYY'), 
+	TO_DATE('10/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 23);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1015, 'MILEI', 'JAVIER', '112345671', 
+	TO_DATE('05/12/2025','DD/MM/YYYY'), 
+	TO_DATE('08/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 12);	
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1016, 'MILEI', 'JAVIER', '112345671', 
+	TO_DATE('09/12/2025','DD/MM/YYYY'), 
+	TO_DATE('12/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 29);		
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1017, 'VAZQUEZ', 'PILAR', '3425908612', 
+	TO_DATE('07/12/2025','DD/MM/YYYY'), 
+	TO_DATE('12/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 33);	
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1018, 'ARGENTO', 'PAOLA', '3425789987', 
+	TO_DATE('04/12/2025','DD/MM/YYYY'), 
+	TO_DATE('07/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 36);		
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1019, 'ARGENTO', 'PAOLA', '3425789987', 
+	TO_DATE('09/12/2025','DD/MM/YYYY'), 
+	TO_DATE('15/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 37);	
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1020, 'VAZQUEZ', 'PILAR', '3425908612', 
+	TO_DATE('13/12/2025','DD/MM/YYYY'), 
+	TO_DATE('21/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 40);	
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1021, 'FORNARI', 'GUILLERMINA', '543428501478', 
+	TO_DATE('12/12/2025','DD/MM/YYYY'), 
+	TO_DATE('17/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 42);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1022, 'FORNARI', 'GUILLERMINA', '543428501478', 
+	TO_DATE('04/12/2025','DD/MM/YYYY'), 
+	TO_DATE('08/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 45);	
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1023, 'AYALA', 'FERNANDA', '3424458808',
+        TO_DATE('05/12/2025','DD/MM/YYYY'),
+        TO_DATE('10/12/2025','DD/MM/YYYY'),
+        'Confirmada', 47);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1024, 'GARCIA', 'MARIO', '3411111111', 
+    TO_DATE('12/12/2025','DD/MM/YYYY'), 
+    TO_DATE('15/12/2025','DD/MM/YYYY'), 
+    'Confirmada', 47);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1025, 'LOPEZ', 'ANA', '3412222222', 
+	TO_DATE('06/12/2025','DD/MM/YYYY'), 
+	TO_DATE('11/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 48);
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1026, 'LOPEZ', 'ANA', '3412222222', 
+	TO_DATE('21/12/2025','DD/MM/YYYY'), 
+	TO_DATE('25/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 17);	
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1027, 'AYALA', 'FERNANDA', '3424458808',
+        TO_DATE('15/12/2025','DD/MM/YYYY'),
+        TO_DATE('19/12/2025','DD/MM/YYYY'),
+        'Confirmada', 22);	
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1028, 'VAZQUEZ', 'PILAR', '3425908612',
+        TO_DATE('10/12/2025','DD/MM/YYYY'),
+        TO_DATE('15/12/2025','DD/MM/YYYY'),
+        'Confirmada', 9);			
+
+	
+
+
+
 
 
 
@@ -400,10 +501,60 @@ VALUES (2007,
         TO_DATE('06/01/2026','DD/MM/YYYY'),
         7);	
 
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2008,
+        TO_DATE('04/12/2025','DD/MM/YYYY'),
+        TO_DATE('07/12/2025','DD/MM/YYYY'),
+        11);	
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2009,
+        TO_DATE('09/12/2025','DD/MM/YYYY'),
+        TO_DATE('13/12/2025','DD/MM/YYYY'),
+        13);
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2010,
+        TO_DATE('15/12/2025','DD/MM/YYYY'),
+        TO_DATE('18/12/2025','DD/MM/YYYY'),
+        16);		
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2011,
+        TO_DATE('07/12/2025','DD/MM/YYYY'),
+        TO_DATE('11/12/2025','DD/MM/YYYY'),
+        21);
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2012,
+        TO_DATE('15/12/2025','DD/MM/YYYY'),
+        TO_DATE('19/12/2025','DD/MM/YYYY'),
+        26);	
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2013,
+        TO_DATE('23/12/2025','DD/MM/YYYY'),
+        TO_DATE('31/12/2025','DD/MM/YYYY'),
+        12);		
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2014,
+        TO_DATE('04/12/2025','DD/MM/YYYY'),
+        TO_DATE('07/12/2025','DD/MM/YYYY'),
+        10);
+
+INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
+VALUES (2015,
+        TO_DATE('24/12/2025','DD/MM/YYYY'),
+        TO_DATE('28/12/2025','DD/MM/YYYY'),
+        9);		
 
 
 
-GRANT ALL PRIVILEGES ON DATABASE hotelpremier12 TO pili;
+
+
+
+GRANT ALL PRIVILEGES ON DATABASE hotelpremier14 TO pili;
 
 -- Esto actualiza la secuencia al valor máximo que existe actualmente en la tabla
 --pili: agregue esto porque sino me crea el id 1, ahora con esta funcion arranca desde el ultimo+1
