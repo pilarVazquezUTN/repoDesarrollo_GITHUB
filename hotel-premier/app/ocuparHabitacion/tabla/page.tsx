@@ -31,8 +31,9 @@ export type TipoHuesped = {
 
 type TablaProps = {
     huespedes: TipoHuesped[];
-    toggleSeleccion: (h: TipoHuesped) => void;   // ✔️ AGREGADO
-    seleccionados: TipoHuesped[];               // ✔️ AGREGADO
+    toggleSeleccion: (h: TipoHuesped) => void;  
+    seleccionados: TipoHuesped[];               
+    setSeleccionado: (h: TipoHuesped) => void;
 };
 
 type SortKey = keyof TipoHuesped | "dni" | "tipoDocumento";
@@ -104,7 +105,11 @@ export default function Tabla({ huespedes, toggleSeleccion, seleccionados }: Tab
                                 <td className="p-2 border text-center">
                                     <input
                                         type="checkbox"
-                                        checked={seleccionado}
+                                        checked={seleccionados.some(
+                                            (s) =>
+                                                s.huespedID.dni === h.huespedID.dni &&
+                                                s.huespedID.tipoDocumento === h.huespedID.tipoDocumento
+                                        )}
                                         onChange={() => toggleSeleccion(h)}
                                     />
                                 </td>

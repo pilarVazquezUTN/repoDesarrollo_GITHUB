@@ -6,6 +6,9 @@ import { TipoHuesped } from "../../tabla/page";
 import CartelNoEncontrado from "../../carteles/huespedNoEncontrado";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import CartelNoSeleccionoHuesped from "../../carteles/CartelNoSeleccionoHuesped";
+import SeleccionarRepresentantes from "../../carteles/SeleccionarRepresentantes";
+import SeguirOcuparHabitacion from "../../carteles/SeguirOcuparHabitacion";
 
 export default function BuscarHuespedOcuparHabitacion() { 
 
@@ -21,6 +24,10 @@ export default function BuscarHuespedOcuparHabitacion() {
 
     // ✔️ Selecciones múltiples
     const [huespedesSeleccionados, setHuespedesSeleccionados] = useState<TipoHuesped[]>([]);
+
+    const [mostrarCartelNoSelecciono, setMostrarCartelNoSelecciono] = useState(false);
+    const [mostrarCartelRepresentantes, setMostrarCartelRepresentantes] = useState(false);
+    const [mostrarSeguir, setMostrarSeguir] = useState(false);
 
     const router = useRouter();
 
@@ -85,14 +92,24 @@ export default function BuscarHuespedOcuparHabitacion() {
         console.log("Huésped seleccionado:", huesped);
     };
 
-    // ✔️ corregido
     const irADarAltaHuesped = () => {
-        if (huespedSeleccionado === null) {
-            router.push("/darAltaHuesped");
-        } else {
-            router.push("/modificarHuesped");
+        if (huespedesSeleccionados.length === 0) {
+            setMostrarCartelNoSelecciono(true);
+            return;
+        }
+
+        setMostrarCartelRepresentantes(true);
+    };
+
+
+    const recibirRepresentantes = (representante: TipoHuesped | null) => {
+        if (representante) {
+            console.log("Representante seleccionado:", representante);
+            // Hacés lo que necesites con el representante
         }
     };
+
+
 
     return (
         <main className="flex gap-8 px-6 py-6 items-start">
@@ -158,6 +175,7 @@ export default function BuscarHuespedOcuparHabitacion() {
                     huespedes={huespedes}
                     toggleSeleccion={toggleSeleccion}
                     seleccionados={huespedesSeleccionados}
+                    setSeleccionado={setSeleccionado}   // ← AGREGAR ESTO
                 />
 
                 <div className="mt-6 justify-center sticky bottom-0 flex gap-4">
@@ -174,6 +192,43 @@ export default function BuscarHuespedOcuparHabitacion() {
             {mostrarCartel && (
                 <CartelNoEncontrado onClose={() => setMostrarCartel(false)} />
             )}
+
+            {mostrarCartelNoSelecciono && (
+                <CartelNoSeleccionoHuesped
+                    onAceptar={() => setMostrarCartelNoSelecciono(false)}  
+                />
+                )}
+
+            {mostrarCartelRepresentantes && (
+                <SeleccionarRepresentantes
+                    huespedes={huespedesSeleccionados}
+                    onCerrar={() => setMostrarCartelRepresentantes(false)}
+                    onAceptar={(rep) => {
+                    recibirRepresentantes(rep);
+                    setMostrarCartelRepresentantes(false); // cerrar cartel
+                    }}
+                    onSeguir={() => setMostrarSeguir(true)} // abrir el nuevo cartel
+                />
+            )}
+
+            {mostrarSeguir && (
+                <SeguirOcuparHabitacion
+                    onSeguirCargando={() => {
+                    console.log("Seguir Cargando Huespedes");
+                    setMostrarSeguir(false);
+                    }}
+                    onCargarMasHabitaciones={() => {
+                    console.log("Cargar más Habitaciones");
+                    setMostrarSeguir(false);
+                    }}
+                    onSalir={() => {
+                    console.log("Salir");
+                    setMostrarSeguir(false);
+                    }}
+                />
+            )}
+
+
 
         </main>
     );
