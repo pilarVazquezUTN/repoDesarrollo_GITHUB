@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 type Props = {
   onClose: () => void;
 };
@@ -30,13 +32,11 @@ export default function CartelPresioneTecla({ onClose }: Props) {
 
         {/* BOTÓN */}
         <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-6 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"
-          >
-            Aceptar
-          </button>
+          
+          <Link href="/ocuparHabitacion/tablaHuespedes"> 
+            <button type="button" onClick={onClose} className="px-6 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"> Aceptar </button>
+          </Link>
+
         </div>
       </div>
     </div>

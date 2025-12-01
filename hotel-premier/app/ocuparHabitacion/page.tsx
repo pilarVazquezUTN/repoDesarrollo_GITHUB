@@ -14,6 +14,7 @@ import HabitacionReservadaOcuparIgual from "../carteles/habitacionReservadaOcupa
 import CartelHabitacionNoDisponible from "../carteles/CartelHabitacionNoDisponible";
 import CartelHabitacionesOcupadas from "../carteles/cartelHabitacionesOcupadas";
 import CartelPresioneTecla from "../carteles/CartelPresioneTecla";
+import Link from "next/link";
 
 
 // =========================
@@ -457,9 +458,12 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
 
             {/* BOTONES DE ACCIÓN */}
             <div className="flex justify-center gap-4 mt-6">
+                <Link href="/menu"> 
                 <button className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800">
                   Cancelar
                 </button>
+                </Link>
+                
 
                 <button
                   className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
