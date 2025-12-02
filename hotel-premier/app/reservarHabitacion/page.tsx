@@ -57,6 +57,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const [tipoSeleccionado, setTipoSeleccionado] = useState<"" | TipoHabitacion>("");
   const [erroresFecha, setErroresFecha] = useState({ desdeInvalido: false, hastaInvalido: false, ordenInvalido: false });
   const [fechasValidas, setFechasValidas] = useState(false);
+  const [errorSeleccion, setErrorSeleccion] = useState("");
   
   const [seleccionados, setSeleccionados] = useState<string[]>([]);
   const [mostrarCartelOH, setMostrarCartelOH] = useState(false);
@@ -328,7 +329,9 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
       {/* TABLA ESTADO HABITACIÓN */}
       <section className="flex-2 max-h-[800px]">
         {tipoSeleccionado && fechasIntervalo.length > 0 ? (
+          
           <>
+          
             <table className="w-full border-collapse border shadow-lg">
               <thead className="bg-indigo-950 text-white sticky top-0 z-10">
                 <tr>
@@ -405,6 +408,12 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
               <span className="w-4 h-4 rounded-full bg-blue-900"></span><span>OCUPADA</span>
               <span className="w-4 h-4 rounded-full bg-green-500"></span><span>SELECCIONADA</span>
             </li>
+
+            {errorSeleccion && (
+                <div className="text-red-600 text-center mt-2 font-semibold">
+                  {errorSeleccion}
+                </div>
+              )}
         
             <div className="flex justify-center gap-4 mt-6">
             <Link href="/menu">
@@ -416,12 +425,18 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
             <button
               className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
               onClick={() => {
+                if (seleccionados.length === 0) {
+                  setErrorSeleccion("Debes seleccionar al menos una habitación.");
+                  setTimeout(() => setErrorSeleccion(""), 2000); // Se borra a los 3s
+                  return;
+                }
                  const listaDTO = construirHabitacionesDTO();
                  setListaBackend(listaDTO);
                  setMostrarCartelLista(true);
               }}
               > Aceptar
             </button>
+            
           </div>
 
             {mostrarCartelOH && <OcuparHabitacionIgualmente onClose={() => setMostrarCartelOH(false)} />}
