@@ -39,7 +39,7 @@ interface HabitacionDTO {
   precio: number;
   cantidadPersonas: number;
   tipohabitacion: string;
-  listaReservas: ReservaDTO[]; 
+  listareservas: ReservaDTO[]; 
   listaestadias: EstadiaDTO[];
 }
 
@@ -112,7 +112,16 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
                 fechaHasta: hastaFecha 
             },
           });
-          setHabitaciones(response.data);
+          const dataNormalizada = response.data.map((h: any) => ({
+            ...h,
+            listaestadias: h.listaestadias?.map((e: any) => ({
+              checkIn: e.checkin,
+              checkOut: e.checkout
+            })) ?? [],
+            listaReservas: h.listareservas ?? []
+          }));
+
+          setHabitaciones(dataNormalizada);
         } catch(err) {
           console.error("Error al cargar detalle habitaciones:", err);
           setHabitaciones([]);
@@ -156,7 +165,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
     }
 
     // 3. CHEQUEO RESERVA
-    const tieneReserva = habitacion.listaReservas?.some(r => 
+    const tieneReserva = habitacion.listareservas?.some(r => 
         fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta)
     );
 
@@ -197,7 +206,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           precio: habitacion?.precio ?? 0,
           cantidadPersonas: habitacion?.cantidadPersonas ?? 1,
           tipohabitacion: habitacion?.tipohabitacion ?? (tipoSeleccionado as string),
-          listaReservas: [], 
+          listareservas: [], 
           listaestadias: []
         };
       });
@@ -371,7 +380,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
                         );
 
                         // 3. CHEQUEO RESERVA
-                        const esReservada = !esFueraServicio && !esOcupada && hab.listaReservas?.some(reserva => 
+                        const esReservada = !esFueraServicio && !esOcupada && hab.listareservas?.some(reserva => 
                             fechaEnRango(fechaString, reserva.fecha_desde, reserva.fecha_hasta)
                         );
                         

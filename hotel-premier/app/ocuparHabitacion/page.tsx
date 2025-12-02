@@ -30,8 +30,8 @@ interface ReservaDTO {
 
 
 interface EstadiaDTO {
-  checkIn: string;
-  checkOut: string;
+  checkin: string;
+  checkout: string;
 }
 
 interface HabitacionDTO {
@@ -40,7 +40,7 @@ interface HabitacionDTO {
   precio: number;
   cantidadPersonas: number;
   tipohabitacion: string;
-  listaReservas: ReservaDTO[];
+  listareservas: ReservaDTO[];
   listaestadias: EstadiaDTO[];
 }
 
@@ -118,8 +118,8 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
              precio: 100,
              cantidadPersonas: 2,
              tipohabitacion: tipoSeleccionado || "DobleEstandar",
-             listaReservas: i === 1 ? [{ nro_habitacion: 102, fecha_desde: desdeFecha, fecha_hasta: hastaFecha, estado: "RESERVADA", nombre: "MockNombre", apellido: "MockApellido" }] : [],
-             listaestadias: i === 3 ? [{ checkIn: desdeFecha, checkOut: hastaFecha }] : []
+             listareservas: i === 1 ? [{ nro_habitacion: 102, fecha_desde: desdeFecha, fecha_hasta: hastaFecha, estado: "RESERVADA", nombre: "MockNombre", apellido: "MockApellido" }] : [],
+             listaestadias: i === 3 ? [{ checkin: desdeFecha, checkout: hastaFecha }] : []
           }));
           setHabitaciones(mockHabitaciones);
         }
@@ -135,9 +135,18 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
     ? eachDayOfInterval({ start: parseISO(desdeFecha), end: parseISO(hastaFecha) })
     : [];
 
-  const fechaEnRango = (fechaTarget: string, inicio: string, fin: string) => {
-    return fechaTarget >= inicio && fechaTarget <= fin;
+  const normalizar = (f?: string) => {
+    if (!f) return "";
+    return f.includes("T") ? f.split("T")[0] : f;
   };
+
+  const fechaEnRango = (fechaTarget: string, inicio?: string, fin?: string) => {
+    const i = normalizar(inicio);
+    const f = normalizar(fin);
+    if (!i || !f) return false;         // si faltan fechas, no hay rango válido
+    return fechaTarget >= i && fechaTarget <= f;
+  };
+
 
   const ejecutarSeleccion = (fechaString: string, habitacion: HabitacionDTO) => {
     const key = `${fechaString}|${habitacion.numero}`;
@@ -152,7 +161,7 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
     const esFueraServicio = hab.estado === "FueraDeServicio";
 
     const esOcupada = hab.listaestadias?.some(e =>
-      fechaEnRango(fechaString, e.checkIn, e.checkOut)
+      fechaEnRango(fechaString, e.checkin, e.checkout)
     );
 
     // ❌ NO SE PUEDE TOCAR: OCUPADA / FUERA DE SERVICIO
@@ -179,7 +188,7 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
             if (fechasDeEsta.length === 0) return h;
 
             // Convertimos fechas sueltas en rangos contiguos
-            const nuevosRangos: { checkIn: string; checkOut: string }[] = [];
+            const nuevosRangos: { checkin: string; checkout: string }[] = [];
 
             let inicio = fechasDeEsta[0];
             let fin = fechasDeEsta[0];
@@ -198,14 +207,14 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
                 fin = fechaActual;
                 } else {
                 // Cerrar el rango anterior
-                nuevosRangos.push({ checkIn: inicio, checkOut: fin });
+                nuevosRangos.push({ checkin: inicio, checkout: fin });
                 inicio = fechaActual;
                 fin = fechaActual;
                 }
             }
 
             // Cerrar último rango
-            nuevosRangos.push({ checkIn: inicio, checkOut: fin });
+            nuevosRangos.push({ checkin: inicio, checkout: fin });
 
             return {
                 ...h,
@@ -224,6 +233,107 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
 
 
    
+              const confirmarOcupacionEstadia = async () => {
+          // Primero generamos la nueva lista ACTUALIZADA
+          const nuevasHabitaciones = habitaciones.map(h => {
+              const fechasDeEsta = seleccionados
+                  .filter(s => s.split("|")[1] === String(h.numero))
+                  .map(s => s.split("|")[0])
+                  .sort();
+
+        if (fechasDeEsta.length === 0) return h;
+
+        const nuevosRangos: { checkin: string; checkout: string }[] = [];
+
+        let inicio = fechasDeEsta[0];
+        let fin = fechasDeEsta[0];
+
+        for (let i = 1; i < fechasDeEsta.length; i++) {
+            const fechaActual = fechasDeEsta[i];
+            const fechaAnterior = fechasDeEsta[i - 1];
+
+            const dActual = parseISO(fechaActual);
+            const dAnterior = parseISO(fechaAnterior);
+            const diferenciaDias =
+                (dActual.getTime() - dAnterior.getTime()) / (1000 * 60 * 60 * 24);
+
+            if (diferenciaDias === 1) {
+                fin = fechaActual;
+            } else {
+                nuevosRangos.push({ checkin: inicio, checkout: fin });
+                inicio = fechaActual;
+                fin = fechaActual;
+            }
+        }
+
+        nuevosRangos.push({ checkin: inicio, checkout: fin });
+
+        return {
+            ...h,
+            listaestadias: [...(h.listaestadias || []), ...nuevosRangos]
+        };
+    });
+
+    // Ahora sí actualizamos el estado
+    setHabitaciones(nuevasHabitaciones);
+
+    // 📨 ENVIAR AL BACK DESDE nuevasHabitaciones (NO desde habitaciones)
+    try {
+        for (const h of nuevasHabitaciones) {
+            const fechasDeEsta = seleccionados.filter(s => s.split("|")[1] === String(h.numero));
+            if (fechasDeEsta.length === 0) continue;
+
+                    const fechasOrdenadas = fechasDeEsta.map(s => s.split("|")[0]).sort();
+
+                    const rangos: { checkin: string; checkout: string }[] = [];
+                    let ini = fechasOrdenadas[0];
+                    let fin = fechasOrdenadas[0];
+
+                    for (let i = 1; i < fechasOrdenadas.length; i++) {
+                        const actual = fechasOrdenadas[i];
+                        const anterior = fechasOrdenadas[i - 1];
+
+                        const dA = parseISO(actual);
+                        const dB = parseISO(anterior);
+                        const dif =
+                            (dA.getTime() - dB.getTime()) / (1000 * 60 * 60 * 24);
+
+                        if (dif === 1) {
+                            fin = actual;
+                        } else {
+                            rangos.push({ checkin: ini, checkout: fin });
+                            ini = actual;
+                            fin = actual;
+                        }
+                    }
+
+                    rangos.push({ checkin: ini, checkout: fin });
+
+                    // Enviar cada rango
+                    for (const r of rangos) {
+                        const estadiaDTO = {
+                            checkin: r.checkin,
+                            checkout: r.checkout,
+                            habitacion: h   // ← OBJETO COMPLETO, NO STRING
+                        };
+
+                        await fetch("http://localhost:8080/estadias", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(estadiaDTO),
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error("❌ Error enviando estadías:", error);
+            }
+
+            // Limpiar selección y carteles
+            setSeleccionados([]);
+            setMostrarCartelLista(false);
+            setMostrarCartelPresioneTecla(true);
+        };
+
 
 
 
@@ -246,9 +356,9 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
         const numero = Number(habStr);
 
         const habitacion = habitaciones.find(h => h.numero === numero);
-        if (!habitacion || !habitacion.listaReservas) continue;
+        if (!habitacion || !habitacion.listareservas) continue;
 
-        const reservaSolapada = habitacion.listaReservas.find(r =>
+        const reservaSolapada = habitacion.listareservas.find(r =>
         fechaEnRango(fechaStr, r.fecha_desde, r.fecha_hasta)
         );
 
@@ -316,14 +426,15 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
         )}
 
         {mostrarCartelLista && (
-        <CartelHabitacionesOcupadas
+          <CartelHabitacionesOcupadas
             lista={seleccionados}
             desdeFecha={desdeFecha}
             hastaFecha={hastaFecha}
             onClose={() => setMostrarCartelLista(false)}
-            onConfirm={confirmarOcupacion}
-        />
+            onConfirm={confirmarOcupacionEstadia}   // 👈 ACÁ SE EJECUTA TODO
+          />
         )}
+
 
         {mostrarCartelPresioneTecla && (
         <CartelPresioneTecla onClose={() => setMostrarCartelPresioneTecla(false)} />
@@ -416,8 +527,8 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
 
                       {habitaciones.map(h => {
                         const esFueraServicio = h.estado === "FueraDeServicio";
-                        const esOcupada = h.listaestadias?.some(e => fechaEnRango(fechaString, e.checkIn, e.checkOut));
-                        const esReservada = h.listaReservas?.some(r => fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta));
+                        const esOcupada = h.listaestadias?.some(e => fechaEnRango(fechaString, e.checkin, e.checkout));
+                        const esReservada = h.listareservas?.some(r => fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta));
                         
                         const key = `${fechaString}|${h.numero}`;
                         const esSeleccionada = seleccionados.includes(key);
