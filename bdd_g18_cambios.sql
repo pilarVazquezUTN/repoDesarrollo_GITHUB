@@ -512,6 +512,18 @@ INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_
 	TO_DATE('05/01/2026','DD/MM/YYYY'), 
 	'Pendiente', 46);
 
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1039, 'LOPEZ', 'ANA', '3412222222', 
+	TO_DATE('11/12/2025','DD/MM/YYYY'), 
+	TO_DATE('14/12/2025','DD/MM/YYYY'), 
+	'Confirmada', 17);	
+
+INSERT INTO reserva (id_reserva, apellido, nombre, telefono, fecha_desde, fecha_hasta, estado, nro_habitacion) VALUES
+(1040, 'MARTINEZ', 'JUAN', '3413333333', 
+	TO_DATE('15/12/2025','DD/MM/YYYY'), 
+	TO_DATE('18/12/2025','DD/MM/YYYY'), 
+	'Pendiente', 12);	
+
 	
 
 
@@ -703,14 +715,14 @@ INSERT INTO estadia (id_estadia, checkin, checkout, nro_habitacion)
 VALUES (2031,
         TO_DATE('23/12/2025','DD/MM/YYYY'),
         TO_DATE('27/12/2025','DD/MM/YYYY'),
-        47);				
+        47);				 
 
 
 
 
 
 
-GRANT ALL PRIVILEGES ON DATABASE hotelpremier14 TO pili;
+GRANT ALL PRIVILEGES ON DATABASE hotelpremier15 TO pili;
 
 -- Esto actualiza la secuencia al valor máximo que existe actualmente en la tabla
 --pili: agregue esto porque sino me crea el id 1, ahora con esta funcion arranca desde el ultimo+1
