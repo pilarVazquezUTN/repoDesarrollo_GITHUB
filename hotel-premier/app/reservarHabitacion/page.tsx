@@ -45,10 +45,9 @@ interface HabitacionDTO {
 
 interface Props {
     ocultarTabla?: boolean;
-    generarReserva?: boolean;
 }
 
-export default function ReservarHabitacion({ ocultarTabla = false, generarReserva = false }: Props) {
+export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
 
   // =========================
   // ESTADOS
@@ -328,7 +327,7 @@ export default function ReservarHabitacion({ ocultarTabla = false, generarReserv
 
       {/* TABLA ESTADO HABITACIÓN */}
       <section className="flex-2 max-h-[800px]">
-        {tipoSeleccionado && fechasIntervalo.length > 0 && (
+        {tipoSeleccionado && fechasIntervalo.length > 0 ? (
           <>
             <table className="w-full border-collapse border shadow-lg">
               <thead className="bg-indigo-950 text-white sticky top-0 z-10">
@@ -427,12 +426,16 @@ export default function ReservarHabitacion({ ocultarTabla = false, generarReserv
 
             {mostrarCartelOH && <OcuparHabitacionIgualmente onClose={() => setMostrarCartelOH(false)} />}
           </>
+        ): (
+            <div className="text-gray-400 text-center mt-20">
+                Seleccione un rango de fechas y tipo para ver la disponibilidad.
+            </div>
         )}
       </section>
       
 
       {/* TABLA DERECHA */}
-      {!ocultarTabla && seleccionados.length > 0 && generarReserva && (
+      {!ocultarTabla && seleccionados.length > 0 && (
         <section className="flex-1">
           <h2 className="bg-indigo-950 text-white font-bold text-center mb-0">
             Habitaciones Seleccionadas:
