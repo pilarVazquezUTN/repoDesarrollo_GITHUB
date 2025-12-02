@@ -10,7 +10,7 @@ import CartelHabitacionesOcupadas from "../carteles/cartelHabitacionesOcupadas";
 import CartelPresioneTecla from "../carteles/CartelPresioneTecla";
 import Link from "next/link";
 
-import { validarFechasReserva } from "@/app/validaciones/validaciones";
+import { validarFechasReserva, telefonoValido } from "@/app/validaciones/validaciones";
 
 
 // =========================
@@ -73,6 +73,7 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
 
 
   const [mensajeReserva, setMensajeReserva] = useState("");
+  const [errorSeleccion, setErrorSeleccion] = useState("");
 
 
 
@@ -164,13 +165,13 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
       fechaEnRango(fechaString, e.checkin, e.checkout)
     );
 
-    // ❌ NO SE PUEDE TOCAR: OCUPADA / FUERA DE SERVICIO
+    //  NO SE PUEDE TOCAR: OCUPADA / FUERA DE SERVICIO
     if (esFueraServicio || esOcupada) {
       setMostrarCartelNoDisponible(true);
       return;
     }
 
-    // ✅ DISPONIBLE O RESERVADA
+    //  DISPONIBLE O RESERVADA
     // Se selecciona directamente. El color verde lo dará el render al detectar que está en "seleccionados"
     ejecutarSeleccion(fechaString, hab);
   };
@@ -179,7 +180,7 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
     const confirmarOcupacion = () => {
         setHabitaciones(prev =>
             prev.map(h => {
-            // 🔎 Fechas seleccionadas SOLO de esta habitación
+            //  Fechas seleccionadas SOLO de esta habitación
             const fechasDeEsta = seleccionados
                 .filter(s => s.split("|")[1] === String(h.numero))
                 .map(s => s.split("|")[0])
@@ -564,6 +565,12 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
                </li>
             </ul>
 
+            {errorSeleccion && (
+                <div className="text-red-600 text-center mt-2 font-semibold">
+                  {errorSeleccion}
+                </div>
+              )}
+
             {/* BOTONES DE ACCIÓN */}
             <div className="flex justify-center gap-4 mt-6">
                 <Link href="/menu"> 
@@ -575,8 +582,16 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
 
                 <button
                   className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
-                  onClick={handleAceptar}
-                  disabled={seleccionados.length === 0}
+                 onClick={() => {
+                    if (seleccionados.length === 0) {
+                      setErrorSeleccion("Debes seleccionar al menos una habitación.");
+                      setTimeout(() => setErrorSeleccion(""), 2000);
+                      return;
+                    }
+
+                    handleAceptar();
+                  }}
+                  
                 >
                   Aceptar
                 </button>

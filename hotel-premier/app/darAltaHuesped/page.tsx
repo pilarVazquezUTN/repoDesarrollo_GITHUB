@@ -205,6 +205,7 @@ export default function DarAltaHuesped(){
                     name="tipoDocumento" 
                     value={formData.tipoDocumento} 
                     onChange={handleChange} 
+                    onBlur={handleBlur}
                     className={getInputClass("tipoDocumento")
                         .replace("placeholder-gray-400", "text-gray-400")
                         .replace("text-indigo-950", "focus:text-indigo-950")
@@ -299,7 +300,7 @@ export default function DarAltaHuesped(){
                 <label className="text-indigo-950 font-medium mb-1">Teléfono*:</label>
                 <input name="telefono" value={formData.telefono} onChange={handleChange} type="text" placeholder="telefono" className={getInputClass("telefono")} onBlur={handleBlur} />
                 {erroresTipo.includes("telefono") && (
-                    <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
+                    <p className="text-red-500 text-sm mb-3">Ingrese Telefono valido.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Email:</label>

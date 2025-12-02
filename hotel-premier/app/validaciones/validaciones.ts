@@ -29,6 +29,9 @@ export const esObligatorio = (valor: any) => {
   return true; // para números, fechas o cualquier otro tipo válido
 };
 
+export const telefonoValido = (valor: string) => {
+  return /^\d{6,15}$/.test(valor);
+};;
 
 //DAR ALTA HUESPED
 export const validarFormularioHuesped = (formData: any) => {
@@ -90,6 +93,10 @@ export const validarFormularioHuesped = (formData: any) => {
         if(!validarCUIT(valor)){
             erroresTipo.push(campo);
         }
+    }
+
+    if (campo === "telefono" && valor && !telefonoValido(valor)) {
+      erroresTipo.push(campo);
     }
 
   }
