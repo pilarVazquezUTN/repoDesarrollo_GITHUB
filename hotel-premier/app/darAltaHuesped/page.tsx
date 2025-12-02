@@ -41,12 +41,6 @@ export default function DarAltaHuesped(){
     const [errores, setErrores] = useState<string[]>([]);
     const [erroresTipo, setErroresTipo] = useState<string[]>([]);
 
-    // Expresiones regulares para validaciones
-    const soloLetras = /^[A-ZÁÉÍÓÚÑ\s]*$/;
-    const soloNumeros = /^[0-9]*$/;
-
-    
-
 
     const nuevoHuesped = () => {
         setFormData(initialState);

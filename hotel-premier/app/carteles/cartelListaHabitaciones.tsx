@@ -18,8 +18,8 @@ export default function CartelListaHabitaciones({
                                                 }: Props)  {
     const router = useRouter(); // HORA  EXISTE
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-[9999]">
-      <div className="relative bg-[#D7ECF8] w-[600px] max-h-[80vh] overflow-auto rounded-xl p-8 shadow-xl border border-[#9CC4DD]">
+    <div className="fixed inset-0  bg-opacity-30 flex items-center justify-center z-[9999]">
+      <div className="relative bg-white w-[600px] max-h-[80vh] overflow-auto rounded-xl p-8 shadow-xl border">
 
         {/* Ícono de información */}
         <img
@@ -54,11 +54,11 @@ export default function CartelListaHabitaciones({
 
         {/* Botones */}
         <div className="flex justify-center gap-6 mt-8">
-          <button className="px-6 py-2 border rounded bg-white hover:bg-gray-100">
+          <button className="px-4 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition">
             RECHAZAR
           </button>
          <button
-           className="px-6 py-2 border rounded bg-white hover:bg-gray-100"
+           className="px-4 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"
            onClick={() => {
              const seleccionEncoded = encodeURIComponent(
                JSON.stringify(seleccionados)

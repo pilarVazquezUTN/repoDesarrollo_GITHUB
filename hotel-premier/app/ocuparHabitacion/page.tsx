@@ -4,17 +4,13 @@ import React, { useState, useEffect } from "react";
 import { format, parseISO, eachDayOfInterval, isAfter } from "date-fns";
 import axios from "axios";
 
-// ==================================================================================
-// ⚠️ INSTRUCCIONES PARA TU PROYECTO:
-// 1. Descomenta los siguientes imports.
-// 2. Borra o comenta la sección "COMPONENTES MOCK" de abajo.
-// ==================================================================================
-
 import HabitacionReservadaOcuparIgual from "../carteles/habitacionReservadaOcuparIgual";
 import CartelHabitacionNoDisponible from "../carteles/CartelHabitacionNoDisponible";
 import CartelHabitacionesOcupadas from "../carteles/cartelHabitacionesOcupadas";
 import CartelPresioneTecla from "../carteles/CartelPresioneTecla";
 import Link from "next/link";
+
+import { validarFechasReserva } from "@/app/validaciones/validaciones";
 
 
 // =========================
@@ -52,6 +48,8 @@ interface Props {
   ocultarTabla?: boolean;
 }
 
+
+
 export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
 
   // =========================
@@ -81,33 +79,19 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
   //const [mostrarCartelReservada, setMostrarCartelReservada] = useState(false);
 
   
-  // =========================
+// =========================
   // VALIDAR FECHAS
   // =========================
-  function validarFechas(desde: string, hasta: string) {
-    const hoy = new Date();
-    hoy.setHours(0,0,0,0);
+  function validarDesde(fecha: string) {
+    const result = validarFechasReserva(fecha, hastaFecha);
+    setErroresFecha(result);
+    setFechasValidas(result.valido);
+  }
 
-    const d = desde ? parseISO(desde) : null;
-    const h = hasta ? parseISO(hasta) : null;
-
-    const nuevosErrores = { desdeInvalido: false, hastaInvalido: false, ordenInvalido: false };
-
-    if (d && d < hoy) nuevosErrores.desdeInvalido = true;
-    if (h && h < hoy) nuevosErrores.hastaInvalido = true;
-    if (d && h && isAfter(d,h)) nuevosErrores.ordenInvalido = true;
-
-    setErroresFecha(nuevosErrores);
-
-    const valido = !!desde && !!hasta && !nuevosErrores.desdeInvalido && !nuevosErrores.hastaInvalido && !nuevosErrores.ordenInvalido;
-    setFechasValidas(valido);
-
-    if (!valido) {
-        setSeleccionados([]);
-        setHabitaciones([]);
-    }
-
-    return valido;
+  function validarHasta(fecha: string) {
+    const result = validarFechasReserva(desdeFecha, fecha);
+    setErroresFecha(result);
+    setFechasValidas(result.valido);
   }
 
   // =========================
@@ -354,9 +338,12 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
         <input
           type="date"
           value={desdeFecha}
-          onChange={(e) => { setDesdeFecha(e.target.value); validarFechas(e.target.value, hastaFecha); }}
+          onChange={(e) => setDesdeFecha(e.target.value)}
+          onBlur={(e) => validarDesde(e.target.value)}
           className={`p-2 border rounded mb-1 text-indigo-950
-            ${(erroresFecha.desdeInvalido || erroresFecha.ordenInvalido) ? "border-red-500 bg-red-100" : ""}`}
+            ${(erroresFecha.desdeInvalido || erroresFecha.ordenInvalido || (!desdeFecha && tipoSeleccionado)) 
+              ? "border-red-500 bg-red-100" 
+              : ""}`}
         />
         {erroresFecha.desdeInvalido && <span className="text-red-600 text-sm mb-2 block">La fecha no puede ser menor a hoy</span>}
         {erroresFecha.ordenInvalido && <span className="text-red-600 text-sm mb-2 block">La fecha "Desde" no puede ser posterior a "Hasta"</span>}
@@ -365,9 +352,12 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
         <input
           type="date"
           value={hastaFecha}
-          onChange={(e) => { setHastaFecha(e.target.value); validarFechas(desdeFecha, e.target.value); }}
+          onChange={(e) => setHastaFecha(e.target.value)}
+          onBlur={(e) => validarHasta(e.target.value)}
           className={`p-2 border rounded mb-1 text-indigo-950
-            ${(erroresFecha.hastaInvalido || erroresFecha.ordenInvalido) ? "border-red-500 bg-red-100" : ""}`}
+            ${(erroresFecha.hastaInvalido || erroresFecha.ordenInvalido || (!hastaFecha && tipoSeleccionado)) 
+              ? "border-red-500 bg-red-100" 
+              : ""}`}
         />
         {erroresFecha.hastaInvalido && <span className="text-red-600 text-sm mb-2 block">La fecha no puede ser menor a hoy</span>}
         {erroresFecha.ordenInvalido && <span className="text-red-600 text-sm mb-2 block">La fecha "Hasta" no puede ser anterior a "Desde"</span>}
@@ -376,6 +366,13 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
         <select
           value={tipoSeleccionado}
           onChange={(e) => setTipoSeleccionado(e.target.value as TipoHabitacion)}
+          onFocus={() => {
+            setErroresFecha(prev => ({
+              desdeInvalido: prev.desdeInvalido || !desdeFecha,
+              hastaInvalido: prev.hastaInvalido || !hastaFecha,
+              ordenInvalido: prev.ordenInvalido
+            }));
+          }}
           className={`p-2 border rounded mb-4 text-indigo-950 ${!fechasValidas ? "bg-gray-200 cursor-not-allowed" : ""}`}
         >
           <option value="" disabled>Seleccionar tipo</option>

@@ -45,9 +45,10 @@ interface HabitacionDTO {
 
 interface Props {
     ocultarTabla?: boolean;
+    generarReserva?: boolean;
 }
 
-export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
+export default function ReservarHabitacion({ ocultarTabla = false, generarReserva = false }: Props) {
 
   // =========================
   // ESTADOS
@@ -428,9 +429,10 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           </>
         )}
       </section>
+      
 
       {/* TABLA DERECHA */}
-      {!ocultarTabla && seleccionados.length > 0 && (
+      {!ocultarTabla && seleccionados.length > 0 && generarReserva && (
         <section className="flex-1">
           <h2 className="bg-indigo-950 text-white font-bold text-center mb-0">
             Habitaciones Seleccionadas:

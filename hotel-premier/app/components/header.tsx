@@ -59,7 +59,7 @@ export default function Header() {
             Buscar Huésped
         </Link>
 
-        <Link href="/facturar"
+        {/*<Link href="/facturar"
           className={` ${
               pathname === "/facturar"
                 ? "text-gray-500"
@@ -67,7 +67,7 @@ export default function Header() {
             }`}
         >
           Facturar
-        </Link>
+        </Link> */}
 
         <Link href="/darAltaHuesped"
           className={` ${
@@ -79,7 +79,7 @@ export default function Header() {
           Dar alta Huésped
         </Link>
 
-        <Link href="/darBajaHuesped"
+        {/*<Link href="/darBajaHuesped"
           className={` ${
                 pathname === "/darBajaHuesped"
                   ? "text-gray-500"
@@ -87,9 +87,9 @@ export default function Header() {
             }`}
         >
           Dar baja Huésped
-        </Link>
+        </Link> */}
 
-        <Link href="/listarIngresos" 
+        {/*<Link href="/listarIngresos" 
           className={` ${
                 pathname === "/listarIngresos"
                   ? "text-gray-500"
@@ -97,9 +97,9 @@ export default function Header() {
               }`}
         >
           Listar Ingresos
-        </Link>
+        </Link> */}
 
-        <Link href="/cancelarReserva"
+        {/*<Link href="/cancelarReserva"
           className={` ${
                 pathname === "/cancelarReserva"
                   ? "text-gray-500"
@@ -107,7 +107,7 @@ export default function Header() {
               }`}
         >
           Cancelar Reserva
-        </Link>
+        </Link> */} 
 
         <Link href="/ocuparHabitacion"
           className={` ${

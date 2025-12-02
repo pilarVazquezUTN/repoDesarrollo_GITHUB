@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Tabla from "../tabla/page";
 import axios from "axios";
 import { TipoHuesped } from "../tabla/page";
