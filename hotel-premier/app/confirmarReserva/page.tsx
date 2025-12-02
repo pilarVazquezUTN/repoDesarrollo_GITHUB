@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { parseISO, format } from "date-fns";
-import { esSoloLetras, esSoloNumeros, esObligatorio} from "../validaciones/validaciones";
+import { esSoloLetras, esSoloNumeros, esObligatorio, telefonoValido} from "../validaciones/validaciones";
 import { es } from "date-fns/locale";
 import  ReservaConfirmada  from "../carteles/reservaConfirmada";
 
@@ -22,7 +22,7 @@ interface ReservaDTO {
   nro_habitacion: number;
   fecha_desde: string;
   fecha_hasta: string;
-  estado: string;
+  //estado: string;
   nombre: string;
   apellido: string;
   telefono: string;
@@ -67,7 +67,7 @@ export default function DatosHuesped() {
   }, [apellido]);
 
   useEffect(() => {
-    setErrorTelefono(telefono !== "" && !esSoloNumeros(telefono));
+    setErrorTelefono(telefono !== "" && (!esSoloNumeros(telefono) || !telefonoValido(telefono)));
   }, [telefono]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -262,7 +262,7 @@ console.log("JSON enviado:", JSON.stringify(listaReservasDTO, null, 2));
                     ${errorTelefono || errorTelefonoObligatorio ? "border-red-500" : ""}`}
             />
             {errorTelefono && (
-                <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
+                <p className="text-red-500 text-sm mb-3">Ingrese telefono valido.</p>
             )}
             {errorTelefonoObligatorio && (
                 <p className="text-red-500 text-sm mb-3">El teléfono es obligatorio.</p>
