@@ -10,7 +10,7 @@ import CartelHabitacionesOcupadas from "../carteles/cartelHabitacionesOcupadas";
 import CartelPresioneTecla from "../carteles/CartelPresioneTecla";
 import Link from "next/link";
 
-import { validarFechasReserva, telefonoValido } from "@/app/validaciones/validaciones";
+import { validarFechasReserva } from "@/app/validaciones/validaciones";
 
 
 // =========================
@@ -66,20 +66,21 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
   const [mostrarCartelReservada, setMostrarCartelReservada] = useState(false);
   const [mostrarCartelLista, setMostrarCartelLista] = useState(false);
   const [mostrarCartelPresioneTecla, setMostrarCartelPresioneTecla] = useState(false);
-  
+
+  const [habitacionesSeleccionadas, setHabitacionesSeleccionadas] = useState<Record<number, HabitacionDTO>>({});
+
 
   const [habitaciones, setHabitaciones] = useState<HabitacionDTO[] | []>([]);
   const [seleccionados, setSeleccionados] = useState<string[]>([]);
 
 
   const [mensajeReserva, setMensajeReserva] = useState("");
-  const [errorSeleccion, setErrorSeleccion] = useState("");
 
 
 
   //const [mostrarCartelReservada, setMostrarCartelReservada] = useState(false);
 
-  
+
 // =========================
   // VALIDAR FECHAS
   // =========================
@@ -103,10 +104,10 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
       if (fechasValidas && tipoSeleccionado) {
         try {
           const response = await axios.get(`http://localhost:8080/detalleHabitaciones`, {
-            params: { 
+            params: {
               tipo: tipoSeleccionado,
-              fechaDesde: desdeFecha, 
-              fechaHasta: hastaFecha 
+              fechaDesde: desdeFecha,
+              fechaHasta: hastaFecha
             },
           });
           setHabitaciones(response.data);
@@ -149,12 +150,19 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
   };
 
 
-  const ejecutarSeleccion = (fechaString: string, habitacion: HabitacionDTO) => {
-    const key = `${fechaString}|${habitacion.numero}`;
-    setSeleccionados(prev =>
-      prev.includes(key) ? prev.filter(item => item!==key) : [...prev, key]
-    );
+    const ejecutarSeleccion = (fechaString: string, habitacion: HabitacionDTO) => {
+      const key = `${fechaString}|${habitacion.numero}`;
+      setSeleccionados(prev =>
+        prev.includes(key) ? prev.filter(item => item!==key) : [...prev, key]
+      );
+
+      // Guardar la habitación completa en el estado global
+      setHabitacionesSeleccionadas(prev => ({
+        ...prev,
+        [habitacion.numero]: habitacion
+      }));
   };
+
 
   const handleClickCelda = (fechaDate: Date, hab: HabitacionDTO) => {
     const fechaString = format(fechaDate, "yyyy-MM-dd");
@@ -165,115 +173,56 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
       fechaEnRango(fechaString, e.checkin, e.checkout)
     );
 
-    //  NO SE PUEDE TOCAR: OCUPADA / FUERA DE SERVICIO
+    // ❌ NO SE PUEDE TOCAR: OCUPADA / FUERA DE SERVICIO
     if (esFueraServicio || esOcupada) {
       setMostrarCartelNoDisponible(true);
       return;
     }
 
-    //  DISPONIBLE O RESERVADA
+    // ✅ DISPONIBLE O RESERVADA
     // Se selecciona directamente. El color verde lo dará el render al detectar que está en "seleccionados"
     ejecutarSeleccion(fechaString, hab);
   };
 
 
-    const confirmarOcupacion = () => {
-        setHabitaciones(prev =>
-            prev.map(h => {
-            //  Fechas seleccionadas SOLO de esta habitación
-            const fechasDeEsta = seleccionados
-                .filter(s => s.split("|")[1] === String(h.numero))
-                .map(s => s.split("|")[0])
-                .sort(); // ordenarlas
 
-            if (fechasDeEsta.length === 0) return h;
-
-            // Convertimos fechas sueltas en rangos contiguos
-            const nuevosRangos: { checkin: string; checkout: string }[] = [];
-
-            let inicio = fechasDeEsta[0];
-            let fin = fechasDeEsta[0];
-
-            for (let i = 1; i < fechasDeEsta.length; i++) {
-                const fechaActual = fechasDeEsta[i];
-                const fechaAnterior = fechasDeEsta[i - 1];
-
-                const dActual = parseISO(fechaActual);
-                const dAnterior = parseISO(fechaAnterior);
-
-                // Si es el día siguiente → continúa el rango
-                const diferenciaDias = (dActual.getTime() - dAnterior.getTime()) / (1000 * 60 * 60 * 24);
-
-                if (diferenciaDias === 1) {
-                fin = fechaActual;
-                } else {
-                // Cerrar el rango anterior
-                nuevosRangos.push({ checkin: inicio, checkout: fin });
-                inicio = fechaActual;
-                fin = fechaActual;
-                }
-            }
-
-            // Cerrar último rango
-            nuevosRangos.push({ checkin: inicio, checkout: fin });
-
-            return {
-                ...h,
-                listaestadias: [...(h.listaestadias || []), ...nuevosRangos]
-            };
-            })
-        );
-
-        // Limpiar selección
-        setSeleccionados([]);
-        setMostrarCartelLista(false);
-
-        setMostrarCartelPresioneTecla(true);
-
-        };
-
-
-   
               const confirmarOcupacionEstadia = async () => {
           // Primero generamos la nueva lista ACTUALIZADA
-          const nuevasHabitaciones = habitaciones.map(h => {
-              const fechasDeEsta = seleccionados
-                  .filter(s => s.split("|")[1] === String(h.numero))
-                  .map(s => s.split("|")[0])
-                  .sort();
+          const nuevasHabitaciones = Object.values(habitacionesSeleccionadas).map(h => {
+  const fechasDeEsta = seleccionados
+      .filter(s => s.split("|")[1] === String(h.numero))
+      .map(s => s.split("|")[0])
+      .sort();
 
-        if (fechasDeEsta.length === 0) return h;
+  if (fechasDeEsta.length === 0) return h;
 
-        const nuevosRangos: { checkin: string; checkout: string }[] = [];
+  const nuevosRangos: { checkin: string; checkout: string }[] = [];
 
-        let inicio = fechasDeEsta[0];
-        let fin = fechasDeEsta[0];
+  let inicio = fechasDeEsta[0];
+  let fin = fechasDeEsta[0];
 
-        for (let i = 1; i < fechasDeEsta.length; i++) {
-            const fechaActual = fechasDeEsta[i];
-            const fechaAnterior = fechasDeEsta[i - 1];
+  for (let i = 1; i < fechasDeEsta.length; i++) {
+      const fechaActual = fechasDeEsta[i];
+      const fechaAnterior = fechasDeEsta[i - 1];
+      const difDias = (parseISO(fechaActual).getTime() - parseISO(fechaAnterior).getTime()) / (1000*60*60*24);
 
-            const dActual = parseISO(fechaActual);
-            const dAnterior = parseISO(fechaAnterior);
-            const diferenciaDias =
-                (dActual.getTime() - dAnterior.getTime()) / (1000 * 60 * 60 * 24);
+      if (difDias === 1) {
+          fin = fechaActual;
+      } else {
+          nuevosRangos.push({ checkin: inicio, checkout: fin });
+          inicio = fechaActual;
+          fin = fechaActual;
+      }
+  }
 
-            if (diferenciaDias === 1) {
-                fin = fechaActual;
-            } else {
-                nuevosRangos.push({ checkin: inicio, checkout: fin });
-                inicio = fechaActual;
-                fin = fechaActual;
-            }
-        }
+  nuevosRangos.push({ checkin: inicio, checkout: fin });
 
-        nuevosRangos.push({ checkin: inicio, checkout: fin });
+  return {
+      ...h,
+      listaestadias: [...(h.listaestadias || []), ...nuevosRangos]
+  };
+});
 
-        return {
-            ...h,
-            listaestadias: [...(h.listaestadias || []), ...nuevosRangos]
-        };
-    });
 
     // Ahora sí actualizamos el estado
     setHabitaciones(nuevasHabitaciones);
@@ -453,8 +402,8 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
           onChange={(e) => setDesdeFecha(e.target.value)}
           onBlur={(e) => validarDesde(e.target.value)}
           className={`p-2 border rounded mb-1 text-indigo-950
-            ${(erroresFecha.desdeInvalido || erroresFecha.ordenInvalido || (!desdeFecha && tipoSeleccionado)) 
-              ? "border-red-500 bg-red-100" 
+            ${(erroresFecha.desdeInvalido || erroresFecha.ordenInvalido || (!desdeFecha && tipoSeleccionado))
+              ? "border-red-500 bg-red-100"
               : ""}`}
         />
         {erroresFecha.desdeInvalido && <span className="text-red-600 text-sm mb-2 block">La fecha no puede ser menor a hoy</span>}
@@ -467,8 +416,8 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
           onChange={(e) => setHastaFecha(e.target.value)}
           onBlur={(e) => validarHasta(e.target.value)}
           className={`p-2 border rounded mb-1 text-indigo-950
-            ${(erroresFecha.hastaInvalido || erroresFecha.ordenInvalido || (!hastaFecha && tipoSeleccionado)) 
-              ? "border-red-500 bg-red-100" 
+            ${(erroresFecha.hastaInvalido || erroresFecha.ordenInvalido || (!hastaFecha && tipoSeleccionado))
+              ? "border-red-500 bg-red-100"
               : ""}`}
         />
         {erroresFecha.hastaInvalido && <span className="text-red-600 text-sm mb-2 block">La fecha no puede ser menor a hoy</span>}
@@ -530,14 +479,14 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
                         const esFueraServicio = h.estado === "FueraDeServicio";
                         const esOcupada = h.listaestadias?.some(e => fechaEnRango(fechaString, e.checkin, e.checkout));
                         const esReservada = h.listareservas?.some(r => fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta));
-                        
+
                         const key = `${fechaString}|${h.numero}`;
                         const esSeleccionada = seleccionados.includes(key);
 
                         let bg = "bg-white";
                         if (esFueraServicio) bg = "bg-gray-700";
                         else if (esOcupada) bg = "bg-blue-900";
-                        else if (esSeleccionada) bg = "bg-green-500"; 
+                        else if (esSeleccionada) bg = "bg-green-500";
                         else if (esReservada) bg = "bg-red-500";
 
                         return (
@@ -565,33 +514,19 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
                </li>
             </ul>
 
-            {errorSeleccion && (
-                <div className="text-red-600 text-center mt-2 font-semibold">
-                  {errorSeleccion}
-                </div>
-              )}
-
             {/* BOTONES DE ACCIÓN */}
             <div className="flex justify-center gap-4 mt-6">
-                <Link href="/menu"> 
+                <Link href="/menu">
                 <button className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800">
                   Cancelar
                 </button>
                 </Link>
-                
+
 
                 <button
                   className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
-                 onClick={() => {
-                    if (seleccionados.length === 0) {
-                      setErrorSeleccion("Debes seleccionar al menos una habitación.");
-                      setTimeout(() => setErrorSeleccion(""), 2000);
-                      return;
-                    }
-
-                    handleAceptar();
-                  }}
-                  
+                  onClick={handleAceptar}
+                  disabled={seleccionados.length === 0}
                 >
                   Aceptar
                 </button>

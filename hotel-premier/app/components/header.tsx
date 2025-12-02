@@ -116,7 +116,7 @@ export default function Header() {
                   : "hover:text-gray-500"
               }`}
         >
-          Ocupar Habiacion
+          Ocupar Habitacion
         </Link>
 
 

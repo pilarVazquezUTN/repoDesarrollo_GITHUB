@@ -16,7 +16,7 @@ import { validarFechasReserva } from "@/app/validaciones/validaciones";
 
 
 // =========================
-// TIPOS E INTERFACES (COINCIDEN CON TU JSON)
+// TIPOS E INTERFACES (COINCIDEN CON  JSON)
 // =========================
 type TipoHabitacion = "IndividualEstandar" | "DobleEstandar" | "Suite" | "DobleSuperior" | "SuperiorFamilyPlan";
 
@@ -315,6 +315,16 @@ const listaHabitacionUnica = (): HabitacionDTO[] => {
   }, [seleccionados]);
 
 
+
+// Cálculo de fechas reales según selección
+const fechaDesdeSeleccion = rangos.length
+  ? rangos.reduce((min, r) => r.desde < min ? r.desde : min, rangos[0].desde)
+  : desdeFecha;
+
+const fechaHastaSeleccion = rangos.length
+  ? rangos.reduce((max, r) => r.hasta > max ? r.hasta : max, rangos[0].hasta)
+  : hastaFecha;
+
   // =========================
   // RENDER
   // =========================
@@ -386,6 +396,7 @@ const listaHabitacionUnica = (): HabitacionDTO[] => {
              seleccionados={seleccionados}
              desdeFecha={desdeFecha}
              hastaFecha={hastaFecha}
+             rangos={rangos}
              onClose={() => setMostrarCartelLista(false)}
            />
        )}

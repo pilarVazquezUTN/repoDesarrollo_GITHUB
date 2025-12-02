@@ -3,17 +3,20 @@
 import { useRouter } from "next/navigation";
 interface Props {
   lista: any[];
-  seleccionados: string[];
-  desdeFecha: string;
-  hastaFecha: string;
+    seleccionados: string[];
+  rangos: {
+    desdeFecha: string;
+    hastaFecha: string;
+  };
   onClose: () => void;
 }
 
 export default function CartelListaHabitaciones({
                                                   lista,
-                                                  seleccionados,
-                                                  desdeFecha,
-                                                  hastaFecha,
+                                                  rangos,
+                                                    seleccionados,
+                                                    desdeFecha,
+                                                    hastaFecha,
                                                   onClose
                                                 }: Props)  {
     const router = useRouter(); // HORA  EXISTE
@@ -47,7 +50,8 @@ export default function CartelListaHabitaciones({
             <div key={index} className="text-[#1D4F73] text-lg leading-relaxed">
               <p>• HABITACIÓN {index + 1}: NÚMERO {item.numero}</p>
               <p>• TIPO: {item.tipo}</p>
-              <p>• DESDE: {item.fechaDesde} - HASTA: {item.fechaHasta}</p>
+              <p>• DESDE: {rangos.find(r => r.numero === item.numero)?.desde}
+                     - HASTA: {rangos.find(r => r.numero === item.numero)?.hasta}</p>
             </div>
           ))}
         </div>
@@ -60,6 +64,7 @@ export default function CartelListaHabitaciones({
           >
             CANCELAR
           </button>
+
          <button
            className="px-4 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"
            onClick={() => {
