@@ -591,7 +591,7 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
 
                     handleAceptar();
                   }}
-                  disabled={seleccionados.length === 0}
+                  
                 >
                   Aceptar
                 </button>
