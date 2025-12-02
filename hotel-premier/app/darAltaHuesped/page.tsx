@@ -205,6 +205,7 @@ export default function DarAltaHuesped(){
                     name="tipoDocumento" 
                     value={formData.tipoDocumento} 
                     onChange={handleChange} 
+                    onBlur={handleBlur}
                     className={getInputClass("tipoDocumento")
                         .replace("placeholder-gray-400", "text-gray-400")
                         .replace("text-indigo-950", "focus:text-indigo-950")
