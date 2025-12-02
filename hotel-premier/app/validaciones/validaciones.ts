@@ -19,6 +19,12 @@ export const validarDNI = (valor: string) =>
 export const validarCUIT = (valor: string) =>
   /^\d{11}$/.test(valor);
 
+export const esObligatorio = (valor: any) => {
+  if (valor === null || valor === undefined) return false;
+  if (typeof valor === "string") return valor.trim() !== "";
+  return true; // para números, fechas o cualquier otro tipo válido
+};
+
 
 //DAR ALTA HUESPED
 export const validarFormularioHuesped = (formData: any) => {
@@ -33,10 +39,7 @@ export const validarFormularioHuesped = (formData: any) => {
     camposRequeridos.push("cuit");
   }
 
-  const errores = camposRequeridos.filter(campo => {
-    const valor = formData[campo];
-    return !valor || valor.trim() === "";
-  });
+  const errores = camposRequeridos.filter(campo => !esObligatorio(formData[campo]));
 
 
   const erroresTipo: string[] = [];

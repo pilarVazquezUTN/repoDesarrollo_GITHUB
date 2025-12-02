@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { parseISO, format } from "date-fns";
-import { esSoloLetras, esSoloNumeros} from "../validaciones/validaciones";
+import { esSoloLetras, esSoloNumeros, esObligatorio} from "../validaciones/validaciones";
+import { es } from "date-fns/locale";
 
 
 interface HabitacionDTO {
@@ -45,6 +46,9 @@ export default function DatosHuesped() {
   const [errorNombre, setErrorNombre] = useState(false);
   const [errorApellido, setErrorApellido] = useState(false);
   const [errorTelefono, setErrorTelefono] = useState(false);
+  const [errorNombreObligatorio, setErrorNombreObligatorio] = useState(false);
+  const [errorApellidoObligatorio, setErrorApellidoObligatorio] = useState(false);
+  const [errorTelefonoObligatorio, setErrorTelefonoObligatorio] = useState(false);
 
   useEffect(() => {
     setErrorNombre(nombre !== "" && !esSoloLetras(nombre));
@@ -60,6 +64,20 @@ export default function DatosHuesped() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // VALIDAMOS OBLIGATORIOS
+    setErrorNombreObligatorio(!esObligatorio(nombre));
+    setErrorApellidoObligatorio(!esObligatorio(apellido));
+    setErrorTelefonoObligatorio(!esObligatorio(telefono));
+
+    // SI ALGUNO FALTA → NO SE SIGUE
+    if (
+      !esObligatorio(nombre) ||
+      !esObligatorio(apellido) ||
+      !esObligatorio(telefono)
+    ) {
+      return;
+    }
 
     //cuando los datos son incorrectos
     if (errorNombre || errorApellido || errorTelefono) {
@@ -147,41 +165,59 @@ export default function DatosHuesped() {
                 type="text"
                 placeholder="Nombre"
                 value={nombre}
-                onChange={(e) => setNombre(e.target.value.toUpperCase())}
+                onChange={(e) => {
+                    const valor = e.target.value.toUpperCase();
+                    setNombre(valor);
+                    setErrorNombreObligatorio(!esObligatorio(valor)); // limpia si escribe algo
+                }}
                 className={`p-2 border rounded mb-1 placeholder-gray-400 text-indigo-950 
-                    ${errorNombre ? "border-red-500" : ""}`}
+                    ${errorNombre || errorNombreObligatorio ? "border-red-500" : ""}`}
             />
             {errorNombre && (
                 <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
             )}
-
+            {errorNombreObligatorio && (
+                <p className="text-red-500 text-sm mb-3">El nombre es obligatorio.</p>
+            )}
             
             <label className="text-indigo-950 font-medium mb-1">Apellido:</label>
             <input 
                 type="text"
                 placeholder="Apellido"
                 value={apellido}
-                onChange={(e) => setApellido(e.target.value.toUpperCase())}
+                onChange={(e) => {
+                    const valor = e.target.value.toUpperCase();
+                    setApellido(valor);
+                    setErrorApellidoObligatorio(!esObligatorio(valor)); // limpia si escribe algo
+                }}
                 className={`p-2 border rounded mb-1 placeholder-gray-400 text-indigo-950 
-                    ${errorApellido ? "border-red-500" : ""}`}
+                    ${errorApellido || errorApellidoObligatorio ? "border-red-500" : ""}`}
             />
             {errorApellido && (
                 <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
             )}
-
+            {errorApellidoObligatorio && (
+                <p className="text-red-500 text-sm mb-3">El apellido es obligatorio.</p>
+            )}  
             <label className="text-indigo-950 font-medium mb-1">Teléfono:</label>
             <input 
                 type="text"
                 placeholder="Teléfono"
                 value={telefono}
-                onChange={(e) => setTelefono(e.target.value.toUpperCase())}
+                onChange={(e) => {
+                    const valor = e.target.value.toUpperCase();
+                    setTelefono(valor);
+                    setErrorTelefonoObligatorio(!esObligatorio(valor)); // limpia si escribe algo
+                }}
                 className={`p-2 border rounded mb-1 placeholder-gray-400 text-indigo-950 
-                    ${errorTelefono ? "border-red-500" : ""}`}
+                    ${errorTelefono || errorTelefonoObligatorio ? "border-red-500" : ""}`}
             />
             {errorTelefono && (
                 <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
             )}
-
+            {errorTelefonoObligatorio && (
+                <p className="text-red-500 text-sm mb-3">El teléfono es obligatorio.</p>
+            )}
          {/* BOTÓN CENTRADO */}
            <div className="w-full flex justify-center">
              <button
