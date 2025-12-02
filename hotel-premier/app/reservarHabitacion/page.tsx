@@ -69,6 +69,8 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const [mostrarCartelLista, setMostrarCartelLista] = useState(false);
   const [listaBackend, setListaBackend] = useState<any[]>([]);
   const router = useRouter();
+  //erne
+  const [ultimoClick, setUltimoClick] = useState<string | null>(null);
 
   // =========================
   // CONFIGURACIÓN HABITACIONES
@@ -143,43 +145,69 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
     return fechaTarget >= inicio && fechaTarget <= fin;
   };
 
-  const toggleSeleccion = (fechaDate: Date, habitacion: HabitacionDTO) => {
-    const fechaString = format(fechaDate,"yyyy-MM-dd");
-    
-    // 1. CHEQUEO FUERA DE SERVICIO (MODIFICADO)
-    // Ahora muestra el cartel en lugar de hacer un return silencioso
+  const toggleSeleccion = (fechaDate: Date, habitacion: HabitacionDTO, event: any) => {
+    const fechaString = format(fechaDate, "yyyy-MM-dd");
+    const keyActual = `${fechaString}|${habitacion.numero}`;
+
+    // VALIDACIONES EXACTAS COMO LAS TENÍAS
     if (habitacion.estado === "FueraDeServicio") {
-        setMostrarCartel(true); 
-        setTimeout(() => setMostrarCartel(false), 3000);
-        return;
-    }
-
-    // 2. CHEQUEO ESTADÍA (Ocupada)
-    const tieneEstadia = habitacion.listaestadias?.some(e => 
-        fechaEnRango(fechaString, e.checkIn, e.checkOut)
-    );
-    if(tieneEstadia) {
-        setMostrarCartel(true); 
-        setTimeout(() => setMostrarCartel(false), 3000);
-        return;
-    }
-
-    // 3. CHEQUEO RESERVA
-    const tieneReserva = habitacion.listareservas?.some(r => 
-        fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta)
-    );
-
-    if (tieneReserva) {
       setMostrarCartel(true);
-      setTimeout(() => setMostrarCartel(false), 3000);
+      setTimeout(() => setMostrarCartel(false), 2500);
       return;
     }
 
-    // Si está libre, permite seleccionar
-    const key = `${fechaString}|${habitacion.numero}`;
-    setSeleccionados(prev =>
-      prev.includes(key) ? prev.filter(item => item!==key) : [...prev, key]
+    const tieneEstadia = habitacion.listaestadias?.some(e =>
+      fechaEnRango(fechaString, e.checkIn, e.checkOut)
     );
+    if (tieneEstadia) {
+      setMostrarCartel(true);
+      setTimeout(() => setMostrarCartel(false), 2500);
+      return;
+    }
+
+    const tieneReserva = habitacion.listareservas?.some(r =>
+      fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta)
+    );
+    if (tieneReserva) {
+      setMostrarCartel(true);
+      setTimeout(() => setMostrarCartel(false), 2500);
+      return;
+    }
+
+    // =============================================
+    // SHIFT + CLICK — seleccionar rango de fechas
+    // =============================================
+    if (event?.shiftKey && ultimoClick) {
+      const [fechaPrev, numeroPrev] = ultimoClick.split("|");
+
+      // Solo rango si es la misma habitación
+      if (Number(numeroPrev) === habitacion.numero) {
+        const inicio = parseISO(fechaPrev);
+        const fin = parseISO(fechaString);
+
+        const intervalo = eachDayOfInterval({
+          start: inicio < fin ? inicio : fin,
+          end: inicio < fin ? fin : inicio,
+        });
+
+        const claves = intervalo.map(f =>
+          `${format(f, "yyyy-MM-dd")}|${habitacion.numero}`
+        );
+
+        setSeleccionados(prev => [...new Set([...prev, ...claves])]);
+        return;
+      }
+    }
+
+    // Selección simple
+    setSeleccionados(prev =>
+      prev.includes(keyActual)
+        ? prev.filter(item => item !== keyActual)
+        : [...prev, keyActual]
+    );
+
+    // guardar último click
+    setUltimoClick(keyActual);
   };
 
   const eliminarSeleccionados = () => setSeleccionados([]);
@@ -213,6 +241,33 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
       return lista;
     };
 
+const listaHabitacionUnica = (): HabitacionDTO[] => {
+  const listaUnica: Record<number, HabitacionDTO> = {};
+
+  seleccionados.forEach(sel => {
+    const [fecha, numero] = sel.split("|");
+    const num = Number(numero);
+
+    if (listaUnica[num]) return;
+
+    const habitacion = (Array.isArray(habitaciones) ? habitaciones : [])
+      .find(h => h.numero === num);
+
+    listaUnica[num] = {
+      numero: num,
+      estado: habitacion?.estado || "Disponible",
+      precio: habitacion?.precio ?? 0,
+      cantidadPersonas: habitacion?.cantidadPersonas ?? 1,
+      tipohabitacion: habitacion?.tipohabitacion ?? (tipoSeleccionado as string),
+
+      // Estas claves tienen que coincidir exactamente como las usa el backend
+      listareservas: [],
+      listaestadias: []
+    };
+  });
+
+  return Object.values(listaUnica);
+};
 
   function generarRangos(seleccionados: string[]) {
     const datos = seleccionados.map(sel => {
@@ -399,7 +454,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
                           <td
                             key={hab.numero}
                             className={`p-4 border cursor-pointer ${bgClass}`}
-                            onClick={() => toggleSeleccion(fechaDate, hab)}
+                            onClick={(e) => toggleSeleccion(fechaDate, hab, e)}
                           ></td>
                         );
                       })}
@@ -433,15 +488,30 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
 
             <button
               className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
-              onClick={() => {
+               onClick={async () => {
                 if (seleccionados.length === 0) {
                   setErrorSeleccion("Debes seleccionar al menos una habitación.");
                   setTimeout(() => setErrorSeleccion(""), 2000); // Se borra a los 3s
                   return;
                 }
-                 const listaDTO = construirHabitacionesDTO();
-                 setListaBackend(listaDTO);
-                 setMostrarCartelLista(true);
+
+                 const listaHab = listaHabitacionUnica();
+                 console.log("listaHab:", JSON.stringify(listaHab, null, 2));
+                 try { const response = await axios.post( "http://localhost:8080/listados",
+                     listaHab,
+                     { params:
+                         { fechaDesde: desdeFecha,
+                           fechaHasta: hastaFecha
+                         }
+                     }
+                 );
+                 setListaBackend(response.data); // guardás la respuesta del backend
+                 console.log("ACA RESPUESTA BACK"+ response.data);
+                  setMostrarCartelLista(true); //
+                      } catch (err) { console.error("Error al generar listado:", err);
+                                    alert("Hubo un error al generar el listado."); }
+
+
               }}
               > Aceptar
             </button>

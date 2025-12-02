@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { parseISO, format } from "date-fns";
 import { esSoloLetras, esSoloNumeros, esObligatorio} from "../validaciones/validaciones";
 import { es } from "date-fns/locale";
-
+import  ReservaConfirmada  from "../carteles/reservaConfirmada";
 
 interface HabitacionDTO {
   numero: number;
@@ -18,11 +18,14 @@ interface HabitacionDTO {
 }
 
 interface ReservaDTO {
-  id: number;
+
   nro_habitacion: number;
   fecha_desde: string;
   fecha_hasta: string;
   estado: string;
+  nombre: string;
+  apellido: string;
+  telefono: string;
 }
 
 interface EstadiaDTO {
@@ -50,6 +53,11 @@ export default function DatosHuesped() {
   const [errorApellidoObligatorio, setErrorApellidoObligatorio] = useState(false);
   const [errorTelefonoObligatorio, setErrorTelefonoObligatorio] = useState(false);
 
+  //estado erne
+  const [mostrarCartel, setMostrarCartel] = useState(false);
+
+
+
   useEffect(() => {
     setErrorNombre(nombre !== "" && !esSoloLetras(nombre));
   }, [nombre]);
@@ -62,7 +70,7 @@ export default function DatosHuesped() {
     setErrorTelefono(telefono !== "" && !esSoloNumeros(telefono));
   }, [telefono]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // VALIDAMOS OBLIGATORIOS
@@ -84,6 +92,45 @@ export default function DatosHuesped() {
       //ya estan los useeffect que hacen que se pongan en rojo a penas se escriben mal
       return;
     }
+
+
+const listaReservasDTO: ReservaDTO[] = rangos.map(rango => ({
+  nro_habitacion: rango.numero,
+  fecha_desde: rango.desde,
+  fecha_hasta: rango.hasta,
+ // estado: "pendiente",
+  nombre: nombre,
+  apellido: apellido,
+  telefono: telefono
+}));
+
+
+console.log("LISTA RESERVAS DTO ENVIADA:", listaReservasDTO);
+console.log("JSON enviado:", JSON.stringify(listaReservasDTO, null, 2));
+         try {
+            const response = await fetch("http://localhost:8080/reservas", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(listaReservasDTO),
+            });
+
+            if (!response.ok) {
+              throw new Error("Error al registrar reservas");
+            }
+
+             setMostrarCartel(true);
+
+         }
+          catch (err) {
+            console.error(err);
+            alert("Hubo un error al generar el listado.");
+          }
+
+
+
+
 
     //CUANDO LOS DATOS SON CORRECTOS QUE TIENE QUE PASAR?
     //aqui iria la logica para confirmar la reserva, como llamar a una api o algo
@@ -148,7 +195,9 @@ export default function DatosHuesped() {
 
   return (
     <main className="p-10">
-
+  {mostrarCartel && (
+    <ReservaConfirmada onClose={() => setMostrarCartel(false)} />
+  )}
       <h2 className="text-2xl font-bold text-indigo-950 mb-6">
         Datos del Huésped
       </h2>
@@ -223,7 +272,8 @@ export default function DatosHuesped() {
              <button
                className="mt-6 px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
                type="submit"
-             >
+
+               >
                Confirmar Reserva
              </button>
            </div>

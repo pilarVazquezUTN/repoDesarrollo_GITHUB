@@ -10,7 +10,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 
 public class ReservaDTO {
 //ERNE
-    private Integer id_reserva;
+   // private Integer id_reserva;
 
     @Temporal(TemporalType.DATE) //guarda fecha sin hora
     private Date fecha_desde;
@@ -26,9 +26,9 @@ public class ReservaDTO {
     private Integer nro_habitacion;
     //private String tipoHab;
  
-     //ERNE
+     /*//ERNE
     public void setId_reserva(Integer id_reserva) { this.id_reserva = id_reserva; }
-    public Integer getId_reserva() { return this.id_reserva; }
+    public Integer getId_reserva() { return this.id_reserva; }*/
 
     public void setNro_habitacion(Integer  nro_hab) {
 

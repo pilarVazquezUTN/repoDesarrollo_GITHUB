@@ -19,6 +19,7 @@ public class Reserva {
     @Id
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_reserva")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_reserva;
 
     @Temporal(TemporalType.DATE) //guarda fecha sin hora

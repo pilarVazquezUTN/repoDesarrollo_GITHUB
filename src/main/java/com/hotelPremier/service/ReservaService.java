@@ -75,11 +75,12 @@ public class ReservaService {
 
 
             //se busca la hab
-            Habitacion hab = habitacionRepository
-                    .findById(reservaDTO.getNro_habitacion())
-                    .orElseThrow(() -> new RuntimeException(
-                            "Habitación no encontrada: " + reservaDTO.getNro_habitacion()
-                    ));
+            System.out.println("Buscando habitación: " + reservaDTO.getNro_habitacion());
+
+
+
+            Habitacion hab = habitacionRepository.findByNumero(reservaDTO.getNro_habitacion());
+            System.out.println("habitacion encontrada: " + hab);
 
             // setear habitación
             reserva.setHabitacion(hab);
@@ -115,7 +116,7 @@ public class ReservaService {
 
             Map<String, Object> datosReserva = new HashMap<>();
 
-            datosReserva.put("numeroHabitacion", habitacionDTO.getNumero());
+            datosReserva.put("numero", habitacionDTO.getNumero());
             datosReserva.put("tipo", habitacionDTO.getTipohabitacion());
             datosReserva.put("fechaDesde", fechaDesde);
             datosReserva.put("fechaHasta", fechaHasta);
