@@ -16,8 +16,12 @@ export const esEmailValido = (valor: string) =>
 export const validarDNI = (valor: string) =>
   /^\d{8}$/.test(valor);
 
-export const validarCUIT = (valor: string) =>
-  /^\d{11}$/.test(valor);
+export const validarCUIT = (valor: string) => {
+  // Permitir: 11 dígitos o el formato XX-XXXXXXXX-X
+  const regex = /^(\d{2}-?\d{8}-?\d{1})$/;
+
+  return regex.test(valor);
+};
 
 export const esObligatorio = (valor: any) => {
   if (valor === null || valor === undefined) return false;
@@ -49,7 +53,7 @@ export const validarFormularioHuesped = (formData: any) => {
     "provincia", "localidad", "pais", "calle", "departamento", "posicionIva"
   ];
   const camposSoloNumeros = [
-    "dni", "numero", "piso", "codigoPostal", "telefono", "cuit"
+    "dni", "numero", "piso", "codigoPostal", "telefono"
   ];
 
   for (const campo in formData) {
@@ -75,15 +79,17 @@ export const validarFormularioHuesped = (formData: any) => {
 
     if (campo === "dni" && valor){
 
-        if (!/^\d{8}$/.test(valor)) {
-        erroresTipo.push(campo);
+       validarDNI(valor);
+       if(!validarDNI(valor)){
+        erroresTipo.push(campo); 
         } 
     }
 
     if(campo === "cuit" && valor){
-        if (!/^\d{11}$/.test(valor)) {
-        erroresTipo.push(campo);
-        } 
+        validarCUIT(valor);
+        if(!validarCUIT(valor)){
+            erroresTipo.push(campo);
+        }
     }
 
   }
