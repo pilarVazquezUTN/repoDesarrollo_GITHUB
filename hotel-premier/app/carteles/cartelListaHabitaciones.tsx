@@ -54,8 +54,11 @@ export default function CartelListaHabitaciones({
 
         {/* Botones */}
         <div className="flex justify-center gap-6 mt-8">
-          <button className="px-4 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition">
-            RECHAZAR
+          <button 
+            className="px-4 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"
+            onClick={onClose}
+          >
+            CANCELAR
           </button>
          <button
            className="px-4 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"
