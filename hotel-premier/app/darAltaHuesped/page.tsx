@@ -4,6 +4,9 @@ import CancelarAltaHuepsed from "../carteles/cancelarAltaHuesped";
 import CargarOtroHuesped from "../carteles/huespedCargadoSatisfacoriamente";
 import ErrorDniExistente from "../carteles/errorDniExistente";
 import axios from "axios";
+import { validarFormularioHuesped } from "../validaciones/validaciones";
+
+
 
 export default function DarAltaHuesped(){
     
@@ -51,18 +54,45 @@ export default function DarAltaHuesped(){
         setErroresTipo([]);
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target; 
-        const valorMayus = value.toUpperCase();//REVISAR
 
-        setFormData({ ...formData, [name]: value.toUpperCase() });
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name } = e.target;
 
-        if (errores.includes(name)) {
-            setErrores(errores.filter((campo) => campo !== name));
+        // Ejecutamos validación completa con los datos actuales
+        const { errores, erroresTipo } = validarFormularioHuesped(formData);
+
+        // NO BORRAR SIEMPRE
+        setErrores(prev => prev.filter(campo => campo !== name));
+        setErroresTipo(prev => prev.filter(campo => campo !== name));
+
+        // ✔ BORRAR SOLO SI AHORA ESTÁ VALIDADO
+        if (!errores.includes(name)) {
+            setErrores(prev => prev.filter(campo => campo !== name));
+        }
+        if (!erroresTipo.includes(name)) {
+            setErroresTipo(prev => prev.filter(campo => campo !== name));
         }
 
-        
+        // ✔ AGREGAR SI AHORA DA ERROR
+        if (errores.includes(name)) {
+            setErrores(prev => [...prev.filter(c => c !== name), name]);
+        }
+        if (erroresTipo.includes(name)) {
+            setErroresTipo(prev => [...prev.filter(c => c !== name), name]);
+        }
     };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    
+        const { name, value } = e.target;
+        const valorMayus = value.toUpperCase();
+
+        setFormData({ ...formData, [name]: valorMayus });
+
+    };
+
+    
+
 
     const getInputClass = (campo: string) => {
         const baseClass = "p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950 uppercase";
@@ -118,63 +148,19 @@ export default function DarAltaHuesped(){
     };
 
 
-    const handleSubmit = async () => { 
+    const handleSubmit = async () => {
         
-        const camposRequeridos = [
-            "apellido", "nombre", "tipoDocumento", "dni",
-            "posicionIva", "calle", "numero",
-            "codigoPostal", "localidad", "provincia", "pais",
-            "fechaNacimiento", "telefono", "ocupacion", "nacionalidad"
-        ];
+        const { errores, erroresTipo } = validarFormularioHuesped(formData);
 
-        //  VALIDACIÓN ESPECIAL: CUIT obligatorio si es RESPONSABLE INSCRIPTO
-        if (formData.posicionIva === "RESPONSABLE INSCRIPTO" && formData.cuit.trim() === "") {
-            camposRequeridos.push("cuit");
-        }
+        setErrores(errores);       // SIEMPRE
+        setErroresTipo(erroresTipo); // SIEMPRE
 
-        const nuevosErrores = camposRequeridos.filter((campo) => {
-            const valor = formData[campo as keyof typeof formData];
-            return !valor || valor.trim() === "";
-        });
-
-        if (nuevosErrores.length > 0) {
-            setErrores(nuevosErrores);
+        // ❗ solo evitar envío si hay errores
+        if (errores.length > 0 || erroresTipo.length > 0) {
             return;
         }
 
-        //  Validación de tipo de dato
-        let tipoInvalido = false;
-
-        const nuevosErroresTipo: string[] = [];
-        const camposSoloLetras = ["nombre", "apellido", "ocupacion", "nacionalidad", "provincia", "localidad", "pais", "calle", "departamento", "posicionIva"];
-        const camposSoloNumeros = ["dni", "numero", "piso", "codigoPostal", "telefono", "cuit"];
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        for (const campo in formData) {
-        const valor = formData[campo as keyof typeof formData];
-
-            if (camposSoloLetras.includes(campo) && !soloLetras.test(valor)) {
-                nuevosErroresTipo.push(campo);
-            } else if (camposSoloNumeros.includes(campo) && !soloNumeros.test(valor)) {
-                nuevosErroresTipo.push(campo);
-            } else if (campo === "email" && valor && !emailRegex.test(valor)) {
-                nuevosErroresTipo.push(campo);
-            } else if (campo === "fechaNacimiento" && valor) {
-                const hoy = new Date();
-                const fechaIngresada = new Date(valor);
-                if (fechaIngresada > hoy) {
-                    nuevosErroresTipo.push(campo);
-                }
-            }
-        }
-
-        if (nuevosErroresTipo.length > 0) {
-            setErroresTipo(nuevosErroresTipo);
-            return; // No enviamos si hay errores de tipo
-        }
-
-
-        // Verificar DNI existente
+        // ⭐ PASO EXTRA: Verificar DNI existente en el backend
         try {
             const existe = await axios.get("http://localhost:8080/huespedes", {
                 params: {
@@ -188,6 +174,7 @@ export default function DarAltaHuesped(){
                 setOpenError(true);
                 return;
             }
+
         } catch (error) {
             console.error("Error verificando DNI:", error);
             setMensajeError("Error verificando si el huésped existe.");
@@ -195,8 +182,10 @@ export default function DarAltaHuesped(){
             return;
         }
 
+        // ⭐ Si todo está OK, guardar
         await guardarHuesped();
     };
+
 
 
 
@@ -206,13 +195,13 @@ export default function DarAltaHuesped(){
             {/* FORM 1 */}
             <form className="flex flex-col">
                 <label className="text-indigo-950 font-medium mb-1">Apellido*:</label>
-                <input name="apellido" value={formData.apellido} onChange={handleChange} type="text" placeholder="Apellido" className={ getInputClass("apellido")}/>
+                <input name="apellido" value={formData.apellido} onChange={handleChange} type="text" placeholder="Apellido" className={ getInputClass("apellido")} onBlur={handleBlur}/>
                 {erroresTipo.includes("apellido") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Nombre*:</label>
-                <input name="nombre" value={formData.nombre} onChange={handleChange} type="text" placeholder="Nombre" className={getInputClass("nombre")} />
+                <input name="nombre" value={formData.nombre} onChange={handleChange} type="text" placeholder="Nombre" className={getInputClass("nombre")} onBlur={handleBlur}/>
                 {erroresTipo.includes("nombre") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}
@@ -234,19 +223,19 @@ export default function DarAltaHuesped(){
                 </select>
 
                 <label className="text-indigo-950 font-medium mb-1">Número de Documento*:</label>
-                <input name="dni" value={formData.dni} onChange={handleChange} type="text" placeholder="Número de Documento" className={getInputClass("dni")} />
+                <input name="dni" value={formData.dni} onChange={handleChange} type="text" placeholder="Número de Documento" className={getInputClass("dni")} onBlur={handleBlur}/>
                 {erroresTipo.includes("dni") && (
-                    <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
+                    <p className="text-red-500 text-sm mb-3">Ingrese un dni valido.</p>
                 )}
                 
                 <label className="text-indigo-950 font-medium mb-1">CUIT:</label>
-                <input name="cuit" value={formData.cuit} onChange={handleChange} type="text" placeholder="XX-XXXXXXXX-X" className={getInputClass("cuit")} />
+                <input name="cuit" value={formData.cuit} onChange={handleChange} type="text" placeholder="XX-XXXXXXXX-X" className={getInputClass("cuit")} onBlur={handleBlur}/>
                 {erroresTipo.includes("cuit") && (
-                    <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
+                    <p className="text-red-500 text-sm mb-3">Ingrese un cuit.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Posicion frente al IVA*:</label>
-                <input name="posicionIva" value={formData.posicionIva} onChange={handleChange} type="text" placeholder="Ej: RESPONSABLE INSCRIPTO" className={getInputClass("posicionIva")} />
+                <input name="posicionIva" value={formData.posicionIva} onChange={handleChange} type="text" placeholder="Ej: RESPONSABLE INSCRIPTO" className={getInputClass("posicionIva")} onBlur={handleBlur} />
                 {erroresTipo.includes("posicionIva") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}
@@ -256,49 +245,49 @@ export default function DarAltaHuesped(){
             {/* FORM 2 */}
             <form className="flex flex-col">
                 <label className="text-indigo-950 font-medium mb-1">Calle*:</label>
-                <input name="calle" value={formData.calle} onChange={handleChange} type="text" placeholder="calle" className={getInputClass("calle")} />
+                <input name="calle" value={formData.calle} onChange={handleChange} type="text" placeholder="calle" className={getInputClass("calle")} onBlur={handleBlur}/>
                 {erroresTipo.includes("calle") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Número*:</label>
-                <input name="numero" value={formData.numero} onChange={handleChange} type="text" placeholder="numero" className={getInputClass("numero")} />
+                <input name="numero" value={formData.numero} onChange={handleChange} type="text" placeholder="numero" className={getInputClass("numero")} onBlur={handleBlur}/>
                 {erroresTipo.includes("numero") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Departamento:</label>
-                <input name="departamento" value={formData.departamento} onChange={handleChange} type="text" placeholder="departamento" className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950 uppercase" />
+                <input name="departamento" value={formData.departamento} onChange={handleChange} type="text" placeholder="departamento" className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950 uppercase" onBlur={handleBlur}/>
                 {erroresTipo.includes("departamento") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Piso:</label>
-                <input name="piso" value={formData.piso} onChange={handleChange} type="text" placeholder="piso" className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950 uppercase" />
+                <input name="piso" value={formData.piso} onChange={handleChange} type="text" placeholder="piso" className="p-2 border rounded mb-4 placeholder-gray-400 text-indigo-950 uppercase" onBlur={handleBlur} />
                 {erroresTipo.includes("piso") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Código Postal*:</label>
-                <input name="codigoPostal" value={formData.codigoPostal} onChange={handleChange} type="text" placeholder="codigo postal" className={getInputClass("codigoPostal")} />
+                <input name="codigoPostal" value={formData.codigoPostal} onChange={handleChange} type="text" placeholder="codigo postal" className={getInputClass("codigoPostal")} onBlur={handleBlur} />
                 {erroresTipo.includes("codigoPostal") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Localidad*:</label>
-                <input name="localidad" value={formData.localidad} onChange={handleChange} type="text" placeholder="localidad" className={getInputClass("localidad")} />
+                <input name="localidad" value={formData.localidad} onChange={handleChange} type="text" placeholder="localidad" className={getInputClass("localidad")} onBlur={handleBlur}/>
                 {erroresTipo.includes("localidad") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Provincia*:</label>
-                <input name="provincia" value={formData.provincia} onChange={handleChange} type="text" placeholder="provincia" className={getInputClass("provincia")} />
+                <input name="provincia" value={formData.provincia} onChange={handleChange} type="text" placeholder="provincia" className={getInputClass("provincia")} onBlur={handleBlur}/>
                 {erroresTipo.includes("provincia") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">País*:</label>
-                <input name="pais" value={formData.pais} onChange={handleChange} type="text" placeholder="pais" className={getInputClass("pais")} />
+                <input name="pais" value={formData.pais} onChange={handleChange} type="text" placeholder="pais" className={getInputClass("pais")} onBlur={handleBlur}/>
                 {erroresTipo.includes("pais") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}
@@ -308,30 +297,30 @@ export default function DarAltaHuesped(){
             {/* FORM 3 */}
             <form className="flex flex-col">
                 <label className="text-indigo-950 font-medium mb-1">Fecha de nacimiento*:</label>
-                <input name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} type="date" className={getInputClass("fechaNacimiento")} />
+                <input name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} type="date" className={getInputClass("fechaNacimiento")} onBlur={handleBlur}/>
                 {erroresTipo.includes("fechaNacimiento") && (
                     <p className="text-red-500 text-sm mb-3">Fecha inválida.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Teléfono*:</label>
-                <input name="telefono" value={formData.telefono} onChange={handleChange} type="text" placeholder="telefono" className={getInputClass("telefono")} />
+                <input name="telefono" value={formData.telefono} onChange={handleChange} type="text" placeholder="telefono" className={getInputClass("telefono")} onBlur={handleBlur} />
                 {erroresTipo.includes("telefono") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Email:</label>
-                <input name="email" value={formData.email} onChange={handleChange} type="text" placeholder="email" className={getInputClass("email")} />
+                <input name="email" value={formData.email} onChange={handleChange} type="text" placeholder="email" className={getInputClass("email")} onBlur={handleBlur}/>
                 {erroresTipo.includes("email") && (
                     <p className="text-red-500 text-sm mb-3">Email inválido.</p>
                 )}
                 <label className="text-indigo-950 font-medium mb-1">Ocupación*:</label>
-                <input name="ocupacion" value={formData.ocupacion} onChange={handleChange} type="text" placeholder="ocupacion" className={getInputClass("ocupacion")} />
+                <input name="ocupacion" value={formData.ocupacion} onChange={handleChange} type="text" placeholder="ocupacion" className={getInputClass("ocupacion")} onBlur={handleBlur}/>
                 {erroresTipo.includes("ocupacion") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}
 
                 <label className="text-indigo-950 font-medium mb-1">Nacionalidad*:</label>
-                <input name="nacionalidad" value={formData.nacionalidad} onChange={handleChange} type="text" placeholder="nacionalidad" className={getInputClass("nacionalidad")} />
+                <input name="nacionalidad" value={formData.nacionalidad} onChange={handleChange} type="text" placeholder="nacionalidad" className={getInputClass("nacionalidad")} onBlur={handleBlur}/>
                 {erroresTipo.includes("nacionalidad") && (
                     <p className="text-red-500 text-sm mb-3">Ingrese solo letras.</p>
                 )}

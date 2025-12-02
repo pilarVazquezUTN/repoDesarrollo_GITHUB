@@ -6,6 +6,7 @@ import { TipoHuesped } from "../tabla/page";
 import CartelNoEncontrado from "../carteles/huespedNoEncontrado";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { esSoloLetras, esSoloNumeros, validarDNI} from "../validaciones/validaciones";
 
 export default function BuscarHuesped() { 
 
@@ -27,12 +28,9 @@ export default function BuscarHuesped() {
         e.preventDefault();
 
         // VALIDACIONES
-        const soloLetras = /^[A-ZÁÉÍÓÚÑ\s]*$/;
-        const soloNumeros = /^[0-9]*$/;
-
-        const nombreInvalido = nombre !== "" && !soloLetras.test(nombre);
-        const apellidoInvalido = apellido !== "" && !soloLetras.test(apellido);
-        const dniInvalido = dni !== "" && !soloNumeros.test(dni);
+        const nombreInvalido = nombre !== "" && !esSoloLetras(nombre);
+        const apellidoInvalido = apellido !== "" && !esSoloLetras(apellido);
+        const dniInvalido = dni !== "" && (!esSoloNumeros(dni) || !validarDNI(dni));
 
         setErrorNombre(nombreInvalido);
         setErrorApellido(apellidoInvalido);
@@ -134,7 +132,7 @@ export default function BuscarHuesped() {
                     ${errorDni ? "border-red-500" : ""}`}
             />
             {errorDni && (
-                <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
+                <p className="text-red-500 text-sm mb-3">Ingrese DNI valido.</p>
             )}
 
             <button className="self-center px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800 transition">

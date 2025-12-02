@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan  } from "@fortawesome/free-solid-svg-icons";
 import CartelListaHabitaciones from "../carteles/cartelListaHabitaciones";
 import Link from "next/link";
+import { validarFechasReserva } from "@/app/validaciones/validaciones";
+
 
 // =========================
 // TIPOS E INTERFACES (COINCIDEN CON TU JSON)
@@ -81,28 +83,18 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   // =========================
   // VALIDAR FECHAS
   // =========================
-  function validarFechas(desde: string, hasta: string) {
-    const hoy = new Date();
-    hoy.setHours(0,0,0,0);
-
-    const d = desde ? parseISO(desde) : null;
-    const h = hasta ? parseISO(hasta) : null;
-
-    const nuevosErrores = { desdeInvalido: false, hastaInvalido: false, ordenInvalido: false };
-
-    if (d && d < hoy) nuevosErrores.desdeInvalido = true;
-    if (h && h < hoy) nuevosErrores.hastaInvalido = true;
-    if (d && h && isAfter(d,h)) nuevosErrores.ordenInvalido = true;
-
-    setErroresFecha(nuevosErrores);
-
-    const valido = !!desde && !!hasta && !nuevosErrores.desdeInvalido && !nuevosErrores.hastaInvalido && !nuevosErrores.ordenInvalido;
-    setFechasValidas(valido);
-
-    if (!valido) { setSeleccionados([]); setHabitaciones([]); }
-
-    return valido;
+  function validarDesde(fecha: string) {
+    const result = validarFechasReserva(fecha, hastaFecha);
+    setErroresFecha(result);
+    setFechasValidas(result.valido);
   }
+
+  function validarHasta(fecha: string) {
+    const result = validarFechasReserva(desdeFecha, fecha);
+    setErroresFecha(result);
+    setFechasValidas(result.valido);
+  }
+
 
   // =========================
   // FETCH DE DATOS
@@ -270,7 +262,8 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
         <input
           type="date"
           value={desdeFecha}
-          onChange={(e) => { setDesdeFecha(e.target.value); validarFechas(e.target.value, hastaFecha); }}
+          onChange={(e) => setDesdeFecha(e.target.value)}
+          onBlur={(e) => validarDesde(e.target.value)}
           className={`p-2 border rounded mb-1 text-indigo-950
             ${(erroresFecha.desdeInvalido || erroresFecha.ordenInvalido || (!desdeFecha && tipoSeleccionado)) 
               ? "border-red-500 bg-red-100" 
@@ -283,7 +276,8 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
         <input
           type="date"
           value={hastaFecha}
-          onChange={(e) => { setHastaFecha(e.target.value); validarFechas(desdeFecha, e.target.value); }}
+          onChange={(e) => setHastaFecha(e.target.value)}
+          onBlur={(e) => validarHasta(e.target.value)}
           className={`p-2 border rounded mb-1 text-indigo-950
             ${(erroresFecha.hastaInvalido || erroresFecha.ordenInvalido || (!hastaFecha && tipoSeleccionado)) 
               ? "border-red-500 bg-red-100" 
