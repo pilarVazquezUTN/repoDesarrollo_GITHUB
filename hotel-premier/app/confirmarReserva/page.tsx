@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { parseISO, format } from "date-fns";
-import { esSoloLetras, esSoloNumeros, esObligatorio} from "../validaciones/validaciones";
+import { esSoloLetras, esSoloNumeros, esObligatorio, telefonoValido} from "../validaciones/validaciones";
 import { es } from "date-fns/locale";
 
 
@@ -50,6 +50,7 @@ export default function DatosHuesped() {
   const [errorApellidoObligatorio, setErrorApellidoObligatorio] = useState(false);
   const [errorTelefonoObligatorio, setErrorTelefonoObligatorio] = useState(false);
 
+
   useEffect(() => {
     setErrorNombre(nombre !== "" && !esSoloLetras(nombre));
   }, [nombre]);
@@ -59,7 +60,7 @@ export default function DatosHuesped() {
   }, [apellido]);
 
   useEffect(() => {
-    setErrorTelefono(telefono !== "" && !esSoloNumeros(telefono));
+    setErrorTelefono(telefono !== "" && (!esSoloNumeros(telefono) || !telefonoValido(telefono)));
   }, [telefono]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -198,7 +199,8 @@ export default function DatosHuesped() {
             )}
             {errorApellidoObligatorio && (
                 <p className="text-red-500 text-sm mb-3">El apellido es obligatorio.</p>
-            )}  
+            )} 
+
             <label className="text-indigo-950 font-medium mb-1">Teléfono:</label>
             <input 
                 type="text"
@@ -213,11 +215,12 @@ export default function DatosHuesped() {
                     ${errorTelefono || errorTelefonoObligatorio ? "border-red-500" : ""}`}
             />
             {errorTelefono && (
-                <p className="text-red-500 text-sm mb-3">Ingrese solo números.</p>
+                <p className="text-red-500 text-sm mb-3">Ingrese Telefono valido.</p>
             )}
             {errorTelefonoObligatorio && (
                 <p className="text-red-500 text-sm mb-3">El teléfono es obligatorio.</p>
             )}
+            
          {/* BOTÓN CENTRADO */}
            <div className="w-full flex justify-center">
              <button

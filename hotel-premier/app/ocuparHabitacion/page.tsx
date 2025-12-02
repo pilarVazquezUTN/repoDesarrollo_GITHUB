@@ -10,7 +10,7 @@ import CartelHabitacionesOcupadas from "../carteles/cartelHabitacionesOcupadas";
 import CartelPresioneTecla from "../carteles/CartelPresioneTecla";
 import Link from "next/link";
 
-import { validarFechasReserva } from "@/app/validaciones/validaciones";
+import { validarFechasReserva, telefonoValido } from "@/app/validaciones/validaciones";
 
 
 // =========================
@@ -165,13 +165,13 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
       fechaEnRango(fechaString, e.checkin, e.checkout)
     );
 
-    // ❌ NO SE PUEDE TOCAR: OCUPADA / FUERA DE SERVICIO
+    //  NO SE PUEDE TOCAR: OCUPADA / FUERA DE SERVICIO
     if (esFueraServicio || esOcupada) {
       setMostrarCartelNoDisponible(true);
       return;
     }
 
-    // ✅ DISPONIBLE O RESERVADA
+    //  DISPONIBLE O RESERVADA
     // Se selecciona directamente. El color verde lo dará el render al detectar que está en "seleccionados"
     ejecutarSeleccion(fechaString, hab);
   };
@@ -180,7 +180,7 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
     const confirmarOcupacion = () => {
         setHabitaciones(prev =>
             prev.map(h => {
-            // 🔎 Fechas seleccionadas SOLO de esta habitación
+            //  Fechas seleccionadas SOLO de esta habitación
             const fechasDeEsta = seleccionados
                 .filter(s => s.split("|")[1] === String(h.numero))
                 .map(s => s.split("|")[0])

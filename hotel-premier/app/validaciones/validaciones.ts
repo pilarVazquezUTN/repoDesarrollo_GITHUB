@@ -30,10 +30,8 @@ export const esObligatorio = (valor: any) => {
 };
 
 export const telefonoValido = (valor: string) => {
-  // Permitir números, espacios, guiones y paréntesis
-  const regex = /^[0-9\s\-()]+$/;
-  return regex.test(valor.trim());
-};
+  return /^\d{6,15}$/.test(valor);
+};;
 
 //DAR ALTA HUESPED
 export const validarFormularioHuesped = (formData: any) => {
