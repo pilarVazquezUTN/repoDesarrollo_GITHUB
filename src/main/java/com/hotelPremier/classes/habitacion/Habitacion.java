@@ -33,7 +33,7 @@ public class Habitacion  {
     @JsonIgnore
     private List<Estadia> listaestadias; 
 
-    @OneToMany(mappedBy = "habitacion")
+    @OneToMany(mappedBy = "nro_habitacion")
     @JsonIgnore
     private List<Reserva> listareservas;
 

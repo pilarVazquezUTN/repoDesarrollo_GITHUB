@@ -25,7 +25,16 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
     """)
     List<Reserva>  buscarReservas(@Param("fechadesde") Date fechaDesde, @Param("fechahasta") Date fechaHasta);
 
-    void delete(Reserva r);
+
+    @Query("""
+    SELECT r.id_reserva
+    FROM Reserva r
+     WHERE r.fecha_desde <= :fechahasta
+      AND r.fecha_hasta >= :fechadesde
+      AND r.nro_habitacion.numero = :nro_hab
+""")
+    Integer encontrarIdReserva(@Param("fechadesde") Date fechaDesde, @Param("fechahasta") Date fechaHasta,@Param("nro_hab") Integer nroHab);
+   // void delete(Reserva r);
 
     //Reserva findById_reserva(Integer id_reserva);
 

@@ -51,6 +51,7 @@ public class HabitacionDTO {
     public int getCantidadPersonas() { return this.cantidadPersonas; }
     public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
 
+    //public void setListaestadias( List<EstadiaDTO> listaestadias) {this.listaestadias= listaestadias;}
     public List<EstadiaDTO> getListaestadias() { return this.listaestadias; }
     public void setListareservas(List<ReservaDTO> listares){
         this.listareservas=listares;

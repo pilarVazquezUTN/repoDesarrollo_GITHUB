@@ -41,7 +41,7 @@ public class Reserva {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "nro_habitacion") 
-    private Habitacion habitacion;
+    private Habitacion nro_habitacion;
 
     @OneToOne
     @JoinColumn(name = "id_estadia")
@@ -51,13 +51,16 @@ public class Reserva {
     public void setId_reserva(Integer id_reserva) {
         this.id_reserva = id_reserva;
     }
+    public  Integer getId_reserva() {
+        return this.id_reserva;
+    }
 
     public void setHabitacion (Habitacion habitacion){
 
-        this.habitacion=habitacion;
+        this.nro_habitacion=habitacion;
     }
     public Habitacion getHabitacion(){
-        return this.habitacion;
+        return this.nro_habitacion;
     }
 
    /* public String getTipo_habitacion(){

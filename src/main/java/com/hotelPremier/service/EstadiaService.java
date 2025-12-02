@@ -61,8 +61,22 @@ public class EstadiaService {
 
                 System.out.println("Entramos a elimnar reserva 2");
                 if( reservaService.existeReserva(estadiaFechaDesde,estadiaFechaHasta) ){//si la reserva coincide con la fecha de la nueva estadia
-                    reservaService.delete(r);
                     System.out.println("Entramos a elimnar reserva 3");
+                    System.out.println("nombre "+ r.getNombre());
+                    System.out.println("apellido"+r.getApellido());
+                    System.out.println("fechades"+r.getFecha_desde());
+                    System.out.println("fechaHasta"+r.getFecha_hasta());
+                    System.out.println("ID "+r.getId_reserva());
+                    System.out.println("Habitacion "+habitacionDTO.getNumero());
+
+                    Integer id = reservaService.buscarId(r,habitacionDTO);
+                    System.out.println("ID ENCONTRADO"+id);
+
+                    reservaService.deleteReserva(reservaService.buscarId(r,habitacionDTO));
+
+
+
+                    System.out.println("APELLIDO ELIMINADOOOOO"+r.getId_reserva());
                 }
             }
 

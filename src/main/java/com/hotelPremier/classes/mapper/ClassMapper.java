@@ -18,10 +18,10 @@ import java.util.List;
 public interface ClassMapper {
 
 
-    Estadia toEntity(EstadiaDTO estadiaDTO);
+          Estadia toEntity(EstadiaDTO estadiaDTO);
 
            @Mapping(target = "tipohabitacion", expression = "java(h.getTipo())")
-          HabitacionDTO toDTOHab(Habitacion h);
+           HabitacionDTO toDTOHab(Habitacion h);
            List<HabitacionDTO> toDTOsHabitacion(List<Habitacion> habitaciones);
            //Habitacion toEntityHabitacion(HabitacionDTO dto);
 

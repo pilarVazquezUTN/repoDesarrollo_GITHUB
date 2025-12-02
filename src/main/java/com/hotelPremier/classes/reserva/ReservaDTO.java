@@ -5,30 +5,38 @@ import com.hotelPremier.classes.habitacion.HabitacionDTO;
 
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 
 public class ReservaDTO {
+//ERNE
+    private Integer id_reserva;
+
     @Temporal(TemporalType.DATE) //guarda fecha sin hora
     private Date fecha_desde;
 
     @Temporal(TemporalType.DATE) //guarda fecha sin hora
     private Date fecha_hasta;
 
-    private Integer id_reserva;
+
     private String estado;
     private String nombre;
     private String apellido;
     private String telefono;
-    private HabitacionDTO habitacion; 
+    private Integer nro_habitacion;
     //private String tipoHab;
  
-    public void setHabitacion(HabitacionDTO hab) {
+     //ERNE
+    public void setId_reserva(Integer id_reserva) { this.id_reserva = id_reserva; }
+    public Integer getId_reserva() { return this.id_reserva; }
 
-        this.habitacion = hab;
+    public void setNro_habitacion(Integer  nro_hab) {
+
+        this.nro_habitacion = nro_hab;
     }
 
-    public HabitacionDTO getHabitacion() {
-        return this.habitacion;
+    public Integer getNro_habitacion() {
+        return this.nro_habitacion;
     }
 
     /* 
@@ -41,12 +49,6 @@ public class ReservaDTO {
         return tipoHab;
     }
     */
-    public void setId_reserva(Integer id_reserva) {
-        this.id_reserva = id_reserva;
-    }
-    public Integer getId_reserva() {
-        return this.id_reserva;
-    }
 
     /**
      *

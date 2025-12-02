@@ -11,7 +11,7 @@ import com.hotelPremier.classes.huesped.HuespedDTO;
 import com.hotelPremier.classes.reserva.ReservaDTO;
 
 public class EstadiaDTO {
-    private Integer id_estadiaDTO;
+
     private Date checkin; 
     private Date checkout;
     private HabitacionDTO habitacion;

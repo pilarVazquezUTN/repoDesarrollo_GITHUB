@@ -11,6 +11,7 @@ import com.hotelPremier.classes.habitacion.Habitacion;
 import com.hotelPremier.classes.habitacion.HabitacionDTO;
 import com.hotelPremier.classes.reserva.Reserva;
 import com.hotelPremier.repository.HabitacionRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +39,16 @@ public class ReservaService {
         return mapper.toDtosReserva( reservaRepository.buscarReservas(fechaDesde,fechaHasta) );
     } 
 
-    public void delete(Reserva r){
-        reservaRepository.delete(r);
+
+    public Integer buscarId (Reserva reserva, HabitacionDTO habitacionDTO){
+        Integer num_hab=habitacionDTO.getNumero();
+        Date fecha_desde=reserva.getFecha_desde();
+        Date fecha_hasta=reserva.getFecha_hasta();
+        return reservaRepository.encontrarIdReserva(fecha_desde, fecha_hasta, num_hab);
+    }
+
+    public void deleteReserva(Integer id){
+        reservaRepository.deleteById(id);
     }
 
     public boolean existeReserva(Date fechaDesde, Date fechaHasta){
@@ -67,9 +76,9 @@ public class ReservaService {
 
             //se busca la hab
             Habitacion hab = habitacionRepository
-                    .findById(reservaDTO.getHabitacion().getNumero())
+                    .findById(reservaDTO.getNro_habitacion())
                     .orElseThrow(() -> new RuntimeException(
-                            "Habitación no encontrada: " + reservaDTO.getHabitacion().getNumero()
+                            "Habitación no encontrada: " + reservaDTO.getNro_habitacion()
                     ));
 
             // setear habitación
