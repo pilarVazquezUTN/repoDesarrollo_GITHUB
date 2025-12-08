@@ -16,6 +16,7 @@ public class ServicioExtraID implements Serializable {
     public void setId_estadia(Integer id_estadia) {
         this.id_estadia = id_estadia;
     }
+    
     public Integer getId_estadia() {
         return id_estadia;
     }

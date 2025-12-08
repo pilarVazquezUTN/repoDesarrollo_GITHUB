@@ -13,6 +13,7 @@ import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
 public class ResponsablePago {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_responsablepago")
     private Integer id_responsablePago; 
 
