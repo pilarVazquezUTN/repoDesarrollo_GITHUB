@@ -1,0 +1,4378 @@
+📂 Estructura del proyecto (.):
+-----------------------------------
+.
+├── classes
+│   ├── Dominio
+│   │   ├── Direccion.java
+│   │   ├── Estadia.java
+│   │   ├── Factura.java
+│   │   ├── habitacion
+│   │   │   ├── DobleEstandar.java
+│   │   │   ├── DobleSuperior.java
+│   │   │   ├── IndividualEstandar.java
+│   │   │   ├── Suite.java
+│   │   │   └── SuperiorFamilyPlan.java
+│   │   ├── Habitacion.java
+│   │   ├── HuespedID.java
+│   │   ├── Huesped.java
+│   │   ├── medioDePago
+│   │   │   ├── Cheque.java
+│   │   │   ├── MedioDePago.java
+│   │   │   ├── MonedaExtranjera.java
+│   │   │   ├── MonedaLocal.java
+│   │   │   ├── TarjetaCredito.java
+│   │   │   └── TarjetaDebito.java
+│   │   ├── NotaDeCredito.java
+│   │   ├── Pago.java
+│   │   ├── Reserva.java
+│   │   ├── responsablePago
+│   │   │   ├── PersonaFisica.java
+│   │   │   ├── PersonaJuridica.java
+│   │   │   └── ResponsablePago.java
+│   │   ├── servicioExtra
+│   │   │   ├── ServicioExtraID.java
+│   │   │   └── ServicioExtra.java
+│   │   └── Usuario.java
+│   ├── DTO
+│   │   ├── DireccionDTO.java
+│   │   ├── DobleEstandarDTO.java
+│   │   ├── DobleSuperiorDTO.java
+│   │   ├── EstadiaDTO.java
+│   │   ├── FacturaDTO.java
+│   │   ├── HabitacionDTO.java
+│   │   ├── HabitacionEstadosDTO.java
+│   │   ├── HuespedDTO.java
+│   │   ├── IndividualEstandarDTO.java
+│   │   ├── medioDePago
+│   │   │   ├── ChequeDTO.java
+│   │   │   ├── MedioDePagoDTO.java
+│   │   │   ├── MonedaExtranjeraDTO.java
+│   │   │   ├── MonedaLocalDTO.java
+│   │   │   ├── TarjetaCreditoDTO.java
+│   │   │   └── TarjetaDebitoDTO.java
+│   │   ├── NotaDeCreditoDTO.java
+│   │   ├── PagoDTO.java
+│   │   ├── PruebaDTO.java
+│   │   ├── ReservaDTO.java
+│   │   ├── SuiteDTO.java
+│   │   ├── SuperiorFamilyPlanDTO.java
+│   │   └── UsuarioDTO.java
+│   ├── excepciones
+│   │   ├── HuespedNoEncontradoException.java
+│   │   └── UsuarioNoExistenteException.java
+│   ├── FuncionesUtiles.java
+│   ├── mapper
+│   │   └── ClassMapper.java
+│   └── Validador.java
+├── config
+│   └── WebConfig.java
+├── consolidado.txt
+├── controller
+│   ├── EstadiaController.java
+│   ├── HabitacionController.java
+│   ├── HuespedController.java
+│   ├── PagoController.java
+│   ├── ReservaController.java
+│   └── UsuarioController.java
+├── HotelPremierApplication.java
+├── repository
+│   ├── DireccionRepository.java
+│   ├── EstadiaRepository.java
+│   ├── FacturaRepository.java
+│   ├── HabitacionRepository.java
+│   ├── HuespedRepositoryDAO.java
+│   ├── NotaDeCreditoRepository.java
+│   ├── PagoRepository.java
+│   ├── ReservaRepository.java
+│   └── UsuarioRepository.java
+└── service
+    ├── EstadiaService.java
+    ├── HabitacionService.java
+    ├── HuespedServiceImpl.java
+    ├── PagoService.java
+    └── ReservaService.java
+
+15 directories, 76 files
+
+-----------------------------------
+
+// [classes/Dominio/Direccion.java]
+package com.hotelPremier.classes.Dominio;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+
+@Entity
+@Table(name="direccion")
+public class Direccion {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Column(name = "id_direccion")
+    private Integer id_direccion;
+
+    @Column(name="calle")
+    private String calle;
+    
+    @Column(name="numero")
+    private Integer numero;
+    @Column(name="localidad")
+    private String localidad;
+    @Column(name="departamento")
+    private String departamento;
+    @Column(name="piso")
+    private Integer piso;
+    @Column(name="codigopostal")
+    private Integer codigoPostal;
+    @Column(name="provincia")
+    private String provincia;
+    @Column(name="pais")
+    private String pais;
+
+
+   /* /**
+     * constructor de direccion
+     * @param calle
+     * @param numero
+     * @param localidad
+     * @param departamento
+     * @param piso
+     * @param codigoPostal
+     * @param provincia
+     * @param pais
+     */
+  /*  public Direccion(String calle, String numero, String localidad, String departamento, String piso, Integer codigoPostal, String provincia, String pais) {
+        this.calle = calle;
+        this.numero = numero;
+        this.localidad = localidad;
+        this.departamento = departamento;
+        this.piso = piso;
+        this.codigoPostal = codigoPostal;
+        this.provincia = provincia;
+        this.pais = pais;
+    }
+*/
+
+
+    public void setID(Integer id){
+        this.id_direccion=id;
+    }
+    public Integer getID(){
+        return this.id_direccion;
+    }
+
+    /**
+     * retorna la calle
+     * @return
+     */
+    public String getCalle() {
+        return calle;
+    }
+
+    /**
+     * retorna el numero
+     * @return
+     */
+    public Integer getNumero() {
+        return numero;
+    }
+
+    /**
+     * retorna localidad
+     * @return
+     */
+    public String getLocalidad() {
+        return localidad;
+    }
+    /**
+     * retorna departamento
+     * @return
+     */
+    public String getDepartamento() {
+        return departamento;
+    }
+    /**
+     * retorna piso
+     * @return
+     */
+    public Integer getPiso() {
+        return piso;
+    }
+
+    /**
+     * retorna cp
+     * @return
+     */
+    public Integer getCodigoPostal() {
+        return codigoPostal;
+    }
+    /**
+     * retorna provincia
+     * @return
+     */
+    public String getProvincia() {
+        return provincia;
+    }
+    /**
+     * retorna pais
+     * @return
+     */
+    public String getPais() {
+        return pais;
+    }
+
+    /**
+     * set de calle
+     * @param calle
+     */
+    public void setCalle(String calle) {
+        this.calle = calle;
+    }
+
+    /**
+     * set de numero
+     * @param numero
+     */
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
+
+    /**
+     * set de localidad
+     * @param localidad
+     */
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+
+    /**set de departamento
+     *
+     * @param departamento
+     */
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
+    }
+
+    /**
+     * set de piso
+     * @param piso
+     */
+    public void setPiso(Integer piso) {
+        this.piso = piso;
+    }
+
+    /**
+     * set de codigo postal
+     * @param codigoPostal
+     */
+    public void setCodigoPostal(Integer codigoPostal) {
+        this.codigoPostal = codigoPostal;
+    }
+
+    /**
+     * set de provincia
+     * @param provincia
+     */
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+    /**
+     * set d pais
+     * @param pais
+     */
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+}
+
+
+
+
+
+// [classes/Dominio/Estadia.java]
+package com.hotelPremier.classes.Dominio;
+
+import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!
+
+@JsonIgnoreProperties({"listahuesped", "habitacion"}) //JSIGNORE!!!!
+@Entity
+
+@Table(name="estadia")
+public class Estadia { 
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id_estadia")
+    private Integer id_estadia;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Column(name="checkin") 
+    private Date checkin;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Column(name="checkout")
+    private Date checkout;
+
+    @ManyToOne //de estadia a habitacion
+    @JsonManagedReference//trabaja con el front
+    @JsonIgnore
+    @JoinColumn(name = "nro_habitacion")
+    private Habitacion habitacion;
+
+    @ManyToMany(mappedBy = "listaestadia")
+    private List<Huesped> listahuesped; 
+
+    @OneToMany(mappedBy = "estadia")
+    private List<Factura> listafactura;
+
+    @OneToMany(mappedBy = "estadia")
+    private List<ServicioExtra> listaserviciosextra;
+
+    @OneToOne
+    @JoinColumn(name = "id_reserva")
+    private Reserva reserva;
+
+
+
+    
+
+
+    public Integer getId_estadia() {
+        return this.id_estadia;
+    }
+    public void setId_estadia(Integer id_estadia) {
+        this.id_estadia = id_estadia;
+    }
+    public Date getCheckin() {
+        return this.checkin;
+    }
+    public void setCheckin(Date checkin) {
+        this.checkin = checkin;
+    }
+    public Date getCheckout() {
+        return this.checkout;
+    }
+    public void setCheckout(Date checkout) {
+        this.checkout = checkout;
+    }
+    public Habitacion getHabitacion() {
+        return this.habitacion;
+    }
+    public void setHabitacion(Habitacion habitacion) {
+        this.habitacion = habitacion;
+    }
+    public List<Huesped> getListahuesped() {
+        return this.listahuesped;
+
+    }
+    public void setListahuesped(List<Huesped> listahuesped) {
+        this.listahuesped = listahuesped;
+    }
+}
+
+
+// [classes/Dominio/Factura.java]
+package com.hotelPremier.classes.Dominio;
+
+import java.util.Date;
+
+import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "factura")
+public class Factura {
+
+    @Id
+    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer ID;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "fecha")
+    private Date fecha;
+
+    @Column(name = "total")
+    private float total;
+
+    @Column(name = "tipo")
+    private String tipo;
+
+    @Column(name = "estado")
+    private String estado;
+
+    @ManyToOne
+    @JoinColumn(name = "id_estadia")
+    private Estadia estadia;
+
+    @ManyToOne
+    @JoinColumn(name = "id_notacredito")
+    private NotaDeCredito notacredito;
+
+    @OneToOne
+    @JoinColumn(name = "pago")
+    private Pago pago;
+
+    @ManyToOne
+    @JoinColumn(name = "responsablepago")
+    private ResponsablePago responsablepago;
+
+    public Factura() {
+    }
+
+    public Factura(Date fecha, float total, String tipo, String estado,
+                   Estadia estadia, NotaDeCredito notacredito, Pago pago,
+                   ResponsablePago responsablepago) {
+        this.fecha = fecha;
+        this.total = total;
+        this.tipo = tipo;
+        this.estado = estado;
+        this.estadia = estadia;
+        this.notacredito = notacredito;
+        this.pago = pago;
+        this.responsablepago = responsablepago;
+    }
+
+    public Integer getID() {
+        return ID;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Estadia getEstadia() {
+        return estadia;
+    }
+
+    public void setEstadia(Estadia estadia) {
+        this.estadia = estadia;
+    }
+
+    public NotaDeCredito getNotacredito() {
+        return notacredito;
+    }
+
+    public void setNotaDeCredito(NotaDeCredito notacredito) {
+        this.notacredito = notacredito;
+    }
+
+    public Pago getPago() {
+        return pago;
+    }
+
+    public void setPago(Pago pago) {
+        this.pago = pago;
+    }
+
+    public ResponsablePago getResponsablepago() {
+        return responsablepago;
+    }
+
+    public void setResponsablepago(ResponsablePago responsablepago) {
+        this.responsablepago = responsablepago;
+    }
+}
+
+
+
+// [classes/Dominio/habitacion/DobleEstandar.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("DobleEstandar")
+public class DobleEstandar  extends Habitacion {
+    @Column(name = "camasindividuales")
+    private Integer camasIndividuales;
+    @Column(name = "camadoble")
+    private Integer camaDoble;
+}
+
+
+
+// [classes/Dominio/habitacion/DobleSuperior.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("DobleSuperior")
+public class DobleSuperior  extends Habitacion{
+    @Column(name = "camasindividuales")
+    private Integer camasIndividuales;
+    @Column(name = "camadoble")
+    private Integer camaDoble;
+}
+
+
+
+// [classes/Dominio/habitacion/IndividualEstandar.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("IndividualEstandar")
+public class IndividualEstandar  extends Habitacion{
+    @Column(name = "camaskingsize")
+    private Integer camasKingSize;
+}
+
+
+
+// [classes/Dominio/habitacion/Suite.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("Suite")
+public class Suite extends Habitacion{
+    @Column(name = "camaskingsize")
+    private Integer camasKingSize;
+}
+
+
+
+// [classes/Dominio/habitacion/SuperiorFamilyPlan.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("SuperiorFamilyPlan")
+public class SuperiorFamilyPlan extends Habitacion{
+    @Column(name = "camasindividuales")
+    private Integer camasIndividuales;
+    @Column(name = "camadoble")
+    private Integer camaDoble;
+}
+
+
+
+// [classes/Dominio/Habitacion.java]
+package com.hotelPremier.classes.Dominio;
+
+ import java.util.List;
+
+ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.hotelPremier.classes.Dominio.habitacion.DobleEstandar;
+import com.hotelPremier.classes.Dominio.habitacion.DobleSuperior;
+import com.hotelPremier.classes.Dominio.habitacion.IndividualEstandar;
+import com.hotelPremier.classes.Dominio.habitacion.Suite;
+import com.hotelPremier.classes.Dominio.habitacion.SuperiorFamilyPlan;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+
+@Entity
+//@JsonIgnoreProperties({ "listareservas", "listaestadias" })
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)//una clase padre tiene subclases hijas, y querés que todas se guarden juntas en una sola tabla en la base de datos.
+@DiscriminatorColumn(name = "tipohabitacion")
+
+@Table(name="habitacion")
+public class Habitacion  {
+    @Id 
+    private Integer numero; 
+
+    @Column(name="estado") 
+    private String estado;
+    @Column(name="precio")  
+    private float precio;
+    @Column(name="cantidadpersonas")
+    private Integer cantidadPersonas;    
+    @Column(name = "tipohabitacion", insertable=false, updatable=false)
+    private String tipohabitacion;
+
+    @OneToMany(mappedBy = "habitacion")
+    @JsonBackReference
+    @JsonIgnore
+    private List<Estadia> listaestadias; 
+
+    @OneToMany(mappedBy = "nro_habitacion")
+    @JsonIgnore
+    private List<Reserva> listareservas;
+
+
+
+    
+    // GETTERS y SETTERS
+
+    
+    public List<Reserva> getListareservas(){ return this.listareservas;}
+    public void setListareservas(List<Reserva> listres){
+        this.listareservas=listres;
+    }
+
+    public List<Estadia> getListaEstadia() { return this.listaestadias; }
+    public Integer getNumero() { return this.numero; }
+    public void setNumero(Integer numero) { this.numero = numero;}
+
+    public String getEstado() { return this.estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public float getPrecio() { return this.precio; }
+    public void setPrecio(float precio) { this.precio = precio; }
+
+    public int getCantidadPersonas() { return this.cantidadPersonas; }
+    public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
+
+
+    public void setTipo(String tipo){
+        
+        this.tipohabitacion=tipo;
+        /* 
+        if (tipo.equals("IndividualEstandar")) this.tipoHab="IndividualEstandar";
+        if (tipo.equals("DobleEstandar") ) this.tipoHab="DobleEstandar";
+        if (this instanceof DobleSuperior) this.tipoHab="DobleSuperior";
+        if (this instanceof SuperiorFamilyPlan) this.tipoHab="SuperiorFamilyPlan";
+        if (this instanceof Suite) this.tipoHab="Suite";
+        */
+    }
+    public String getTipo(){
+        if (this instanceof IndividualEstandar) return "IndividualEstandar";
+        if (this instanceof DobleEstandar) return "DobleEstandar";
+        if (this instanceof DobleSuperior) return "DobleSuperior";
+        if (this instanceof SuperiorFamilyPlan) return "SuperiorFamilyPlan";
+        if (this instanceof Suite) return "Suite";
+        
+        return null;
+    }
+
+    
+} 
+
+
+
+// [classes/Dominio/Huesped.java]
+package com.hotelPremier.classes.Dominio;
+//import Classes.Estadia.*;
+import java.util.Date;
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.responsablePago.*;
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!!
+
+@JsonIgnoreProperties("listaestadia")//!!!!!!
+@Entity
+@Table(name = "huesped") // 2. (Opcional) Especifica el nombre de la tabla
+public class Huesped { 
+
+    @Column(name="apellido")
+    private String apellido;
+    @Column(name="nombre")
+    private String nombre;
+    @EmbeddedId
+    HuespedID huespedID;
+
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Column(name="fechanacimiento")
+    private Date fechaNacimiento;
+    @Column(name="telefono")
+    private String telefono;
+    @Column(name="email")
+    private String email;
+  
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_direccion")
+    private Direccion direccion;
+
+    @Column(name="cuit")
+    private String cuit;
+    @Column(name="posicioniva")
+    private String posicionIva;
+    @Column(name="ocupacion")
+    private String ocupacion;
+    @Column(name="nacionalidad")
+    private String nacionalidad;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "relac_estadia_huesped",
+            joinColumns = {
+                @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento"),
+                @JoinColumn(name = "dni", referencedColumnName = "dni")
+            },
+            inverseJoinColumns = @JoinColumn(name = "id_estadia")
+    )
+    private List<Estadia> listaestadia;
+
+
+    @OneToOne
+    @JoinColumn(name = "id_responsablepago")
+    private ResponsablePago responsablePago;
+
+
+
+    public Huesped() {
+        this.huespedID = new HuespedID();
+    }
+
+
+    public String getDni() {
+        return this.huespedID.getDni();
+    }
+
+    public String getTipoDocumento() {
+        return this.huespedID.getTipoDocumento();
+    }
+
+    // Setters del ID compuesto
+    public void setDni(String dni) {
+        if (this.huespedID == null) this.huespedID = new HuespedID();
+        this.huespedID.setDni(dni);
+    }
+
+    public void setTipoDocumento(String tipoDocumento) {
+        if (this.huespedID == null) this.huespedID = new HuespedID();
+        this.huespedID.setTipoDocumento(tipoDocumento);
+    }
+    public HuespedID getHuespedID(){
+        return this.huespedID;
+    }
+    public void setHuespedID(HuespedID id){
+        this.huespedID.setDni(id.getDni());
+        this.huespedID.setTipoDocumento(id.getTipoDocumento());
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    /**
+     *
+     * @param apellido
+     */
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    /**
+     *
+     * @param tipoDocumento
+     */
+
+
+
+    /**
+     *
+     * @param fechaNacimiento
+     */
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    /**
+     *
+     * @param telefono
+     */
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    /**
+     *
+     * @param email
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    /**
+     *
+     * @param cuit
+     */
+    public void setCuit(String cuit) {
+        this.cuit = cuit;
+    }
+
+    /**
+     *
+     * @param posicionIva
+     */
+    public void setPosicionIva(String posicionIva) {
+        this.posicionIva = posicionIva;
+    }
+
+    /**
+     *
+     * @param ocupacion
+     */
+    public void setOcupacion(String ocupacion) {
+        this.ocupacion = ocupacion;
+    }
+
+    /**
+     *
+     * @param nacionalidad
+     */
+    public void setNacionalidad(String nacionalidad) {
+        this.nacionalidad = nacionalidad;
+    }
+
+    public void setDireccion(Direccion direc){
+        this.direccion=direc;
+    }
+
+    public Direccion getDireccion(){
+        return this.direccion;
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public Date getFechaNacimiento() {
+        return this.fechaNacimiento;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getApellido() {
+        return this.apellido;
+    }
+
+    /**
+     *
+     * @return
+     */
+
+    /**
+     *
+     * @return
+     */
+
+    /**
+     *
+     * @return
+     */
+    public String getCuit() {
+        return this.cuit;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getPosicionIva() {
+        return this.posicionIva;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getOcupacion() {
+        return this.ocupacion;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getNacionalidad() {
+        return this.nacionalidad;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getEmail() {
+        return this.email;
+    }
+
+    /**
+     *
+     * @return
+ */
+
+    /**
+     *
+     * @return
+     */
+    public String getNombre() {
+        return this.nombre;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getTelefono() {
+        return this.telefono;
+    }
+
+
+    public List<Estadia> getListaEstadia(){
+        return this.listaestadia;
+    }
+    public void setListaEstadia(List<Estadia> lista){
+        this.listaestadia=lista;
+    }
+
+}
+
+
+
+
+
+// [classes/Dominio/HuespedID.java]
+package com.hotelPremier.classes.Dominio;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+
+import java.io.Serializable;
+@Embeddable
+public class HuespedID implements Serializable {
+    @Column(name = "tipodocumento") 
+    private String tipoDocumento;
+
+   @Column(name = "dni") 
+   private String dni;
+
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+    
+    public String getDni() {
+        return dni;
+    }
+ 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HuespedID that = (HuespedID) o;
+        return tipoDocumento.equals(that.tipoDocumento) && dni.equals(that.dni);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(tipoDocumento, dni);
+    }
+}
+
+
+
+// [classes/Dominio/medioDePago/Cheque.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+import java.util.Date;
+
+public class Cheque extends MedioDePago{
+    private int numeroCheque;
+    private String banco;
+    private Date plazo;
+}
+
+
+
+// [classes/Dominio/medioDePago/MedioDePago.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+import java.util.Date;
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.Pago;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+
+@Entity
+@Table(name="medio_pago")
+public class MedioDePago {
+    @Id 
+    @Column(name="id_mediodepago")
+    private Integer id_mediodepago;
+    @Column(name="monto")
+    private int monto;
+    @Column(name="fecha")
+    private Date fecha;
+
+    //se pone mappedBY= aca va el nombre de la variable en Pago, que seria listamdiodepago.
+    @ManyToMany(mappedBy = "listamediodepago")
+    private List<Pago> listapago;
+    
+    
+    /* CONSTRUCTORES */
+    
+    /* GETTERS Y SETTERS */
+    
+    public void setIdMedioDePago(Integer id_mediodepago){
+        this.id_mediodepago=id_mediodepago;
+    }
+}
+
+
+
+// [classes/Dominio/medioDePago/MonedaExtranjera.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+public class MonedaExtranjera extends MedioDePago{
+    private String tipoMoneda;
+}
+
+
+
+
+
+// [classes/Dominio/medioDePago/MonedaLocal.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+public class MonedaLocal extends MedioDePago{
+    private String tipoMoneda;
+
+}
+
+
+
+
+// [classes/Dominio/medioDePago/TarjetaCredito.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+public class TarjetaCredito extends MedioDePago{
+    private String banco;
+    private int cuotas;
+
+}
+
+
+
+// [classes/Dominio/medioDePago/TarjetaDebito.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+public class TarjetaDebito extends MedioDePago{
+    private String banco;
+    private String dniTitular;
+
+}
+
+
+
+// [classes/Dominio/NotaDeCredito.java]
+package com.hotelPremier.classes.Dominio;
+
+import java.util.List;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "nota_credito")
+public class NotaDeCredito {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_notacredito")
+    private Integer id;
+
+
+    @Column(name = "importe")
+    private float importe;
+
+    @OneToMany(mappedBy = "notaDeCredito")
+    private List<Factura> facturas;
+
+    public Integer getId() { return id; }
+    public float getImporte() { return importe; }
+    public List<Factura> getFacturas() { return facturas; }
+
+    public void setImporte(float importe) { this.importe = importe; }
+    public void setFacturas(List<Factura> facturas) { this.facturas = facturas; }
+}
+
+
+
+// [classes/Dominio/Pago.java]
+package com.hotelPremier.classes.Dominio;
+
+import java.util.Date;
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.medioDePago.MedioDePago;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "pago")
+public class Pago {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_pago")
+    private Integer id_pago;
+
+    @Column(name = "monto")
+    private float monto;
+
+    @Column(name = "mediopago")
+    private String medioPago;
+
+    @Column(name = "fecha")
+    private Date fecha;
+
+    @OneToOne
+    @JoinColumn(name = "factura")
+    private Factura factura;
+
+    @ManyToMany
+    @JoinTable(
+        name = "mediopago_pago",
+        joinColumns = @JoinColumn(name = "id_pago"),
+        inverseJoinColumns = @JoinColumn(name = "id_mediodepago")
+    )
+    private List<MedioDePago> listamediodepago;
+
+    // ===========================
+    // Constructores
+    // ===========================
+
+    public Pago() {
+    }
+
+    public Pago(Integer id_pago, float monto, String medioPago, Date fecha,
+                Factura factura, List<MedioDePago> listamediodepago) {
+        this.id_pago = id_pago;
+        this.monto = monto;
+        this.medioPago = medioPago;
+        this.fecha = fecha;
+        this.factura = factura;
+        this.listamediodepago = listamediodepago;
+    }
+
+    // ===========================
+    // Getters y Setters
+    // ===========================
+
+    public Integer getId_pago() {
+        return id_pago;
+    }
+
+    public void setId_pago(Integer id_pago) {
+        this.id_pago = id_pago;
+    }
+
+    public float getMonto() {
+        return monto;
+    }
+
+    public void setMonto(float monto) {
+        this.monto = monto;
+    }
+
+    public String getMedioPago() {
+        return medioPago;
+    }
+
+    public void setMedioPago(String medioPago) {
+        this.medioPago = medioPago;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public Factura getFactura() {
+        return factura;
+    }
+
+    public void setFactura(Factura factura) {
+        this.factura = factura;
+    }
+
+    public List<MedioDePago> getListamediodepago() {
+        return listamediodepago;
+    }
+
+    public void setListamediodepago(List<MedioDePago> listamediodepago) {
+        this.listamediodepago = listamediodepago;
+    }
+}
+
+
+
+// [classes/Dominio/Reserva.java]
+package com.hotelPremier.classes.Dominio;
+
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import java.util.Date;
+
+@Entity
+//@JsonIgnoreProperties("habitacion")
+// 1. Marca la clase como una tabla en la BDD
+@Table(name = "reserva") // 2. (Opcional) Especifica el nombre de la tabla
+public class Reserva {
+    @Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id_reserva")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id_reserva;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Column(name="fecha_desde")
+    private Date fecha_desde;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Column(name="fecha_hasta") 
+    private Date fecha_hasta;
+    
+    @Column(name="estado")
+    private String estado;
+    @Column(name="nombre")
+    private String nombre;
+    @Column(name="apellido")
+    private String apellido;
+    @Column(name="telefono")
+    private String telefono;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "nro_habitacion") 
+    private Habitacion nro_habitacion;
+
+    @OneToOne
+    @JoinColumn(name = "id_estadia")
+    private Estadia estadia;
+
+
+    public void setId_reserva(Integer id_reserva) {
+        this.id_reserva = id_reserva;
+    }
+    public  Integer getId_reserva() {
+        return this.id_reserva;
+    }
+
+    public void setHabitacion (Habitacion habitacion){
+
+        this.nro_habitacion=habitacion;
+    }
+    public Habitacion getHabitacion(){
+        return this.nro_habitacion;
+    }
+
+   /* public String getTipo_habitacion(){
+        return nro_habitacion.getTipohabitacion();
+    }
+*/
+
+
+
+    public String getNombre() {
+        return this.nombre;
+    }
+   public void setNombre(String nombre) {
+        this.nombre = nombre;
+   }
+
+    public void setFecha_desde(Date fecha_desde) {
+        this.fecha_desde = fecha_desde;
+    }
+
+    public Date getFecha_desde() {
+        return this.fecha_desde;
+    }
+
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+
+    public String getApellido() {
+        return this.apellido;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+
+    public void setFecha_hasta(Date fecha_hasta) {
+        this.fecha_hasta = fecha_hasta;
+    }
+
+    public Date getFecha_hasta() {
+        return fecha_hasta;
+    }
+
+}
+
+
+
+// [classes/Dominio/responsablePago/PersonaFisica.java]
+package com.hotelPremier.classes.Dominio.responsablePago;
+
+import com.hotelPremier.classes.Dominio.Huesped;
+
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.OneToOne;
+
+public class PersonaFisica extends ResponsablePago{
+    private String nombre;
+
+
+    @OneToOne
+    @JoinColumns({
+            @JoinColumn(name = "dni", referencedColumnName = "dni"),
+            @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento")
+    })
+    private Huesped huesped;
+}
+
+
+
+// [classes/Dominio/responsablePago/PersonaJuridica.java]
+package com.hotelPremier.classes.Dominio.responsablePago;
+
+import com.hotelPremier.classes.Dominio.Direccion;
+
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+
+public class PersonaJuridica extends ResponsablePago{
+    private String razonSocial;
+    private String cuit;
+    private Direccion direccion;
+
+    @OneToOne
+    @JoinColumn(name = "id_direccion")
+    Direccion direccionpersonaJuridica;
+
+}
+
+
+
+// [classes/Dominio/responsablePago/ResponsablePago.java]
+package com.hotelPremier.classes.Dominio.responsablePago;
+
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.Huesped;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+
+@Entity
+@Table(name="responsablepago")
+public class ResponsablePago {
+
+    @Id
+    @Column(name="id_responsablepago")
+    private Integer id_responsablePago; 
+
+
+    @OneToOne
+    @JoinColumn(name = "id_direccion" )
+    private Direccion direccion;
+
+
+    @OneToOne
+    @JoinColumns({
+            @JoinColumn(name = "tipodoc", referencedColumnName = "tipodocumento"),
+            @JoinColumn(name = "dni", referencedColumnName = "dni")
+    })
+    private Huesped huesped;
+    
+    @OneToMany(mappedBy = "responsablepago")
+    private List<Factura>  listafactura;
+
+}
+
+
+
+// [classes/Dominio/servicioExtra/ServicioExtra.java]
+package com.hotelPremier.classes.Dominio.servicioExtra;
+
+import com.hotelPremier.classes.Dominio.Estadia;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="servicio_extra")
+public class ServicioExtra {
+
+
+    @EmbeddedId
+    private ServicioExtraID servicioExtraID;
+
+
+    @ManyToOne
+    @JoinColumn(name = "id_estadia",insertable = false, updatable = false)
+    private Estadia estadia; // La Entidad completa
+
+    @Column(name="tipo_servicio")
+    private String tipo_servicio ;
+    @Column(name="precio")
+    private Float precio ;
+
+
+
+}
+
+
+
+// [classes/Dominio/servicioExtra/ServicioExtraID.java]
+package com.hotelPremier.classes.Dominio.servicioExtra;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+@Embeddable
+public class ServicioExtraID implements Serializable {
+    @Column(name="id_servicio")
+    private Integer id_servicio;
+    @Column(name="id_estadia")
+    private Integer id_estadia;
+
+    public void setId_estadia(Integer id_estadia) {
+        this.id_estadia = id_estadia;
+    }
+    public Integer getId_estadia() {
+        return id_estadia;
+    }
+    public void setId_servicio(Integer id_servicio) {
+        this.id_servicio = id_servicio;
+    }
+    public Integer getId_servicio() {
+        return id_servicio;
+    }
+
+    // equals y hashCode obligatorios
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ServicioExtraID)) return false;
+        ServicioExtraID that = (ServicioExtraID) o;
+        return Objects.equals(id_servicio, that.id_servicio) &&
+               Objects.equals(id_estadia, that.id_estadia);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id_servicio, id_estadia);
+    }
+} 
+
+
+
+// [classes/Dominio/Usuario.java]
+package com.hotelPremier.classes.Dominio;
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+
+@Entity
+@Table(name="usuario")
+public class Usuario {
+    @Id 
+    @Column(name="nombre")
+    String nombre;
+    @Column(name="contrasenia")
+    String contrasenia;
+}
+
+
+
+// [classes/DTO/DireccionDTO.java]
+package com.hotelPremier.classes.DTO;
+
+public class DireccionDTO {
+    private Integer id_direccionDTO;
+    private String calle;
+    private Integer numero;
+    private String localidad;
+    private String departamento;
+    private Integer piso;
+    private Integer codigoPostal;
+    private String provincia;
+    private String pais;
+
+    public void setID(Integer id){
+        this.id_direccionDTO=id;
+    }
+    public Integer getID(){
+        return this.id_direccionDTO;
+    }
+
+    /**
+     *
+     * @param calle
+     */
+    public void setCalle(String calle) {
+        this.calle = calle;
+    }
+
+    /**
+     *
+     * @param numero
+     */
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
+
+    /**
+     *
+     * @param localidad
+     */
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+
+    /**
+     *
+     * @param departamento
+     */
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
+    }
+
+    /**
+     *
+     * @param piso
+     */
+    public void setPiso(Integer piso) {
+        this.piso = piso;
+    }
+
+    /**
+     *
+     * @param codigoPostal
+     */
+    public void setCodigoPostal(Integer codigoPostal) {
+        this.codigoPostal = codigoPostal;
+    }
+
+    /**
+     *
+     * @param provincia
+     */
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+    /**
+     *
+     * @param pais
+     */
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
+    /**
+     *
+     * @return retorna nombre calle
+     */
+    public String getCalle() {
+        return this.calle;
+    }
+
+    /**
+     *
+     * @return retorna numero calle
+     */
+    public Integer getNumero() {
+        return this.numero;
+    }
+
+    /**
+     *
+     * @return retorna localidad
+     */
+    public String getLocalidad() {
+        return this.localidad;
+    }
+
+    /**
+     *
+     * @return retorna departamento
+     */
+    public String getDepartamento() {
+        return this.departamento;
+    }
+
+    /**
+     *
+     * @return retorna piso
+     */
+    public Integer getPiso() {
+        return this.piso;
+    }
+
+    /**
+     *
+     * @return retorna cp
+     */
+    public Integer getCodigoPostal() {
+        return this.codigoPostal;
+    }
+
+    /**
+     *
+     * @return  retorna provincia
+     */
+    public String getProvincia() {
+        return this.provincia;
+    }
+
+    /**
+     *
+     * @return retorna pais
+     */
+    public String getPais() {
+        return this.pais;
+    }    
+}
+
+
+
+// [classes/DTO/DobleEstandarDTO.java]
+package com.hotelPremier.classes.DTO;
+
+public class DobleEstandarDTO {
+    private Integer camasIndividuales;
+    private Integer camaDoble;
+}
+
+
+// [classes/DTO/DobleSuperiorDTO.java]
+package com.hotelPremier.classes.DTO;
+
+public class DobleSuperiorDTO {
+    private Integer camasIndividuales;
+    private Integer camaDoble;
+}
+
+
+
+// [classes/DTO/EstadiaDTO.java]
+package com.hotelPremier.classes.DTO;
+
+import java.util.Date;
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.habitacion.*;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+
+public class EstadiaDTO {
+
+    private Date checkin; 
+    private Date checkout;
+    private HabitacionDTO habitacion;
+    private ReservaDTO reserva;
+
+    //no estamos seguras!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    private DobleEstandarDTO dobleestandarDTO;
+    private DobleSuperiorDTO doblesuperiorDTO;
+    private IndividualEstandarDTO individualestandarDTO;
+    private SuiteDTO suiteDTO;
+    private SuperiorFamilyPlanDTO superiorfamilyplanDTO;
+
+
+    private List<HuespedDTO> listahuesped;
+    private List<FacturaDTO> listafactura;
+    private List<ServicioExtra> listaservicioextra;
+
+
+
+
+    public EstadiaDTO(){}
+    public EstadiaDTO(Date checkin, Date checkout, HabitacionDTO hab){
+        this.checkin=checkin;
+        this.checkout=checkout;
+        this.habitacion=hab;
+    }
+    public HabitacionDTO getHabitacion() {
+        return this.habitacion;
+    }
+    public void setHabitacion(HabitacionDTO habitacion) {
+        this.habitacion = habitacion;
+    }
+    /**
+     * set de checkin
+     * @param checkin
+     */
+    public void setCheckin(Date checkin) {
+        this.checkin = checkin;
+    }
+
+    /**
+     * set de checkout
+     * @param checkout
+     */
+    public void setCheckout(Date checkout) {
+        this.checkout = checkout;
+    }
+
+    /**
+     * get de checkin
+     * @return
+     */
+
+    public Date getCheckin(){
+        return this.checkin;
+    }
+
+    /**
+     * get de checkout
+     * @return
+     */
+    public Date getCheckout(){
+        return this.checkout;
+    }
+}
+
+
+
+// [classes/DTO/FacturaDTO.java]
+package com.hotelPremier.classes.DTO;
+
+import java.util.Date;
+
+import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
+
+public class FacturaDTO {
+
+    private Integer id;
+    private Date fecha;
+    private float total;
+    private String tipo;
+    private String estado;
+    private EstadiaDTO estadia;
+    private NotaDeCreditoDTO notacredito;
+    private PagoDTO pago;
+    private ResponsablePago responsablepago;
+
+    public FacturaDTO() {
+    }
+
+    public FacturaDTO(Integer id, Date fecha, float total, String tipo, String estado,
+                      EstadiaDTO estadia, NotaDeCreditoDTO notacredito, PagoDTO pago,
+                      ResponsablePago responsablepago) {
+        this.id = id;
+        this.fecha = fecha;
+        this.total = total;
+        this.tipo = tipo;
+        this.estado = estado;
+        this.estadia = estadia;
+        this.notacredito = notacredito;
+        this.pago = pago;
+        this.responsablepago = responsablepago;
+    }
+
+    public Integer getID() {
+        return id;
+    }
+
+    public void setIDd(Integer id) {
+        this.id = id;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public EstadiaDTO getEstadia() {
+        return estadia;
+    }
+
+    public void setEstadia(EstadiaDTO estadia) {
+        this.estadia = estadia;
+    }
+
+    public NotaDeCreditoDTO getNotacredito() {
+        return notacredito;
+    }
+
+    public void setNotacredito(NotaDeCreditoDTO notacredito) {
+        this.notacredito = notacredito;
+    }
+
+    public PagoDTO getPago() {
+        return pago;
+    }
+
+    public void setPago(PagoDTO pago) {
+        this.pago = pago;
+    }
+
+    public ResponsablePago getResponsablepago() {
+        return responsablepago;
+    }
+
+    public void setResponsablepago(ResponsablePago responsablepago) {
+        this.responsablepago = responsablepago;
+    }
+}
+
+
+
+// [classes/DTO/HabitacionDTO.java]
+package com.hotelPremier.classes.DTO;
+
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Reserva;
+
+import java.util.List;
+
+public class HabitacionDTO {
+
+    private Integer numero;
+    private String estado;
+    private float precio;
+    private Integer cantidadPersonas;
+    private String tipohabitacion;// cuando mapea con los DTO se le asigna un tipo.
+    private List<EstadiaDTO> listaestadias;
+    private List<ReservaDTO> listareservas;
+    
+
+
+    // GETTERS y SETTERS
+
+    public HabitacionDTO(){}
+    public  HabitacionDTO(Habitacion  habitacion, List<ReservaDTO> reservas, List<EstadiaDTO> estadias
+
+    ){
+        this.numero=habitacion.getNumero();
+        this.estado=habitacion.getEstado();
+        this.precio=habitacion.getPrecio();
+        this.cantidadPersonas=habitacion.getCantidadPersonas();
+        this.tipohabitacion=habitacion.getTipo();
+        this.listareservas = reservas;
+        this.listaestadias = estadias;
+
+    }
+
+    public void setTipohabitacion(String tipoHab) { this.tipohabitacion = tipoHab; }
+    public String getTipohabitacion() {return this.tipohabitacion; }
+
+    public Integer getNumero() { return this.numero; }
+    public void setNumero(Integer numero) { this.numero = numero; }
+
+    public String getEstado() { return this.estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public float getPrecio() { return this.precio; }
+    public void setPrecio(float precio) { this.precio = precio; }
+
+    public int getCantidadPersonas() { return this.cantidadPersonas; }
+    public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
+
+    //public void setListaestadias( List<EstadiaDTO> listaestadias) {this.listaestadias= listaestadias;}
+    public List<EstadiaDTO> getListaestadias() { return this.listaestadias; }
+    public void setListareservas(List<ReservaDTO> listares){
+        this.listareservas=listares;
+    }
+    public List<ReservaDTO> getListareservas() { return this.listareservas; }
+ 
+}
+
+
+
+// [classes/DTO/HabitacionEstadosDTO.java]
+package com.hotelPremier.classes.DTO;
+
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Reserva;
+
+public class HabitacionEstadosDTO {
+
+    private Habitacion habitacion;
+    private List<Reserva> reservas;
+    private List<Estadia> estadias;
+
+    public HabitacionEstadosDTO(Habitacion habitacion, 
+                                List<Reserva> reservas, 
+                                List<Estadia> estadias) {
+        this.habitacion = habitacion;
+        this.reservas = reservas;
+        this.estadias = estadias;
+    }
+
+    public Habitacion getHabitacion() {
+        return habitacion;
+    }
+    public void setHabitacion(Habitacion habitacion) {
+
+        this.habitacion = habitacion;
+    }
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+
+    }
+    public List<Estadia> getEstadias() {
+        return estadias;
+    }
+    public void setEstadias(List<Estadia> estadias) {
+        this.estadias = estadias;
+    }
+
+
+}
+
+
+
+// [classes/DTO/HuespedDTO.java]
+package com.hotelPremier.classes.DTO;
+
+import java.util.Date;
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.HuespedID;
+
+public class HuespedDTO {
+    private HuespedID huespedID;
+    private String apellido;
+    private String nombre;
+    //private String tipoDocumento;
+    //private String dni;
+    private Date fechaNacimiento;
+    private String telefono;
+    private String email;
+    private DireccionDTO direccion;
+    private String cuit; 
+    private String posicionIva;
+    private String ocupacion;
+    private String nacionalidad;
+    private List<EstadiaDTO> listaestadia;
+    //private List<Estadia> listaestadia;
+
+
+     
+    public HuespedDTO() {
+        this.huespedID = new HuespedID();
+    }
+    
+    
+    public HuespedID getHuespedID(){
+        return this.huespedID;
+    }
+    public void setHuespedID(HuespedID id){
+        this.huespedID.setDni(id.getDni());
+        this.huespedID.setTipoDocumento(id.getTipoDocumento());
+    }
+
+    public String getDni() {
+        return this.huespedID.getDni();
+    }
+
+    public String getTipoDocumento() {
+        return this.huespedID.getTipoDocumento();
+    }
+
+
+
+
+    /**
+     *
+     * @param nombre
+     */
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    /**
+     *
+     * @param apellido
+     */
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    
+
+
+    
+
+    /**
+     *
+     * @param fechaNacimiento
+     */
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    /**
+     *
+     * @param telefono
+     */
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    /**
+     *
+     * @param email
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     *
+     * @param direccion
+     */
+    public void setdireccion(DireccionDTO direccion) {
+        this.direccion = direccion;
+    }
+
+    /**
+     *
+     * @param cuit
+     */
+    public void setCuit(String cuit) {
+        this.cuit = cuit;
+    }
+
+    /**
+     *
+     * @param posicionIva
+     */
+    public void setPosicionIva(String posicionIva) {
+        this.posicionIva = posicionIva;
+    }
+
+    /**
+     *
+     * @param ocupacion
+     */
+    public void setOcupacion(String ocupacion) {
+        this.ocupacion = ocupacion;
+    }
+
+    /**
+     *
+     * @param nacionalidad
+     */
+    public void setNacionalidad(String nacionalidad) {
+        this.nacionalidad = nacionalidad;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Date getFechaNacimiento() {
+        return this.fechaNacimiento;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getApellido() {
+        return this.apellido;
+    }
+
+    
+
+    
+
+    /**
+     *
+     * @return
+     */
+    public String getCuit() {
+        return this.cuit;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getPosicionIva() {
+        return this.posicionIva;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getOcupacion() {
+        return this.ocupacion;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getNacionalidad() {
+        return this.nacionalidad;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getEmail() {
+        return this.email;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public DireccionDTO getdireccion() {
+        return this.direccion;
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    public String getNombre() {
+        return this.nombre;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getTelefono() {
+        return this.telefono;
+    }
+
+    /**
+     *
+     * @return
+     */
+
+    public void setListaEstadia(List<EstadiaDTO> lista){
+        this.listaestadia=lista;
+    }
+    public List<EstadiaDTO> getListaEstadia(){
+        return this.listaestadia;
+    }
+}
+
+
+
+// [classes/DTO/IndividualEstandarDTO.java]
+package com.hotelPremier.classes.DTO;
+
+public class IndividualEstandarDTO {
+    private Integer camasKingSize;
+}
+
+
+
+// [classes/DTO/medioDePago/ChequeDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+
+import java.util.Date;
+
+public class ChequeDTO {
+    private int numeroCheque;
+    private String banco;
+    private Date plazo;
+
+    /**
+     *
+     * @param numeroCheque
+     */
+    public void setNumeroCheque(int numeroCheque) {
+        this.numeroCheque = numeroCheque;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getNumeroCheque() {
+        return numeroCheque;
+    }
+
+    /**
+     *
+     * @param banco
+     */
+    public void setBanco(String banco) {
+        this.banco = banco;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getBanco() {
+        return banco;
+    }
+
+    /**
+     *
+     * @param plazo
+     */
+    public void setPlazo(Date plazo) {
+        this.plazo = plazo;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Date getPlazo() {
+        return plazo;
+    }    
+}
+
+
+
+// [classes/DTO/medioDePago/MedioDePagoDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+
+import java.util.Date;
+import java.util.List;
+import com.hotelPremier.classes.DTO.PagoDTO;
+
+public class MedioDePagoDTO {
+
+    private Integer id_mediodepago;
+    private int monto;
+    private Date fecha;
+    private List<PagoDTO> listapago;
+
+    // Constructor vacío
+    public MedioDePagoDTO() {
+    }
+
+    // Constructor con parámetros
+    public MedioDePagoDTO(Integer id_mediodepago, int monto, Date fecha, List<PagoDTO> listapago) {
+        this.id_mediodepago = id_mediodepago;
+        this.monto = monto;
+        this.fecha = fecha;
+        this.listapago = listapago;
+    }
+
+    // Getters y Setters
+
+    public Integer getId_mediodepago() {
+        return id_mediodepago;
+    }
+
+    public void setId_mediodepago(Integer id_mediodepago) {
+        this.id_mediodepago = id_mediodepago;
+    }
+
+    public int getMonto() {
+        return monto;
+    }
+
+    public void setMonto(int monto) {
+        this.monto = monto;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public List<PagoDTO> getListapago() {
+        return listapago;
+    }
+
+    public void setListapago(List<PagoDTO> listapago) {
+        this.listapago = listapago;
+    }
+
+}
+
+
+
+// [classes/DTO/medioDePago/MonedaExtranjeraDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+
+public class MonedaExtranjeraDTO {
+    private String tipoMoneda;
+
+    /**
+     *
+     * @param tipoMoneda
+     */
+    public void setTipoMoneda(String tipoMoneda) {
+        this.tipoMoneda = tipoMoneda;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getTipoMoneda() {
+        return tipoMoneda;
+    }
+}
+
+
+
+// [classes/DTO/medioDePago/MonedaLocalDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+
+public class MonedaLocalDTO {
+    private String tipoMoneda;
+
+    /**
+     *
+     * @param tipoMoneda
+     */
+    public void setTipoMoneda(String tipoMoneda) {
+
+        this.tipoMoneda = tipoMoneda;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getTipoMoneda() {
+        return tipoMoneda;
+    }
+}
+
+
+
+// [classes/DTO/medioDePago/TarjetaCreditoDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+
+public class TarjetaCreditoDTO {
+    private String banco;
+    private int cuotas;
+
+    /**
+     *
+     * @param banco
+     */
+    public void setBanco(String banco) {
+        this.banco = banco;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getBanco() {
+
+        return banco;
+
+    }
+
+    /**
+     *
+     * @param cuotas
+     */
+    public void setCuotas(int cuotas) {
+        this.cuotas = cuotas;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getCuotas() {
+        return cuotas;
+    }    
+}
+
+
+
+// [classes/DTO/medioDePago/TarjetaDebitoDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+
+public class TarjetaDebitoDTO {
+    private String banco;
+    private String dniTitular;
+
+    /**
+     *
+     * @return
+     */
+    public String getBanco() {
+
+        return banco;
+    }
+
+    /**
+     *
+     * @param banco
+     */
+    public void setBanco(String banco) {
+        this.banco = banco;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getDniTitular() {
+        return dniTitular;
+    }
+
+    /**
+     *
+     * @param dniTitular
+     */
+    public void setDniTitular(String dniTitular) {
+        this.dniTitular = dniTitular;
+    }
+}
+
+
+
+// [classes/DTO/NotaDeCreditoDTO.java]
+package com.hotelPremier.classes.DTO;
+
+import java.util.List;
+
+
+public class NotaDeCreditoDTO {
+    private Integer id_notadecreditoDTO;
+    private Float monto;
+    private List<FacturaDTO> listafacturaDTO;
+}
+
+
+
+// [classes/DTO/PagoDTO.java]
+package com.hotelPremier.classes.DTO;
+
+import java.util.Date;
+import java.util.List;
+
+import jakarta.persistence.*;
+
+public class PagoDTO {
+
+    private Integer id_pago;
+    private float monto;
+    private String medioPago;
+    private Date fecha;
+    private FacturaDTO factura;
+    // ===========================
+    // Constructores
+    // ===========================
+
+    public PagoDTO() {
+    }
+
+    public PagoDTO(Integer id_pago, float monto, String medioPago, Date fecha,
+                FacturaDTO factura) {
+        this.id_pago = id_pago;
+        this.monto = monto;
+        this.medioPago = medioPago;
+        this.fecha = fecha;
+        this.factura = factura;
+    }
+
+    // ===========================
+    // Getters y Setters
+    // ===========================
+
+    public Integer getId_pago() {
+        return id_pago;
+    }
+
+    public void setId_pago(Integer id_pago) {
+        this.id_pago = id_pago;
+    }
+
+    public float getMonto() {
+        return monto;
+    }
+
+    public void setMonto(float monto) {
+        this.monto = monto;
+    }
+
+    public String getMedioPago() {
+        return medioPago;
+    }
+
+    public void setMedioPago(String medioPago) {
+        this.medioPago = medioPago;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public FacturaDTO getFactura() {
+        return factura;
+    }
+
+    public void setFactura(FacturaDTO factura) {
+        this.factura = factura;
+    }
+
+
+}
+
+
+
+// [classes/DTO/PruebaDTO.java]
+package com.hotelPremier.classes.DTO;
+
+public class PruebaDTO {
+
+    private String cadena;
+
+    // Constructor vacío requerido por Jackson
+    public PruebaDTO() { }
+
+    // Constructor opcional para usarlo a mano
+    public PruebaDTO(String cadena){
+        this.cadena = cadena;
+    }
+
+    public void setCadena(String cadena){
+        this.cadena = cadena;
+    }
+
+    public String getCadena(){
+        return this.cadena;
+    }
+}
+
+
+
+// [classes/DTO/ReservaDTO.java]
+package com.hotelPremier.classes.DTO;
+import java.util.Date;
+
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+
+
+public class ReservaDTO {
+//ERNE
+   // private Integer id_reserva;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    private Date fecha_desde;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    private Date fecha_hasta;
+
+
+    private String estado;
+    private String nombre;
+    private String apellido;
+    private String telefono;
+    private Integer nro_habitacion;
+    //private String tipoHab;
+ 
+     /*//ERNE
+    public void setId_reserva(Integer id_reserva) { this.id_reserva = id_reserva; }
+    public Integer getId_reserva() { return this.id_reserva; }*/
+
+    public void setNro_habitacion(Integer  nro_hab) {
+
+        this.nro_habitacion = nro_hab;
+    }
+
+    public Integer getNro_habitacion() {
+        return this.nro_habitacion;
+    }
+
+    /* 
+    public void setTipoHab(String tipoHab) {
+        this.tipoHab = tipoHab;
+
+    }
+
+    public String getTipoHab() {
+        return tipoHab;
+    }
+    */
+
+    /**
+     *
+     * @param telefono
+     */
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getTelefono() {
+        return telefono;
+    }
+
+    /**
+     *
+     * @param nombre
+     */
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getNombre() {
+        return nombre;
+    }
+
+    /**
+     *
+     * @param apellido
+     */
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getApellido() {
+        return apellido;
+    }
+
+    /**
+     *
+     * @param estado
+     */
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getEstado() {
+        return estado;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Date getFecha_desde() {
+        return fecha_desde;
+    }
+
+    /**
+     *
+     * @param fechaDesde
+     */
+    public void setFecha_desde(Date fechaDesde) {
+        this.fecha_desde = fechaDesde;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Date getFecha_hasta() {
+        return fecha_hasta;
+    }
+
+    /**
+     *
+     * @param fechaHasta
+     */
+    public void setFecha_hasta(Date fechaHasta) {
+        this.fecha_hasta = fechaHasta;
+    }
+}
+
+
+
+// [classes/DTO/SuiteDTO.java]
+package com.hotelPremier.classes.DTO;
+
+public class SuiteDTO {
+    private boolean camasKingSize;
+}
+
+
+
+// [classes/DTO/SuperiorFamilyPlanDTO.java]
+package com.hotelPremier.classes.DTO;
+
+public class SuperiorFamilyPlanDTO {
+    private boolean camasIndividuales;
+    private boolean camaDoble;
+    
+}
+
+
+
+// [classes/DTO/UsuarioDTO.java]
+package com.hotelPremier.classes.DTO;
+
+public class UsuarioDTO {
+    String nombre;
+    String contrasena;
+
+        
+    public void setNombre(String unNombre){
+        this.nombre= unNombre;
+    }
+    public void setContrasena(String unaContrasena){
+        this.contrasena= unaContrasena;
+    }
+
+    public String getNombre(){
+        return this.nombre;
+    }
+    public String getContrasena(){
+        return this.contrasena;
+    }
+}
+
+
+
+// [classes/excepciones/HuespedNoEncontradoException.java]
+package com.hotelPremier.classes.excepciones;
+
+/**
+ * Excepcion personalizada que indica que no se encontro ningun huesped
+ * que coincida con los criterios de busqueda.
+ */
+public class HuespedNoEncontradoException extends Exception {
+    public HuespedNoEncontradoException(String mensaje) {
+        super(mensaje);
+    }
+}
+
+
+
+
+// [classes/excepciones/UsuarioNoExistenteException.java]
+package com.hotelPremier.classes.excepciones;
+
+/**
+ * Excepcion  para cuando el usuario ingresado no existe
+ * en el sistema al intentar autenticarse.
+ */
+public class UsuarioNoExistenteException extends Exception {
+    public UsuarioNoExistenteException(String mensaje) {
+        super(mensaje);
+    }
+}
+
+
+
+// [classes/FuncionesUtiles.java]
+package com.hotelPremier.classes;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.hotelPremier.classes.DTO.DireccionDTO;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.Reserva;
+
+//import com.hotelpremier.classes.estadia.EstadiaDTO;
+
+public class FuncionesUtiles {
+
+
+    /**
+     * convierte el string a Date
+     * @param fechaString
+     * @return
+     */
+    public Date convertirStringADate(String fechaString) {
+        
+        // 1. Define el formato EXACTO del String de entrada. 
+        // ¡Importante usar 'MM' para mes y 'yyyy' para año!
+        String formatoEntrada = "dd/MM/yyyy";
+        
+        SimpleDateFormat formateador = new SimpleDateFormat(formatoEntrada);
+        
+        // Hace que la validación sea estricta (no acepta fechas como 32/01/2025)
+        formateador.setLenient(false); 
+        
+        try {
+            // 2. Utiliza el método parse() para realizar la conversión.
+            Date fechaConvertida = formateador.parse(fechaString);
+            return fechaConvertida;
+            
+        } catch (ParseException e) {
+            // 3. Maneja el error si la cadena no coincide con el formato.
+            System.err.println("Error: Formato de fecha inválido. Se esperaba: " + formatoEntrada);
+            return null; // Devuelve null si la conversión falla.
+        }
+    }
+
+
+    public static void clearConsola() {
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+    }
+
+    /**
+     * valida q solo sea un numero lo q ingresa en string
+     * @param valor
+     * @return
+     */
+    public static boolean esUnSoloNumero(String valor) {
+        return valor.matches("[0-9]"); // solo un dígito entre 0 y 9
+    }
+
+    /**
+     * convierte el tipo DATE a string
+     * @param fechaDate
+     * @return
+     */
+    public static String convertirDateAString(Date fechaDate) {
+        // 1. Define el formato de salida deseado.
+        String formatoSalida = "dd/MM/yyyy"; 
+        
+        // 2. Crea el formateador.
+        SimpleDateFormat formateador = new SimpleDateFormat(formatoSalida);
+        
+        // 3. Usa el método format() para realizar la conversión.
+        return formateador.format(fechaDate);
+    }
+
+    /**
+     * valida q solo haya letras
+     * @param palabra
+     * @return
+     */
+    public static boolean contieneSoloLetras(String palabra){
+        boolean soloLetras=true;
+        if(palabra==null || palabra.isEmpty()){
+            soloLetras=false;
+        }
+        String regex = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$";
+
+        return palabra.matches(regex);
+    }
+
+    /**
+     * solo numeros
+     * @param palabra
+     * @return
+     */
+    public static boolean contieneSoloNumeros(String palabra){
+        boolean soloLetras=true;
+        if(palabra==null || palabra.isEmpty()){
+            soloLetras=false;
+        }
+        String regex = "^\\d+$";
+
+        return palabra.matches(regex);
+    }
+
+    /**
+     * valida q sea mail valido
+     * @param email
+     * @return
+     */
+    public static boolean emailValido(String email){
+        boolean soloLetras=true;
+        if(email==null){
+            soloLetras=false;
+        }
+        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+
+        return email.matches(regex);
+    }
+
+    public static boolean tipoDocumentoValido(String tipoDoc){
+        boolean tipoDocValido=false;
+
+        if(tipoDoc.equals("DNI") || tipoDoc.equals("LE") || tipoDoc.equals("LC") || tipoDoc.equals("PASAPORTE")){
+            tipoDocValido=true;
+        }
+        return tipoDocValido;
+    }
+/*
+    public  List<HuespedDTO> mapToDTOList(List<Huesped> listaHuespedes) {
+
+        if (listaHuespedes == null || listaHuespedes.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // Usa Java Streams para un mapeo conciso y funcional:
+        return listaHuespedes.stream()
+                // Por cada 'entidad' en la lista, llama a 'mapToDTO'
+                .map(this::mapToDTO)
+                .collect(Collectors.toList()); // Recolecta en la lista final
+    }
+
+
+     /** Mapea una única Entidad Reserva a un único ReservaDTO.
+     */
+    /*public   HuespedDTO mapToDTO(Huesped huesped) {
+        HuespedDTO huespedDTO = new HuespedDTO();
+        DireccionDTO direccionDTO = new DireccionDTO();
+
+        huespedDTO.setNombre(huesped.getNombre());
+        huespedDTO.setApellido(huesped.getApellido());
+        huespedDTO.setDni(huesped.getDni());
+        huespedDTO.setTipoDocumento(huesped.getTipoDocumento());
+        huespedDTO.setHuespedID(huesped.getHuespedID());
+        huespedDTO.setFechaNacimiento(huesped.getFechaNacimiento());
+        huespedDTO.setTelefono(huesped.getTelefono());
+        huespedDTO.setEmail(huesped.getEmail());
+        
+        direccionDTO.setID(huesped.getDireccion().getID());
+        direccionDTO.setCalle(huesped.getDireccion().getCalle());
+        direccionDTO.setNumero(huesped.getDireccion().getNumero());
+        direccionDTO.setLocalidad(huesped.getDireccion().getLocalidad());
+        direccionDTO.setDepartamento(huesped.getDireccion().getDepartamento());
+        direccionDTO.setPiso(huesped.getDireccion().getPiso());
+        direccionDTO.setCodigoPostal(huesped.getDireccion().getCodigoPostal());
+        direccionDTO.setProvincia(huesped.getDireccion().getProvincia());
+        direccionDTO.setPais(huesped.getDireccion().getPais());
+        huespedDTO.setDireccionHuesped(direccionDTO);
+
+        huespedDTO.setCuit(huesped.getCuit());
+        huespedDTO.setPosicionIva(huesped.getPosicionIva());
+        huespedDTO.setOcupacion(huesped.getOcupacion());
+        huespedDTO.setNacionalidad(huesped.getNacionalidad());
+
+        //recibo un huesped q tiene una lista de estadias, obtengo la lista y hago un for por las estadias
+        //defino una list de estadias
+
+        List<Estadia> listaEstadias = new ArrayList<>();
+        listaEstadias=huesped.getListaEstadia();
+
+        List<EstadiaDTO> listaEstadiaHuespedDTO = new ArrayList<>();
+
+       //ahora recorro cada estadia, obtengo los datos y lo paso listaDTO
+        for(Estadia estadialist : listaEstadias){
+            EstadiaDTO estadiaDTO = new EstadiaDTO();
+            estadiaDTO.setCheckin(estadialist.getCheckin());
+            estadiaDTO.setCheckout(estadialist.getCheckout());
+
+            listaEstadiaHuespedDTO.add(estadiaDTO);
+
+        }
+        huespedDTO.setListaEstadia(listaEstadiaHuespedDTO);
+        return huespedDTO;
+    }
+
+
+
+*/
+
+
+
+
+
+
+
+
+}
+
+
+
+// [classes/mapper/ClassMapper.java]
+package com.hotelPremier.classes.mapper;
+
+
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.Reserva;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.List;
+
+@Mapper (componentModel = "spring")
+public interface ClassMapper {
+
+
+          Estadia toEntity(EstadiaDTO estadiaDTO);
+
+           @Mapping(target = "tipohabitacion", expression = "java(h.getTipo())")
+           HabitacionDTO toDTOHab(Habitacion h);
+           List<HabitacionDTO> toDTOsHabitacion(List<Habitacion> habitaciones);
+           //Habitacion toEntityHabitacion(HabitacionDTO dto);
+
+//         List<Habitacion> toEntityHabitacion(List<HabitacionDTO> dtos);
+
+        List<EstadiaDTO> toDTOsEstadia(List<Estadia> estadias);
+
+        @Mapping(source = "huespedID", target = "huespedID")
+        HuespedDTO toDTO(Huesped huesped);
+
+
+        @Mapping(source = "huespedID", target = "huespedID")
+        Huesped toEntity(HuespedDTO huespedDto);
+
+        List<HuespedDTO> toDtos(List<Huesped> huesped);
+
+
+        List<ReservaDTO> toDtosReserva( List<Reserva> reserva );
+
+    
+         ReservaDTO toDTOReserva(Reserva reserva);
+
+    
+        Reserva toEntityReserva(ReservaDTO dto);
+        
+        List<Reserva> toEntityReservaLista(List<ReservaDTO> lista);
+
+
+        //ESTADIA
+        //List<EstadiaDTO> toDtoEstadia(List<Estadia> listaestadia);
+        List<Estadia> toEntityEstadia(List<EstadiaDTO> listaestadiaDTO);
+
+
+}
+
+
+
+// [classes/Validador.java]
+package com.hotelPremier.classes;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.function.Predicate;
+
+public class Validador {
+
+    /**
+     * fecha valida
+     */
+    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static Predicate<String> esFechaValida = fecha -> {
+        try {
+            LocalDate.parse(fecha, formatter);
+            return true;  // fecha válida
+        } catch (DateTimeParseException e) {
+            return false; // fecha inválida
+        }
+    };
+
+    /**
+     *predicado para chequear strings
+     */
+    public static Predicate<String> esStringValido =
+            valor -> valor.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
+    /**
+     * verifica email
+     */
+    public static Predicate<String> esMailValido = mail -> {
+        if (mail == null || mail.isEmpty()) {
+            return true; // Consideramos null o vacío como válido
+        }
+        return mail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
+    };
+    /**
+     * calle valida es q no tenga signos q no ssean letras o numeros
+     */
+    public static Predicate<String> esCalleValida = calle -> {
+        if (calle == null || calle.isEmpty()) {
+            return true; // null o vacío también válido
+        }
+        return calle.matches("^[a-zA-Z0-9 ]+$");
+    };
+    /**
+     * chequea solo numeros
+     */
+    public static Predicate<String> esNumeroValido =
+            valor -> valor != null && valor.matches("\\d+");
+
+    /**
+     *
+     * @param valor : es el numero de cuit
+     * @return : retorna true si es valido o no seun como se valida por afip
+     */
+    public static final Predicate<String> esCuitValido = valor -> {
+
+        if (valor == null || valor.isEmpty()) return true;
+
+        // Quitar guiones
+        String cuit = valor.replaceAll("-", "");
+
+        // Validar formato numérico y longitud
+        if (!cuit.matches("\\d{11}")) return false;
+
+        int[] pesos = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
+        int suma = 0;
+
+        for (int i = 0; i < 10; i++) {
+            suma += Character.getNumericValue(cuit.charAt(i)) * pesos[i];
+        }
+
+        int resto = suma % 11;
+        int verificador = 11 - resto;
+        if (verificador == 11) verificador = 0;
+        else if (verificador == 10) verificador = 9;
+
+        int ultimo = Character.getNumericValue(cuit.charAt(10));
+        return verificador == ultimo;
+    };
+
+
+
+
+}
+
+
+
+// [controller/EstadiaController.java]
+package com.hotelPremier.controller;
+
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.repository.EstadiaRepository;
+import com.hotelPremier.service.EstadiaService;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@Controller
+public class EstadiaController {
+
+    @Autowired
+    private EstadiaService estadiaService; 
+
+    @PostMapping("/estadias")
+    public ResponseEntity<String> guardarEstadia(@RequestBody EstadiaDTO estadiaDTO) {
+        estadiaService.guardarEstadia(estadiaDTO);
+        return ResponseEntity.ok("Estadía guardada correctamente");
+    }
+
+    @PostMapping("/listaEstadias")
+    public ResponseEntity<String> guardarListaEstadias(
+        @RequestBody List<EstadiaDTO> listaestadiaDTO
+    ){
+        estadiaService.guardarListaEstadia(listaestadiaDTO);
+        return ResponseEntity.ok("Estadía guardada correctamente");
+    }
+
+}
+
+
+
+// [controller/HabitacionController.java]
+package com.hotelPremier.controller;
+
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.service.HabitacionService;
+
+import java.sql.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HabitacionController {
+    @Autowired
+    ClassMapper classMapper;
+
+    @Autowired
+    HabitacionService habitacionService;
+
+    @GetMapping("/habitaciones")
+    public ResponseEntity<List<HabitacionDTO>> getHabitaciones(
+        @RequestParam String tipo
+    ){
+        List<HabitacionDTO> listaHabitaciones = habitacionService.getHabitaciones(tipo);
+        return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
+    }
+
+    @GetMapping("/numHabitacion")
+    public HabitacionDTO getHabitacion(
+        @RequestParam Integer numero
+    ){
+        HabitacionDTO habitacionDTO = habitacionService.getHabitacion(numero);
+        return (habitacionDTO);
+    }
+
+    @GetMapping("/listaHabitaciones") 
+    public ResponseEntity<List<HabitacionDTO>> buscarListaHabitaciones(
+        @RequestParam String tipo,
+        @RequestParam Date fechaDesde,
+        @RequestParam Date fechaHasta
+    ){
+        
+        List<HabitacionDTO> listaHabitaciones = habitacionService.buscarListaHabitaciones(tipo,fechaDesde,fechaHasta);
+        return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
+    }
+
+    @GetMapping("/detalleHabitaciones")
+    public ResponseEntity<List<HabitacionDTO>> obtenerHabitacionesConDetalle(
+        @RequestParam String tipo,
+        @RequestParam Date fechaDesde,
+        @RequestParam Date fechaHasta
+    ){
+        List<HabitacionDTO> listaHabitaciones = habitacionService.obtenerHabitacionesConDetalle(tipo,fechaDesde,fechaHasta);
+        return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/{nro}/huespedes")
+    public List<Huesped> getHuespedesDeHabitacion(@PathVariable Integer nro) {
+        return habitacionService.obtenerHuespedesPorHabitacion(nro);
+    }
+
+}
+
+
+
+// [controller/HuespedController.java]
+package com.hotelPremier.controller;
+import java.util.List;
+import java.util.Set;
+
+
+import com.hotelPremier.service.HuespedServiceImpl;
+
+import org.apache.catalina.connector.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.Dominio.Huesped;
+
+@RestController
+
+public class HuespedController {
+    
+    @Autowired 
+    private HuespedServiceImpl huespedService;
+
+    /*
+        los end path van en plural.
+        no se pone dar baja/alta, se pone solo el huespedes y se va cambiando el get/post/ etc.
+    */
+    @GetMapping("/huespedes")
+    public ResponseEntity<List<HuespedDTO>> getHuespedes(
+            @RequestParam(required = false) String dni,
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String apellido,
+            @RequestParam(required = false) String tipoDocumento
+    ) {
+        dni = (dni != null && dni.isEmpty()) ? null : dni;
+        nombre = (nombre != null && nombre.isEmpty()) ? null : nombre;
+        apellido = (apellido != null && apellido.isEmpty()) ? null : apellido;
+        tipoDocumento = (tipoDocumento != null && tipoDocumento.isEmpty()) ? null : tipoDocumento;
+
+        return ResponseEntity.ok(
+            huespedService.buscarHuespedes(dni, nombre, apellido, tipoDocumento)
+        );
+    }
+    
+    @PostMapping("/huespedes")
+    public ResponseEntity<HuespedDTO> addHuesped(@RequestBody HuespedDTO huesped) {
+        HuespedDTO addedHuesped = huespedService.addHuesped(huesped);
+        return new ResponseEntity<>(addedHuesped, HttpStatus.OK);
+    }
+    @DeleteMapping("/huespedes")
+    public ResponseEntity<HuespedDTO> deleteHuesped(@PathVariable String dni) {
+        huespedService.deleteHuesped(dni);
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); 
+        /*
+        se puede devolver el usuario que eliminamos. */
+
+    }
+
+}
+
+
+
+// [controller/PagoController.java]
+package com.hotelPremier.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.hotelPremier.classes.DTO.PagoDTO;
+import com.hotelPremier.service.PagoService;
+
+@RestController
+@RequestMapping("/pagos")
+public class PagoController {
+
+    @Autowired
+    private PagoService pagoService;
+
+    @PostMapping
+    public ResponseEntity<?> ingresarPago(@RequestBody PagoDTO pagoDTO) {
+        try {
+            pagoService.ingresarPago(pagoDTO);
+            return ResponseEntity.ok("Pago registrado correctamente.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+}
+
+
+
+// [controller/ReservaController.java]
+package com.hotelPremier.controller;
+
+import com.hotelPremier.service.ReservaService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.mapper.ClassMapper;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+//@CrossOrigin(origins = "http://localhost:3000")
+public class ReservaController {
+
+    @Autowired
+    ClassMapper classMapper;
+
+    @Autowired
+    ReservaService reservaService;
+
+
+    /**
+     * Endpoint para obtener la lista de reservas.
+     * Mapea a: GET http://localhost:8080/api/reservas?apellido=    
+     */
+
+    @GetMapping ("/reservas")
+    public ResponseEntity<List<ReservaDTO>> getReservas(        
+        @RequestParam Date fechaDesde,
+        @RequestParam Date fechaHasta
+    ){
+        List<ReservaDTO> listaReservas = reservaService.getReservas(fechaDesde,fechaHasta);
+        return new ResponseEntity<>(listaReservas, HttpStatus.OK);
+    }
+
+    @PostMapping("/reservas")
+    public ResponseEntity<String> crearReserva(@RequestBody List<ReservaDTO> listareservaDTO) {
+
+        List<ReservaDTO> listaReservasguardadas = reservaService.crearReserva(listareservaDTO);
+        return ResponseEntity.ok("Reservas registradas con exito");
+    }
+
+    /**
+     * recibe la fecha desde, hasta , el listado de habitacionDTO
+     * @param fechaDesde
+     * @param fechaHasta
+     * @param habitacionDTOS
+     * @return
+     */
+
+    @PostMapping("/listados")
+    public ResponseEntity<List<Map<String, Object>>> generarListado(
+            @RequestParam LocalDate fechaDesde,
+            @RequestParam LocalDate fechaHasta,
+            @RequestBody List<HabitacionDTO> habitacionDTOS) {
+
+        List<Map<String, Object>> listado = reservaService.generarListadoReservar(fechaDesde, fechaHasta, habitacionDTOS);
+
+        return ResponseEntity.ok(listado);
+    }
+
+
+
+
+
+
+
+}
+
+
+
+
+// [controller/UsuarioController.java]
+package com.hotelPremier.controller;
+
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class UsuarioController {
+    
+}
+
+
+
+// [HotelPremierApplication.java]
+package com.hotelPremier;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class HotelPremierApplication {
+    public static void main(String[] args) { 
+        SpringApplication.run(HotelPremierApplication.class, args); 
+    } 
+}
+
+
+
+// [repository/DireccionRepository.java]
+package com.hotelPremier.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.hotelPremier.classes.Dominio.Direccion;
+
+@Repository
+public interface DireccionRepository extends JpaRepository<Direccion,Integer> {
+
+    @Override
+    Direccion save(Direccion direccion);
+}
+
+
+
+// [repository/EstadiaRepository.java]
+package com.hotelPremier.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.hotelPremier.classes.Dominio.Estadia;
+
+
+@Repository
+public interface EstadiaRepository extends JpaRepository<Estadia,Integer> {
+
+
+
+    
+}
+
+
+
+// [repository/FacturaRepository.java]
+package com.hotelPremier.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.hotelPremier.classes.Dominio.Factura;
+
+
+@Repository
+public interface FacturaRepository extends JpaRepository<Factura,Integer> {
+
+
+
+    
+}
+
+
+
+// [repository/HabitacionRepository.java]
+package com.hotelPremier.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
+
+@Repository
+public interface HabitacionRepository extends JpaRepository<Habitacion,Integer> {
+
+    List<Habitacion> findAll();
+   // List<Habitacion> findByTipo(String tipo);
+    
+   @Query("""
+        SELECT h 
+        FROM Habitacion h 
+        WHERE h.tipohabitacion = :tipoHabitacion             
+    """) 
+   List<Habitacion> buscarPorTipoHabitacion(@Param("tipoHabitacion")    String tipoHabitacion);
+
+
+   @Query(""" 
+        SELECT h, r, e
+        FROM Habitacion h
+            LEFT JOIN Reserva r 
+                WITH r.fecha_desde <= :fechaHasta 
+                AND r.fecha_hasta >= :fechaDesde
+            LEFT JOIN Estadia e 
+                WITH e.checkin <= :fechaHasta 
+                AND e.checkout >= :fechaDesde
+        WHERE h.tipohabitacion = :tipoHabitacion
+    """)
+    List<Habitacion> buscarListaHabitaciones(
+        @Param("tipoHabitacion") String tipoHabitacion,
+        @Param("fechaDesde") Date fechaDesde,
+        @Param("fechaHasta") Date fechaHasta
+    );
+
+    Habitacion findByNumero(Integer numero);
+
+}
+
+
+
+// [repository/HuespedRepositoryDAO.java]
+package com.hotelPremier.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.HuespedID;
+
+@Repository
+public interface HuespedRepositoryDAO extends JpaRepository<Huesped,HuespedID>{
+
+    @Override
+    List<Huesped> findAll();
+    List<Huesped> findByHuespedID_Dni(String dni);
+    //HuespedDTO addHuesped(HuespedDTO huespedDTO);  
+    Huesped save(Huesped huesped);
+    //void save(Direccion direccion); ------> VA EN REPOSITORY DIRECCION.
+
+    /* QUERY PARA BUSQUEDA POR: EMPIEZA CON
+    
+            @Query("""
+            SELECT h
+            FROM Huesped h
+            WHERE (:dni IS NULL OR h.huespedID.dni = :dni)
+                AND (:nombre IS NULL OR CAST(h.nombre AS string) ILIKE CONCAT(:nombre, '%'))
+                AND (:apellido IS NULL OR CAST(h.apellido AS string) ILIKE CONCAT(:apellido, '%'))
+                AND (:tipoDocumento IS NULL OR h.huespedID.tipoDocumento = :tipoDocumento)
+            """)
+    */
+    @Query("""
+    SELECT h 
+    FROM Huesped h
+    WHERE (:dni IS NULL OR h.huespedID.dni = :dni)
+        AND   (:nombre IS NULL OR h.nombre ILIKE :nombre)
+        AND   (:apellido IS NULL OR h.apellido ILIKE :apellido)
+        AND   (:tipoDocumento IS NULL OR h.huespedID.tipoDocumento = :tipoDocumento)
+    """)
+    List<Huesped> buscarHuespedes(
+        @Param("dni") String dni, 
+        @Param("nombre") String nombre, 
+        @Param("apellido") String apellido, 
+        @Param("tipoDocumento")String tipoDocumento 
+    );
+}
+
+
+
+// [repository/NotaDeCreditoRepository.java]
+package com.hotelPremier.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.hotelPremier.classes.Dominio.NotaDeCredito;
+
+
+@Repository
+public interface NotaDeCreditoRepository extends JpaRepository<NotaDeCredito,Integer> {
+
+
+    
+}
+
+
+
+// [repository/PagoRepository.java]
+package com.hotelPremier.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.hotelPremier.classes.Dominio.Pago;
+
+@Repository
+public interface PagoRepository extends JpaRepository<Pago, Integer> {
+}
+
+
+
+// [repository/ReservaRepository.java]
+package com.hotelPremier.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.Date;
+import java.util.List;
+import org.springframework.stereotype.Repository;
+
+import com.hotelPremier.classes.Dominio.Reserva;
+
+
+@Repository
+public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
+
+
+    List<Reserva> findByApellidoContainingIgnoreCase(String apellido);
+
+    @Query("""
+        SELECT r 
+        FROM Reserva r 
+        WHERE  r.fecha_desde <= :fechahasta
+            AND r.fecha_hasta >= :fechadesde
+    """)
+    List<Reserva>  buscarReservas(@Param("fechadesde") Date fechaDesde, @Param("fechahasta") Date fechaHasta);
+
+
+    @Query("""
+    SELECT r.id_reserva
+    FROM Reserva r
+     WHERE r.fecha_desde <= :fechahasta
+      AND r.fecha_hasta >= :fechadesde
+      AND r.nro_habitacion.numero = :nro_hab
+""")
+    Integer encontrarIdReserva(@Param("fechadesde") Date fechaDesde, @Param("fechahasta") Date fechaHasta,@Param("nro_hab") Integer nroHab);
+   // void delete(Reserva r);
+
+    //Reserva findById_reserva(Integer id_reserva);
+
+}
+
+
+
+// [repository/UsuarioRepository.java]
+package com.hotelPremier.repository;
+
+import java.util.*;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import com.hotelPremier.classes.Dominio.Usuario;
+
+@Repository
+public interface UsuarioRepository extends CrudRepository<Usuario,String>{
+    @Override
+    List<Usuario> findAll();
+    List<Usuario> findBynombre(String nombre);
+   // List<Usuario> buscarUsuario(UsuarioDTO usuarioDTO);
+    //Set<Usuario> usuarioEncontrado();
+}
+
+
+
+// [service/EstadiaService.java]
+
+package com.hotelPremier.service;
+
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hotelPremier.repository.EstadiaRepository;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.classes.mapper.ClassMapper;
+
+@Service
+public class EstadiaService {
+
+    @Autowired
+    private EstadiaRepository estadiaRepository;
+
+    @Autowired
+    private ClassMapper mapper; 
+
+    @Autowired
+    private ReservaService reservaService;
+
+
+    public void guardarEstadia(EstadiaDTO estadiaDTO){
+        Estadia estadia = new Estadia();
+        estadia= mapper.toEntity(estadiaDTO);
+        estadiaRepository.save(estadia);
+
+        /*
+        1. busco la habitacion por el numero (estadiaDTO.getHabitacion()) y me traigo su lista de reservas.
+        2. si esta vacia no hago nada.
+        2. si interferi con una reserva, la elimino.
+         */
+        //verificar is la estadia no rompe una reserva. Si la rompe, la elimino.
+
+        Date estadiaFechaDesde = estadiaDTO.getCheckin();
+        Date estadiaFechaHasta = estadiaDTO.getCheckout();
+
+
+        List<Reserva> listareservahabitacion = new ArrayList();
+        HabitacionDTO habitacionDTO = new HabitacionDTO();
+
+        habitacionDTO = estadiaDTO.getHabitacion(); //sacamos la habitacion que usa la estadia
+        listareservahabitacion = mapper.toEntityReservaLista( habitacionDTO.getListareservas() ); //sacamos la lista de reservas de esa habitacion
+
+        System.out.println("Entramos a elimnar reserva 0");
+        System.out.println(listareservahabitacion);
+        if( !(listareservahabitacion==null) ){//si existe alguna reserva en la habitacion
+
+            System.out.println("Entramos a elimnar reserva 1");
+            for(Reserva r : listareservahabitacion){//recorro todas las reservas de la habitacion
+
+                System.out.println("Entramos a elimnar reserva 2");
+                if( reservaService.existeReserva(estadiaFechaDesde,estadiaFechaHasta) ){//si la reserva coincide con la fecha de la nueva estadia
+                    System.out.println("Entramos a elimnar reserva 3");
+                    System.out.println("nombre "+ r.getNombre());
+                    System.out.println("apellido"+r.getApellido());
+                    System.out.println("fechades"+r.getFecha_desde());
+                    System.out.println("fechaHasta"+r.getFecha_hasta());
+                    System.out.println("ID "+r.getId_reserva());
+                    System.out.println("Habitacion "+habitacionDTO.getNumero());
+
+                    Integer id = reservaService.buscarId(r,habitacionDTO);
+                    System.out.println("ID ENCONTRADO"+id);
+
+                    reservaService.deleteReserva(reservaService.buscarId(r,habitacionDTO));
+
+
+
+                    System.out.println("APELLIDO ELIMINADOOOOO"+r.getId_reserva());
+                }
+            }
+
+        }
+
+
+        //if(reservaService.existeReserva(estadiaDTO.getHabitacion()))
+        //reservaService.eliminarReserva(estadiaDTO.getNumeroHabitacion());
+
+    }
+
+    public void guardarListaEstadia(List<EstadiaDTO> listaestadiaDTO){
+        List<Estadia> listaestadia = new ArrayList<>();
+        listaestadia = mapper.toEntityEstadia(listaestadiaDTO);
+
+        //por cada estadia, la voy cargando en la bdd.
+        //tambien actualizo cada reserva que haya superpuesto.
+        for(Estadia e : listaestadia){
+            
+            estadiaRepository.save(e);//me guardo una estadia en la bdd
+        }
+    }
+    //@Autowired
+    //private ClassMapper
+
+
+    /*public List<EstadiaDTO> getListaEstadias(){
+        
+        return 
+    }*/
+}
+
+
+
+
+
+
+// [service/HabitacionService.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.repository.HabitacionRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.hotelPremier.classes.mapper.ClassMapper ;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class HabitacionService {
+
+    @Autowired
+    private HabitacionRepository habitacionRepository;
+
+    @Autowired
+    private ClassMapper mapper;
+
+    //llama al repo para la bdd y devuelve el dto
+    public List<HabitacionDTO> getHabitaciones(String tipoHabitacion) {
+        return mapper.toDTOsHabitacion( habitacionRepository.buscarPorTipoHabitacion(tipoHabitacion) );
+    }
+
+    public HabitacionDTO getHabitacion(Integer numero){
+        return mapper.toDTOHab( habitacionRepository.findByNumero(numero) );
+    }
+
+    public List<HabitacionDTO> buscarListaHabitaciones(String tipo, Date fechaDesde, Date fechaHasta){ 
+        return mapper.toDTOsHabitacion( habitacionRepository.buscarListaHabitaciones(tipo,fechaDesde,fechaHasta) );
+    }
+
+
+    public List<HabitacionDTO> obtenerHabitacionesConDetalle(String tipo, Date fechaDesde, Date fechaHasta) {
+//trae una list de habitaciones de la bdd
+        List<Habitacion> habitaciones = habitacionRepository.buscarPorTipoHabitacion(tipo);
+        List<HabitacionDTO> resultado = new ArrayList<>();
+
+//por cada hab de la q trajo de la bdd
+        for (Habitacion h : habitaciones) {
+
+            // Hibernate carga las listas automáticamente con LAZY o EAGER
+            //agarra las listas de cada hab
+            List<Reserva> reservas = h.getListareservas()
+                .stream()//convertimos la lista a stream, para procesarlos mejor
+                .filter(r ->
+                    r.getFecha_desde().compareTo(fechaHasta) <= 0 &&
+                    r.getFecha_hasta().compareTo(fechaDesde) >= 0
+                )
+                //.map(reserva -> mapper.toDTOReserva(reserva))
+                .toList();
+
+            // ESTADÍAS FILTRADAS
+            //List<E<stadia> estadias = h.getListaEstadia();
+            List<Estadia> estadias = h.getListaEstadia()
+                .stream()
+                .map(e -> (Estadia) e) 
+                .filter(e ->
+                    e.getCheckin().compareTo(fechaHasta) <= 0 &&
+                    e.getCheckout().compareTo(fechaDesde) >= 0
+                )
+                //.map(estadia -> mapper.toDTOEstadia(estadia))
+                .toList();
+
+
+            List<ReservaDTO> reservasDTO = new ArrayList<>();
+            reservasDTO=mapper.toDtosReserva(reservas);
+
+            List<EstadiaDTO> estadiasDTO = new ArrayList<>();
+            estadiasDTO=mapper.toDTOsEstadia(estadias);
+            //List<Reserva> reservas = reservaService.getReservas(desdeFecha,hastaFecha);
+
+            resultado.add(new HabitacionDTO(h, reservasDTO, estadiasDTO));
+        }
+
+        return resultado;
+    }
+
+
+
+    /*public List<HabitacionDTO> obtenerPorTipo(String tipo) {
+        List<Habitacion> habitaciones = habitacionRepository.findByTipo(tipo);
+        return mapper.toDTOsHabitacion(habitaciones);
+    }
+*/
+    public List<Huesped> obtenerHuespedesPorHabitacion(Integer nroHabitacion) {
+
+        Habitacion habitacion = habitacionRepository.findById(nroHabitacion)
+                .orElse(null);
+
+        if (habitacion == null) {
+            // si no existe, devuelvo lista vacía
+            return List.of();
+        }
+        
+
+        List<Estadia> estadias = habitacion.getListaEstadia();
+        if (estadias == null) {
+            return List.of();
+        }
+
+        return estadias.stream()
+                .filter(e -> e.getListahuesped() != null) // evitar null
+                .flatMap(e -> e.getListahuesped().stream())
+                .distinct()
+                .toList();
+    }
+
+}
+
+
+
+// [service/HuespedServiceImpl.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.repository.DireccionRepository;
+import com.hotelPremier.repository.HuespedRepositoryDAO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class HuespedServiceImpl {
+
+    @Autowired
+    private HuespedRepositoryDAO huespedRepository;
+
+    @Autowired
+    private ClassMapper mapper;
+
+    @Autowired
+    private DireccionRepository direccionRepository;
+
+
+    // ============================
+    // 1) OBTENER TODOS LOS HUESPEDES
+    // ============================
+    public List<HuespedDTO> findAll() {
+        return mapper.toDtos(huespedRepository.findAll());
+    }
+
+
+    // ============================
+    // 2) BUSCAR SOLO POR DNI (si lo necesitás)
+    // ============================
+    public List<HuespedDTO> findByCategory(String dni) {
+        return mapper.toDtos(
+                huespedRepository.findByHuespedID_Dni(dni)
+        );
+    }
+
+
+    // ============================
+    // 3) BÚSQUEDA MULTIPARÁMETRO (principal)
+    // ============================
+    public List<HuespedDTO> buscarHuespedes(
+            String dni,
+            String nombre,
+            String apellido,
+            String tipoDocumento
+    ) {
+
+        // El repositorio devuelve List<Huesped>
+        List<Huesped> lista = huespedRepository.buscarHuespedes(
+                dni, nombre, apellido, tipoDocumento
+        );
+
+        // MapStruct convierte a DTO
+        return mapper.toDtos(lista);
+    }
+
+
+    public HuespedDTO addHuesped(HuespedDTO huespedDTO) {
+
+        
+        // MapStruct convierte DTO → Entity
+        Huesped huesped = mapper.toEntity(huespedDTO);
+        Direccion direccion = huesped.getDireccion();
+        
+        direccionRepository.save(direccion);
+
+        // Guardar en DB
+        Huesped saved = huespedRepository.save(huesped);
+
+        // Convertimos de vuelta a DTO
+        return mapper.toDTO(saved);
+    }
+
+    public void deleteHuesped(String dni) {
+
+    }
+
+}
+
+
+// [service/PagoService.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.repository.PagoRepository;
+import com.hotelPremier.classes.DTO.PagoDTO;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.Pago;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
+import java.util.Date;
+
+@Service
+public class PagoService {
+
+    @Autowired
+    private PagoRepository pagoRepository;
+
+    @Autowired
+    private FacturaRepository facturaRepository;
+
+    // CU16 - Ingresar Pago
+    public String ingresarPago(PagoDTO dto) {
+        if (dto.getFactura() != null) {
+            System.out.println("FACTURA ID = " + dto.getFactura().getID());
+        }
+
+        // 1. Buscar factura
+        Factura factura = facturaRepository.findById(dto.getFactura().getID())
+                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada"));
+
+        // 2. Validar monto
+        if (dto.getMonto() <= 0) {
+            throw new IllegalArgumentException("El monto debe ser mayor a 0.");
+        }
+
+        if (dto.getMonto() > factura.getTotal()) {
+            throw new IllegalArgumentException("El monto supera el total pendiente de la factura.");
+        }
+
+        // 3. Crear pago
+        Pago pago = new Pago();
+        pago.setMonto(dto.getMonto());
+        pago.setMedioPago(dto.getMedioPago());
+        pago.setFecha(new Date());
+        pago.setFactura(factura);
+
+        // 4. Asociar factura → pago
+        factura.setPago(pago);
+        factura.setEstado("PAGADA");
+
+        // 5. Guardar en BD
+        pagoRepository.save(pago);
+        facturaRepository.save(factura);
+
+        return "Pago realizado con exito";
+    }
+}
+
+
+
+// [service/ReservaService.java]
+package com.hotelPremier.service;
+
+import java.util.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.repository.HabitacionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.repository.ReservaRepository;
+
+@Service
+public class ReservaService {
+
+    @Autowired
+    private ReservaRepository reservaRepository;
+    @Autowired
+    private HabitacionRepository habitacionRepository;
+    @Autowired
+    private ClassMapper mapper;
+
+    public List<ReservaDTO> getReservas(
+        Date fechaDesde,
+        Date fechaHasta
+    ){
+        return mapper.toDtosReserva( reservaRepository.buscarReservas(fechaDesde,fechaHasta) );
+    } 
+
+
+    public Integer buscarId (Reserva reserva, HabitacionDTO habitacionDTO){
+        Integer num_hab=habitacionDTO.getNumero();
+        Date fecha_desde=reserva.getFecha_desde();
+        Date fecha_hasta=reserva.getFecha_hasta();
+        return reservaRepository.encontrarIdReserva(fecha_desde, fecha_hasta, num_hab);
+    }
+
+    public void deleteReserva(Integer id){
+        reservaRepository.deleteById(id);
+    }
+
+    public boolean existeReserva(Date fechaDesde, Date fechaHasta){
+        
+        return !(reservaRepository.buscarReservas(fechaDesde, fechaHasta).isEmpty());
+        //si no esta vacia, existen reservas interferidas.
+        //si esta vacia, no hay reservas interferidas.
+    }
+
+    /**
+     * recibe la lista de reservasdto a cda uno lo mapea a lla entity y lo manda a la bdd
+     * @param reservasDTOList
+     * @return
+     */
+    public List<ReservaDTO> crearReserva(List<ReservaDTO> reservasDTOList){
+
+        List<ReservaDTO> reservasGuardadas = new ArrayList<>();
+
+        // loop sobre cada reservaDTO de la lista
+        for (ReservaDTO reservaDTO : reservasDTOList) {
+
+           //convertir la entidad
+            Reserva reserva = mapper.toEntityReserva(reservaDTO);
+
+
+            //se busca la hab
+            System.out.println("Buscando habitación: " + reservaDTO.getNro_habitacion());
+
+
+
+            Habitacion hab = habitacionRepository.findByNumero(reservaDTO.getNro_habitacion());
+            System.out.println("habitacion encontrada: " + hab);
+
+            // setear habitación
+            reserva.setHabitacion(hab);
+
+            // setear estado
+            reserva.setEstado("Pendiente");
+
+            // guardarla en la bdd
+            Reserva guardada = reservaRepository.save(reserva);
+
+            // las reservas guardadas
+            reservasGuardadas.add(mapper.toDTOReserva(guardada));
+        }
+
+        //se devuelve la lista completa
+        return reservasGuardadas;
+    }
+
+    /**
+     * me llega una fecha desde, hasta , una lista de habitacion dto, hace una lista de map para mostrar los datos a guardar dsp en sus respectivas entidades
+     * @param fechaDesde
+     * @param fechaHasta
+     * @return
+     */
+    public List<Map<String, Object>> generarListadoReservar(
+            LocalDate fechaDesde,
+            LocalDate fechaHasta,
+            List<HabitacionDTO> habitacionDTOS) {
+
+        List<Map<String, Object>> listado = new ArrayList<>();
+
+        for (HabitacionDTO habitacionDTO : habitacionDTOS) {  //por cada habitacionDTO en la lista habitacionDTOS
+
+            Map<String, Object> datosReserva = new HashMap<>();
+
+            datosReserva.put("numero", habitacionDTO.getNumero());
+            datosReserva.put("tipo", habitacionDTO.getTipohabitacion());
+            datosReserva.put("fechaDesde", fechaDesde);
+            datosReserva.put("fechaHasta", fechaHasta);
+
+            listado.add(datosReserva); //este es el listado q devuelve el "gestor" para mostrar por pantalla las seleccionadas
+        }
+
+        return listado;
+    }
+
+
+
+
+
+}
+
+
+

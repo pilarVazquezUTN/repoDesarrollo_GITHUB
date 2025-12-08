@@ -1,14 +1,15 @@
 package com.hotelPremier.classes.mapper;
 
 
-import com.hotelPremier.classes.estadia.Estadia;
-import com.hotelPremier.classes.estadia.EstadiaDTO;
-import com.hotelPremier.classes.habitacion.Habitacion;
-import com.hotelPremier.classes.habitacion.HabitacionDTO;
-import com.hotelPremier.classes.huesped.Huesped;
-import com.hotelPremier.classes.huesped.HuespedDTO;
-import com.hotelPremier.classes.reserva.Reserva;
-import com.hotelPremier.classes.reserva.ReservaDTO;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.Reserva;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -1,8 +1,7 @@
 package com.hotelPremier.controller;
 
-import com.hotelPremier.classes.huesped.Huesped;
-import com.hotelPremier.classes.huesped.HuespedDTO;
-import com.hotelPremier.classes.habitacion.*;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.service.HabitacionService;
 
@@ -14,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 

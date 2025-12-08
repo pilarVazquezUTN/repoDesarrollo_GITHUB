@@ -1,6 +1,6 @@
 package com.hotelPremier.controller;
 
-import com.hotelPremier.classes.estadia.EstadiaDTO;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
 import com.hotelPremier.repository.EstadiaRepository;
 import com.hotelPremier.service.EstadiaService;
 

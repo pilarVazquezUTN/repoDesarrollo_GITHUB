@@ -1,15 +1,15 @@
 package com.hotelPremier.classes.mapper;
 
-import com.hotelPremier.classes.direccion.Direccion;
-import com.hotelPremier.classes.direccion.DireccionDTO;
-import com.hotelPremier.classes.estadia.Estadia;
-import com.hotelPremier.classes.estadia.EstadiaDTO;
-import com.hotelPremier.classes.habitacion.Habitacion;
-import com.hotelPremier.classes.habitacion.HabitacionDTO;
-import com.hotelPremier.classes.huesped.Huesped;
-import com.hotelPremier.classes.huesped.HuespedDTO;
-import com.hotelPremier.classes.reserva.Reserva;
-import com.hotelPremier.classes.reserva.ReservaDTO;
+import com.hotelPremier.classes.DTO.DireccionDTO;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.Reserva;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-12-02T17:17:07-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Eclipse Adoptium)"
+    date = "2025-12-08T03:31:25-0300",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251118-1623, environment: Java 21.0.9 (Eclipse Adoptium)"
 )
 @Component
 public class ClassMapperImpl implements ClassMapper {

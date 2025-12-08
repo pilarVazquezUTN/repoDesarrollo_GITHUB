@@ -7,14 +7,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.hotelPremier.classes.estadia.EstadiaDTO;
-import com.hotelPremier.classes.huesped.HuespedDTO;
-import com.hotelPremier.classes.direccion.Direccion;
-import com.hotelPremier.classes.direccion.DireccionDTO;
-import com.hotelPremier.classes.estadia.Estadia;
-import com.hotelPremier.classes.huesped.Huesped;
-import com.hotelPremier.classes.reserva.Reserva;
-import com.hotelPremier.classes.reserva.ReservaDTO;
+import com.hotelPremier.classes.DTO.DireccionDTO;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.Reserva;
 
 //import com.hotelpremier.classes.estadia.EstadiaDTO;
 

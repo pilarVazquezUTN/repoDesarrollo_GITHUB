@@ -5,16 +5,14 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hotelPremier.classes.estadia.Estadia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotelPremier.repository.EstadiaRepository;
-
-import com.hotelPremier.classes.reserva.Reserva;
-
-import com.hotelPremier.classes.estadia.EstadiaDTO;
-import com.hotelPremier.classes.habitacion.HabitacionDTO;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Reserva;
 import com.hotelPremier.classes.mapper.ClassMapper;
 
 @Service

@@ -7,20 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.hotelPremier.classes.habitacion.Habitacion;
-import com.hotelPremier.classes.habitacion.HabitacionDTO;
-import com.hotelPremier.classes.reserva.Reserva;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Reserva;
 import com.hotelPremier.repository.HabitacionRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.ReservaRepository;
-
-import com.hotelPremier.classes.reserva.ReservaDTO;
 
 @Service
 public class ReservaService {

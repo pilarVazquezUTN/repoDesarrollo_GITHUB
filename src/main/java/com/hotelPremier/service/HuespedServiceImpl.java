@@ -1,11 +1,11 @@
 package com.hotelPremier.service;
 
-import com.hotelPremier.classes.huesped.Huesped;
-import com.hotelPremier.classes.huesped.HuespedDTO;
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.DireccionRepository;
 import com.hotelPremier.repository.HuespedRepositoryDAO;
-import com.hotelPremier.classes.direccion.Direccion;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

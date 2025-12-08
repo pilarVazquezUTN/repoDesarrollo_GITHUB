@@ -1,6 +1,5 @@
 package com.hotelPremier.controller;
 
-import com.hotelPremier.classes.habitacion.HabitacionDTO;
 import com.hotelPremier.service.ReservaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
 import com.hotelPremier.classes.mapper.ClassMapper;
-import com.hotelPremier.classes.reserva.ReservaDTO;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -29,7 +29,7 @@ public class ReservaController {
 
     /**
      * Endpoint para obtener la lista de reservas.
-     * Mapea a: GET http://localhost:8080/api/reservas?apellido=Perez
+     * Mapea a: GET http://localhost:8080/api/reservas?apellido=    
      */
 
     @GetMapping ("/reservas")

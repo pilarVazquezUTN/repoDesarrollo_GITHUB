@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hotelPremier.classes.huesped.Huesped;
-import com.hotelPremier.classes.huesped.HuespedDTO;
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.Dominio.Huesped;
 
 @RestController
 

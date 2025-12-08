@@ -1,10 +1,11 @@
 package com.hotelPremier.repository;
 
-import com.hotelPremier.classes.habitacion.Habitacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
 
 import java.sql.Date;
 import java.time.LocalDate;

@@ -1,16 +1,13 @@
 package com.hotelPremier.service;
 
-import com.hotelPremier.classes.estadia.Estadia;
-import com.hotelPremier.classes.estadia.EstadiaDTO;
-import com.hotelPremier.classes.habitacion.Habitacion;
-import com.hotelPremier.classes.habitacion.HabitacionDTO;
-import com.hotelPremier.classes.habitacion.HabitacionEstadosDTO;
-import com.hotelPremier.classes.huesped.Huesped;
-import com.hotelPremier.classes.reserva.ReservaDTO;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.Reserva;
 import com.hotelPremier.repository.HabitacionRepository;
-import com.hotelPremier.service.ReservaService;
-import com.hotelPremier.service.EstadiaService;
-import com.hotelPremier.classes.reserva.Reserva;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,13 +25,6 @@ public class HabitacionService {
 
     @Autowired
     private ClassMapper mapper;
-
-    @Autowired
-    private EstadiaService estadiaService;
-
-    @Autowired
-    private ReservaService reservaService;
-
 
     //llama al repo para la bdd y devuelve el dto
     public List<HabitacionDTO> getHabitaciones(String tipoHabitacion) {
@@ -89,7 +79,6 @@ public class HabitacionService {
             estadiasDTO=mapper.toDTOsEstadia(estadias);
             //List<Reserva> reservas = reservaService.getReservas(desdeFecha,hastaFecha);
 
-//las mapea a dto y se las manda a habitacion dto , la hab mas las listas
             resultado.add(new HabitacionDTO(h, reservasDTO, estadiasDTO));
         }
 
