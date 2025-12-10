@@ -15,12 +15,7 @@ public class PagoController {
     private PagoService pagoService;
 
     @PostMapping
-    public ResponseEntity<?> ingresarPago(@RequestBody PagoDTO pagoDTO) {
-        try {
-            pagoService.ingresarPago(pagoDTO);
-            return ResponseEntity.ok("Pago registrado correctamente.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> registrar(@RequestBody PagoDTO dto) {
+        return ResponseEntity.ok(pagoService.ingresarPago(dto));
     }
 }

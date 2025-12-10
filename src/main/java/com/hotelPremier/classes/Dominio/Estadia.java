@@ -25,21 +25,23 @@ public class Estadia {
     @Column(name="checkout")
     private Date checkout;
 
+    // ✔ Mucho cuidado: HABITACION → listaEstadias es Managed, así que acá va BackReference
     @ManyToOne
     @JoinColumn(name = "nro_habitacion")
     @JsonBackReference(value = "habitacion-estadias")
     private Habitacion habitacion;
 
-    // ⭐⭐⭐ MUY IMPORTANTE ⭐⭐⭐
-    // Estadia YA NO define JoinTable → usa mappedBy
+    // ✔ Estadia es dueño de los HUÉSPEDES, así que va Managed
     @ManyToMany(mappedBy = "listaEstadia", fetch = FetchType.EAGER)
     @JsonManagedReference(value = "estadia-huespedes")
     private List<Huesped> listahuesped;
 
+    // ✔ Estadia es dueño de las Facturas → Managed
     @OneToMany(mappedBy = "estadia")
     @JsonManagedReference(value = "estadia-facturas")
     private List<Factura> listafactura;
 
+    // ✔ Reserva es dueño de Estadia → acá va BackReference
     @OneToOne
     @JoinColumn(name = "id_reserva")
     @JsonBackReference(value = "reserva-estadia")
@@ -69,4 +71,8 @@ public class Estadia {
 
     public Reserva getReserva() { return reserva; }
     public void setReserva(Reserva reserva) { this.reserva = reserva; }
+
+    
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 }

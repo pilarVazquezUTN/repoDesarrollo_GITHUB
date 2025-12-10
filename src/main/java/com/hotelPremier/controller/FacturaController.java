@@ -52,7 +52,8 @@ public class FacturaController {
     public ResponseEntity<?> crearFactura(@RequestBody FacturaDTO facturaDTO) {
         try {
             FacturaDTO creada = facturaService.crearFactura(facturaDTO);
-            return ResponseEntity.ok(creada);
+            System.err.println(creada);
+            return ResponseEntity.ok("Factura creada correctamente");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -2,6 +2,7 @@ package com.hotelPremier.classes.Dominio;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
 import jakarta.persistence.*;
@@ -28,11 +29,11 @@ public class Factura {
     @Column(name = "estado")
     private String estado;
 
-    // ⭐ FACTURA → ESTADIA COMPLETA (SE DEVUELVE)
     @ManyToOne
     @JoinColumn(name = "id_estadia")
-    @JsonManagedReference(value = "factura-estadia")
+    @JsonBackReference(value = "estadia-facturas")
     private Estadia estadia;
+
 
     // FK correcta hacia NotaDeCredito
     @ManyToOne

@@ -1,5 +1,6 @@
 package com.hotelPremier.classes.Dominio;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,9 +20,8 @@ public class Pago {
     @Column(name = "monto")
     private float monto;
 
-    @Column(name = "mediopago")
-    private String medioPago;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "fecha")
     private Date fecha;
 
@@ -29,34 +29,25 @@ public class Pago {
     @JoinColumn(name = "factura")
     private Factura factura;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-        name = "mediopago_pago",
+        name = "pago_medio",
         joinColumns = @JoinColumn(name = "id_pago"),
         inverseJoinColumns = @JoinColumn(name = "id_mediodepago")
     )
-    private List<MedioDePago> listamediodepago;
-
-    // ===========================
-    // Constructores
-    // ===========================
+    private List<MedioDePago> listamediodepago = new ArrayList<>();
 
     public Pago() {
     }
 
-    public Pago(Integer id_pago, float monto, String medioPago, Date fecha,
+    public Pago(Integer id_pago, float monto, Date fecha,
                 Factura factura, List<MedioDePago> listamediodepago) {
         this.id_pago = id_pago;
         this.monto = monto;
-        this.medioPago = medioPago;
         this.fecha = fecha;
         this.factura = factura;
         this.listamediodepago = listamediodepago;
     }
-
-    // ===========================
-    // Getters y Setters
-    // ===========================
 
     public Integer getId_pago() {
         return id_pago;
@@ -74,13 +65,6 @@ public class Pago {
         this.monto = monto;
     }
 
-    public String getMedioPago() {
-        return medioPago;
-    }
-
-    public void setMedioPago(String medioPago) {
-        this.medioPago = medioPago;
-    }
 
     public Date getFecha() {
         return fecha;

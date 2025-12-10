@@ -48,7 +48,7 @@ public class Huesped {
     private String nacionalidad;
 
 
-    @ManyToMany
+ @ManyToMany
 @JoinTable(
     name = "relac_estadia_huesped",
     joinColumns = {
@@ -57,6 +57,7 @@ public class Huesped {
     },
     inverseJoinColumns = @JoinColumn(name = "id_estadia")
 )
+@JsonBackReference(value = "estadia-huespedes")
 private List<Estadia> listaEstadia;
 
 

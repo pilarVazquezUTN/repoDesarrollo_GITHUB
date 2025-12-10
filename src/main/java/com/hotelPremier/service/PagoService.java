@@ -1,16 +1,22 @@
 package com.hotelPremier.service;
 
-import com.hotelPremier.repository.FacturaRepository;
-import com.hotelPremier.repository.PagoRepository;
-import com.hotelPremier.classes.DTO.PagoDTO;
-import com.hotelPremier.classes.Dominio.Factura;
-import com.hotelPremier.classes.Dominio.Pago;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hotelPremier.classes.DTO.PagoDTO;
+import com.hotelPremier.classes.DTO.medioDePago.*;
 
-import java.util.Date;
+import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.classes.Dominio.Factura;
+
+import com.hotelPremier.classes.Dominio.medioDePago.*;
+
+import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.repository.PagoRepository;
 
 @Service
 public class PagoService {
@@ -21,40 +27,104 @@ public class PagoService {
     @Autowired
     private FacturaRepository facturaRepository;
 
-    // CU16 - Ingresar Pago
+
     public String ingresarPago(PagoDTO dto) {
-        if (dto.getFactura() != null) {
-            System.out.println("FACTURA ID = " + dto.getFactura().getID());
-        }
 
-        // 1. Buscar factura
+        if (dto == null) throw new IllegalArgumentException("JSON vacío.");
+        if (dto.getFactura() == null || dto.getFactura().getID() == null)
+            throw new IllegalArgumentException("Factura inválida.");
+
         Factura factura = facturaRepository.findById(dto.getFactura().getID())
-                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada"));
+            .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada."));
 
-        // 2. Validar monto
-        if (dto.getMonto() <= 0) {
-            throw new IllegalArgumentException("El monto debe ser mayor a 0.");
-        }
+        if (dto.getMedios() == null || dto.getMedios().isEmpty())
+            throw new IllegalArgumentException("Debe enviar al menos un medio de pago.");
 
-        if (dto.getMonto() > factura.getTotal()) {
-            throw new IllegalArgumentException("El monto supera el total pendiente de la factura.");
-        }
+        float suma = dto.getMedios().stream().map(m -> m.getMonto()).reduce(0f, Float::sum);
 
-        // 3. Crear pago
+        if (suma != dto.getMonto())
+            throw new IllegalArgumentException("La suma de los medios no coincide con el monto.");
+
         Pago pago = new Pago();
-        pago.setMonto(dto.getMonto());
-        pago.setMedioPago(dto.getMedioPago());
         pago.setFecha(new Date());
+        pago.setMonto(dto.getMonto());
         pago.setFactura(factura);
 
-        // 4. Asociar factura → pago
+        List<MedioDePago> listaMedios = new ArrayList<>();
+
+        for (MedioDePagoDTO mpDTO : dto.getMedios()) {
+            listaMedios.add(convertirDTO(mpDTO));
+        }
+
+        pago.setListamediodepago(listaMedios);
         factura.setPago(pago);
         factura.setEstado("PAGADA");
 
-        // 5. Guardar en BD
         pagoRepository.save(pago);
         facturaRepository.save(factura);
 
-        return "Pago realizado con exito";
+        return "Pago registrado correctamente.";
+    }
+
+
+    private MedioDePago convertirDTO(MedioDePagoDTO dto) {
+
+        if (dto.getTipo() == null) {
+            throw new IllegalArgumentException("Cada medio debe tener el campo 'tipo'.");
+        }
+
+        return switch (dto.getTipo().toUpperCase()) {
+
+            case "CHEQUE" -> {
+                Cheque c = new Cheque();
+                c.setMonto(dto.getMonto());
+                c.setFecha(dto.getFecha());
+                ChequeDTO d = (ChequeDTO) dto;
+                c.setNumeroCheque(d.getNumeroCheque());
+                c.setBanco(d.getBanco());
+                c.setPlazo(d.getPlazo());
+                yield c;
+            }
+
+            case "TARJETA_CREDITO" -> {
+                TarjetaCredito tc = new TarjetaCredito();
+                tc.setMonto(dto.getMonto());
+                tc.setFecha(dto.getFecha());
+                TarjetaCreditoDTO d = (TarjetaCreditoDTO) dto;
+                tc.setBanco(d.getBanco());
+                tc.setCuotas(d.getCuotas());
+                yield tc;
+            }
+
+            case "TARJETA_DEBITO" -> {
+                TarjetaDebito td = new TarjetaDebito();
+                td.setMonto(dto.getMonto());
+                td.setFecha(dto.getFecha());
+                TarjetaDebitoDTO d = (TarjetaDebitoDTO) dto;
+                td.setBanco(d.getBanco());
+                td.setDniTitular(d.getDniTitular());
+                yield td;
+            }
+
+            case "MONEDA_LOCAL" -> {
+                MonedaLocal ml = new MonedaLocal();
+                ml.setMonto(dto.getMonto());
+                ml.setFecha(dto.getFecha());
+                MonedaLocalDTO d = (MonedaLocalDTO) dto;
+                ml.setTipoMoneda(d.getTipoMoneda());
+                yield ml;
+            }
+
+            case "MONEDA_EXTRANJERA" -> {
+                MonedaExtranjera me = new MonedaExtranjera();
+                me.setMonto(dto.getMonto());
+                me.setFecha(dto.getFecha());
+                MonedaExtranjeraDTO d = (MonedaExtranjeraDTO) dto;
+                me.setTipoMoneda(d.getTipoMoneda());
+                yield me;
+            }
+
+            default -> throw new IllegalArgumentException("Tipo no reconocido: " + dto.getTipo());
+        };
     }
 }

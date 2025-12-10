@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/notascredito")
+@RequestMapping("/notadecredito")
 public class NotaDeCreditoController {
 
     @Autowired

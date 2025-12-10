@@ -1,7 +1,19 @@
 package com.hotelPremier.classes.Dominio.medioDePago;
 
-public class MonedaLocal extends MedioDePago{
+import jakarta.persistence.*;
+
+@Entity
+@DiscriminatorValue("MONEDA_LOCAL")
+public class MonedaLocal extends MedioDePago {
+
+    @Column(name="tipo_moneda")
     private String tipoMoneda;
 
-}
+    public String getTipoMoneda() {
+        return tipoMoneda;
+    }
 
+    public void setTipoMoneda(String tipoMoneda) {
+        this.tipoMoneda = tipoMoneda;
+    }
+}

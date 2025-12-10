@@ -37,15 +37,17 @@ public interface HuespedRepository extends JpaRepository<Huesped,HuespedID>{
     @Query("""
     SELECT h 
     FROM Huesped h
-    WHERE (:dni IS NULL OR h.huespedID.dni = :dni)
-        AND   (:nombre IS NULL OR h.nombre ILIKE :nombre)
-        AND   (:apellido IS NULL OR h.apellido ILIKE :apellido)
-        AND   (:tipoDocumento IS NULL OR h.huespedID.tipoDocumento = :tipoDocumento)
-    """)
-    List<Huesped> buscarHuespedes(
-        @Param("dni") String dni, 
-        @Param("nombre") String nombre, 
-        @Param("apellido") String apellido, 
-        @Param("tipoDocumento")String tipoDocumento 
-    );
+    WHERE 
+        (:dni IS NULL OR :dni = '' OR h.huespedID.dni ILIKE CONCAT(:dni, '%'))
+    AND (:nombre IS NULL OR :nombre = '' OR h.nombre ILIKE CONCAT(:nombre, '%'))
+    AND (:apellido IS NULL OR :apellido = '' OR h.apellido ILIKE CONCAT(:apellido, '%'))
+    AND (:tipoDocumento IS NULL OR :tipoDocumento = '' OR h.huespedID.tipoDocumento = :tipoDocumento)
+""")
+List<Huesped> buscarHuespedes(
+    @Param("dni") String dni, 
+    @Param("nombre") String nombre, 
+    @Param("apellido") String apellido, 
+    @Param("tipoDocumento") String tipoDocumento
+);
+
 }
