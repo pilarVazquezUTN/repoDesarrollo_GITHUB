@@ -123,6 +123,10 @@ public class ReservaService {
         return listado;
     }
 
+    public List<ReservaDTO> buscarPorApellidoNombre(String apellido, String nombre) {
+        List<Reserva> reservas = reservaRepository.buscarPorApellidoNombre(apellido, nombre);
+        return mapper.toDtosReserva(reservas);
+    }
 
 
 

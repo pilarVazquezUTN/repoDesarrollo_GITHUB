@@ -37,7 +37,7 @@ public class FacturaDTO {
         return id;
     }
 
-    public void setIDd(Integer id) {
+    public void setID(Integer id) {
         this.id = id;
     }
 

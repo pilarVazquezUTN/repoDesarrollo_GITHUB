@@ -2,10 +2,12 @@ package com.hotelPremier.classes.mapper;
 
 
 import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.FacturaDTO;
 import com.hotelPremier.classes.DTO.HabitacionDTO;
 import com.hotelPremier.classes.DTO.HuespedDTO;
 import com.hotelPremier.classes.DTO.ReservaDTO;
 import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Factura;
 import com.hotelPremier.classes.Dominio.Habitacion;
 import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.Dominio.Reserva;
@@ -54,6 +56,26 @@ public interface ClassMapper {
         //ESTADIA
         //List<EstadiaDTO> toDtoEstadia(List<Estadia> listaestadia);
         List<Estadia> toEntityEstadia(List<EstadiaDTO> listaestadiaDTO);
+
+        // ===========================================
+        //              FACTURA
+        // ===========================================
+
+        @Mapping(source = "estadia", target = "estadia")
+        @Mapping(source = "notacredito", target = "notacredito")
+        @Mapping(source = "pago", target = "pago")
+        @Mapping(source = "responsablepago", target = "responsablepago")
+        FacturaDTO toDTOFactura(Factura factura);
+
+        @Mapping(source = "estadia", target = "estadia")
+        @Mapping(source = "notacredito", target = "notacredito")
+        @Mapping(source = "pago", target = "pago")
+        @Mapping(source = "responsablepago", target = "responsablepago")
+        Factura toEntityFactura(FacturaDTO dto);
+
+        // Listas
+        List<FacturaDTO> toDTOsFactura(List<Factura> lista);
+        List<Factura> toEntitysFactura(List<FacturaDTO> lista);
 
 
 }

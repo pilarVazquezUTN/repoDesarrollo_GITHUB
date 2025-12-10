@@ -97,14 +97,11 @@ public class EstadiaService {
             estadiaRepository.save(e);//me guardo una estadia en la bdd
         }
     }
-    //@Autowired
-    //private ClassMapper
 
+    public List<EstadiaDTO> obtenerEstadiasSinFactura() {
+        return mapper.toDTOsEstadia(estadiaRepository.estadiasSinFactura());
+    }
 
-    /*public List<EstadiaDTO> getListaEstadias(){
-        
-        return 
-    }*/
 }
 
 

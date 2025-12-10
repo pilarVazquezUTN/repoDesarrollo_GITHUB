@@ -1,8 +1,10 @@
-📂 Estructura del proyecto (.):
+
+📂 Estructura del proyecto (.)
 -----------------------------------
 .
 ├── classes
 │   ├── Dominio
+│   │   ├── consolidado.txt
 │   │   ├── Direccion.java
 │   │   ├── Estadia.java
 │   │   ├── Factura.java
@@ -69,8 +71,10 @@
 ├── consolidado.txt
 ├── controller
 │   ├── EstadiaController.java
+│   ├── FacturaController.java
 │   ├── HabitacionController.java
 │   ├── HuespedController.java
+│   ├── NotaDeCreditoController.java
 │   ├── PagoController.java
 │   ├── ReservaController.java
 │   └── UsuarioController.java
@@ -80,19 +84,21 @@
 │   ├── EstadiaRepository.java
 │   ├── FacturaRepository.java
 │   ├── HabitacionRepository.java
-│   ├── HuespedRepositoryDAO.java
+│   ├── HuespedRepository.java
 │   ├── NotaDeCreditoRepository.java
 │   ├── PagoRepository.java
 │   ├── ReservaRepository.java
 │   └── UsuarioRepository.java
 └── service
     ├── EstadiaService.java
+    ├── FacturaService.java
     ├── HabitacionService.java
-    ├── HuespedServiceImpl.java
+    ├── HuespedService.java
+    ├── NotaDeCreditoService.java
     ├── PagoService.java
     └── ReservaService.java
 
-15 directories, 76 files
+15 directories, 81 files
 
 -----------------------------------
 
@@ -411,6 +417,7 @@ public class Factura {
     @JoinColumn(name = "id_estadia")
     private Estadia estadia;
 
+    // 🔥 FK correcta hacia NotaDeCredito
     @ManyToOne
     @JoinColumn(name = "id_notacredito")
     private NotaDeCredito notacredito;
@@ -423,8 +430,7 @@ public class Factura {
     @JoinColumn(name = "responsablepago")
     private ResponsablePago responsablepago;
 
-    public Factura() {
-    }
+    public Factura() {}
 
     public Factura(Date fecha, float total, String tipo, String estado,
                    Estadia estadia, NotaDeCredito notacredito, Pago pago,
@@ -439,70 +445,30 @@ public class Factura {
         this.responsablepago = responsablepago;
     }
 
-    public Integer getID() {
-        return ID;
-    }
+    public Integer getID() { return ID; }
 
-    public Date getFecha() {
-        return fecha;
-    }
+    public Date getFecha() { return fecha; }
+    public void setFecha(Date fecha) { this.fecha = fecha; }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
+    public float getTotal() { return total; }
+    public void setTotal(float total) { this.total = total; }
 
-    public float getTotal() {
-        return total;
-    }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
-    public void setTotal(float total) {
-        this.total = total;
-    }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public String getTipo() {
-        return tipo;
-    }
+    public Estadia getEstadia() { return estadia; }
+    public void setEstadia(Estadia estadia) { this.estadia = estadia; }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
+    public NotaDeCredito getNotaDeCredito() { return notacredito; }
+    public void setNotaDeCredito(NotaDeCredito notacredito) { this.notacredito = notacredito; }
 
-    public String getEstado() {
-        return estado;
-    }
+    public Pago getPago() { return pago; }
+    public void setPago(Pago pago) { this.pago = pago; }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public Estadia getEstadia() {
-        return estadia;
-    }
-
-    public void setEstadia(Estadia estadia) {
-        this.estadia = estadia;
-    }
-
-    public NotaDeCredito getNotacredito() {
-        return notacredito;
-    }
-
-    public void setNotaDeCredito(NotaDeCredito notacredito) {
-        this.notacredito = notacredito;
-    }
-
-    public Pago getPago() {
-        return pago;
-    }
-
-    public void setPago(Pago pago) {
-        this.pago = pago;
-    }
-
-    public ResponsablePago getResponsablepago() {
-        return responsablepago;
-    }
-
+    public ResponsablePago getResponsablepago() { return responsablepago; }
     public void setResponsablepago(ResponsablePago responsablepago) {
         this.responsablepago = responsablepago;
     }
@@ -1136,11 +1102,11 @@ public class NotaDeCredito {
     @Column(name = "id_notacredito")
     private Integer id;
 
-
     @Column(name = "importe")
     private float importe;
 
-    @OneToMany(mappedBy = "notaDeCredito")
+    // 🔥 mappedBy correcto → coincide EXACTO con el atributo en Factura
+    @OneToMany(mappedBy = "notacredito")
     private List<Factura> facturas;
 
     public Integer getId() { return id; }
@@ -1397,20 +1363,21 @@ package com.hotelPremier.classes.Dominio.responsablePago;
 
 import com.hotelPremier.classes.Dominio.Huesped;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
-public class PersonaFisica extends ResponsablePago{
-    private String nombre;
-
+@Entity
+@Table(name = "persona_fisica")
+public class PersonaFisica extends ResponsablePago {
 
     @OneToOne
     @JoinColumns({
-            @JoinColumn(name = "dni", referencedColumnName = "dni"),
-            @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento")
+        @JoinColumn(name = "dni", referencedColumnName = "dni"),
+        @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento")
     })
     private Huesped huesped;
+
+    public Huesped getHuesped() { return huesped; }
+    public void setHuesped(Huesped huesped) { this.huesped = huesped; }
 }
 
 
@@ -1420,19 +1387,30 @@ package com.hotelPremier.classes.Dominio.responsablePago;
 
 import com.hotelPremier.classes.Dominio.Direccion;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
-public class PersonaJuridica extends ResponsablePago{
+@Entity
+@Table(name = "persona_juridica")
+public class PersonaJuridica extends ResponsablePago {
+
+    @Column(name = "razonsocial")
     private String razonSocial;
+
+    @Column(name = "cuit")
     private String cuit;
-    private Direccion direccion;
 
     @OneToOne
-    @JoinColumn(name = "id_direccion")
-    Direccion direccionpersonaJuridica;
+    @JoinColumn(name = "id_direccion_empresa")
+    private Direccion direccionEmpresa;
 
+    public String getRazonSocial() { return razonSocial; }
+    public void setRazonSocial(String razonSocial) { this.razonSocial = razonSocial; }
+
+    public String getCuit() { return cuit; }
+    public void setCuit(String cuit) { this.cuit = cuit; }
+
+    public Direccion getDireccionEmpresa() { return direccionEmpresa; }
+    public void setDireccionEmpresa(Direccion direccionEmpresa) { this.direccionEmpresa = direccionEmpresa; }
 }
 
 
@@ -1444,34 +1422,30 @@ import java.util.List;
 
 import com.hotelPremier.classes.Dominio.Direccion;
 import com.hotelPremier.classes.Dominio.Factura;
-import com.hotelPremier.classes.Dominio.Huesped;
 
-import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import jakarta.persistence.*;
 
 @Entity
-@Table(name="responsablepago")
-public class ResponsablePago {
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "responsablepago")
+public abstract class ResponsablePago {
 
     @Id
-    @Column(name="id_responsablepago")
-    private Integer id_responsablePago; 
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_responsablepago")
+    private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "id_direccion" )
+    @JoinColumn(name = "id_direccion")
     private Direccion direccion;
 
-
-    @OneToOne
-    @JoinColumns({
-            @JoinColumn(name = "tipodoc", referencedColumnName = "tipodocumento"),
-            @JoinColumn(name = "dni", referencedColumnName = "dni")
-    })
-    private Huesped huesped;
-    
     @OneToMany(mappedBy = "responsablepago")
-    private List<Factura>  listafactura;
+    private List<Factura> facturas;
 
+    public Integer getId() { return id; }
+
+    public Direccion getDireccion() { return direccion; }
+    public void setDireccion(Direccion direccion) { this.direccion = direccion; }
 }
 
 
@@ -1526,6 +1500,7 @@ public class ServicioExtraID implements Serializable {
     public void setId_estadia(Integer id_estadia) {
         this.id_estadia = id_estadia;
     }
+    
     public Integer getId_estadia() {
         return id_estadia;
     }
@@ -1860,7 +1835,7 @@ public class FacturaDTO {
         return id;
     }
 
-    public void setIDd(Integer id) {
+    public void setID(Integer id) {
         this.id = id;
     }
 
@@ -2556,11 +2531,24 @@ package com.hotelPremier.classes.DTO;
 
 import java.util.List;
 
-
 public class NotaDeCreditoDTO {
-    private Integer id_notadecreditoDTO;
-    private Float monto;
-    private List<FacturaDTO> listafacturaDTO;
+    private Integer id;
+    private Float importe;       // valor de la NC
+    private List<FacturaDTO> listaFacturas;
+
+    public Float getImporte() { return importe; }
+    public void setImporte(Float importe) { this.importe = importe; }
+
+    public Integer getID() { return id; }
+
+    public List<FacturaDTO> getFacturas(){
+        return this.listaFacturas;
+    }
+
+    public void setFacturas(List<FacturaDTO> facturas){
+        this.listaFacturas = facturas;
+    }
+
 }
 
 
@@ -3119,10 +3107,12 @@ package com.hotelPremier.classes.mapper;
 
 
 import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.FacturaDTO;
 import com.hotelPremier.classes.DTO.HabitacionDTO;
 import com.hotelPremier.classes.DTO.HuespedDTO;
 import com.hotelPremier.classes.DTO.ReservaDTO;
 import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Factura;
 import com.hotelPremier.classes.Dominio.Habitacion;
 import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.Dominio.Reserva;
@@ -3171,6 +3161,26 @@ public interface ClassMapper {
         //ESTADIA
         //List<EstadiaDTO> toDtoEstadia(List<Estadia> listaestadia);
         List<Estadia> toEntityEstadia(List<EstadiaDTO> listaestadiaDTO);
+
+        // ===========================================
+        //              FACTURA
+        // ===========================================
+
+        @Mapping(source = "estadia", target = "estadia")
+        @Mapping(source = "notacredito", target = "notacredito")
+        @Mapping(source = "pago", target = "pago")
+        @Mapping(source = "responsablepago", target = "responsablepago")
+        FacturaDTO toDTOFactura(Factura factura);
+
+        @Mapping(source = "estadia", target = "estadia")
+        @Mapping(source = "notacredito", target = "notacredito")
+        @Mapping(source = "pago", target = "pago")
+        @Mapping(source = "responsablepago", target = "responsablepago")
+        Factura toEntityFactura(FacturaDTO dto);
+
+        // Listas
+        List<FacturaDTO> toDTOsFactura(List<Factura> lista);
+        List<Factura> toEntitysFactura(List<FacturaDTO> lista);
 
 
 }
@@ -3267,6 +3277,33 @@ public class Validador {
 
 
 
+// [config/WebConfig.java]
+package com.hotelPremier.config;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebConfig {
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
+    }
+}
+
+
+
 // [controller/EstadiaController.java]
 package com.hotelPremier.controller;
 
@@ -3301,6 +3338,62 @@ public class EstadiaController {
     ){
         estadiaService.guardarListaEstadia(listaestadiaDTO);
         return ResponseEntity.ok("Estadía guardada correctamente");
+    }
+
+}
+
+
+
+// [controller/FacturaController.java]
+package com.hotelPremier.controller;
+
+import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.service.FacturaService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/facturas")
+public class FacturaController {
+
+    @Autowired
+    private FacturaService facturaService;
+
+    // ======================================
+    // CU07 - Obtener facturas por habitación
+    // ======================================
+    @GetMapping("/habitacion/{nro}")
+    public ResponseEntity<List<FacturaDTO>> obtenerPorHabitacion(@PathVariable Integer nro) {
+        return ResponseEntity.ok(facturaService.obtenerFacturasPorHabitacion(nro));
+    }
+
+    // ======================================
+    // CU07 - Actualizar factura (ID dentro del DTO)
+    // ======================================
+    @PutMapping
+    public ResponseEntity<String> actualizarFactura(@RequestBody FacturaDTO facturaDTO) {
+        facturaService.actualizarFactura(facturaDTO);
+        return ResponseEntity.ok("Factura actualizada correctamente.");
+    }
+
+    @GetMapping("/dni/{dni}")
+    public ResponseEntity<List<FacturaDTO>> obtenerPorDni(@PathVariable String dni) {
+        return ResponseEntity.ok(facturaService.buscarPorDni(dni));
+    }
+
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<FacturaDTO>> filtrarFacturas(
+            @RequestParam(required = false) String cuit,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String numero
+    ) {
+        return ResponseEntity.ok(
+                facturaService.filtrarFacturas(cuit, tipo, numero)
+        );
     }
 
 }
@@ -3387,7 +3480,7 @@ import java.util.List;
 import java.util.Set;
 
 
-import com.hotelPremier.service.HuespedServiceImpl;
+import com.hotelPremier.service.HuespedService;
 
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -3414,7 +3507,7 @@ import com.hotelPremier.classes.Dominio.Huesped;
 public class HuespedController {
     
     @Autowired 
-    private HuespedServiceImpl huespedService;
+    private HuespedService huespedService;
 
     /*
         los end path van en plural.
@@ -3442,15 +3535,46 @@ public class HuespedController {
         HuespedDTO addedHuesped = huespedService.addHuesped(huesped);
         return new ResponseEntity<>(addedHuesped, HttpStatus.OK);
     }
-    @DeleteMapping("/huespedes")
-    public ResponseEntity<HuespedDTO> deleteHuesped(@PathVariable String dni) {
-        huespedService.deleteHuesped(dni);
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); 
-        /*
-        se puede devolver el usuario que eliminamos. */
-
+    @DeleteMapping("/huespedes/{tipo}/{dni}")
+    public ResponseEntity<?> deleteHuesped(
+            @PathVariable String tipo,
+            @PathVariable String dni
+    ) {
+        huespedService.deleteHuesped(tipo, dni);
+        return ResponseEntity.noContent().build();
     }
 
+
+}
+
+
+
+// [controller/NotaDeCreditoController.java]
+package com.hotelPremier.controller;
+
+import com.hotelPremier.classes.DTO.NotaDeCreditoDTO;
+import com.hotelPremier.service.NotaDeCreditoService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/notascredito")
+public class NotaDeCreditoController {
+
+    @Autowired
+    private NotaDeCreditoService service;
+
+    @PostMapping
+    public ResponseEntity<?> ingresarNotaCredito(@RequestBody NotaDeCreditoDTO dto) {
+        try {
+            String mensaje = service.ingresarNotaDeCredito(dto);
+            return ResponseEntity.ok(mensaje);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
 
 
@@ -3556,8 +3680,24 @@ public class ReservaController {
     }
 
 
+    //GET http://localhost:8080/api/reservas/buscar?apellido=Lopez
+    //GET http://localhost:8080/api/reservas/buscar?apellido=Perez&nombre=Juan
+    //GET http://localhost:8080/api/reservas/buscar?nombre=Valentin
+    @GetMapping("/reservas/buscar")
+    public ResponseEntity<List<ReservaDTO>> buscarReservas(
+            @RequestParam(required = false) String apellido,
+            @RequestParam(required = false) String nombre
+    ) {
+        return ResponseEntity.ok(
+            reservaService.buscarPorApellidoNombre(apellido, nombre)
+        );
+    }
 
-
+    @DeleteMapping("/reservas/{id}")
+    public ResponseEntity<?> eliminarReserva(@PathVariable Integer id){
+        reservaService.deleteReserva(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 
@@ -3633,13 +3773,23 @@ public interface EstadiaRepository extends JpaRepository<Estadia,Integer> {
 package com.hotelPremier.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.hotelPremier.classes.Dominio.Factura;
+import java.util.List;
+
 
 
 @Repository
 public interface FacturaRepository extends JpaRepository<Factura,Integer> {
+        @Query("""
+        SELECT f
+        FROM Factura f
+        WHERE f.responsablepago.huesped.huespedID.dni = :dni
+    """)
+    List<Factura> buscarPorDni(@Param("dni") String dni);
 
 
 
@@ -3699,7 +3849,7 @@ public interface HabitacionRepository extends JpaRepository<Habitacion,Integer> 
 
 
 
-// [repository/HuespedRepositoryDAO.java]
+// [repository/HuespedRepository.java]
 package com.hotelPremier.repository;
 
 import java.util.List;
@@ -3716,7 +3866,7 @@ import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.Dominio.HuespedID;
 
 @Repository
-public interface HuespedRepositoryDAO extends JpaRepository<Huesped,HuespedID>{
+public interface HuespedRepository extends JpaRepository<Huesped,HuespedID>{
 
     @Override
     List<Huesped> findAll();
@@ -3825,7 +3975,16 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
     Integer encontrarIdReserva(@Param("fechadesde") Date fechaDesde, @Param("fechahasta") Date fechaHasta,@Param("nro_hab") Integer nroHab);
    // void delete(Reserva r);
 
-    //Reserva findById_reserva(Integer id_reserva);
+    @Query("""
+    SELECT r
+    FROM Reserva r
+    WHERE (:apellido IS NULL OR LOWER(r.apellido) LIKE LOWER(CONCAT(:apellido, '%')))
+      AND (:nombre IS NULL OR LOWER(r.nombre) LIKE LOWER(CONCAT(:nombre, '%')))
+    """)
+    List<Reserva> buscarPorApellidoNombre(
+            @Param("apellido") String apellido,
+            @Param("nombre") String nombre
+    );
 
 }
 
@@ -3967,6 +4126,132 @@ public class EstadiaService {
 
 
 
+// [service/FacturaService.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.classes.mapper.ClassMapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class FacturaService {
+
+    @Autowired
+    private FacturaRepository facturaRepository;
+
+    @Autowired
+    private ClassMapper mapper;
+
+    // ===========================================
+    // CU07 - Facturas por número de habitación
+    // ===========================================
+public List<FacturaDTO> obtenerFacturasPorHabitacion(Integer nroHabitacion) {
+
+    List<Factura> lista = facturaRepository.findAll().stream()
+            .filter(f -> f.getEstadia() != null &&
+                         f.getEstadia().getHabitacion() != null &&
+                         f.getEstadia().getHabitacion().getNumero().equals(nroHabitacion))
+            .toList();
+
+    return lista.stream()
+            .map(mapper::toDTOFactura)
+            .toList();
+}
+
+
+    // ===========================================
+    // CU07 - Actualizar factura con ID del DTO
+    // ===========================================
+    public void actualizarFactura(FacturaDTO dto) {
+
+        if (dto.getID() == null) {
+            throw new RuntimeException("El ID de la factura es obligatorio.");
+        }
+
+        Factura factura = facturaRepository.findById(dto.getID())
+                .orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+
+        if (dto.getEstado() != null)
+            factura.setEstado(dto.getEstado());
+
+        if (dto.getTotal() > 0)
+            factura.setTotal(dto.getTotal());
+
+        if (dto.getTipo() != null)
+            factura.setTipo(dto.getTipo());
+
+        facturaRepository.save(factura);
+    }
+
+    public List<FacturaDTO> buscarPorDni(String dni) {
+
+        List<Factura> lista = facturaRepository.buscarPorDni(dni);
+
+        return lista.stream()
+                .map(mapper::toDTOFactura)
+                .toList();
+    }
+
+    public List<FacturaDTO> filtrarFacturas(String cuit, String tipoDocumento, String numeroDocumento) {
+
+    List<Factura> lista = facturaRepository.findAll();
+
+    List<Factura> filtradas = lista.stream()
+
+        // ----------------------------
+        //   FILTRAR POR CUIT
+        // ----------------------------
+        .filter(f -> cuit == null || {
+            var rp = f.getResponsablepago();
+            if (rp == null) return false;
+            if (rp instanceof ResponsableJuridico rj) {
+                return cuit.equals(rj.getCuit());
+            }
+            return false;
+        })
+
+        // ----------------------------
+        //   FILTRAR POR TIPO DOCUMENTO
+        // ----------------------------
+        .filter(f -> tipoDocumento == null || {
+            var rp = f.getResponsablepago();
+            if (rp == null) return false;
+            if (rp instanceof ResponsableHuesped rh) {
+                return rh.getHuesped().getHuespedID().getTipoDocumento()
+                        .equalsIgnoreCase(tipoDocumento);
+            }
+            return false;
+        })
+
+        // ----------------------------
+        //   FILTRAR POR NRO DOCUMENTO
+        // ----------------------------
+        .filter(f -> numeroDocumento == null || {
+            var rp = f.getResponsablepago();
+            if (rp == null) return false;
+            if (rp instanceof ResponsableHuesped rh) {
+                return rh.getHuesped().getHuespedID().getDni().equals(numeroDocumento);
+            }
+            return false;
+        })
+
+        .toList();
+
+    return filtradas.stream()
+            .map(mapper::toDTOFactura)
+            .toList();
+}
+
+}
+
+
+
 // [service/HabitacionService.java]
 package com.hotelPremier.service;
 
@@ -4089,26 +4374,30 @@ public class HabitacionService {
 
 
 
-// [service/HuespedServiceImpl.java]
+// [service/HuespedService.java]
 package com.hotelPremier.service;
 
 import com.hotelPremier.classes.DTO.HuespedDTO;
 import com.hotelPremier.classes.Dominio.Direccion;
 import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.HuespedID;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.DireccionRepository;
-import com.hotelPremier.repository.HuespedRepositoryDAO;
+import com.hotelPremier.repository.HuespedRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 @Service
-public class HuespedServiceImpl {
+public class HuespedService {
 
     @Autowired
-    private HuespedRepositoryDAO huespedRepository;
+    private HuespedRepository huespedRepository;
 
     @Autowired
     private ClassMapper mapper;
@@ -4170,12 +4459,105 @@ public class HuespedServiceImpl {
         // Convertimos de vuelta a DTO
         return mapper.toDTO(saved);
     }
+    public void deleteHuesped(String tipoDocumento, String dni) {
 
-    public void deleteHuesped(String dni) {
+        HuespedID id = new HuespedID();
+        id.setTipoDocumento(tipoDocumento);
+        id.setDni(dni);
 
+        if (!huespedRepository.existsById(id)) {
+            throw new RuntimeException("Huesped no encontrado");
+        }
+
+        huespedRepository.deleteById(id);
     }
 
+
 }
+
+
+// [service/NotaDeCreditoService.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.NotaDeCredito;
+import com.hotelPremier.classes.DTO.NotaDeCreditoDTO;
+import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.repository.NotaDeCreditoRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class NotaDeCreditoService {
+
+    @Autowired
+    private NotaDeCreditoRepository notaRepo;
+
+    @Autowired
+    private FacturaRepository facturaRepo;
+
+    /**
+     * CU19 - Ingresar Nota de Crédito
+     * REGLA: El importe de la NC debe cubrir el total de TODAS las facturas afectadas.
+     */
+    public String ingresarNotaDeCredito(NotaDeCreditoDTO dto) {
+
+        if (dto.getImporte() == null || dto.getImporte() <= 0) {
+            throw new IllegalArgumentException("El importe debe ser mayor a cero.");
+        }
+
+        if (dto.getFacturas() == null || dto.getFacturas().isEmpty()) {
+            throw new IllegalArgumentException("Debe indicar al menos una factura.");
+        }
+
+        // 1️⃣ Obtener IDs desde los FacturaDTO
+        List<Integer> ids = dto.getFacturas()
+                .stream()
+                .map(FacturaDTO::getID)
+                .toList();
+
+        // 2️⃣ Buscar las facturas reales
+        List<Factura> facturas = facturaRepo.findAllById(ids);
+
+        if (facturas.isEmpty()) {
+            throw new IllegalArgumentException("No se encontraron facturas válidas.");
+        }
+
+        // 3️⃣ Sumar totales de facturas
+        float sumaTotales = facturas.stream()
+                .map(Factura::getTotal)
+                .reduce(0f, Float::sum);
+
+        // 🔥 REGLA DE NEGOCIO: importe debe ser suficiente
+        if (dto.getImporte() < sumaTotales) {
+            throw new IllegalArgumentException(
+                "El importe de la nota de crédito es insuficiente. " +
+                "Debe ser al menos: " + sumaTotales
+            );
+        }
+
+        // 4️⃣ Crear y guardar la nota de crédito
+        NotaDeCredito nota = new NotaDeCredito();
+        nota.setImporte(dto.getImporte());
+
+        NotaDeCredito guardada = notaRepo.save(nota);
+
+        // 5️⃣ Aplicar NC a cada factura → total queda en 0
+        for (Factura factura : facturas) {
+            factura.setNotaDeCredito(guardada);
+            factura.setTotal(0);
+            factura.setEstado("CANCELADA");
+            facturaRepo.save(factura);
+        }
+
+        return "Nota de crédito aplicada correctamente a " + facturas.size() + " factura(s).";
+    }
+}
+
 
 
 // [service/PagoService.java]
@@ -4368,6 +4750,10 @@ public class ReservaService {
         return listado;
     }
 
+    public List<ReservaDTO> buscarPorApellidoNombre(String apellido, String nombre) {
+        List<Reserva> reservas = reservaRepository.buscarPorApellidoNombre(apellido, nombre);
+        return mapper.toDtosReserva(reservas);
+    }
 
 
 

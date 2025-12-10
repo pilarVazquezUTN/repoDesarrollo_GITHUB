@@ -14,7 +14,7 @@ import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.Dominio.HuespedID;
 
 @Repository
-public interface HuespedRepositoryDAO extends JpaRepository<Huesped,HuespedID>{
+public interface HuespedRepository extends JpaRepository<Huesped,HuespedID>{
 
     @Override
     List<Huesped> findAll();

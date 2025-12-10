@@ -68,8 +68,24 @@ public class ReservaController {
     }
 
 
+    //GET http://localhost:8080/api/reservas/buscar?apellido=Lopez
+    //GET http://localhost:8080/api/reservas/buscar?apellido=Perez&nombre=Juan
+    //GET http://localhost:8080/api/reservas/buscar?nombre=Valentin
+    @GetMapping("/reservas/buscar")
+    public ResponseEntity<List<ReservaDTO>> buscarReservas(
+            @RequestParam(required = false) String apellido,
+            @RequestParam(required = false) String nombre
+    ) {
+        return ResponseEntity.ok(
+            reservaService.buscarPorApellidoNombre(apellido, nombre)
+        );
+    }
 
-
+    @DeleteMapping("/reservas/{id}")
+    public ResponseEntity<?> eliminarReserva(@PathVariable Integer id){
+        reservaService.deleteReserva(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 

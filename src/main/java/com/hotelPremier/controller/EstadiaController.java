@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 public class EstadiaController {
@@ -31,6 +33,13 @@ public class EstadiaController {
     ){
         estadiaService.guardarListaEstadia(listaestadiaDTO);
         return ResponseEntity.ok("Estadía guardada correctamente");
+    }   
+
+    @GetMapping("/sin-factura")
+    public ResponseEntity<List<EstadiaDTO>> getEstadiasSinFactura() {
+        List<EstadiaDTO> lista = estadiaService.obtenerEstadiasSinFactura();
+        return ResponseEntity.ok(lista);
     }
+
 
 }

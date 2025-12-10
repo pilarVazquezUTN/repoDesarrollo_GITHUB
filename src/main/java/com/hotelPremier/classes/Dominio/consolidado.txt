@@ -1,0 +1,1476 @@
+
+📂 Estructura del proyecto:
+-----------------------------------
+.
+├── consolidado.txt
+├── Direccion.java
+├── Estadia.java
+├── Factura.java
+├── habitacion
+│   ├── DobleEstandar.java
+│   ├── DobleSuperior.java
+│   ├── IndividualEstandar.java
+│   ├── Suite.java
+│   └── SuperiorFamilyPlan.java
+├── Habitacion.java
+├── HuespedID.java
+├── Huesped.java
+├── medioDePago
+│   ├── Cheque.java
+│   ├── MedioDePago.java
+│   ├── MonedaExtranjera.java
+│   ├── MonedaLocal.java
+│   ├── TarjetaCredito.java
+│   └── TarjetaDebito.java
+├── NotaDeCredito.java
+├── Pago.java
+├── Reserva.java
+├── responsablePago
+│   ├── PersonaFisica.java
+│   ├── PersonaJuridica.java
+│   └── ResponsablePago.java
+├── servicioExtra
+│   ├── ServicioExtraID.java
+│   └── ServicioExtra.java
+└── Usuario.java
+
+5 directories, 27 files
+
+-----------------------------------
+
+// [Direccion.java]
+package com.hotelPremier.classes.Dominio;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+
+@Entity
+@Table(name="direccion")
+public class Direccion {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Column(name = "id_direccion")
+    private Integer id_direccion;
+
+    @Column(name="calle")
+    private String calle;
+    
+    @Column(name="numero")
+    private Integer numero;
+    @Column(name="localidad")
+    private String localidad;
+    @Column(name="departamento")
+    private String departamento;
+    @Column(name="piso")
+    private Integer piso;
+    @Column(name="codigopostal")
+    private Integer codigoPostal;
+    @Column(name="provincia")
+    private String provincia;
+    @Column(name="pais")
+    private String pais;
+
+
+   /* /**
+     * constructor de direccion
+     * @param calle
+     * @param numero
+     * @param localidad
+     * @param departamento
+     * @param piso
+     * @param codigoPostal
+     * @param provincia
+     * @param pais
+     */
+  /*  public Direccion(String calle, String numero, String localidad, String departamento, String piso, Integer codigoPostal, String provincia, String pais) {
+        this.calle = calle;
+        this.numero = numero;
+        this.localidad = localidad;
+        this.departamento = departamento;
+        this.piso = piso;
+        this.codigoPostal = codigoPostal;
+        this.provincia = provincia;
+        this.pais = pais;
+    }
+*/
+
+
+    public void setID(Integer id){
+        this.id_direccion=id;
+    }
+    public Integer getID(){
+        return this.id_direccion;
+    }
+
+    /**
+     * retorna la calle
+     * @return
+     */
+    public String getCalle() {
+        return calle;
+    }
+
+    /**
+     * retorna el numero
+     * @return
+     */
+    public Integer getNumero() {
+        return numero;
+    }
+
+    /**
+     * retorna localidad
+     * @return
+     */
+    public String getLocalidad() {
+        return localidad;
+    }
+    /**
+     * retorna departamento
+     * @return
+     */
+    public String getDepartamento() {
+        return departamento;
+    }
+    /**
+     * retorna piso
+     * @return
+     */
+    public Integer getPiso() {
+        return piso;
+    }
+
+    /**
+     * retorna cp
+     * @return
+     */
+    public Integer getCodigoPostal() {
+        return codigoPostal;
+    }
+    /**
+     * retorna provincia
+     * @return
+     */
+    public String getProvincia() {
+        return provincia;
+    }
+    /**
+     * retorna pais
+     * @return
+     */
+    public String getPais() {
+        return pais;
+    }
+
+    /**
+     * set de calle
+     * @param calle
+     */
+    public void setCalle(String calle) {
+        this.calle = calle;
+    }
+
+    /**
+     * set de numero
+     * @param numero
+     */
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
+
+    /**
+     * set de localidad
+     * @param localidad
+     */
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+
+    /**set de departamento
+     *
+     * @param departamento
+     */
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
+    }
+
+    /**
+     * set de piso
+     * @param piso
+     */
+    public void setPiso(Integer piso) {
+        this.piso = piso;
+    }
+
+    /**
+     * set de codigo postal
+     * @param codigoPostal
+     */
+    public void setCodigoPostal(Integer codigoPostal) {
+        this.codigoPostal = codigoPostal;
+    }
+
+    /**
+     * set de provincia
+     * @param provincia
+     */
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+    /**
+     * set d pais
+     * @param pais
+     */
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+}
+
+
+
+
+
+// [Estadia.java]
+package com.hotelPremier.classes.Dominio;
+
+import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!
+
+@JsonIgnoreProperties({"listahuesped", "habitacion"}) //JSIGNORE!!!!
+@Entity
+
+@Table(name="estadia")
+public class Estadia { 
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id_estadia")
+    private Integer id_estadia;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Column(name="checkin") 
+    private Date checkin;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Column(name="checkout")
+    private Date checkout;
+
+    @ManyToOne //de estadia a habitacion
+    @JsonManagedReference//trabaja con el front
+    @JsonIgnore
+    @JoinColumn(name = "nro_habitacion")
+    private Habitacion habitacion;
+
+    @ManyToMany(mappedBy = "listaestadia")
+    private List<Huesped> listahuesped; 
+
+    @OneToMany(mappedBy = "estadia")
+    private List<Factura> listafactura;
+
+    @OneToMany(mappedBy = "estadia")
+    private List<ServicioExtra> listaserviciosextra;
+
+    @OneToOne
+    @JoinColumn(name = "id_reserva")
+    private Reserva reserva;
+
+
+
+    
+
+
+    public Integer getId_estadia() {
+        return this.id_estadia;
+    }
+    public void setId_estadia(Integer id_estadia) {
+        this.id_estadia = id_estadia;
+    }
+    public Date getCheckin() {
+        return this.checkin;
+    }
+    public void setCheckin(Date checkin) {
+        this.checkin = checkin;
+    }
+    public Date getCheckout() {
+        return this.checkout;
+    }
+    public void setCheckout(Date checkout) {
+        this.checkout = checkout;
+    }
+    public Habitacion getHabitacion() {
+        return this.habitacion;
+    }
+    public void setHabitacion(Habitacion habitacion) {
+        this.habitacion = habitacion;
+    }
+    public List<Huesped> getListahuesped() {
+        return this.listahuesped;
+
+    }
+    public void setListahuesped(List<Huesped> listahuesped) {
+        this.listahuesped = listahuesped;
+    }
+}
+
+
+// [Factura.java]
+package com.hotelPremier.classes.Dominio;
+
+import java.util.Date;
+
+import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "factura")
+public class Factura {
+
+    @Id
+    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer ID;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "fecha")
+    private Date fecha;
+
+    @Column(name = "total")
+    private float total;
+
+    @Column(name = "tipo")
+    private String tipo;
+
+    @Column(name = "estado")
+    private String estado;
+
+    @ManyToOne
+    @JoinColumn(name = "id_estadia")
+    private Estadia estadia;
+
+    // 🔥 FK correcta hacia NotaDeCredito
+    @ManyToOne
+    @JoinColumn(name = "id_notacredito")
+    private NotaDeCredito notacredito;
+
+    @OneToOne
+    @JoinColumn(name = "pago")
+    private Pago pago;
+
+    @ManyToOne
+    @JoinColumn(name = "responsablepago")
+    private ResponsablePago responsablepago;
+
+    public Factura() {}
+
+    public Factura(Date fecha, float total, String tipo, String estado,
+                   Estadia estadia, NotaDeCredito notacredito, Pago pago,
+                   ResponsablePago responsablepago) {
+        this.fecha = fecha;
+        this.total = total;
+        this.tipo = tipo;
+        this.estado = estado;
+        this.estadia = estadia;
+        this.notacredito = notacredito;
+        this.pago = pago;
+        this.responsablepago = responsablepago;
+    }
+
+    public Integer getID() { return ID; }
+
+    public Date getFecha() { return fecha; }
+    public void setFecha(Date fecha) { this.fecha = fecha; }
+
+    public float getTotal() { return total; }
+    public void setTotal(float total) { this.total = total; }
+
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public Estadia getEstadia() { return estadia; }
+    public void setEstadia(Estadia estadia) { this.estadia = estadia; }
+
+    public NotaDeCredito getNotaDeCredito() { return notacredito; }
+    public void setNotaDeCredito(NotaDeCredito notacredito) { this.notacredito = notacredito; }
+
+    public Pago getPago() { return pago; }
+    public void setPago(Pago pago) { this.pago = pago; }
+
+    public ResponsablePago getResponsablepago() { return responsablepago; }
+    public void setResponsablepago(ResponsablePago responsablepago) {
+        this.responsablepago = responsablepago;
+    }
+}
+
+
+
+// [habitacion/DobleEstandar.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("DobleEstandar")
+public class DobleEstandar  extends Habitacion {
+    @Column(name = "camasindividuales")
+    private Integer camasIndividuales;
+    @Column(name = "camadoble")
+    private Integer camaDoble;
+}
+
+
+
+// [habitacion/DobleSuperior.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("DobleSuperior")
+public class DobleSuperior  extends Habitacion{
+    @Column(name = "camasindividuales")
+    private Integer camasIndividuales;
+    @Column(name = "camadoble")
+    private Integer camaDoble;
+}
+
+
+
+// [habitacion/IndividualEstandar.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("IndividualEstandar")
+public class IndividualEstandar  extends Habitacion{
+    @Column(name = "camaskingsize")
+    private Integer camasKingSize;
+}
+
+
+
+// [habitacion/Suite.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("Suite")
+public class Suite extends Habitacion{
+    @Column(name = "camaskingsize")
+    private Integer camasKingSize;
+}
+
+
+
+// [habitacion/SuperiorFamilyPlan.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+
+import com.hotelPremier.classes.Dominio.Habitacion;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("SuperiorFamilyPlan")
+public class SuperiorFamilyPlan extends Habitacion{
+    @Column(name = "camasindividuales")
+    private Integer camasIndividuales;
+    @Column(name = "camadoble")
+    private Integer camaDoble;
+}
+
+
+
+// [Habitacion.java]
+package com.hotelPremier.classes.Dominio;
+
+ import java.util.List;
+
+ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.hotelPremier.classes.Dominio.habitacion.DobleEstandar;
+import com.hotelPremier.classes.Dominio.habitacion.DobleSuperior;
+import com.hotelPremier.classes.Dominio.habitacion.IndividualEstandar;
+import com.hotelPremier.classes.Dominio.habitacion.Suite;
+import com.hotelPremier.classes.Dominio.habitacion.SuperiorFamilyPlan;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+
+@Entity
+//@JsonIgnoreProperties({ "listareservas", "listaestadias" })
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)//una clase padre tiene subclases hijas, y querés que todas se guarden juntas en una sola tabla en la base de datos.
+@DiscriminatorColumn(name = "tipohabitacion")
+
+@Table(name="habitacion")
+public class Habitacion  {
+    @Id 
+    private Integer numero; 
+
+    @Column(name="estado") 
+    private String estado;
+    @Column(name="precio")  
+    private float precio;
+    @Column(name="cantidadpersonas")
+    private Integer cantidadPersonas;    
+    @Column(name = "tipohabitacion", insertable=false, updatable=false)
+    private String tipohabitacion;
+
+    @OneToMany(mappedBy = "habitacion")
+    @JsonBackReference
+    @JsonIgnore
+    private List<Estadia> listaestadias; 
+
+    @OneToMany(mappedBy = "nro_habitacion")
+    @JsonIgnore
+    private List<Reserva> listareservas;
+
+
+
+    
+    // GETTERS y SETTERS
+
+    
+    public List<Reserva> getListareservas(){ return this.listareservas;}
+    public void setListareservas(List<Reserva> listres){
+        this.listareservas=listres;
+    }
+
+    public List<Estadia> getListaEstadia() { return this.listaestadias; }
+    public Integer getNumero() { return this.numero; }
+    public void setNumero(Integer numero) { this.numero = numero;}
+
+    public String getEstado() { return this.estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public float getPrecio() { return this.precio; }
+    public void setPrecio(float precio) { this.precio = precio; }
+
+    public int getCantidadPersonas() { return this.cantidadPersonas; }
+    public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
+
+
+    public void setTipo(String tipo){
+        
+        this.tipohabitacion=tipo;
+        /* 
+        if (tipo.equals("IndividualEstandar")) this.tipoHab="IndividualEstandar";
+        if (tipo.equals("DobleEstandar") ) this.tipoHab="DobleEstandar";
+        if (this instanceof DobleSuperior) this.tipoHab="DobleSuperior";
+        if (this instanceof SuperiorFamilyPlan) this.tipoHab="SuperiorFamilyPlan";
+        if (this instanceof Suite) this.tipoHab="Suite";
+        */
+    }
+    public String getTipo(){
+        if (this instanceof IndividualEstandar) return "IndividualEstandar";
+        if (this instanceof DobleEstandar) return "DobleEstandar";
+        if (this instanceof DobleSuperior) return "DobleSuperior";
+        if (this instanceof SuperiorFamilyPlan) return "SuperiorFamilyPlan";
+        if (this instanceof Suite) return "Suite";
+        
+        return null;
+    }
+
+    
+} 
+
+
+
+// [Huesped.java]
+package com.hotelPremier.classes.Dominio;
+//import Classes.Estadia.*;
+import java.util.Date;
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.responsablePago.*;
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!!
+
+@JsonIgnoreProperties("listaestadia")//!!!!!!
+@Entity
+@Table(name = "huesped") // 2. (Opcional) Especifica el nombre de la tabla
+public class Huesped { 
+
+    @Column(name="apellido")
+    private String apellido;
+    @Column(name="nombre")
+    private String nombre;
+    @EmbeddedId
+    HuespedID huespedID;
+
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Column(name="fechanacimiento")
+    private Date fechaNacimiento;
+    @Column(name="telefono")
+    private String telefono;
+    @Column(name="email")
+    private String email;
+  
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_direccion")
+    private Direccion direccion;
+
+    @Column(name="cuit")
+    private String cuit;
+    @Column(name="posicioniva")
+    private String posicionIva;
+    @Column(name="ocupacion")
+    private String ocupacion;
+    @Column(name="nacionalidad")
+    private String nacionalidad;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "relac_estadia_huesped",
+            joinColumns = {
+                @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento"),
+                @JoinColumn(name = "dni", referencedColumnName = "dni")
+            },
+            inverseJoinColumns = @JoinColumn(name = "id_estadia")
+    )
+    private List<Estadia> listaestadia;
+
+
+    @OneToOne
+    @JoinColumn(name = "id_responsablepago")
+    private ResponsablePago responsablePago;
+
+
+
+    public Huesped() {
+        this.huespedID = new HuespedID();
+    }
+
+
+    public String getDni() {
+        return this.huespedID.getDni();
+    }
+
+    public String getTipoDocumento() {
+        return this.huespedID.getTipoDocumento();
+    }
+
+    // Setters del ID compuesto
+    public void setDni(String dni) {
+        if (this.huespedID == null) this.huespedID = new HuespedID();
+        this.huespedID.setDni(dni);
+    }
+
+    public void setTipoDocumento(String tipoDocumento) {
+        if (this.huespedID == null) this.huespedID = new HuespedID();
+        this.huespedID.setTipoDocumento(tipoDocumento);
+    }
+    public HuespedID getHuespedID(){
+        return this.huespedID;
+    }
+    public void setHuespedID(HuespedID id){
+        this.huespedID.setDni(id.getDni());
+        this.huespedID.setTipoDocumento(id.getTipoDocumento());
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    /**
+     *
+     * @param apellido
+     */
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    /**
+     *
+     * @param tipoDocumento
+     */
+
+
+
+    /**
+     *
+     * @param fechaNacimiento
+     */
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    /**
+     *
+     * @param telefono
+     */
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    /**
+     *
+     * @param email
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    /**
+     *
+     * @param cuit
+     */
+    public void setCuit(String cuit) {
+        this.cuit = cuit;
+    }
+
+    /**
+     *
+     * @param posicionIva
+     */
+    public void setPosicionIva(String posicionIva) {
+        this.posicionIva = posicionIva;
+    }
+
+    /**
+     *
+     * @param ocupacion
+     */
+    public void setOcupacion(String ocupacion) {
+        this.ocupacion = ocupacion;
+    }
+
+    /**
+     *
+     * @param nacionalidad
+     */
+    public void setNacionalidad(String nacionalidad) {
+        this.nacionalidad = nacionalidad;
+    }
+
+    public void setDireccion(Direccion direc){
+        this.direccion=direc;
+    }
+
+    public Direccion getDireccion(){
+        return this.direccion;
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public Date getFechaNacimiento() {
+        return this.fechaNacimiento;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getApellido() {
+        return this.apellido;
+    }
+
+    /**
+     *
+     * @return
+     */
+
+    /**
+     *
+     * @return
+     */
+
+    /**
+     *
+     * @return
+     */
+    public String getCuit() {
+        return this.cuit;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getPosicionIva() {
+        return this.posicionIva;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getOcupacion() {
+        return this.ocupacion;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getNacionalidad() {
+        return this.nacionalidad;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getEmail() {
+        return this.email;
+    }
+
+    /**
+     *
+     * @return
+ */
+
+    /**
+     *
+     * @return
+     */
+    public String getNombre() {
+        return this.nombre;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getTelefono() {
+        return this.telefono;
+    }
+
+
+    public List<Estadia> getListaEstadia(){
+        return this.listaestadia;
+    }
+    public void setListaEstadia(List<Estadia> lista){
+        this.listaestadia=lista;
+    }
+
+}
+
+
+
+
+
+// [HuespedID.java]
+package com.hotelPremier.classes.Dominio;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+
+import java.io.Serializable;
+@Embeddable
+public class HuespedID implements Serializable {
+    @Column(name = "tipodocumento") 
+    private String tipoDocumento;
+
+   @Column(name = "dni") 
+   private String dni;
+
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+    
+    public String getDni() {
+        return dni;
+    }
+ 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HuespedID that = (HuespedID) o;
+        return tipoDocumento.equals(that.tipoDocumento) && dni.equals(that.dni);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(tipoDocumento, dni);
+    }
+}
+
+
+
+// [medioDePago/Cheque.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+import java.util.Date;
+
+public class Cheque extends MedioDePago{
+    private int numeroCheque;
+    private String banco;
+    private Date plazo;
+}
+
+
+
+// [medioDePago/MedioDePago.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+import java.util.Date;
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.Pago;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+
+@Entity
+@Table(name="medio_pago")
+public class MedioDePago {
+    @Id 
+    @Column(name="id_mediodepago")
+    private Integer id_mediodepago;
+    @Column(name="monto")
+    private int monto;
+    @Column(name="fecha")
+    private Date fecha;
+
+    //se pone mappedBY= aca va el nombre de la variable en Pago, que seria listamdiodepago.
+    @ManyToMany(mappedBy = "listamediodepago")
+    private List<Pago> listapago;
+    
+    
+    /* CONSTRUCTORES */
+    
+    /* GETTERS Y SETTERS */
+    
+    public void setIdMedioDePago(Integer id_mediodepago){
+        this.id_mediodepago=id_mediodepago;
+    }
+}
+
+
+
+// [medioDePago/MonedaExtranjera.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+public class MonedaExtranjera extends MedioDePago{
+    private String tipoMoneda;
+}
+
+
+
+
+
+// [medioDePago/MonedaLocal.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+public class MonedaLocal extends MedioDePago{
+    private String tipoMoneda;
+
+}
+
+
+
+
+// [medioDePago/TarjetaCredito.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+public class TarjetaCredito extends MedioDePago{
+    private String banco;
+    private int cuotas;
+
+}
+
+
+
+// [medioDePago/TarjetaDebito.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+
+public class TarjetaDebito extends MedioDePago{
+    private String banco;
+    private String dniTitular;
+
+}
+
+
+
+// [NotaDeCredito.java]
+package com.hotelPremier.classes.Dominio;
+
+import java.util.List;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "nota_credito")
+public class NotaDeCredito {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_notacredito")
+    private Integer id;
+
+    @Column(name = "importe")
+    private float importe;
+
+    // 🔥 mappedBy correcto → coincide EXACTO con el atributo en Factura
+    @OneToMany(mappedBy = "notacredito")
+    private List<Factura> facturas;
+
+    public Integer getId() { return id; }
+    public float getImporte() { return importe; }
+    public List<Factura> getFacturas() { return facturas; }
+
+    public void setImporte(float importe) { this.importe = importe; }
+    public void setFacturas(List<Factura> facturas) { this.facturas = facturas; }
+}
+
+
+
+// [Pago.java]
+package com.hotelPremier.classes.Dominio;
+
+import java.util.Date;
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.medioDePago.MedioDePago;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "pago")
+public class Pago {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_pago")
+    private Integer id_pago;
+
+    @Column(name = "monto")
+    private float monto;
+
+    @Column(name = "mediopago")
+    private String medioPago;
+
+    @Column(name = "fecha")
+    private Date fecha;
+
+    @OneToOne
+    @JoinColumn(name = "factura")
+    private Factura factura;
+
+    @ManyToMany
+    @JoinTable(
+        name = "mediopago_pago",
+        joinColumns = @JoinColumn(name = "id_pago"),
+        inverseJoinColumns = @JoinColumn(name = "id_mediodepago")
+    )
+    private List<MedioDePago> listamediodepago;
+
+    // ===========================
+    // Constructores
+    // ===========================
+
+    public Pago() {
+    }
+
+    public Pago(Integer id_pago, float monto, String medioPago, Date fecha,
+                Factura factura, List<MedioDePago> listamediodepago) {
+        this.id_pago = id_pago;
+        this.monto = monto;
+        this.medioPago = medioPago;
+        this.fecha = fecha;
+        this.factura = factura;
+        this.listamediodepago = listamediodepago;
+    }
+
+    // ===========================
+    // Getters y Setters
+    // ===========================
+
+    public Integer getId_pago() {
+        return id_pago;
+    }
+
+    public void setId_pago(Integer id_pago) {
+        this.id_pago = id_pago;
+    }
+
+    public float getMonto() {
+        return monto;
+    }
+
+    public void setMonto(float monto) {
+        this.monto = monto;
+    }
+
+    public String getMedioPago() {
+        return medioPago;
+    }
+
+    public void setMedioPago(String medioPago) {
+        this.medioPago = medioPago;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public Factura getFactura() {
+        return factura;
+    }
+
+    public void setFactura(Factura factura) {
+        this.factura = factura;
+    }
+
+    public List<MedioDePago> getListamediodepago() {
+        return listamediodepago;
+    }
+
+    public void setListamediodepago(List<MedioDePago> listamediodepago) {
+        this.listamediodepago = listamediodepago;
+    }
+}
+
+
+
+// [Reserva.java]
+package com.hotelPremier.classes.Dominio;
+
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import java.util.Date;
+
+@Entity
+//@JsonIgnoreProperties("habitacion")
+// 1. Marca la clase como una tabla en la BDD
+@Table(name = "reserva") // 2. (Opcional) Especifica el nombre de la tabla
+public class Reserva {
+    @Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id_reserva")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id_reserva;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Column(name="fecha_desde")
+    private Date fecha_desde;
+
+    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Column(name="fecha_hasta") 
+    private Date fecha_hasta;
+    
+    @Column(name="estado")
+    private String estado;
+    @Column(name="nombre")
+    private String nombre;
+    @Column(name="apellido")
+    private String apellido;
+    @Column(name="telefono")
+    private String telefono;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "nro_habitacion") 
+    private Habitacion nro_habitacion;
+
+    @OneToOne
+    @JoinColumn(name = "id_estadia")
+    private Estadia estadia;
+
+
+    public void setId_reserva(Integer id_reserva) {
+        this.id_reserva = id_reserva;
+    }
+    public  Integer getId_reserva() {
+        return this.id_reserva;
+    }
+
+    public void setHabitacion (Habitacion habitacion){
+
+        this.nro_habitacion=habitacion;
+    }
+    public Habitacion getHabitacion(){
+        return this.nro_habitacion;
+    }
+
+   /* public String getTipo_habitacion(){
+        return nro_habitacion.getTipohabitacion();
+    }
+*/
+
+
+
+    public String getNombre() {
+        return this.nombre;
+    }
+   public void setNombre(String nombre) {
+        this.nombre = nombre;
+   }
+
+    public void setFecha_desde(Date fecha_desde) {
+        this.fecha_desde = fecha_desde;
+    }
+
+    public Date getFecha_desde() {
+        return this.fecha_desde;
+    }
+
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+
+    public String getApellido() {
+        return this.apellido;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+
+    public void setFecha_hasta(Date fecha_hasta) {
+        this.fecha_hasta = fecha_hasta;
+    }
+
+    public Date getFecha_hasta() {
+        return fecha_hasta;
+    }
+
+}
+
+
+
+// [responsablePago/PersonaFisica.java]
+package com.hotelPremier.classes.Dominio.responsablePago;
+
+import com.hotelPremier.classes.Dominio.Huesped;
+
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.OneToOne;
+
+public class PersonaFisica extends ResponsablePago{
+    private String nombre;
+
+
+    @OneToOne
+    @JoinColumns({
+            @JoinColumn(name = "dni", referencedColumnName = "dni"),
+            @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento")
+    })
+    private Huesped huesped;
+}
+
+
+
+// [responsablePago/PersonaJuridica.java]
+package com.hotelPremier.classes.Dominio.responsablePago;
+
+import com.hotelPremier.classes.Dominio.Direccion;
+
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+
+public class PersonaJuridica extends ResponsablePago{
+    private String razonSocial;
+    private String cuit;
+    private Direccion direccion;
+
+    @OneToOne
+    @JoinColumn(name = "id_direccion")
+    Direccion direccionpersonaJuridica;
+
+}
+
+
+
+// [responsablePago/ResponsablePago.java]
+package com.hotelPremier.classes.Dominio.responsablePago;
+
+import java.util.List;
+
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.Huesped;
+
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+
+@Entity
+@Table(name="responsablepago")
+public class ResponsablePago {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id_responsablepago")
+    private Integer id_responsablePago; 
+
+
+    @OneToOne
+    @JoinColumn(name = "id_direccion" )
+    private Direccion direccion;
+
+
+    @OneToOne
+    @JoinColumns({
+            @JoinColumn(name = "tipodoc", referencedColumnName = "tipodocumento"),
+            @JoinColumn(name = "dni", referencedColumnName = "dni")
+    })
+    private Huesped huesped;
+    
+    @OneToMany(mappedBy = "responsablepago")
+    private List<Factura>  listafactura;
+
+}
+
+
+
+// [servicioExtra/ServicioExtra.java]
+package com.hotelPremier.classes.Dominio.servicioExtra;
+
+import com.hotelPremier.classes.Dominio.Estadia;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="servicio_extra")
+public class ServicioExtra {
+
+
+    @EmbeddedId
+    private ServicioExtraID servicioExtraID;
+
+
+    @ManyToOne
+    @JoinColumn(name = "id_estadia",insertable = false, updatable = false)
+    private Estadia estadia; // La Entidad completa
+
+    @Column(name="tipo_servicio")
+    private String tipo_servicio ;
+    @Column(name="precio")
+    private Float precio ;
+
+
+
+}
+
+
+
+// [servicioExtra/ServicioExtraID.java]
+package com.hotelPremier.classes.Dominio.servicioExtra;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+@Embeddable
+public class ServicioExtraID implements Serializable {
+    @Column(name="id_servicio")
+    private Integer id_servicio;
+    @Column(name="id_estadia")
+    private Integer id_estadia;
+
+    public void setId_estadia(Integer id_estadia) {
+        this.id_estadia = id_estadia;
+    }
+    
+    public Integer getId_estadia() {
+        return id_estadia;
+    }
+    public void setId_servicio(Integer id_servicio) {
+        this.id_servicio = id_servicio;
+    }
+    public Integer getId_servicio() {
+        return id_servicio;
+    }
+
+    // equals y hashCode obligatorios
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ServicioExtraID)) return false;
+        ServicioExtraID that = (ServicioExtraID) o;
+        return Objects.equals(id_servicio, that.id_servicio) &&
+               Objects.equals(id_estadia, that.id_estadia);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id_servicio, id_estadia);
+    }
+} 
+
+
+
+// [Usuario.java]
+package com.hotelPremier.classes.Dominio;
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+
+@Entity
+@Table(name="usuario")
+public class Usuario {
+    @Id 
+    @Column(name="nombre")
+    String nombre;
+    @Column(name="contrasenia")
+    String contrasenia;
+}
+
+
+

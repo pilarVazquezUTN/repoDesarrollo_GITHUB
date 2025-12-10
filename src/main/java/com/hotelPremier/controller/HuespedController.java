@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Set;
 
 
-import com.hotelPremier.service.HuespedServiceImpl;
+import com.hotelPremier.service.HuespedService;
 
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ import com.hotelPremier.classes.Dominio.Huesped;
 public class HuespedController {
     
     @Autowired 
-    private HuespedServiceImpl huespedService;
+    private HuespedService huespedService;
 
     /*
         los end path van en plural.
@@ -58,13 +58,14 @@ public class HuespedController {
         HuespedDTO addedHuesped = huespedService.addHuesped(huesped);
         return new ResponseEntity<>(addedHuesped, HttpStatus.OK);
     }
-    @DeleteMapping("/huespedes")
-    public ResponseEntity<HuespedDTO> deleteHuesped(@PathVariable String dni) {
-        huespedService.deleteHuesped(dni);
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); 
-        /*
-        se puede devolver el usuario que eliminamos. */
-
+    @DeleteMapping("/huespedes/{tipo}/{dni}")
+    public ResponseEntity<?> deleteHuesped(
+            @PathVariable String tipo,
+            @PathVariable String dni
+    ) {
+        huespedService.deleteHuesped(tipo, dni);
+        return ResponseEntity.noContent().build();
     }
+
 
 }

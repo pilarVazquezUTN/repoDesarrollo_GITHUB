@@ -36,6 +36,15 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
     Integer encontrarIdReserva(@Param("fechadesde") Date fechaDesde, @Param("fechahasta") Date fechaHasta,@Param("nro_hab") Integer nroHab);
    // void delete(Reserva r);
 
-    //Reserva findById_reserva(Integer id_reserva);
+    @Query("""
+    SELECT r
+    FROM Reserva r
+    WHERE (:apellido IS NULL OR LOWER(r.apellido) LIKE LOWER(CONCAT(:apellido, '%')))
+      AND (:nombre IS NULL OR LOWER(r.nombre) LIKE LOWER(CONCAT(:nombre, '%')))
+    """)
+    List<Reserva> buscarPorApellidoNombre(
+            @Param("apellido") String apellido,
+            @Param("nombre") String nombre
+    );
 
 }
