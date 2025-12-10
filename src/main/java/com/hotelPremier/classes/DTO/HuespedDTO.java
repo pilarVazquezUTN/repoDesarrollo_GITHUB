@@ -1,232 +1,56 @@
 package com.hotelPremier.classes.DTO;
 
 import java.util.Date;
-import java.util.List;
-
-import com.hotelPremier.classes.Dominio.HuespedID;
 
 public class HuespedDTO {
-    private HuespedID huespedID;
-    private String apellido;
+
     private String nombre;
-    //private String tipoDocumento;
-    //private String dni;
+    private String apellido;
+    private HuespedIDDTO huespedID;
     private Date fechaNacimiento;
     private String telefono;
     private String email;
     private DireccionDTO direccion;
-    private String cuit; 
+    private String cuit;
     private String posicionIva;
     private String ocupacion;
     private String nacionalidad;
-    private List<EstadiaDTO> listaestadia;
-    //private List<Estadia> listaestadia;
 
+    public HuespedDTO() { this.huespedID = new HuespedIDDTO(); }
 
-     
-    public HuespedDTO() {
-        this.huespedID = new HuespedID();
-    }
-    
-    
-    public HuespedID getHuespedID(){
-        return this.huespedID;
-    }
-    public void setHuespedID(HuespedID id){
-        this.huespedID.setDni(id.getDni());
-        this.huespedID.setTipoDocumento(id.getTipoDocumento());
-    }
+    public HuespedIDDTO getHuespedID() { return huespedID; }
+    public void setHuespedID(HuespedIDDTO id){ this.huespedID = id; }
 
-    public String getDni() {
-        return this.huespedID.getDni();
-    }
+    public String getDni() { return huespedID.getDni(); }
+    public String getTipoDocumento() { return huespedID.getTipoDocumento(); }
 
-    public String getTipoDocumento() {
-        return this.huespedID.getTipoDocumento();
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
 
+    public Date getFechaNacimiento() { return fechaNacimiento; }
+    public void setFechaNacimiento(Date fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
-    /**
-     *
-     * @param nombre
-     */
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    /**
-     *
-     * @param apellido
-     */
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
+    public DireccionDTO getDireccion() { return direccion; }
+    public void setDireccion(DireccionDTO direccion) { this.direccion = direccion; }
 
-    
+    public String getCuit() { return cuit; }
+    public void setCuit(String cuit) { this.cuit = cuit; }
 
+    public String getPosicionIva() { return posicionIva; }
+    public void setPosicionIva(String posicionIva) { this.posicionIva = posicionIva; }
 
-    
+    public String getOcupacion() { return ocupacion; }
+    public void setOcupacion(String ocupacion) { this.ocupacion = ocupacion; }
 
-    /**
-     *
-     * @param fechaNacimiento
-     */
-    public void setFechaNacimiento(Date fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    /**
-     *
-     * @param telefono
-     */
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    /**
-     *
-     * @param email
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    /**
-     *
-     * @param direccion
-     */
-    public void setdireccion(DireccionDTO direccion) {
-        this.direccion = direccion;
-    }
-
-    /**
-     *
-     * @param cuit
-     */
-    public void setCuit(String cuit) {
-        this.cuit = cuit;
-    }
-
-    /**
-     *
-     * @param posicionIva
-     */
-    public void setPosicionIva(String posicionIva) {
-        this.posicionIva = posicionIva;
-    }
-
-    /**
-     *
-     * @param ocupacion
-     */
-    public void setOcupacion(String ocupacion) {
-        this.ocupacion = ocupacion;
-    }
-
-    /**
-     *
-     * @param nacionalidad
-     */
-    public void setNacionalidad(String nacionalidad) {
-        this.nacionalidad = nacionalidad;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Date getFechaNacimiento() {
-        return this.fechaNacimiento;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getApellido() {
-        return this.apellido;
-    }
-
-    
-
-    
-
-    /**
-     *
-     * @return
-     */
-    public String getCuit() {
-        return this.cuit;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getPosicionIva() {
-        return this.posicionIva;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getOcupacion() {
-        return this.ocupacion;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getNacionalidad() {
-        return this.nacionalidad;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getEmail() {
-        return this.email;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public DireccionDTO getdireccion() {
-        return this.direccion;
-    }
-
-
-    /**
-     *
-     * @return
-     */
-    public String getNombre() {
-        return this.nombre;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getTelefono() {
-        return this.telefono;
-    }
-
-    /**
-     *
-     * @return
-     */
-
-    public void setListaEstadia(List<EstadiaDTO> lista){
-        this.listaestadia=lista;
-    }
-    public List<EstadiaDTO> getListaEstadia(){
-        return this.listaestadia;
-    }
+    public String getNacionalidad() { return nacionalidad; }
+    public void setNacionalidad(String nacionalidad) { this.nacionalidad = nacionalidad; }
 }

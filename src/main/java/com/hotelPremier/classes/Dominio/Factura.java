@@ -2,6 +2,7 @@ package com.hotelPremier.classes.Dominio;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
 import jakarta.persistence.*;
 
@@ -27,11 +28,13 @@ public class Factura {
     @Column(name = "estado")
     private String estado;
 
+    // ⭐ FACTURA → ESTADIA COMPLETA (SE DEVUELVE)
     @ManyToOne
     @JoinColumn(name = "id_estadia")
+    @JsonManagedReference(value = "factura-estadia")
     private Estadia estadia;
 
-    // 🔥 FK correcta hacia NotaDeCredito
+    // FK correcta hacia NotaDeCredito
     @ManyToOne
     @JoinColumn(name = "id_notacredito")
     private NotaDeCredito notacredito;
@@ -82,8 +85,8 @@ public class Factura {
     public Pago getPago() { return pago; }
     public void setPago(Pago pago) { this.pago = pago; }
 
-    public ResponsablePago getResponsablepago() { return responsablepago; }
-    public void setResponsablepago(ResponsablePago responsablepago) {
+    public ResponsablePago getResponsablePago() { return responsablepago; }
+    public void setResponsablePago(ResponsablePago responsablepago) {
         this.responsablepago = responsablepago;
     }
 }

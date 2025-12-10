@@ -1,5 +1,5 @@
 
-📂 Estructura del proyecto:
+📂 Estructura del proyecto (.)
 -----------------------------------
 .
 ├── consolidado.txt
@@ -236,87 +236,74 @@ package com.hotelPremier.classes.Dominio;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!
+import jakarta.persistence.*;
 
-@JsonIgnoreProperties({"listahuesped", "habitacion"}) //JSIGNORE!!!!
 @Entity
-
 @Table(name="estadia")
-public class Estadia { 
+public class Estadia {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_estadia")
     private Integer id_estadia;
 
-    @Temporal(TemporalType.DATE) //guarda fecha sin hora
-    @Column(name="checkin") 
+    @Temporal(TemporalType.DATE)
+    @Column(name="checkin")
     private Date checkin;
 
-    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Temporal(TemporalType.DATE)
     @Column(name="checkout")
     private Date checkout;
 
-    @ManyToOne //de estadia a habitacion
-    @JsonManagedReference//trabaja con el front
-    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "nro_habitacion")
+    @JsonBackReference(value = "habitacion-estadias")
     private Habitacion habitacion;
 
-    @ManyToMany(mappedBy = "listaestadia")
-    private List<Huesped> listahuesped; 
+    // ⭐⭐⭐ MUY IMPORTANTE ⭐⭐⭐
+    // Estadia YA NO define JoinTable → usa mappedBy
+    @ManyToMany(mappedBy = "listaestadia", fetch = FetchType.EAGER)
+    @JsonManagedReference(value = "estadia-huespedes")
+    private List<Huesped> listahuesped;
 
     @OneToMany(mappedBy = "estadia")
+    @JsonManagedReference(value = "estadia-facturas")
     private List<Factura> listafactura;
-
-    @OneToMany(mappedBy = "estadia")
-    private List<ServicioExtra> listaserviciosextra;
 
     @OneToOne
     @JoinColumn(name = "id_reserva")
+    @JsonBackReference(value = "reserva-estadia")
     private Reserva reserva;
 
+    @Column(name="estado")
+    private String estado;
 
+    // GETTERS & SETTERS
+    public Integer getId_estadia() { return id_estadia; }
+    public void setId_estadia(Integer id_estadia) { this.id_estadia = id_estadia; }
 
-    
+    public Date getCheckin() { return checkin; }
+    public void setCheckin(Date checkin) { this.checkin = checkin; }
 
+    public Date getCheckout() { return checkout; }
+    public void setCheckout(Date checkout) { this.checkout = checkout; }
 
-    public Integer getId_estadia() {
-        return this.id_estadia;
-    }
-    public void setId_estadia(Integer id_estadia) {
-        this.id_estadia = id_estadia;
-    }
-    public Date getCheckin() {
-        return this.checkin;
-    }
-    public void setCheckin(Date checkin) {
-        this.checkin = checkin;
-    }
-    public Date getCheckout() {
-        return this.checkout;
-    }
-    public void setCheckout(Date checkout) {
-        this.checkout = checkout;
-    }
-    public Habitacion getHabitacion() {
-        return this.habitacion;
-    }
-    public void setHabitacion(Habitacion habitacion) {
-        this.habitacion = habitacion;
-    }
-    public List<Huesped> getListahuesped() {
-        return this.listahuesped;
+    public Habitacion getHabitacion() { return habitacion; }
+    public void setHabitacion(Habitacion habitacion) { this.habitacion = habitacion; }
 
-    }
-    public void setListahuesped(List<Huesped> listahuesped) {
-        this.listahuesped = listahuesped;
-    }
+    public List<Huesped> getListahuesped() { return listahuesped; }
+    public void setListahuesped(List<Huesped> listahuesped) { this.listahuesped = listahuesped; }
+
+    public List<Factura> getListafactura() { return listafactura; }
+    public void setListafactura(List<Factura> listafactura) { this.listafactura = listafactura; }
+
+    public Reserva getReserva() { return reserva; }
+    public void setReserva(Reserva reserva) { this.reserva = reserva; }
 }
+
 
 
 // [Factura.java]
@@ -324,6 +311,7 @@ package com.hotelPremier.classes.Dominio;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
 import jakarta.persistence.*;
 
@@ -349,11 +337,13 @@ public class Factura {
     @Column(name = "estado")
     private String estado;
 
+    // ⭐ FACTURA → ESTADIA COMPLETA (SE DEVUELVE)
     @ManyToOne
     @JoinColumn(name = "id_estadia")
+    @JsonManagedReference(value = "factura-estadia")
     private Estadia estadia;
 
-    // 🔥 FK correcta hacia NotaDeCredito
+    // FK correcta hacia NotaDeCredito
     @ManyToOne
     @JoinColumn(name = "id_notacredito")
     private NotaDeCredito notacredito;
@@ -511,129 +501,135 @@ public class SuperiorFamilyPlan extends Habitacion{
 // [Habitacion.java]
 package com.hotelPremier.classes.Dominio;
 
- import java.util.List;
+import java.util.List;
 
- import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hotelPremier.classes.Dominio.habitacion.DobleEstandar;
-import com.hotelPremier.classes.Dominio.habitacion.DobleSuperior;
-import com.hotelPremier.classes.Dominio.habitacion.IndividualEstandar;
-import com.hotelPremier.classes.Dominio.habitacion.Suite;
-import com.hotelPremier.classes.Dominio.habitacion.SuperiorFamilyPlan;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
 @Entity
-//@JsonIgnoreProperties({ "listareservas", "listaestadias" })
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)//una clase padre tiene subclases hijas, y querés que todas se guarden juntas en una sola tabla en la base de datos.
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipohabitacion")
-
 @Table(name="habitacion")
 public class Habitacion  {
+
     @Id 
     private Integer numero; 
 
     @Column(name="estado") 
     private String estado;
+
     @Column(name="precio")  
     private float precio;
+
     @Column(name="cantidadpersonas")
     private Integer cantidadPersonas;    
+
     @Column(name = "tipohabitacion", insertable=false, updatable=false)
     private String tipohabitacion;
 
+    // HABITACION → RESERVAS (NO ROMPE JSON POR BACKREF EN Reserva)
     @OneToMany(mappedBy = "habitacion")
-    @JsonBackReference
-    @JsonIgnore
-    private List<Estadia> listaestadias; 
-
-    @OneToMany(mappedBy = "nro_habitacion")
-    @JsonIgnore
+    @JsonManagedReference(value = "habitacion-reservas")
     private List<Reserva> listareservas;
 
+    // HABITACION → ESTADIAS (NO ROMPE JSON POR BACKREF EN Estadia)
+    @OneToMany(mappedBy = "habitacion")
+    @JsonManagedReference(value = "habitacion-estadias")
+    private List<Estadia> listaestadias;
 
 
-    
-    // GETTERS y SETTERS
-
-    
-    public List<Reserva> getListareservas(){ return this.listareservas;}
-    public void setListareservas(List<Reserva> listres){
-        this.listareservas=listres;
+    public Habitacion() {
+        // Constructor vacío requerido por JPA
     }
 
-    public List<Estadia> getListaEstadia() { return this.listaestadias; }
-    public Integer getNumero() { return this.numero; }
-    public void setNumero(Integer numero) { this.numero = numero;}
+    public Habitacion(
+            Integer numero,
+            String estado,
+            float precio,
+            Integer cantidadPersonas,
+            String tipohabitacion,
+            List<Reserva> listareservas,
+            List<Estadia> listaestadias
+    ) {
+        this.numero = numero;
+        this.estado = estado;
+        this.precio = precio;
+        this.cantidadPersonas = cantidadPersonas;
+        this.tipohabitacion = tipohabitacion;
+        this.listareservas = listareservas;
+        this.listaestadias = listaestadias;
+    }
 
-    public String getEstado() { return this.estado; }
+    // ========================
+    // GETTERS & SETTERS
+    // ========================
+
+    public Integer getNumero() { return numero; }
+    public void setNumero(Integer numero) { this.numero = numero; }
+
+    public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
 
-    public float getPrecio() { return this.precio; }
+    public float getPrecio() { return precio; }
     public void setPrecio(float precio) { this.precio = precio; }
 
-    public int getCantidadPersonas() { return this.cantidadPersonas; }
-    public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
+    public Integer getCantidadPersonas() { return cantidadPersonas; }
+    public void setCantidadPersonas(Integer cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
 
+    public String getTipohabitacion() { return this.tipohabitacion; }
 
-    public void setTipo(String tipo){
-        
-        this.tipohabitacion=tipo;
-        /* 
-        if (tipo.equals("IndividualEstandar")) this.tipoHab="IndividualEstandar";
-        if (tipo.equals("DobleEstandar") ) this.tipoHab="DobleEstandar";
-        if (this instanceof DobleSuperior) this.tipoHab="DobleSuperior";
-        if (this instanceof SuperiorFamilyPlan) this.tipoHab="SuperiorFamilyPlan";
-        if (this instanceof Suite) this.tipoHab="Suite";
-        */
-    }
+    public List<Reserva> getListareservas(){ return this.listareservas; }
+    public void setListareservas(List<Reserva> listres){ this.listareservas = listres; }
+
+    public List<Estadia> getListaEstadia() { return this.listaestadias; }
+    public void setListaEstadia(List<Estadia> listaestadias) { this.listaestadias = listaestadias; }
+
+    // Métodos para calcular tipo según clase concreta
     public String getTipo(){
-        if (this instanceof IndividualEstandar) return "IndividualEstandar";
-        if (this instanceof DobleEstandar) return "DobleEstandar";
-        if (this instanceof DobleSuperior) return "DobleSuperior";
-        if (this instanceof SuperiorFamilyPlan) return "SuperiorFamilyPlan";
-        if (this instanceof Suite) return "Suite";
-        
+        if (this instanceof com.hotelPremier.classes.Dominio.habitacion.IndividualEstandar) return "IndividualEstandar";
+        if (this instanceof com.hotelPremier.classes.Dominio.habitacion.DobleEstandar) return "DobleEstandar";
+        if (this instanceof com.hotelPremier.classes.Dominio.habitacion.DobleSuperior) return "DobleSuperior";
+        if (this instanceof com.hotelPremier.classes.Dominio.habitacion.SuperiorFamilyPlan) return "SuperiorFamilyPlan";
+        if (this instanceof com.hotelPremier.classes.Dominio.habitacion.Suite) return "Suite";
         return null;
     }
-
-    
-} 
+}
 
 
 
 // [Huesped.java]
 package com.hotelPremier.classes.Dominio;
-//import Classes.Estadia.*;
+
 import java.util.Date;
 import java.util.List;
 
-import com.hotelPremier.classes.Dominio.responsablePago.*;
-import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;//!!!!!
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
 
-@JsonIgnoreProperties("listaestadia")//!!!!!!
+import jakarta.persistence.*;
+
 @Entity
-@Table(name = "huesped") // 2. (Opcional) Especifica el nombre de la tabla
-public class Huesped { 
+@Table(name = "huesped")
+public class Huesped {
 
     @Column(name="apellido")
     private String apellido;
+
     @Column(name="nombre")
     private String nombre;
+
     @EmbeddedId
-    HuespedID huespedID;
+    private HuespedID huespedID;
 
-
-    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Temporal(TemporalType.DATE)
     @Column(name="fechanacimiento")
     private Date fechaNacimiento;
+
     @Column(name="telefono")
     private String telefono;
+
     @Column(name="email")
     private String email;
-  
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_direccion")
@@ -641,244 +637,59 @@ public class Huesped {
 
     @Column(name="cuit")
     private String cuit;
+
     @Column(name="posicioniva")
     private String posicionIva;
+
     @Column(name="ocupacion")
     private String ocupacion;
+
     @Column(name="nacionalidad")
     private String nacionalidad;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    // ⭐ ESTE LADO ES EL "OWNER" DEL MANYTOMANY
+    @ManyToMany
     @JoinTable(
-            name = "relac_estadia_huesped",
-            joinColumns = {
-                @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento"),
-                @JoinColumn(name = "dni", referencedColumnName = "dni")
-            },
-            inverseJoinColumns = @JoinColumn(name = "id_estadia")
+        name = "relac_estadia_huesped",
+        joinColumns = {
+            @JoinColumn(name = "dni", referencedColumnName = "dni"),
+            @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento")
+        },
+        inverseJoinColumns = @JoinColumn(name = "id_estadia")
     )
+    @JsonBackReference(value = "estadia-huespedes")
     private List<Estadia> listaestadia;
-
 
     @OneToOne
     @JoinColumn(name = "id_responsablepago")
     private ResponsablePago responsablePago;
 
-
-
     public Huesped() {
         this.huespedID = new HuespedID();
     }
 
+    // GETTERS & SETTERS
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getDni() {
-        return this.huespedID.getDni();
-    }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
 
-    public String getTipoDocumento() {
-        return this.huespedID.getTipoDocumento();
-    }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
-    // Setters del ID compuesto
-    public void setDni(String dni) {
-        if (this.huespedID == null) this.huespedID = new HuespedID();
-        this.huespedID.setDni(dni);
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setTipoDocumento(String tipoDocumento) {
-        if (this.huespedID == null) this.huespedID = new HuespedID();
-        this.huespedID.setTipoDocumento(tipoDocumento);
-    }
-    public HuespedID getHuespedID(){
-        return this.huespedID;
-    }
-    public void setHuespedID(HuespedID id){
-        this.huespedID.setDni(id.getDni());
-        this.huespedID.setTipoDocumento(id.getTipoDocumento());
-    }
+    public HuespedID getHuespedID() { return huespedID; }
+    public void setHuespedID(HuespedID huespedID) { this.huespedID = huespedID; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public List<Estadia> getListaEstadia() { return listaestadia; }
+    public void setListaEstadia(List<Estadia> lista) { this.listaestadia = lista; }
 
-    /**
-     *
-     * @param apellido
-     */
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    /**
-     *
-     * @param tipoDocumento
-     */
-
-
-
-    /**
-     *
-     * @param fechaNacimiento
-     */
-    public void setFechaNacimiento(Date fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    /**
-     *
-     * @param telefono
-     */
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    /**
-     *
-     * @param email
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-
-    /**
-     *
-     * @param cuit
-     */
-    public void setCuit(String cuit) {
-        this.cuit = cuit;
-    }
-
-    /**
-     *
-     * @param posicionIva
-     */
-    public void setPosicionIva(String posicionIva) {
-        this.posicionIva = posicionIva;
-    }
-
-    /**
-     *
-     * @param ocupacion
-     */
-    public void setOcupacion(String ocupacion) {
-        this.ocupacion = ocupacion;
-    }
-
-    /**
-     *
-     * @param nacionalidad
-     */
-    public void setNacionalidad(String nacionalidad) {
-        this.nacionalidad = nacionalidad;
-    }
-
-    public void setDireccion(Direccion direc){
-        this.direccion=direc;
-    }
-
-    public Direccion getDireccion(){
-        return this.direccion;
-    }
-    
-    /**
-     *
-     * @return
-     */
-    public Date getFechaNacimiento() {
-        return this.fechaNacimiento;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getApellido() {
-        return this.apellido;
-    }
-
-    /**
-     *
-     * @return
-     */
-
-    /**
-     *
-     * @return
-     */
-
-    /**
-     *
-     * @return
-     */
-    public String getCuit() {
-        return this.cuit;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getPosicionIva() {
-        return this.posicionIva;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getOcupacion() {
-        return this.ocupacion;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getNacionalidad() {
-        return this.nacionalidad;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getEmail() {
-        return this.email;
-    }
-
-    /**
-     *
-     * @return
- */
-
-    /**
-     *
-     * @return
-     */
-    public String getNombre() {
-        return this.nombre;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getTelefono() {
-        return this.telefono;
-    }
-
-
-    public List<Estadia> getListaEstadia(){
-        return this.listaestadia;
-    }
-    public void setListaEstadia(List<Estadia> lista){
-        this.listaestadia=lista;
-    }
-
+    public Direccion getDireccion() { return direccion; }
+    public void setDireccion(Direccion direccion) { this.direccion = direccion; }
 }
-
-
 
 
 
@@ -1170,126 +981,111 @@ public class Pago {
 // [Reserva.java]
 package com.hotelPremier.classes.Dominio;
 
-
-import java.util.ArrayList;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
-import java.util.Date;
+import jakarta.persistence.*;
 
 @Entity
-//@JsonIgnoreProperties("habitacion")
-// 1. Marca la clase como una tabla en la BDD
-@Table(name = "reserva") // 2. (Opcional) Especifica el nombre de la tabla
+@Table(name = "reserva")
 public class Reserva {
+
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_reserva")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id_reserva")
     private Integer id_reserva;
 
-    @Temporal(TemporalType.DATE) //guarda fecha sin hora
+    @Temporal(TemporalType.DATE)
     @Column(name="fecha_desde")
     private Date fecha_desde;
 
-    @Temporal(TemporalType.DATE) //guarda fecha sin hora
-    @Column(name="fecha_hasta") 
+    @Temporal(TemporalType.DATE)
+    @Column(name="fecha_hasta")
     private Date fecha_hasta;
-    
+
     @Column(name="estado")
     private String estado;
+
     @Column(name="nombre")
     private String nombre;
+
     @Column(name="apellido")
     private String apellido;
+
     @Column(name="telefono")
     private String telefono;
 
+    // ===============================
+    // HABITACIÓN (lado BACKREF)
+    // ===============================
     @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "nro_habitacion") 
-    private Habitacion nro_habitacion;
+    @JoinColumn(name = "nro_habitacion")
+    @JsonBackReference(value = "habitacion-reservas")
+    private Habitacion habitacion;
 
-    @OneToOne
-    @JoinColumn(name = "id_estadia")
+    // ===============================
+    // ESTADIA (lado MANAGED)
+    // ===============================
+    @OneToOne(mappedBy = "reserva")
+    @JsonManagedReference(value = "reserva-estadia")
     private Estadia estadia;
 
+    public Reserva() {}
 
-    public void setId_reserva(Integer id_reserva) {
+    public Reserva(
+            Integer id_reserva,
+            Date fecha_desde,
+            Date fecha_hasta,
+            String estado,
+            String nombre,
+            String apellido,
+            String telefono,
+            Habitacion habitacion,
+            Estadia estadia
+    ) {
         this.id_reserva = id_reserva;
-    }
-    public  Integer getId_reserva() {
-        return this.id_reserva;
-    }
-
-    public void setHabitacion (Habitacion habitacion){
-
-        this.nro_habitacion=habitacion;
-    }
-    public Habitacion getHabitacion(){
-        return this.nro_habitacion;
-    }
-
-   /* public String getTipo_habitacion(){
-        return nro_habitacion.getTipohabitacion();
-    }
-*/
-
-
-
-    public String getNombre() {
-        return this.nombre;
-    }
-   public void setNombre(String nombre) {
-        this.nombre = nombre;
-   }
-
-    public void setFecha_desde(Date fecha_desde) {
         this.fecha_desde = fecha_desde;
-    }
-
-    public Date getFecha_desde() {
-        return this.fecha_desde;
-    }
-
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-
-    public String getApellido() {
-        return this.apellido;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-
-    public void setFecha_hasta(Date fecha_hasta) {
         this.fecha_hasta = fecha_hasta;
+        this.estado = estado;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.habitacion = habitacion;
+        this.estadia = estadia;
     }
 
-    public Date getFecha_hasta() {
-        return fecha_hasta;
-    }
+    // ========================
+    // GETTERS / SETTERS
+    // ========================
 
+    public Integer getId_reserva() { return id_reserva; }
+    public void setId_reserva(Integer id_reserva) { this.id_reserva = id_reserva; }
+
+    public Date getFecha_desde() { return fecha_desde; }
+    public void setFecha_desde(Date fecha_desde) { this.fecha_desde = fecha_desde; }
+
+    public Date getFecha_hasta() { return fecha_hasta; }
+    public void setFecha_hasta(Date fecha_hasta) { this.fecha_hasta = fecha_hasta; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+
+    public Habitacion getHabitacion() { return habitacion; }
+    public void setHabitacion(Habitacion habitacion) { this.habitacion = habitacion; }
+
+    public Estadia getEstadia() { return estadia; }
+    public void setEstadia(Estadia estadia) { this.estadia = estadia; }
 }
 
 
@@ -1299,20 +1095,21 @@ package com.hotelPremier.classes.Dominio.responsablePago;
 
 import com.hotelPremier.classes.Dominio.Huesped;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
-public class PersonaFisica extends ResponsablePago{
-    private String nombre;
-
+@Entity
+@Table(name = "persona_fisica")
+public class PersonaFisica extends ResponsablePago {
 
     @OneToOne
     @JoinColumns({
-            @JoinColumn(name = "dni", referencedColumnName = "dni"),
-            @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento")
+        @JoinColumn(name = "dni", referencedColumnName = "dni"),
+        @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento")
     })
     private Huesped huesped;
+
+    public Huesped getHuesped() { return huesped; }
+    public void setHuesped(Huesped huesped) { this.huesped = huesped; }
 }
 
 
@@ -1322,19 +1119,31 @@ package com.hotelPremier.classes.Dominio.responsablePago;
 
 import com.hotelPremier.classes.Dominio.Direccion;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
-public class PersonaJuridica extends ResponsablePago{
+@Entity
+@Table(name = "persona_juridica")
+public class PersonaJuridica extends ResponsablePago {
+
+    @Column(name = "razonsocial")
     private String razonSocial;
+
+    @Id
+    @Column(name = "cuit")
     private String cuit;
-    private Direccion direccion;
 
     @OneToOne
-    @JoinColumn(name = "id_direccion")
-    Direccion direccionpersonaJuridica;
+    @JoinColumn(name = "id_direccion_empresa")
+    private Direccion direccionEmpresa;
 
+    public String getRazonSocial() { return razonSocial; }
+    public void setRazonSocial(String razonSocial) { this.razonSocial = razonSocial; }
+
+    public String getCuit() { return cuit; }
+    public void setCuit(String cuit) { this.cuit = cuit; }
+
+    public Direccion getDireccionEmpresa() { return direccionEmpresa; }
+    public void setDireccionEmpresa(Direccion direccionEmpresa) { this.direccionEmpresa = direccionEmpresa; }
 }
 
 
@@ -1346,35 +1155,30 @@ import java.util.List;
 
 import com.hotelPremier.classes.Dominio.Direccion;
 import com.hotelPremier.classes.Dominio.Factura;
-import com.hotelPremier.classes.Dominio.Huesped;
 
-import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+import jakarta.persistence.*;
 
 @Entity
-@Table(name="responsablepago")
-public class ResponsablePago {
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "responsablepago")
+public abstract class ResponsablePago {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_responsablepago")
-    private Integer id_responsablePago; 
-
+    @Column(name = "id_responsablepago")
+    private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "id_direccion" )
+    @JoinColumn(name = "id_direccion")
     private Direccion direccion;
 
-
-    @OneToOne
-    @JoinColumns({
-            @JoinColumn(name = "tipodoc", referencedColumnName = "tipodocumento"),
-            @JoinColumn(name = "dni", referencedColumnName = "dni")
-    })
-    private Huesped huesped;
-    
     @OneToMany(mappedBy = "responsablepago")
-    private List<Factura>  listafactura;
+    private List<Factura> facturas;
 
+    public Integer getId() { return id; }
+
+    public Direccion getDireccion() { return direccion; }
+    public void setDireccion(Direccion direccion) { this.direccion = direccion; }
 }
 
 

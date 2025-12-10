@@ -20,6 +20,6 @@ public interface FacturaRepository extends JpaRepository<Factura,Integer> {
     List<Factura> buscarPorDni(@Param("dni") String dni);
 
 
-
+    
     
 }

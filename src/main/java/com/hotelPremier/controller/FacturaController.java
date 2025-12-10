@@ -48,5 +48,14 @@ public class FacturaController {
                 facturaService.filtrarFacturas(cuit, tipo, numero)
         );
     }
+    @PostMapping
+    public ResponseEntity<?> crearFactura(@RequestBody FacturaDTO facturaDTO) {
+        try {
+            FacturaDTO creada = facturaService.crearFactura(facturaDTO);
+            return ResponseEntity.ok(creada);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }

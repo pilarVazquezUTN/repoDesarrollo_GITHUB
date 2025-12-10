@@ -1,45 +1,40 @@
 package com.hotelPremier.controller;
 
-import com.hotelPremier.classes.DTO.EstadiaDTO;
-import com.hotelPremier.repository.EstadiaRepository;
 import com.hotelPremier.service.EstadiaService;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@Controller
+@RestController
+@RequestMapping("/estadias")
 public class EstadiaController {
 
     @Autowired
-    private EstadiaService estadiaService; 
+    private EstadiaService estadiaService;
 
-    @PostMapping("/estadias")
-    public ResponseEntity<String> guardarEstadia(@RequestBody EstadiaDTO estadiaDTO) {
-        estadiaService.guardarEstadia(estadiaDTO);
-        return ResponseEntity.ok("Estadía guardada correctamente");
-    }
-
-    @PostMapping("/listaEstadias")
-    public ResponseEntity<String> guardarListaEstadias(
-        @RequestBody List<EstadiaDTO> listaestadiaDTO
-    ){
-        estadiaService.guardarListaEstadia(listaestadiaDTO);
-        return ResponseEntity.ok("Estadía guardada correctamente");
-    }   
-
+    // ============================================
+    // GET /api/estadias/sin-factura
+    // ============================================
     @GetMapping("/sin-factura")
-    public ResponseEntity<List<EstadiaDTO>> getEstadiasSinFactura() {
-        List<EstadiaDTO> lista = estadiaService.obtenerEstadiasSinFactura();
-        return ResponseEntity.ok(lista);
+    public List<EstadiaDTO> listarSinFactura() {
+        return estadiaService.obtenerEstadiasSinFactura();
     }
 
+    @GetMapping("/enCurso/{numHabitacion}")
+    public ResponseEntity<?> obtenerEnCurso(@PathVariable Integer numHabitacion) {
 
+        EstadiaDTO dto = estadiaService.obtenerEstadiaEnCurso(numHabitacion);
+
+        if (dto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No hay estadía ENCURSO para la habitación " + numHabitacion);
+        }
+
+        return ResponseEntity.ok(dto);
+    }
 }

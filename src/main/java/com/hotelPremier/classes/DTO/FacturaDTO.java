@@ -2,8 +2,6 @@ package com.hotelPremier.classes.DTO;
 
 import java.util.Date;
 
-import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
-
 public class FacturaDTO {
 
     private Integer id;
@@ -14,14 +12,20 @@ public class FacturaDTO {
     private EstadiaDTO estadia;
     private NotaDeCreditoDTO notacredito;
     private PagoDTO pago;
-    private ResponsablePago responsablepago;
+    private ResponsablePagoDTO responsablepago;   // 👈 AHORA ES DTO
 
     public FacturaDTO() {
     }
 
-    public FacturaDTO(Integer id, Date fecha, float total, String tipo, String estado,
-                      EstadiaDTO estadia, NotaDeCreditoDTO notacredito, PagoDTO pago,
-                      ResponsablePago responsablepago) {
+    public FacturaDTO(Integer id,
+                      Date fecha,
+                      float total,
+                      String tipo,
+                      String estado,
+                      EstadiaDTO estadia,
+                      NotaDeCreditoDTO notacredito,
+                      PagoDTO pago,
+                      ResponsablePagoDTO responsablepago) {
         this.id = id;
         this.fecha = fecha;
         this.total = total;
@@ -97,11 +101,11 @@ public class FacturaDTO {
         this.pago = pago;
     }
 
-    public ResponsablePago getResponsablepago() {
+    public ResponsablePagoDTO getResponsablepago() {
         return responsablepago;
     }
 
-    public void setResponsablepago(ResponsablePago responsablepago) {
+    public void setResponsablepago(ResponsablePagoDTO responsablepago) {
         this.responsablepago = responsablepago;
     }
 }

@@ -1,134 +1,122 @@
 package com.hotelPremier.service;
 
-import java.util.Date;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.hotelPremier.classes.DTO.HabitacionDTO;
 import com.hotelPremier.classes.DTO.ReservaDTO;
 import com.hotelPremier.classes.Dominio.Habitacion;
 import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.HabitacionRepository;
+import com.hotelPremier.repository.ReservaRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hotelPremier.classes.mapper.ClassMapper;
-import com.hotelPremier.repository.ReservaRepository;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class ReservaService {
 
     @Autowired
     private ReservaRepository reservaRepository;
+
     @Autowired
     private HabitacionRepository habitacionRepository;
+
     @Autowired
     private ClassMapper mapper;
 
-    public List<ReservaDTO> getReservas(
-        Date fechaDesde,
-        Date fechaHasta
-    ){
-        return mapper.toDtosReserva( reservaRepository.buscarReservas(fechaDesde,fechaHasta) );
-    } 
 
+    // ============================================
+    // 1) GUARDAR LISTA DE RESERVAS
+    // ============================================
+    public List<ReservaDTO> guardarLista(List<ReservaDTO> listaDTO) {
 
-    public Integer buscarId (Reserva reserva, HabitacionDTO habitacionDTO){
-        Integer num_hab=habitacionDTO.getNumero();
-        Date fecha_desde=reserva.getFecha_desde();
-        Date fecha_hasta=reserva.getFecha_hasta();
-        return reservaRepository.encontrarIdReserva(fecha_desde, fecha_hasta, num_hab);
-    }
+        List<Reserva> entidades = new ArrayList<>();
 
-    public void deleteReserva(Integer id){
-        reservaRepository.deleteById(id);
-    }
+        for (ReservaDTO dto : listaDTO) {
 
-    public boolean existeReserva(Date fechaDesde, Date fechaHasta){
-        
-        return !(reservaRepository.buscarReservas(fechaDesde, fechaHasta).isEmpty());
-        //si no esta vacia, existen reservas interferidas.
-        //si esta vacia, no hay reservas interferidas.
-    }
+            // validación base
+            if (dto.getHabitacion() == null)
+                throw new RuntimeException("El DTO de reserva no contiene la habitación.");
 
-    /**
-     * recibe la lista de reservasdto a cda uno lo mapea a lla entity y lo manda a la bdd
-     * @param reservasDTOList
-     * @return
-     */
-    public List<ReservaDTO> crearReserva(List<ReservaDTO> reservasDTOList){
+            Integer nro = dto.getHabitacion().getNumero();
+            if (nro == null)
+                throw new RuntimeException("El DTO no trae número de habitación.");
 
-        List<ReservaDTO> reservasGuardadas = new ArrayList<>();
+            // obtener habitación desde BD
+            Habitacion hab = habitacionRepository.findById(nro)
+                    .orElseThrow(() -> new RuntimeException("Habitación inexistente: " + nro));
 
-        // loop sobre cada reservaDTO de la lista
-        for (ReservaDTO reservaDTO : reservasDTOList) {
+            // validar superposición
+            Integer solapa = reservaRepository.haySuperposicion(
+                    nro,
+                    dto.getFecha_desde(),
+                    dto.getFecha_hasta()
+            );
 
-           //convertir la entidad
-            Reserva reserva = mapper.toEntityReserva(reservaDTO);
+            if (solapa != null && solapa > 0)
+                throw new RuntimeException("La habitación " + nro + " ya tiene reservas en ese rango.");
 
+            // convertir DTO → Entity (sin habitacion)
+            Reserva r = mapper.toEntityReserva(dto);
+            if (r.getEstado() == null || r.getEstado().trim().isEmpty()) {
+                r.setEstado("PENDIENTE");
+            }
+            // agregar habitación real
+            r.setHabitacion(hab);
 
-            //se busca la hab
-            System.out.println("Buscando habitación: " + reservaDTO.getNro_habitacion());
-
-
-
-            Habitacion hab = habitacionRepository.findByNumero(reservaDTO.getNro_habitacion());
-            System.out.println("habitacion encontrada: " + hab);
-
-            // setear habitación
-            reserva.setHabitacion(hab);
-
-            // setear estado
-            reserva.setEstado("Pendiente");
-
-            // guardarla en la bdd
-            Reserva guardada = reservaRepository.save(reserva);
-
-            // las reservas guardadas
-            reservasGuardadas.add(mapper.toDTOReserva(guardada));
+            entidades.add(r);
         }
 
-        //se devuelve la lista completa
-        return reservasGuardadas;
+        reservaRepository.saveAll(entidades);
+        return mapper.toDtosReserva(entidades);
     }
 
-    /**
-     * me llega una fecha desde, hasta , una lista de habitacion dto, hace una lista de map para mostrar los datos a guardar dsp en sus respectivas entidades
-     * @param fechaDesde
-     * @param fechaHasta
-     * @return
-     */
-    public List<Map<String, Object>> generarListadoReservar(
-            LocalDate fechaDesde,
-            LocalDate fechaHasta,
-            List<HabitacionDTO> habitacionDTOS) {
-
-        List<Map<String, Object>> listado = new ArrayList<>();
-
-        for (HabitacionDTO habitacionDTO : habitacionDTOS) {  //por cada habitacionDTO en la lista habitacionDTOS
-
-            Map<String, Object> datosReserva = new HashMap<>();
-
-            datosReserva.put("numero", habitacionDTO.getNumero());
-            datosReserva.put("tipo", habitacionDTO.getTipohabitacion());
-            datosReserva.put("fechaDesde", fechaDesde);
-            datosReserva.put("fechaHasta", fechaHasta);
-
-            listado.add(datosReserva); //este es el listado q devuelve el "gestor" para mostrar por pantalla las seleccionadas
-        }
-
-        return listado;
-    }
-
-    public List<ReservaDTO> buscarPorApellidoNombre(String apellido, String nombre) {
-        List<Reserva> reservas = reservaRepository.buscarPorApellidoNombre(apellido, nombre);
+    // ============================================
+    // 2) BUSCAR ENTRE FECHAS
+    // ============================================
+    public List<ReservaDTO> buscarEntreFechas(Date desde, Date hasta) {
+        List<Reserva> reservas = reservaRepository.buscarEntreFechas(desde, hasta);
         return mapper.toDtosReserva(reservas);
     }
 
+    // ============================================
+    // 3) BUSCAR POR APELLIDO + NOMBRE
+    // ============================================
+    public List<ReservaDTO> buscarPorApellidoNombre(String apellido, String nombre) {
 
+        boolean tieneApe = apellido != null && !apellido.trim().isEmpty();
+        boolean tieneNom = nombre != null && !nombre.trim().isEmpty();
 
+        List<Reserva> lista;
 
+        if (tieneApe && tieneNom) {
+            lista = reservaRepository
+                    .findByApellidoStartingWithIgnoreCaseAndNombreStartingWithIgnoreCase(apellido, nombre);
+
+        } else if (tieneApe) {
+            lista = reservaRepository.findByApellidoStartingWithIgnoreCase(apellido);
+
+        } else if (tieneNom) {
+            lista = reservaRepository.findByNombreStartingWithIgnoreCase(nombre);
+
+        } else {
+            lista = reservaRepository.findAll();
+        }
+
+        return mapper.toDtosReserva(lista);
+    }
+
+    // ============================================
+    // 4) ELIMINAR RESERVA
+    // ============================================
+    public boolean deleteReserva(Integer id) {
+        if (!reservaRepository.existsById(id)) {
+            return false;
+        }
+
+        reservaRepository.deleteById(id);
+        return true;
+    }
 }

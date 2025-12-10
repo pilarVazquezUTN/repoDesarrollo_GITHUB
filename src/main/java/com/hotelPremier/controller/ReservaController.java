@@ -1,93 +1,80 @@
 package com.hotelPremier.controller;
 
+import com.hotelPremier.classes.DTO.ReservaDTO;
 import com.hotelPremier.service.ReservaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import com.hotelPremier.classes.DTO.HabitacionDTO;
-import com.hotelPremier.classes.DTO.ReservaDTO;
-import com.hotelPremier.classes.mapper.ClassMapper;
-
-import java.sql.Date;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/reservas")
 public class ReservaController {
 
     @Autowired
-    ClassMapper classMapper;
+    private ReservaService reservaService;
 
-    @Autowired
-    ReservaService reservaService;
-
-
-    /**
-     * Endpoint para obtener la lista de reservas.
-     * Mapea a: GET http://localhost:8080/api/reservas?apellido=    
-     */
-
-    @GetMapping ("/reservas")
-    public ResponseEntity<List<ReservaDTO>> getReservas(        
-        @RequestParam Date fechaDesde,
-        @RequestParam Date fechaHasta
-    ){
-        List<ReservaDTO> listaReservas = reservaService.getReservas(fechaDesde,fechaHasta);
-        return new ResponseEntity<>(listaReservas, HttpStatus.OK);
+    // ==========================================================
+    // 1) GUARDAR RESERVA
+    // ==========================================================
+    @PostMapping
+    public ResponseEntity<?> guardarReservas(@RequestBody List<ReservaDTO> listaDTO) {
+        List<ReservaDTO> guardadas = reservaService.guardarLista(listaDTO);
+        return ResponseEntity.ok(guardadas);
     }
 
-    @PostMapping("/reservas")
-    public ResponseEntity<String> crearReserva(@RequestBody List<ReservaDTO> listareservaDTO) {
-
-        List<ReservaDTO> listaReservasguardadas = reservaService.crearReserva(listareservaDTO);
-        return ResponseEntity.ok("Reservas registradas con exito");
-    }
-
-    /**
-     * recibe la fecha desde, hasta , el listado de habitacionDTO
-     * @param fechaDesde
-     * @param fechaHasta
-     * @param habitacionDTOS
-     * @return
-     */
-
-    @PostMapping("/listados")
-    public ResponseEntity<List<Map<String, Object>>> generarListado(
-            @RequestParam LocalDate fechaDesde,
-            @RequestParam LocalDate fechaHasta,
-            @RequestBody List<HabitacionDTO> habitacionDTOS) {
-
-        List<Map<String, Object>> listado = reservaService.generarListadoReservar(fechaDesde, fechaHasta, habitacionDTOS);
-
-        return ResponseEntity.ok(listado);
-    }
-
-
-    //GET http://localhost:8080/api/reservas/buscar?apellido=Lopez
-    //GET http://localhost:8080/api/reservas/buscar?apellido=Perez&nombre=Juan
-    //GET http://localhost:8080/api/reservas/buscar?nombre=Valentin
-    @GetMapping("/reservas/buscar")
-    public ResponseEntity<List<ReservaDTO>> buscarReservas(
-            @RequestParam(required = false) String apellido,
-            @RequestParam(required = false) String nombre
+    // ==========================================================
+    // 2) BUSCAR ENTRE FECHAS
+    // ==========================================================
+    @GetMapping
+    public ResponseEntity<?> buscarEntreFechas(
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date desde,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date hasta
     ) {
-        return ResponseEntity.ok(
-            reservaService.buscarPorApellidoNombre(apellido, nombre)
-        );
+
+        if (desde == null || hasta == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Debe enviar parámetros ?desde=YYYY-MM-DD&hasta=YYYY-MM-DD");
+        }
+
+        return ResponseEntity.ok(reservaService.buscarEntreFechas(desde, hasta));
     }
 
-    @DeleteMapping("/reservas/{id}")
-    public ResponseEntity<?> eliminarReserva(@PathVariable Integer id){
-        reservaService.deleteReserva(id);
-        return ResponseEntity.noContent().build();
+    // ==========================================================
+    // 3) BUSCAR POR APELLIDO + NOMBRE (dinámico)
+    // ==========================================================
+    @GetMapping("/buscar")
+    public ResponseEntity<?> buscarPorApellidoNombre(
+            @RequestParam(required = false, defaultValue = "") String apellido,
+            @RequestParam(required = false, defaultValue = "") String nombre
+    ) {
+        return ResponseEntity.ok(reservaService.buscarPorApellidoNombre(apellido, nombre));
     }
 
+    // ==========================================================
+    // 4) ELIMINAR RESERVA POR ID
+    // ==========================================================
+    @DeleteMapping
+    public ResponseEntity<?> eliminarReserva(@RequestBody ReservaDTO dto) {
 
+        if (dto.getId_reserva() == null) {
+            return ResponseEntity.badRequest()
+                    .body("Debe enviar un id_reserva dentro del JSON");
+        }
+
+        boolean eliminada = reservaService.deleteReserva(dto.getId_reserva());
+
+        if (!eliminada) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No existe una reserva con ID " + dto.getId_reserva());
+        }
+
+        return ResponseEntity.ok("Reserva eliminada correctamente");
+    }
 
 }
-

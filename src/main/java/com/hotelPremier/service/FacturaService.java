@@ -1,8 +1,15 @@
 package com.hotelPremier.service;
 
 import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
 import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.NotaDeCredito;
+import com.hotelPremier.classes.Dominio.responsablePago.PersonaFisica;
+import com.hotelPremier.classes.Dominio.responsablePago.PersonaJuridica;
+import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
+import com.hotelPremier.repository.EstadiaRepository;
 import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.repository.ResponsablePagoRepository;
 import com.hotelPremier.classes.mapper.ClassMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,36 +24,41 @@ public class FacturaService {
     private FacturaRepository facturaRepository;
 
     @Autowired
+    private EstadiaRepository estadiaRepository;
+
+    @Autowired
+    private ResponsablePagoRepository responsablePagoRepository;
+
+    @Autowired
     private ClassMapper mapper;
 
     // ===========================================
     // CU07 - Facturas por número de habitación
     // ===========================================
-public List<FacturaDTO> obtenerFacturasPorHabitacion(Integer nroHabitacion) {
+    public List<FacturaDTO> obtenerFacturasPorHabitacion(Integer nroHabitacion) {
 
-    List<Factura> lista = facturaRepository.findAll().stream()
-            .filter(f -> f.getEstadia() != null &&
-                         f.getEstadia().getHabitacion() != null &&
-                         f.getEstadia().getHabitacion().getNumero().equals(nroHabitacion))
-            .toList();
+        List<Factura> lista = facturaRepository.findAll().stream()
+                .filter(f -> f.getEstadia() != null &&
+                             f.getEstadia().getHabitacion() != null &&
+                             f.getEstadia().getHabitacion().getNumero().equals(nroHabitacion))
+                .toList();
 
-    return lista.stream()
-            .map(mapper::toDTOFactura)
-            .toList();
-}
-
+        return lista.stream()
+                .map(mapper::toDTOFactura)
+                .toList();
+    }
 
     // ===========================================
-    // CU07 - Actualizar factura con ID del DTO
+    // CU07 - Actualizar factura con ID dentro del DTO
     // ===========================================
     public void actualizarFactura(FacturaDTO dto) {
 
         if (dto.getID() == null) {
-            throw new RuntimeException("El ID de la factura es obligatorio.");
+            throw new IllegalArgumentException("El ID de la factura es obligatorio.");
         }
 
         Factura factura = facturaRepository.findById(dto.getID())
-                .orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada."));
 
         if (dto.getEstado() != null)
             factura.setEstado(dto.getEstado());
@@ -60,6 +72,9 @@ public List<FacturaDTO> obtenerFacturasPorHabitacion(Integer nroHabitacion) {
         facturaRepository.save(factura);
     }
 
+    // ===========================================
+    //   BUSCAR FACTURAS POR DNI (Persona Física)
+    // ===========================================
     public List<FacturaDTO> buscarPorDni(String dni) {
 
         List<Factura> lista = facturaRepository.buscarPorDni(dni);
@@ -69,54 +84,90 @@ public List<FacturaDTO> obtenerFacturasPorHabitacion(Integer nroHabitacion) {
                 .toList();
     }
 
+    // ===========================================
+    //   FILTRO GENERAL: CUIT, TipoDoc, NumeroDoc
+    // ===========================================
     public List<FacturaDTO> filtrarFacturas(String cuit, String tipoDocumento, String numeroDocumento) {
 
-    List<Factura> lista = facturaRepository.findAll();
+        List<Factura> lista = facturaRepository.findAll();
 
-    List<Factura> filtradas = lista.stream()
+        List<Factura> filtradas = lista.stream()
+                .filter(f -> coincideCuit(f, cuit))
+                .filter(f -> coincideTipoDoc(f, tipoDocumento))
+                .filter(f -> coincideNumeroDoc(f, numeroDocumento))
+                .toList();
 
-        // ----------------------------
-        //   FILTRAR POR CUIT
-        // ----------------------------
-        .filter(f -> cuit == null || {
-            var rp = f.getResponsablepago();
-            if (rp == null) return false;
-            if (rp instanceof ResponsableJuridico rj) {
-                return cuit.equals(rj.getCuit());
-            }
-            return false;
-        })
+        return filtradas.stream()
+                .map(mapper::toDTOFactura)
+                .toList();
+    }
 
-        // ----------------------------
-        //   FILTRAR POR TIPO DOCUMENTO
-        // ----------------------------
-        .filter(f -> tipoDocumento == null || {
-            var rp = f.getResponsablepago();
-            if (rp == null) return false;
-            if (rp instanceof ResponsableHuesped rh) {
-                return rh.getHuesped().getHuespedID().getTipoDocumento()
-                        .equalsIgnoreCase(tipoDocumento);
-            }
-            return false;
-        })
+    // ============================================================
+    //     MÉTODOS AUXILIARES DE FILTRADO
+    // ============================================================
 
-        // ----------------------------
-        //   FILTRAR POR NRO DOCUMENTO
-        // ----------------------------
-        .filter(f -> numeroDocumento == null || {
-            var rp = f.getResponsablepago();
-            if (rp == null) return false;
-            if (rp instanceof ResponsableHuesped rh) {
-                return rh.getHuesped().getHuespedID().getDni().equals(numeroDocumento);
-            }
-            return false;
-        })
+    private boolean coincideCuit(Factura f, String cuit) {
+        if (cuit == null) return true;
 
-        .toList();
+        ResponsablePago rp = f.getResponsablePago();
+        if (rp instanceof PersonaJuridica pj) {
+            return cuit.equals(pj.getCuit());
+        }
+        return false;
+    }
 
-    return filtradas.stream()
-            .map(mapper::toDTOFactura)
-            .toList();
+    private boolean coincideTipoDoc(Factura f, String tipoDoc) {
+        if (tipoDoc == null) return true;
+
+        ResponsablePago rp = f.getResponsablePago();
+        if (rp instanceof PersonaFisica pf) {
+            return pf.getHuesped()
+                    .getHuespedID()
+                    .getTipoDocumento()
+                    .equalsIgnoreCase(tipoDoc);
+        }
+        return false;
+    }
+
+    private boolean coincideNumeroDoc(Factura f, String numeroDoc) {
+        if (numeroDoc == null) return true;
+
+        ResponsablePago rp = f.getResponsablePago();
+        if (rp instanceof PersonaFisica pf) {
+            return pf.getHuesped()
+                    .getHuespedID()
+                    .getDni()
+                    .equalsIgnoreCase(numeroDoc);
+        }
+        return false;
+    }
+
+    // ============================================================
+    //   CREAR FACTURA (POST /facturas)
+    // ============================================================
+    public FacturaDTO crearFactura(FacturaDTO dto) {
+
+    Factura factura = mapper.toEntityFactura(dto);
+
+    // 1) Resolver ESTADIA
+    if (dto.getEstadia() != null && dto.getEstadia().getID() != null) {
+        Estadia est = estadiaRepository.findById(dto.getEstadia().getID())
+                            .orElseThrow(() -> new RuntimeException("Estadia no encontrada"));
+
+        factura.setEstadia(est);
+    }
+
+    // 2) Resolver RESPONSABLE DE PAGO
+    if (dto.getResponsablepago() != null && dto.getResponsablepago().getId() != null) {
+        ResponsablePago rp = responsablePagoRepository.findById(dto.getResponsablepago().getId())
+                            .orElseThrow(() -> new RuntimeException("ResponsablePago no encontrado"));
+
+        factura.setResponsablePago(rp);
+    }
+
+    facturaRepository.save(factura);
+
+    return mapper.toDTOFactura(factura);
 }
 
 }

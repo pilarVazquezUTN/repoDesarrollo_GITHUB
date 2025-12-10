@@ -1,5 +1,8 @@
 package com.hotelPremier.classes.DTO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hotelPremier.classes.Dominio.Estadia;
 import com.hotelPremier.classes.Dominio.Habitacion;
 import com.hotelPremier.classes.Dominio.Reserva;
@@ -12,10 +15,7 @@ public class HabitacionDTO {
     private String estado;
     private float precio;
     private Integer cantidadPersonas;
-    private String tipohabitacion;// cuando mapea con los DTO se le asigna un tipo.
-    private List<EstadiaDTO> listaestadias;
-    private List<ReservaDTO> listareservas;
-    
+    private String tipohabitacion;
 
 
     // GETTERS y SETTERS
@@ -29,8 +29,6 @@ public class HabitacionDTO {
         this.precio=habitacion.getPrecio();
         this.cantidadPersonas=habitacion.getCantidadPersonas();
         this.tipohabitacion=habitacion.getTipo();
-        this.listareservas = reservas;
-        this.listaestadias = estadias;
 
     }
 
@@ -49,11 +47,5 @@ public class HabitacionDTO {
     public int getCantidadPersonas() { return this.cantidadPersonas; }
     public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
 
-    //public void setListaestadias( List<EstadiaDTO> listaestadias) {this.listaestadias= listaestadias;}
-    public List<EstadiaDTO> getListaestadias() { return this.listaestadias; }
-    public void setListareservas(List<ReservaDTO> listares){
-        this.listareservas=listares;
-    }
-    public List<ReservaDTO> getListareservas() { return this.listareservas; }
  
 }

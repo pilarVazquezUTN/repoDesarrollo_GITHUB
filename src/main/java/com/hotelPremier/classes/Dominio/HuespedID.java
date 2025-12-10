@@ -4,40 +4,34 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 @Embeddable
 public class HuespedID implements Serializable {
-    @Column(name = "tipodocumento") 
+
+    @Column(name = "tipodocumento")
     private String tipoDocumento;
 
-   @Column(name = "dni") 
-   private String dni;
+    @Column(name = "dni")
+    private String dni;
 
-    public void setTipoDocumento(String tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
-    }
+    public String getTipoDocumento() { return tipoDocumento; }
+    public void setTipoDocumento(String tipoDocumento) { this.tipoDocumento = tipoDocumento; }
 
-    public String getTipoDocumento() {
-        return tipoDocumento;
-    }
+    public String getDni() { return dni; }
+    public void setDni(String dni) { this.dni = dni; }
 
-    public void setDni(String dni) {
-        this.dni = dni;
-    }
-    
-    public String getDni() {
-        return dni;
-    }
- 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof HuespedID)) return false;
         HuespedID that = (HuespedID) o;
-        return tipoDocumento.equals(that.tipoDocumento) && dni.equals(that.dni);
+        return Objects.equals(tipoDocumento, that.tipoDocumento) &&
+               Objects.equals(dni, that.dni);
     }
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(tipoDocumento, dni);
+        return Objects.hash(tipoDocumento, dni);
     }
 }

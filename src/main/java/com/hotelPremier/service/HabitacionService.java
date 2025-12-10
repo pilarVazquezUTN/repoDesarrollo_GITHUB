@@ -115,4 +115,8 @@ public class HabitacionService {
                 .toList();
     }
 
+    
+     public List<HabitacionDTO> getHabitaciones() {
+        return mapper.toDTOsHabitacion(habitacionRepository.findAll());
+    }
 }
