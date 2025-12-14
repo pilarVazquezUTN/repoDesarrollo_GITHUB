@@ -57,24 +57,33 @@ public class ReservaController {
     }
 
     // ==========================================================
-    // 4) ELIMINAR RESERVA POR ID
+    // 4) CANCELAR RESERVA POR ID (CU06)
     // ==========================================================
-    @DeleteMapping
-    public ResponseEntity<?> eliminarReserva(@RequestBody ReservaDTO dto) {
+    /**
+     * Cancela una reserva cambiando su estado a CANCELADA usando el patrón State.
+     * No se elimina físicamente la reserva, solo se cambia su estado.
+     * 
+     * @param dto DTO con el id_reserva a cancelar
+     * @return Respuesta con el resultado de la operación
+     */
+    @PutMapping("/cancelar")
+    public ResponseEntity<?> cancelarReserva(@RequestBody ReservaDTO dto) {
 
         if (dto.getId_reserva() == null) {
             return ResponseEntity.badRequest()
                     .body("Debe enviar un id_reserva dentro del JSON");
         }
 
-        boolean eliminada = reservaService.deleteReserva(dto.getId_reserva());
-
-        if (!eliminada) {
+        try {
+            ReservaDTO reservaCancelada = reservaService.cancelarReserva(dto.getId_reserva());
+            return ResponseEntity.ok(reservaCancelada);
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No existe una reserva con ID " + dto.getId_reserva());
+                    .body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
-
-        return ResponseEntity.ok("Reserva eliminada correctamente");
     }
 
 }
