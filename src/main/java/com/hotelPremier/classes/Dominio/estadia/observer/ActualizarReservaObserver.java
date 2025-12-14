@@ -16,9 +16,10 @@ public class ActualizarReservaObserver implements EstadiaObserver {
         // se registra solo en el contexto correcto (iniciarEstadia()).
         
         Reserva reserva = estadia.getReserva();
-        if (reserva != null && "PENDIENTE".equals(reserva.getEstado())) {
+        if (reserva != null) {
             // Consumir la reserva usando el método delegado del State
             // No usar checkIn() porque ya se creó la estadía, solo cambiar el estado
+            // La validación del estado se realiza dentro del método consumir() del State
             reserva.consumir();
         }
     }

@@ -36,6 +36,7 @@ public abstract class CalculoFacturaBase implements CalculoFacturaStrategy {
 
     /**
      * Calcula la cantidad de noches entre check-in y check-out.
+     * Si check-in y check-out son el mismo día, se considera mínimo 1 noche.
      */
     protected long calcularCantidadNoches(Estadia estadia) {
         if (estadia.getCheckin() == null || estadia.getCheckout() == null) {
@@ -43,7 +44,10 @@ public abstract class CalculoFacturaBase implements CalculoFacturaStrategy {
         }
 
         long diffInMillis = estadia.getCheckout().getTime() - estadia.getCheckin().getTime();
-        return TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+        long noches = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+        
+        // Mínimo 1 noche: si check-in y check-out son el mismo día, se cobra 1 noche
+        return Math.max(1, noches);
     }
 
     /**

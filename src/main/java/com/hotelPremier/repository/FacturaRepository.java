@@ -12,10 +12,11 @@ import java.util.List;
 
 @Repository
 public interface FacturaRepository extends JpaRepository<Factura,Integer> {
-        @Query("""
+    @Query("""
         SELECT f
         FROM Factura f
-        WHERE f.responsablepago.huesped.huespedID.dni = :dni
+        WHERE TYPE(f.responsablepago) = PersonaFisica
+          AND f.responsablepago.huesped.huespedID.dni = :dni
     """)
     List<Factura> buscarPorDni(@Param("dni") String dni);
 

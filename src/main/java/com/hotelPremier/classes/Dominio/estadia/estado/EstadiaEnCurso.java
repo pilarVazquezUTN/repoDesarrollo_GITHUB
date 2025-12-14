@@ -41,6 +41,7 @@ public class EstadiaEnCurso extends EstadoEstadia {
         // La carga de servicios extra se maneja desde el service.
         // Este método valida que la operación sea permitida en este estado.
         // La implementación concreta (persistencia, asociaciones) se realiza en el service.
+        // No hacer nada aquí evita bugs silenciosos: el service debe manejar la lógica completa.
     }
 
     @Override

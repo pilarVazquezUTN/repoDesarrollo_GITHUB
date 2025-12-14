@@ -51,6 +51,13 @@ public class FacturaService {
     // ===========================================
     // CU07 - Facturas por número de habitación
     // ===========================================
+    /**
+     * Obtiene las facturas asociadas a estadías en curso para una habitación específica.
+     * 
+     * Nota: Se listan facturas activas asociadas a estadías en curso (ENCURSO).
+     * Normalmente las facturas se consultan post checkout, pero este endpoint
+     * permite consultar facturas de estadías activas.
+     */
     public List<FacturaDTO> obtenerFacturasPorHabitacion(Integer nroHabitacion) {
 
         List<Factura> lista = facturaRepository.findAll().stream()

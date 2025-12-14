@@ -148,6 +148,12 @@ public class Factura {
      * 
      * Este método debe ser llamado cuando se genera la factura final de una estadía.
      * TODAS las transiciones de estado se realizan exclusivamente a través de métodos del patrón State.
+     * 
+     * Flujo conceptual:
+     * - PENDIENTE: factura creada, antes del cálculo/checkout
+     * - GENERADA: factura final generada, checkout confirmado
+     * - PAGADA: factura pagada
+     * - CANCELADA: factura cancelada con nota de crédito
      */
     public void generarFacturaFinal() {
         if (estadoFactura == null) {
@@ -156,6 +162,7 @@ public class Factura {
         
         // Validar que se pueda generar (usando State)
         // Si la factura está en PENDIENTE, puede pasar a GENERADA
+        // (PENDIENTE = antes del cálculo, GENERADA = checkout confirmado)
         if (!"PENDIENTE".equals(this.estado)) {
             throw new IllegalStateException("Solo se puede generar una factura final desde estado PENDIENTE. Estado actual: " + this.estado);
         }
