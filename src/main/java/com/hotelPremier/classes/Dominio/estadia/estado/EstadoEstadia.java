@@ -35,7 +35,7 @@ public abstract class EstadoEstadia {
      * Intenta generar una factura para la estadía. Por defecto lanza excepción si no es posible.
      */
     public void generarFactura(Estadia estadia, Factura factura) {
-        throw new IllegalStateException("No se puede generar factura en estado " + getNombre());
+        throw new IllegalStateException("No se puede generar una factura para una estiadia en estado " + getNombre());
     }
 
     /**
