@@ -31,5 +31,16 @@ public abstract class EstadoReserva {
     public Estadia checkIn(Reserva reserva) {
         throw new IllegalStateException("No se puede hacer check-in en estado " + getNombre());
     }
+
+    /**
+     * Consume la reserva cambiando su estado a CONSUMIDA sin crear una nueva estadía.
+     * Útil cuando la estadía ya existe y solo se necesita marcar la reserva como consumida.
+     * Por defecto lanza excepción si no es posible.
+     * 
+     * @param reserva La reserva que se está consumiendo
+     */
+    public void consumir(Reserva reserva) {
+        throw new IllegalStateException("No se puede consumir la reserva en estado " + getNombre());
+    }
 }
 

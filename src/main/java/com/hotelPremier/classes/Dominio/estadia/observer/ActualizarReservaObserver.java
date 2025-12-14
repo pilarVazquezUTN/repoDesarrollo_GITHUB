@@ -17,9 +17,9 @@ public class ActualizarReservaObserver implements EstadiaObserver {
         
         Reserva reserva = estadia.getReserva();
         if (reserva != null && "PENDIENTE".equals(reserva.getEstado())) {
-            // Cambiar la reserva a CONSUMIDA usando el método centralizado del State
+            // Consumir la reserva usando el método delegado del State
             // No usar checkIn() porque ya se creó la estadía, solo cambiar el estado
-            reserva.setEstadoReserva(new com.hotelPremier.classes.Dominio.reserva.estado.ReservaConsumida());
+            reserva.consumir();
         }
     }
 }

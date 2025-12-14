@@ -44,5 +44,12 @@ public class ReservaPendiente extends EstadoReserva {
         
         return estadia;
     }
+
+    @Override
+    public void consumir(Reserva reserva) {
+        // Consumir la reserva cambiando su estado a CONSUMIDA
+        // Sin crear una nueva estadía (útil cuando la estadía ya existe)
+        reserva.setEstadoReserva(new ReservaConsumida());
+    }
 }
 

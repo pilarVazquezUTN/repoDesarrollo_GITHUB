@@ -38,8 +38,9 @@ public class EstadiaEnCurso extends EstadoEstadia {
 
     @Override
     public void agregarServicioExtra(Estadia estadia, ServicioExtra servicio) {
-        // La lógica de agregar servicio extra se maneja en el servicio
-        // Este método valida que la operación sea permitida
+        // La carga de servicios extra se maneja desde el service.
+        // Este método valida que la operación sea permitida en este estado.
+        // La implementación concreta (persistencia, asociaciones) se realiza en el service.
     }
 
     @Override

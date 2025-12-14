@@ -62,12 +62,7 @@ public class EstadiaService {
 
         // Persistir los cambios (habitación y reserva fueron actualizados por los observers)
         estadiaRepository.save(estadia);
-        
-        // Persistir la habitación si fue actualizada
-        if (estadia.getHabitacion() != null) {
-            // La habitación se persiste automáticamente si está en el contexto de persistencia
-            // Si no, necesitaríamos el repositorio de habitación
-        }
+        // La habitación y reserva se persisten automáticamente si están en el contexto de persistencia
 
         return estadia;
     }

@@ -156,6 +156,18 @@ public class Reserva {
         return estadoReserva.checkIn(this);
     }
 
+    /**
+     * Método delegado: delega al estado actual la operación de consumir la reserva.
+     * Cambia el estado a CONSUMIDA sin crear una nueva estadía.
+     * Útil cuando la estadía ya existe y solo se necesita marcar la reserva como consumida.
+     */
+    public void consumir() {
+        if (estadoReserva == null) {
+            syncEstado();
+        }
+        estadoReserva.consumir(this);
+    }
+
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
