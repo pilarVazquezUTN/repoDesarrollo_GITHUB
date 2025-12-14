@@ -11,11 +11,10 @@ public class ActualizarReservaObserver implements EstadiaObserver {
 
     @Override
     public void actualizar(Estadia estadia) {
-        // Solo reaccionar cuando la estadía pasa a ENCURSO
-        if (!"ENCURSO".equals(estadia.getEstado())) {
-            return;
-        }
-
+        // Este observer se registra exclusivamente cuando la estadía pasa a ENCURSO.
+        // No es necesario validar el estado de la estadía: confiamos en que el observer
+        // se registra solo en el contexto correcto (iniciarEstadia()).
+        
         Reserva reserva = estadia.getReserva();
         if (reserva != null && "PENDIENTE".equals(reserva.getEstado())) {
             // Cambiar la reserva a CONSUMIDA usando el método centralizado del State

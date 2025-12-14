@@ -16,10 +16,9 @@ public class PagoFacturaObserver implements FacturaObserver {
 
     @Override
     public void actualizar(Factura factura) {
-        // Solo reaccionar cuando la factura pasa a PAGADA
-        if (!"PAGADA".equals(factura.getEstado())) {
-            return;
-        }
+        // Este observer se registra exclusivamente cuando la factura pasa a PAGADA.
+        // No es necesario validar el estado: confiamos en que el observer se registra
+        // solo en el contexto correcto (pagar()).
 
         // Verificar que el pago esté asociado
         Pago pago = factura.getPago();

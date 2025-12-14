@@ -11,11 +11,10 @@ public class ActualizarHabitacionObserver implements EstadiaObserver {
 
     @Override
     public void actualizar(Estadia estadia) {
-        // Solo reaccionar cuando la estadía pasa a ENCURSO
-        if (!"ENCURSO".equals(estadia.getEstado())) {
-            return;
-        }
-
+        // Este observer se registra exclusivamente cuando la estadía pasa a ENCURSO.
+        // No es necesario validar el estado: confiamos en que el observer se registra
+        // solo en el contexto correcto (iniciarEstadia()).
+        
         Habitacion habitacion = estadia.getHabitacion();
         if (habitacion != null) {
             habitacion.setEstado("OCUPADA");

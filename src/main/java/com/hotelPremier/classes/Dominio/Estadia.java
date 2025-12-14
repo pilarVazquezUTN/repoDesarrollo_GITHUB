@@ -124,14 +124,15 @@ public class Estadia {
     /**
      * Establece el estado de la estadía y sincroniza el String persistido.
      * Este método es usado internamente por los estados concretos.
+     * Notifica a los observers SOLO cuando existe una transición efectiva de estado.
      */
     public void setEstadoEstadia(EstadoEstadia nuevoEstado) {
         String estadoAnterior = this.estado;
         this.estadoEstadia = nuevoEstado;
         this.estado = nuevoEstado.getNombre();
         
-        // Notificar a los observers si el estado cambió a ENCURSO
-        if ("ENCURSO".equals(this.estado) && !"ENCURSO".equals(estadoAnterior)) {
+        // Notificar a los observers SOLO si el estado cambió realmente
+        if (!estadoAnterior.equals(this.estado)) {
             notificarObservers();
         }
     }
@@ -169,6 +170,7 @@ public class Estadia {
      * Inicia la estadía (cambia a estado ENCURSO) y notifica a los observers.
      * Usa el patrón State para validar el cambio antes de notificar.
      * TODAS las transiciones de estado se realizan exclusivamente a través de métodos del patrón State.
+     * Los observers se notifican SOLO cuando existe una transición efectiva de estado.
      */
     public void iniciarEstadia() {
         // Validar que se pueda iniciar (usando State si es necesario)
@@ -179,11 +181,10 @@ public class Estadia {
                 syncEstado();
             }
             // Cambiar a ENCURSO usando el método centralizado de transición
+            // setEstadoEstadia() notificará automáticamente a los observers si hay cambio
             setEstadoEstadia(new EstadiaEnCurso());
-        } else {
-            // Si ya está en ENCURSO, solo notificar a los observers
-            notificarObservers();
         }
+        // Si ya está en ENCURSO, NO notificar observers (no hay cambio de estado)
     }
 
     /**

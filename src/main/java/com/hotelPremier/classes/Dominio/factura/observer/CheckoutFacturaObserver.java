@@ -16,11 +16,10 @@ public class CheckoutFacturaObserver implements FacturaObserver {
 
     @Override
     public void actualizar(Factura factura) {
-        // Solo reaccionar cuando la factura pasa a GENERADA
-        if (!"GENERADA".equals(factura.getEstado())) {
-            return;
-        }
-
+        // Este observer se registra exclusivamente cuando la factura pasa a GENERADA.
+        // No es necesario validar el estado: confiamos en que el observer se registra
+        // solo en el contexto correcto (generarFacturaFinal()).
+        
         Estadia estadia = factura.getEstadia();
         if (estadia != null) {
             // Finalizar la estadía

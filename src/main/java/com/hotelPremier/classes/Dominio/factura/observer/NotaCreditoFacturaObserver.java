@@ -17,10 +17,9 @@ public class NotaCreditoFacturaObserver implements FacturaObserver {
 
     @Override
     public void actualizar(Factura factura) {
-        // Solo reaccionar cuando la factura pasa a CANCELADA
-        if (!"CANCELADA".equals(factura.getEstado())) {
-            return;
-        }
+        // Este observer se registra exclusivamente cuando la factura pasa a CANCELADA.
+        // No es necesario validar el estado: confiamos en que el observer se registra
+        // solo en el contexto correcto (aplicarNotaCredito()).
 
         // Verificar que la nota de crédito esté asociada
         NotaDeCredito notaCredito = factura.getNotaDeCredito();
