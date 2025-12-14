@@ -59,7 +59,7 @@ public interface ClassMapper {
 
     @Mappings({
         @Mapping(target = "habitacion", ignore = true),
-        @Mapping(target = "listahuesped", ignore = true),
+        @Mapping(target = "listahuesped", source = "listahuesped"),
         @Mapping(target = "listafactura", ignore = true),
         @Mapping(target = "reserva", ignore = true)
     })

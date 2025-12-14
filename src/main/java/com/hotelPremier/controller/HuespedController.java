@@ -1,9 +1,16 @@
 package com.hotelPremier.controller;
+<<<<<<< HEAD
+=======
+import java.util.List;
+>>>>>>> f370d3eaabc5f352665d3702162fe677f324353e
 
 import java.util.List;
 
 import com.hotelPremier.service.HuespedService;
+<<<<<<< HEAD
 
+=======
+>>>>>>> f370d3eaabc5f352665d3702162fe677f324353e
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

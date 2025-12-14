@@ -1,11 +1,6 @@
 package com.hotelPremier.classes.DTO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.hotelPremier.classes.Dominio.Estadia;
 import com.hotelPremier.classes.Dominio.Habitacion;
-import com.hotelPremier.classes.Dominio.Reserva;
 
 import java.util.List;
 
