@@ -58,6 +58,15 @@ public class Estadia {
     @Transient
     private EstadoEstadia estadoEstadia;
 
+    /**
+     * Lista de observers registrados para reaccionar a cambios de estado.
+     * 
+     * IMPORTANTE: Este campo es @Transient y NO se persiste en la base de datos.
+     * Los observers representan reacciones en tiempo de ejecución y no forman parte
+     * del estado persistente del dominio. Se registran en los services y no sobreviven
+     * a reinicios de la aplicación. Cada vez que se carga una estadía desde la BD,
+     * la lista de observers está vacía y debe ser repoblada por el service si se requiere.
+     */
     @Transient
     private List<EstadiaObserver> observers = new ArrayList<>();
 
@@ -159,22 +168,22 @@ public class Estadia {
     /**
      * Inicia la estadía (cambia a estado ENCURSO) y notifica a los observers.
      * Usa el patrón State para validar el cambio antes de notificar.
+     * TODAS las transiciones de estado se realizan exclusivamente a través de métodos del patrón State.
      */
     public void iniciarEstadia() {
         // Validar que se pueda iniciar (usando State si es necesario)
         // Por defecto, una estadía nueva ya está en ENCURSO
         if (!"ENCURSO".equals(this.estado)) {
-            // Si no está en ENCURSO, cambiar usando el patrón State
+            // Si no está en ENCURSO, cambiar usando el patrón State (método centralizado)
             if (estadoEstadia == null) {
                 syncEstado();
             }
-            // Cambiar a ENCURSO
-            this.estadoEstadia = new EstadiaEnCurso();
-            this.estado = "ENCURSO";
+            // Cambiar a ENCURSO usando el método centralizado de transición
+            setEstadoEstadia(new EstadiaEnCurso());
+        } else {
+            // Si ya está en ENCURSO, solo notificar a los observers
+            notificarObservers();
         }
-        
-        // Notificar a los observers
-        notificarObservers();
     }
 
     /**

@@ -106,8 +106,8 @@ public class PagoService {
 
         factura.setPago(pago);
         
-        // Registrar observer antes de pagar (patrón Observer)
-        factura.registrarObserver(new PagoFacturaObserver());
+        // Preparar factura para pago: registrar observers que reaccionarán al cambio de estado
+        prepararFacturaParaPago(factura);
         
         // Pagar factura (usa State para validar, luego notifica observers)
         factura.pagar();
@@ -178,5 +178,15 @@ public class PagoService {
 
             default -> throw new IllegalArgumentException("Tipo no reconocido: " + dto.getTipo());
         };
+    }
+
+    /**
+     * Prepara la factura para pago registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param factura La factura a preparar
+     */
+    private void prepararFacturaParaPago(Factura factura) {
+        factura.registrarObserver(new PagoFacturaObserver());
     }
 }

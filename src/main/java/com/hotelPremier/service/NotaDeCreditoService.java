@@ -72,8 +72,8 @@ public class NotaDeCreditoService {
         for (Factura factura : facturas) {
             factura.setNotaDeCredito(guardada);
             
-            // Registrar observer antes de aplicar nota de crédito (patrón Observer)
-            factura.registrarObserver(new NotaCreditoFacturaObserver());
+            // Preparar factura para nota de crédito: registrar observers que reaccionarán al cambio de estado
+            prepararFacturaParaNotaCredito(factura);
             
             // Aplicar nota de crédito (usa State para validar, luego notifica observers)
             factura.aplicarNotaCredito();
@@ -82,5 +82,15 @@ public class NotaDeCreditoService {
         }
 
         return "Nota de crédito aplicada correctamente a " + facturas.size() + " factura(s).";
+    }
+
+    /**
+     * Prepara la factura para nota de crédito registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param factura La factura a preparar
+     */
+    private void prepararFacturaParaNotaCredito(Factura factura) {
+        factura.registrarObserver(new NotaCreditoFacturaObserver());
     }
 }

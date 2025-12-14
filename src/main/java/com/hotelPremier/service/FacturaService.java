@@ -316,8 +316,8 @@ public class FacturaService {
         Factura factura = facturaRepository.findById(facturaId)
                 .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
 
-        // Registrar observers antes de generar
-        factura.registrarObserver(new CheckoutFacturaObserver());
+        // Preparar factura para checkout: registrar observers que reaccionarán al cambio de estado
+        prepararFacturaParaCheckout(factura);
 
         // Generar factura final (usa State para validar, luego notifica observers)
         factura.generarFacturaFinal();
@@ -356,8 +356,8 @@ public class FacturaService {
         Factura factura = facturaRepository.findById(facturaId)
                 .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
 
-        // Registrar observers antes de pagar
-        factura.registrarObserver(new PagoFacturaObserver());
+        // Preparar factura para pago: registrar observers que reaccionarán al cambio de estado
+        prepararFacturaParaPago(factura);
 
         // Pagar factura (usa State para validar, luego notifica observers)
         factura.pagar();
@@ -386,8 +386,8 @@ public class FacturaService {
         Factura factura = facturaRepository.findById(facturaId)
                 .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
 
-        // Registrar observers antes de aplicar nota de crédito
-        factura.registrarObserver(new NotaCreditoFacturaObserver());
+        // Preparar factura para nota de crédito: registrar observers que reaccionarán al cambio de estado
+        prepararFacturaParaNotaCredito(factura);
 
         // Aplicar nota de crédito (usa State para validar, luego notifica observers)
         factura.aplicarNotaCredito();
@@ -396,6 +396,39 @@ public class FacturaService {
         facturaRepository.save(factura);
 
         return mapper.toDTOFactura(factura);
+    }
+
+    // ============================================================
+    //   MÉTODOS AUXILIARES PARA REGISTRO DE OBSERVERS
+    // ============================================================
+    /**
+     * Prepara la factura para checkout registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param factura La factura a preparar
+     */
+    private void prepararFacturaParaCheckout(Factura factura) {
+        factura.registrarObserver(new CheckoutFacturaObserver());
+    }
+
+    /**
+     * Prepara la factura para pago registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param factura La factura a preparar
+     */
+    private void prepararFacturaParaPago(Factura factura) {
+        factura.registrarObserver(new PagoFacturaObserver());
+    }
+
+    /**
+     * Prepara la factura para nota de crédito registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param factura La factura a preparar
+     */
+    private void prepararFacturaParaNotaCredito(Factura factura) {
+        factura.registrarObserver(new NotaCreditoFacturaObserver());
     }
 
 }

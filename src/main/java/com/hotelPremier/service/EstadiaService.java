@@ -54,9 +54,8 @@ public class EstadiaService {
      * @return La estadía iniciada
      */
     public Estadia iniciarEstadia(Estadia estadia) {
-        // Registrar los observers antes de iniciar
-        estadia.registrarObserver(new ActualizarHabitacionObserver());
-        estadia.registrarObserver(new ActualizarReservaObserver());
+        // Preparar estadía para inicio: registrar observers que reaccionarán al cambio de estado
+        prepararEstadiaParaInicio(estadia);
 
         // Iniciar la estadía (cambia a ENCURSO y notifica a los observers)
         estadia.iniciarEstadia();
@@ -71,5 +70,16 @@ public class EstadiaService {
         }
 
         return estadia;
+    }
+
+    /**
+     * Prepara la estadía para inicio registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param estadia La estadía a preparar
+     */
+    private void prepararEstadiaParaInicio(Estadia estadia) {
+        estadia.registrarObserver(new ActualizarHabitacionObserver());
+        estadia.registrarObserver(new ActualizarReservaObserver());
     }
 }

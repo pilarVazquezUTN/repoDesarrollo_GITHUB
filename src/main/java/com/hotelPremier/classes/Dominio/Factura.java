@@ -39,6 +39,15 @@ public class Factura {
     @Transient
     private EstadoFactura estadoFactura;
 
+    /**
+     * Lista de observers registrados para reaccionar a cambios de estado.
+     * 
+     * IMPORTANTE: Este campo es @Transient y NO se persiste en la base de datos.
+     * Los observers representan reacciones en tiempo de ejecución y no forman parte
+     * del estado persistente del dominio. Se registran en los services y no sobreviven
+     * a reinicios de la aplicación. Cada vez que se carga una factura desde la BD,
+     * la lista de observers está vacía y debe ser repoblada por el service si se requiere.
+     */
     @Transient
     private List<FacturaObserver> observers = new ArrayList<>();
 
@@ -99,40 +108,10 @@ public class Factura {
         syncEstado();
     }
 
-    /**
-     * Sincroniza el estadoFactura (transient) con el estado String (persistido).
-     * Se ejecuta automáticamente después de cargar desde la BD o persistir.
-     */
-    @PostLoad
-    @PostPersist
-    private void syncEstado() {
-        if (estado == null || estado.isEmpty()) {
-            estado = "PENDIENTE";
-        }
-        switch (estado.toUpperCase()) {
-            case "GENERADA" -> estadoFactura = new FacturaGenerada();
-            case "PAGADA" -> estadoFactura = new FacturaPagada();
-            case "CANCELADA" -> estadoFactura = new FacturaCancelada();
-            default -> estadoFactura = new FacturaPendiente();
-        }
-    }
-
-    /**
-     * Establece el estado de la factura y sincroniza el String persistido.
-     * Este método es usado internamente por los estados concretos.
-     * Notifica a los observers después del cambio de estado.
-     */
-    public void setEstadoFactura(EstadoFactura nuevoEstado) {
-        String estadoAnterior = this.estado;
-        this.estadoFactura = nuevoEstado;
-        this.estado = nuevoEstado.getNombre();
-        
-        // Notificar a los observers si el estado cambió
-        if (!estadoAnterior.equals(this.estado)) {
-            notificarObservers();
-        }
-    }
-
+    // ============================================================
+    //   MÉTODOS DE DOMINIO (PATRÓN STATE)
+    // ============================================================
+    
     /**
      * Método delegado: delega al estado actual la operación de pagar.
      */
@@ -163,20 +142,32 @@ public class Factura {
         estadoFactura.aplicarNotaCredito(this);
     }
 
-    public Estadia getEstadia() { return estadia; }
-    public void setEstadia(Estadia estadia) { this.estadia = estadia; }
-
-    public NotaDeCredito getNotaDeCredito() { return notacredito; }
-    public void setNotaDeCredito(NotaDeCredito notacredito) { this.notacredito = notacredito; }
-
-    public Pago getPago() { return pago; }
-    public void setPago(Pago pago) { this.pago = pago; }
-
-    public ResponsablePago getResponsablePago() { return responsablepago; }
-    public void setResponsablePago(ResponsablePago responsablepago) {
-        this.responsablepago = responsablepago;
+    /**
+     * Genera la factura final (cambia a estado GENERADA) usando el patrón State.
+     * El State valida que la transición sea válida, luego notifica a los observers.
+     * 
+     * Este método debe ser llamado cuando se genera la factura final de una estadía.
+     * TODAS las transiciones de estado se realizan exclusivamente a través de métodos del patrón State.
+     */
+    public void generarFacturaFinal() {
+        if (estadoFactura == null) {
+            syncEstado();
+        }
+        
+        // Validar que se pueda generar (usando State)
+        // Si la factura está en PENDIENTE, puede pasar a GENERADA
+        if (!"PENDIENTE".equals(this.estado)) {
+            throw new IllegalStateException("Solo se puede generar una factura final desde estado PENDIENTE. Estado actual: " + this.estado);
+        }
+        
+        // Cambiar a GENERADA usando State (método centralizado para transiciones)
+        setEstadoFactura(new FacturaGenerada());
     }
 
+    // ============================================================
+    //   MÉTODOS DE OBSERVER (PATRÓN OBSERVER)
+    // ============================================================
+    
     /**
      * Registra un observer para ser notificado cuando la factura cambie de estado.
      * 
@@ -197,6 +188,44 @@ public class Factura {
         observers.remove(observer);
     }
 
+    // ============================================================
+    //   MÉTODOS HELPERS INTERNOS
+    // ============================================================
+    
+    /**
+     * Establece el estado de la factura y sincroniza el String persistido.
+     * Este método es usado internamente por los estados concretos.
+     * Notifica a los observers después del cambio de estado.
+     */
+    public void setEstadoFactura(EstadoFactura nuevoEstado) {
+        String estadoAnterior = this.estado;
+        this.estadoFactura = nuevoEstado;
+        this.estado = nuevoEstado.getNombre();
+        
+        // Notificar a los observers si el estado cambió
+        if (!estadoAnterior.equals(this.estado)) {
+            notificarObservers();
+        }
+    }
+
+    /**
+     * Sincroniza el estadoFactura (transient) con el estado String (persistido).
+     * Se ejecuta automáticamente después de cargar desde la BD o persistir.
+     */
+    @PostLoad
+    @PostPersist
+    private void syncEstado() {
+        if (estado == null || estado.isEmpty()) {
+            estado = "PENDIENTE";
+        }
+        switch (estado.toUpperCase()) {
+            case "GENERADA" -> estadoFactura = new FacturaGenerada();
+            case "PAGADA" -> estadoFactura = new FacturaPagada();
+            case "CANCELADA" -> estadoFactura = new FacturaCancelada();
+            default -> estadoFactura = new FacturaPendiente();
+        }
+    }
+
     /**
      * Notifica a todos los observers registrados sobre el cambio de estado.
      */
@@ -206,28 +235,21 @@ public class Factura {
         }
     }
 
-    /**
-     * Genera la factura final (cambia a estado GENERADA) usando el patrón State.
-     * El State valida que la transición sea válida, luego notifica a los observers.
-     * 
-     * Este método debe ser llamado cuando se genera la factura final de una estadía.
-     */
-    public void generarFacturaFinal() {
-        if (estadoFactura == null) {
-            syncEstado();
-        }
-        
-        // Validar que se pueda generar (usando State)
-        // Si la factura está en PENDIENTE, puede pasar a GENERADA
-        if (!"PENDIENTE".equals(this.estado)) {
-            throw new IllegalStateException("Solo se puede generar una factura final desde estado PENDIENTE. Estado actual: " + this.estado);
-        }
-        
-        // Cambiar a GENERADA usando State
-        this.estadoFactura = new FacturaGenerada();
-        this.estado = "GENERADA";
-        
-        // Notificar a los observers
-        notificarObservers();
+    // ============================================================
+    //   GETTERS Y SETTERS
+    // ============================================================
+    
+    public Estadia getEstadia() { return estadia; }
+    public void setEstadia(Estadia estadia) { this.estadia = estadia; }
+
+    public NotaDeCredito getNotaDeCredito() { return notacredito; }
+    public void setNotaDeCredito(NotaDeCredito notacredito) { this.notacredito = notacredito; }
+
+    public Pago getPago() { return pago; }
+    public void setPago(Pago pago) { this.pago = pago; }
+
+    public ResponsablePago getResponsablePago() { return responsablepago; }
+    public void setResponsablePago(ResponsablePago responsablepago) {
+        this.responsablepago = responsablepago;
     }
 }
