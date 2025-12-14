@@ -1,11 +1,14 @@
 package com.hotelPremier.service;
 
 import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
 import com.hotelPremier.classes.Dominio.Habitacion;
 import com.hotelPremier.classes.Dominio.Reserva;
 import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.repository.EstadiaRepository;
 import com.hotelPremier.repository.HabitacionRepository;
 import com.hotelPremier.repository.ReservaRepository;
+import com.hotelPremier.service.EstadiaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,12 @@ public class ReservaService {
 
     @Autowired
     private HabitacionRepository habitacionRepository;
+
+    @Autowired
+    private EstadiaRepository estadiaRepository;
+
+    @Autowired
+    private EstadiaService estadiaService;
 
     @Autowired
     private ClassMapper mapper;
@@ -118,5 +127,51 @@ public class ReservaService {
 
         reservaRepository.deleteById(id);
         return true;
+    }
+
+    // ============================================
+    // 5) HACER CHECK-IN DE UNA RESERVA
+    // ============================================
+    /**
+     * Hace check-in de una reserva usando los patrones State y Observer.
+     * 
+     * La lógica de negocio está en el dominio (Reserva.checkIn()):
+     * - Valida que la reserva esté en estado PENDIENTE (patrón State)
+     * - Cambia la reserva a estado CONSUMIDA
+     * - Crea una nueva Estadia en estado ENCURSO
+     * - Asocia la estadía con la reserva
+     * 
+     * Luego usa el patrón Observer para:
+     * - Actualizar la habitación a OCUPADA
+     * - Confirmar que la reserva esté en CONSUMIDA
+     * 
+     * @param idReserva ID de la reserva a consumir
+     * @return La nueva Estadia creada
+     * @throws IllegalArgumentException si la reserva no existe o no está en estado PENDIENTE
+     */
+    public Estadia hacerCheckIn(Integer idReserva) {
+        // 1. Buscar la reserva
+        Reserva reserva = reservaRepository.findById(idReserva)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + idReserva));
+
+        // 2. Usar el patrón State: el dominio valida y ejecuta la lógica
+        // Si la reserva no está en PENDIENTE, lanzará IllegalStateException
+        Estadia estadia = reserva.checkIn();
+
+        // 3. Usar el patrón Observer: iniciar la estadía notificando a los observers
+        // Esto actualiza la habitación a OCUPADA y confirma la reserva en CONSUMIDA
+        estadia = estadiaService.iniciarEstadia(estadia);
+
+        // 4. Persistir los cambios
+        // La reserva cambió a CONSUMIDA, la habitación a OCUPADA, y la estadía está iniciada
+        reservaRepository.save(reserva);
+        estadiaRepository.save(estadia);
+        
+        // Persistir la habitación si fue actualizada por el observer
+        if (estadia.getHabitacion() != null) {
+            habitacionRepository.save(estadia.getHabitacion());
+        }
+
+        return estadia;
     }
 }

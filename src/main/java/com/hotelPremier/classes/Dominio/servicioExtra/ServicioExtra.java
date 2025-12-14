@@ -22,6 +22,36 @@ public class ServicioExtra {
     @Column(name="precio")
     private Float precio ;
 
+    // GETTERS & SETTERS
+    public ServicioExtraID getServicioExtraID() {
+        return servicioExtraID;
+    }
 
+    public void setServicioExtraID(ServicioExtraID servicioExtraID) {
+        this.servicioExtraID = servicioExtraID;
+    }
 
+    public Estadia getEstadia() {
+        return estadia;
+    }
+
+    public void setEstadia(Estadia estadia) {
+        this.estadia = estadia;
+    }
+
+    public String getTipo_servicio() {
+        return tipo_servicio;
+    }
+
+    public void setTipo_servicio(String tipo_servicio) {
+        this.tipo_servicio = tipo_servicio;
+    }
+
+    public Float getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(Float precio) {
+        this.precio = precio;
+    }
 }

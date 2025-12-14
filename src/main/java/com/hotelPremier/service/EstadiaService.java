@@ -2,6 +2,8 @@ package com.hotelPremier.service;
 
 import com.hotelPremier.classes.DTO.EstadiaDTO;
 import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.estadia.observer.ActualizarHabitacionObserver;
+import com.hotelPremier.classes.Dominio.estadia.observer.ActualizarReservaObserver;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.EstadiaRepository;
 
@@ -36,5 +38,38 @@ public class EstadiaService {
         System.err.println("Si se encontro una estadia");
 
         return mapper.toDTOsEstadia(java.util.List.of(estadia)).get(0);
+    }
+
+    // ============================================
+    // INICIAR ESTADIA CON PATRÓN OBSERVER
+    // ============================================
+    /**
+     * Inicia una estadía registrando los observers y notificándolos cuando cambia a ENCURSO.
+     * 
+     * Los observers registrados son:
+     * - ActualizarHabitacionObserver: cambia la habitación a OCUPADA
+     * - ActualizarReservaObserver: cambia la reserva a CONSUMIDA
+     * 
+     * @param estadia La estadía a iniciar
+     * @return La estadía iniciada
+     */
+    public Estadia iniciarEstadia(Estadia estadia) {
+        // Registrar los observers antes de iniciar
+        estadia.registrarObserver(new ActualizarHabitacionObserver());
+        estadia.registrarObserver(new ActualizarReservaObserver());
+
+        // Iniciar la estadía (cambia a ENCURSO y notifica a los observers)
+        estadia.iniciarEstadia();
+
+        // Persistir los cambios (habitación y reserva fueron actualizados por los observers)
+        estadiaRepository.save(estadia);
+        
+        // Persistir la habitación si fue actualizada
+        if (estadia.getHabitacion() != null) {
+            // La habitación se persiste automáticamente si está en el contexto de persistencia
+            // Si no, necesitaríamos el repositorio de habitación
+        }
+
+        return estadia;
     }
 }

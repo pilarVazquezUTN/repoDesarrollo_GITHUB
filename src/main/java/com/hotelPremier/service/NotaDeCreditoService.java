@@ -4,6 +4,7 @@ import com.hotelPremier.classes.Dominio.Factura;
 import com.hotelPremier.classes.Dominio.NotaDeCredito;
 import com.hotelPremier.classes.DTO.NotaDeCreditoDTO;
 import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.classes.Dominio.factura.observer.NotaCreditoFacturaObserver;
 import com.hotelPremier.repository.FacturaRepository;
 import com.hotelPremier.repository.NotaDeCreditoRepository;
 
@@ -70,8 +71,13 @@ public class NotaDeCreditoService {
         // 5️⃣ Aplicar NC a cada factura → total queda en 0
         for (Factura factura : facturas) {
             factura.setNotaDeCredito(guardada);
-            factura.setTotal(0);
-            factura.setEstado("CANCELADA");
+            
+            // Registrar observer antes de aplicar nota de crédito (patrón Observer)
+            factura.registrarObserver(new NotaCreditoFacturaObserver());
+            
+            // Aplicar nota de crédito (usa State para validar, luego notifica observers)
+            factura.aplicarNotaCredito();
+            
             facturaRepo.save(factura);
         }
 

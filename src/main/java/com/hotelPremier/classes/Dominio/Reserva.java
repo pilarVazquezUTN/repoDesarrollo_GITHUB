@@ -4,6 +4,10 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hotelPremier.classes.Dominio.reserva.estado.EstadoReserva;
+import com.hotelPremier.classes.Dominio.reserva.estado.ReservaPendiente;
+import com.hotelPremier.classes.Dominio.reserva.estado.ReservaConsumida;
+import com.hotelPremier.classes.Dominio.reserva.estado.ReservaCancelada;
 
 import jakarta.persistence.*;
 
@@ -26,6 +30,9 @@ public class Reserva {
 
     @Column(name="estado")
     private String estado;
+
+    @Transient
+    private EstadoReserva estadoReserva;
 
     @Column(name="nombre")
     private String nombre;
@@ -51,7 +58,11 @@ public class Reserva {
     @JsonManagedReference(value = "reserva-estadia")
     private Estadia estadia;
 
-    public Reserva() {}
+    public Reserva() {
+        // Inicializar con estado PENDIENTE por defecto
+        this.estado = "PENDIENTE";
+        this.estadoReserva = new ReservaPendiente();
+    }
 
     public Reserva(
             Integer id_reserva,
@@ -73,6 +84,8 @@ public class Reserva {
         this.telefono = telefono;
         this.habitacion = habitacion;
         this.estadia = estadia;
+        // Sincronizar estadoReserva con el estado String
+        syncEstado();
     }
 
     // ========================
@@ -89,7 +102,59 @@ public class Reserva {
     public void setFecha_hasta(Date fecha_hasta) { this.fecha_hasta = fecha_hasta; }
 
     public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public void setEstado(String estado) { 
+        this.estado = estado;
+        syncEstado();
+    }
+
+    /**
+     * Sincroniza el estadoReserva (transient) con el estado String (persistido).
+     * Se ejecuta automáticamente después de cargar desde la BD o persistir.
+     */
+    @PostLoad
+    @PostPersist
+    private void syncEstado() {
+        if (estado == null || estado.isEmpty()) {
+            estado = "PENDIENTE"; // Estado por defecto
+        }
+        switch (estado.toUpperCase()) {
+            case "CONSUMIDA" -> estadoReserva = new ReservaConsumida();
+            case "CANCELADA" -> estadoReserva = new ReservaCancelada();
+            default -> estadoReserva = new ReservaPendiente();
+        }
+    }
+
+    /**
+     * Establece el estado de la reserva y sincroniza el String persistido.
+     * Este método es usado internamente por los estados concretos.
+     */
+    public void setEstadoReserva(EstadoReserva nuevoEstado) {
+        this.estadoReserva = nuevoEstado;
+        this.estado = nuevoEstado.getNombre();
+    }
+
+    /**
+     * Método delegado: delega al estado actual la operación de cancelar.
+     */
+    public void cancelar() {
+        if (estadoReserva == null) {
+            syncEstado();
+        }
+        estadoReserva.cancelar(this);
+    }
+
+    /**
+     * Método delegado: delega al estado actual la operación de hacer check-in.
+     * Consume la reserva y crea una nueva Estadia en estado ENCURSO.
+     * 
+     * @return La nueva Estadia creada
+     */
+    public Estadia checkIn() {
+        if (estadoReserva == null) {
+            syncEstado();
+        }
+        return estadoReserva.checkIn(this);
+    }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }

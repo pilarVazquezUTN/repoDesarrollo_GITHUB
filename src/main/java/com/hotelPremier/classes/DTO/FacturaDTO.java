@@ -1,6 +1,8 @@
 package com.hotelPremier.classes.DTO;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 public class FacturaDTO {
 
@@ -13,6 +15,11 @@ public class FacturaDTO {
     private NotaDeCreditoDTO notacredito;
     private PagoDTO pago;
     private ResponsablePagoDTO responsablepago;   // 👈 AHORA ES DTO
+    
+    // Campos opcionales para cálculo automático con Strategy
+    private List<Integer> consumosIds; // IDs de los servicios extra seleccionados
+    private LocalDateTime fechaHoraCheckoutReal; // Fecha y hora real del checkout
+    private Float totalEstimado; // Total estimado enviado por el frontend (para validación)
 
     public FacturaDTO() {
     }
@@ -107,5 +114,30 @@ public class FacturaDTO {
 
     public void setResponsablepago(ResponsablePagoDTO responsablepago) {
         this.responsablepago = responsablepago;
+    }
+
+    // Getters y setters para campos de cálculo
+    public List<Integer> getConsumosIds() {
+        return consumosIds;
+    }
+
+    public void setConsumosIds(List<Integer> consumosIds) {
+        this.consumosIds = consumosIds;
+    }
+
+    public LocalDateTime getFechaHoraCheckoutReal() {
+        return fechaHoraCheckoutReal;
+    }
+
+    public void setFechaHoraCheckoutReal(LocalDateTime fechaHoraCheckoutReal) {
+        this.fechaHoraCheckoutReal = fechaHoraCheckoutReal;
+    }
+
+    public Float getTotalEstimado() {
+        return totalEstimado;
+    }
+
+    public void setTotalEstimado(Float totalEstimado) {
+        this.totalEstimado = totalEstimado;
     }
 }

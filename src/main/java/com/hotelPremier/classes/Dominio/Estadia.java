@@ -5,8 +5,13 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hotelPremier.classes.Dominio.estadia.estado.EstadoEstadia;
+import com.hotelPremier.classes.Dominio.estadia.estado.EstadiaEnCurso;
+import com.hotelPremier.classes.Dominio.estadia.estado.EstadiaFinalizada;
+import com.hotelPremier.classes.Dominio.estadia.observer.EstadiaObserver;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 
 @Entity
 @Table(name="estadia")
@@ -50,6 +55,18 @@ public class Estadia {
     @Column(name="estado")
     private String estado;
 
+    @Transient
+    private EstadoEstadia estadoEstadia;
+
+    @Transient
+    private List<EstadiaObserver> observers = new ArrayList<>();
+
+    public Estadia() {
+        // Inicializar con estado ENCURSO por defecto
+        this.estado = "ENCURSO";
+        this.estadoEstadia = new EstadiaEnCurso();
+    }
+
     // GETTERS & SETTERS
     public Integer getId_estadia() { return id_estadia; }
     public void setId_estadia(Integer id_estadia) { this.id_estadia = id_estadia; }
@@ -74,5 +91,139 @@ public class Estadia {
 
     
     public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public void setEstado(String estado) { 
+        this.estado = estado;
+        syncEstado();
+    }
+
+    /**
+     * Sincroniza el estadoEstadia (transient) con el estado String (persistido).
+     * Se ejecuta automáticamente después de cargar desde la BD o persistir.
+     */
+    @PostLoad
+    @PostPersist
+    private void syncEstado() {
+        if (estado == null || estado.isEmpty()) {
+            estado = "ENCURSO"; // Estado por defecto
+        }
+        switch (estado.toUpperCase()) {
+            case "FINALIZADA" -> estadoEstadia = new EstadiaFinalizada();
+            default -> estadoEstadia = new EstadiaEnCurso();
+        }
+    }
+
+    /**
+     * Establece el estado de la estadía y sincroniza el String persistido.
+     * Este método es usado internamente por los estados concretos.
+     */
+    public void setEstadoEstadia(EstadoEstadia nuevoEstado) {
+        String estadoAnterior = this.estado;
+        this.estadoEstadia = nuevoEstado;
+        this.estado = nuevoEstado.getNombre();
+        
+        // Notificar a los observers si el estado cambió a ENCURSO
+        if ("ENCURSO".equals(this.estado) && !"ENCURSO".equals(estadoAnterior)) {
+            notificarObservers();
+        }
+    }
+
+    /**
+     * Registra un observer para ser notificado cuando la estadía cambie de estado.
+     * 
+     * @param observer El observer a registrar
+     */
+    public void registrarObserver(EstadiaObserver observer) {
+        if (observer != null && !observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
+
+    /**
+     * Elimina un observer de la lista de observadores.
+     * 
+     * @param observer El observer a eliminar
+     */
+    public void eliminarObserver(EstadiaObserver observer) {
+        observers.remove(observer);
+    }
+
+    /**
+     * Notifica a todos los observers registrados sobre el cambio de estado.
+     */
+    private void notificarObservers() {
+        for (EstadiaObserver observer : observers) {
+            observer.actualizar(this);
+        }
+    }
+
+    /**
+     * Inicia la estadía (cambia a estado ENCURSO) y notifica a los observers.
+     * Usa el patrón State para validar el cambio antes de notificar.
+     */
+    public void iniciarEstadia() {
+        // Validar que se pueda iniciar (usando State si es necesario)
+        // Por defecto, una estadía nueva ya está en ENCURSO
+        if (!"ENCURSO".equals(this.estado)) {
+            // Si no está en ENCURSO, cambiar usando el patrón State
+            if (estadoEstadia == null) {
+                syncEstado();
+            }
+            // Cambiar a ENCURSO
+            this.estadoEstadia = new EstadiaEnCurso();
+            this.estado = "ENCURSO";
+        }
+        
+        // Notificar a los observers
+        notificarObservers();
+    }
+
+    /**
+     * Método delegado: delega al estado actual la operación de agregar huésped.
+     */
+    public void agregarHuesped(com.hotelPremier.classes.Dominio.Huesped huesped) {
+        if (estadoEstadia == null) {
+            syncEstado();
+        }
+        estadoEstadia.agregarHuesped(this, huesped);
+    }
+
+    /**
+     * Método delegado: delega al estado actual la operación de agregar servicio extra.
+     */
+    public void agregarServicioExtra(com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra servicio) {
+        if (estadoEstadia == null) {
+            syncEstado();
+        }
+        estadoEstadia.agregarServicioExtra(this, servicio);
+    }
+
+    /**
+     * Método delegado: delega al estado actual la operación de generar factura.
+     */
+    public void generarFactura(Factura factura) {
+        if (estadoEstadia == null) {
+            syncEstado();
+        }
+        estadoEstadia.generarFactura(this, factura);
+    }
+
+    /**
+     * Método delegado: delega al estado actual la operación de modificar fechas.
+     */
+    public void modificarFechas(Date nuevoCheckin, Date nuevoCheckout) {
+        if (estadoEstadia == null) {
+            syncEstado();
+        }
+        estadoEstadia.modificarFechas(this, nuevoCheckin, nuevoCheckout);
+    }
+
+    /**
+     * Método delegado: delega al estado actual la operación de finalizar estadía.
+     */
+    public void finalizar() {
+        if (estadoEstadia == null) {
+            syncEstado();
+        }
+        estadoEstadia.finalizar(this);
+    }
 }
