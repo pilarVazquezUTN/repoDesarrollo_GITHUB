@@ -117,15 +117,30 @@ public class ReservaService {
     }
 
     // ============================================
-    // 4) ELIMINAR RESERVA
+    // 4) CANCELAR RESERVA (PATRÓN STATE)
     // ============================================
-    public boolean deleteReserva(Integer id) {
-        if (!reservaRepository.existsById(id)) {
-            return false;
-        }
+    /**
+     * Cancela una reserva cambiando su estado a CANCELADA usando el patrón State.
+     * No se elimina físicamente la reserva, solo se cambia su estado.
+     * 
+     * @param idReserva ID de la reserva a cancelar
+     * @return DTO de la reserva cancelada
+     * @throws IllegalArgumentException si la reserva no existe
+     * @throws IllegalStateException si la reserva no puede cancelarse (ya está consumida o cancelada)
+     */
+    public ReservaDTO cancelarReserva(Integer idReserva) {
+        // 1. Buscar la reserva
+        Reserva reserva = reservaRepository.findById(idReserva)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + idReserva));
 
-        reservaRepository.deleteById(id);
-        return true;
+        // 2. Usar el patrón State: el dominio valida y ejecuta la lógica
+        // Si la reserva no está en PENDIENTE, lanzará IllegalStateException
+        reserva.cancelar();
+
+        // 3. Persistir el cambio de estado
+        reservaRepository.save(reserva);
+
+        return mapper.toDTOReserva(reserva);
     }
 
     // ============================================
