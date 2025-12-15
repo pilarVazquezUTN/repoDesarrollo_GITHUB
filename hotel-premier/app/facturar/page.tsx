@@ -3,6 +3,7 @@ import Tabla from "../tabla/page";
 import { useState } from "react";
 import FacturarUnTerceroModal from "../carteles/facturarUnTercero";
 import axios from "axios";
+import { TipoHuesped } from "../tabla/page";
 
 export default function Facturar() {
     const [open, setOpen] = useState(false); {/*hace que el cartel de facturar a un tercero se muestre o no*/}
@@ -10,12 +11,13 @@ export default function Facturar() {
     const [nroHabitacion, setNroHabitacion] = useState("");
     const [horaSalida, setHoraSalida] = useState("");
     const [huespedes, setHuespedes] = useState([]); //
+    const [huespedSeleccionado, setHuespedSeleccionado] = useState<TipoHuesped | null>(null);
 
     const buscarHuespedes = async () => {
         if (!nroHabitacion.trim()) return;
 
         try {
-            const response = await axios.get(`http://localhost:8080/habitaciones/${nroHabitacion}/huespedes`);
+            const response = await axios.get(`http://localhost:8080/${nroHabitacion}/huespedes`);
             setHuespedes(response.data); // guardo los huespedes en el state
             setMostrar(true); // muestro la tabla
         } catch (error: any) {
@@ -41,7 +43,7 @@ export default function Facturar() {
             {mostrar && (
                 <>
                     <p className="text-indigo-950 font-bold ">seleccione una persona como responsable de pago</p>
-                    <Tabla huespedes={huespedes} key={nroHabitacion} />
+                    <Tabla huespedes={huespedes} setSeleccionado={setHuespedSeleccionado}/>
                     <div className=" mt-6 justify-center sticky bottom-0 flex gap-4 ">
                         {/* NO VA LINK SOLO QUE QUERIA PROBAR COMPLETAR FACTURA 
                         <Link href="/facturar/completarFactura"> 

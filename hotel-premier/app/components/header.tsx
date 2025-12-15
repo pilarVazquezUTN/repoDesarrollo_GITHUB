@@ -59,7 +59,7 @@ export default function Header() {
             Buscar Huésped
         </Link>
 
-        {/*<Link href="/facturar"
+        <Link href="/facturar"
           className={` ${
               pathname === "/facturar"
                 ? "text-gray-500"
@@ -67,7 +67,7 @@ export default function Header() {
             }`}
         >
           Facturar
-        </Link> */}
+        </Link>
 
         <Link href="/darAltaHuesped"
           className={` ${
