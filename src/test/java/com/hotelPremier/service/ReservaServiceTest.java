@@ -23,6 +23,7 @@ import com.hotelPremier.classes.DTO.HabitacionDTO;
 import com.hotelPremier.classes.DTO.ReservaDTO;
 import com.hotelPremier.classes.Dominio.Habitacion;
 import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.HabitacionRepository;
 import com.hotelPremier.repository.ReservaRepository;
 
@@ -35,12 +36,15 @@ class ReservaServiceTest {
     @Mock
     private HabitacionRepository habitacionRepository;
 
+    @Mock
+    private ClassMapper mapper;
+
     @InjectMocks
     private ReservaService reservaService;
 
-    // =====================================================
-    // TEST 1 – Reserva válida
-    // =====================================================
+    // ============================
+    // Reserva válida
+    // ============================
     @Test
     void reservaValida_seRegistraCorrectamente() {
 
@@ -58,6 +62,12 @@ class ReservaServiceTest {
         Habitacion habitacion = new Habitacion();
         habitacion.setNumero(101);
 
+        Reserva reserva = new Reserva();
+        reserva.setEstado("PENDIENTE");
+
+        when(mapper.toEntityReserva(any(ReservaDTO.class)))
+                .thenReturn(reserva);
+
         when(habitacionRepository.findById(101))
                 .thenReturn(Optional.of(habitacion));
 
@@ -71,9 +81,9 @@ class ReservaServiceTest {
                 .saveAll(any());
     }
 
-    // =====================================================
-    // TEST 2 – Habitación inexistente
-    // =====================================================
+    // ============================
+    // Habitación inexistente
+    // ============================
     @Test
     void fallaSiNoExisteHabitacion() {
 
@@ -82,9 +92,6 @@ class ReservaServiceTest {
         habDTO.setNumero(101);
         dto.setHabitacion(habDTO);
 
-        when(habitacionRepository.findById(101))
-                .thenReturn(Optional.empty());
-
         assertThrows(RuntimeException.class,
                 () -> reservaService.guardarLista(List.of(dto)));
 
@@ -92,14 +99,14 @@ class ReservaServiceTest {
                 .saveAll(any());
     }
 
-    // =====================================================
-    // TEST 3 – Faltan datos del titular
-    // =====================================================
+    // ============================
+    // Faltan datos del titular
+    // ============================
     @Test
     void fallaSiFaltanDatosDelTitular() {
 
         ReservaDTO dto = new ReservaDTO();
-        dto.setApellido("PEREZ"); // nombre y teléfono faltantes
+        dto.setApellido("PEREZ");
 
         assertThrows(RuntimeException.class,
                 () -> reservaService.guardarLista(List.of(dto)));
@@ -108,9 +115,9 @@ class ReservaServiceTest {
                 .saveAll(any());
     }
 
-    // =====================================================
-    // TEST 4 – Fechas solapadas
-    // =====================================================
+    // ============================
+    // Fechas solapadas
+    // ============================
     @Test
     void fallaSiHayFechasSolapadas() {
 
@@ -133,7 +140,7 @@ class ReservaServiceTest {
 
         when(reservaRepository.haySuperposicion(
                 eq(101), any(), any())
-        ).thenReturn(1); // 👈 solapamiento
+        ).thenReturn(1);
 
         assertThrows(RuntimeException.class,
                 () -> reservaService.guardarLista(List.of(dto)));
@@ -142,9 +149,10 @@ class ReservaServiceTest {
                 .saveAll(any());
     }
 
-    // =====================================================
-    // TEST 5 – Cancelar reserva pendiente
-    // =====================================================
+
+    // ============================
+    // Cancelar reserva pendiente
+    // ============================
     @Test
     void cancelarReservaPendiente_exito() {
 
@@ -155,15 +163,18 @@ class ReservaServiceTest {
         when(reservaRepository.findById(1))
                 .thenReturn(Optional.of(reserva));
 
+        when(mapper.toDTOReserva(any(Reserva.class)))
+                .thenReturn(new ReservaDTO());
+
         ReservaDTO resultado = reservaService.cancelarReserva(1);
 
         verify(reservaRepository, times(1)).save(reserva);
         assertEquals("CANCELADA", reserva.getEstado());
     }
 
-    // =====================================================
-    // TEST 6 – Cancelar reserva ya cancelada
-    // =====================================================
+    // ============================
+    // Cancelar ya cancelada
+    // ============================
     @Test
     void cancelarReservaYaCancelada_falla() {
 
@@ -180,9 +191,9 @@ class ReservaServiceTest {
         verify(reservaRepository, never()).save(any());
     }
 
-    // =====================================================
-    // TEST 7 – Cancelar reserva inexistente
-    // =====================================================
+    // ============================
+    // Cancelar inexistente
+    // ============================
     @Test
     void cancelarReservaInexistente_falla() {
 
