@@ -722,7 +722,7 @@ VALUES (2031,
 
 
 
-GRANT ALL PRIVILEGES ON DATABASE hotelpremier15 TO pili;
+GRANT ALL PRIVILEGES ON DATABASE hotelpremier8 TO pili;
 
 -- Esto actualiza la secuencia al valor máximo que existe actualmente en la tabla
 --pili: agregue esto porque sino me crea el id 1, ahora con esta funcion arranca desde el ultimo+1
