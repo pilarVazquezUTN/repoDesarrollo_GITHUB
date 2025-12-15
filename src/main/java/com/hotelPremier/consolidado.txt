@@ -102,7 +102,7 @@ public abstract class EstadoEstadia {
         throw new IllegalStateException("No se puede agregar servicio extra en estado " + getNombre());
     }
     public void generarFactura(Estadia estadia, Factura factura) {
-        throw new IllegalStateException("No se puede generar factura en estado " + getNombre());
+        throw new IllegalStateException("No se puede generar una factura para una estiadia en estado " + getNombre());
     }
     public void modificarFechas(Estadia estadia, Date nuevoCheckin, Date nuevoCheckout) {
         throw new IllegalStateException("No se pueden modificar fechas en estado " + getNombre());
@@ -118,9 +118,6 @@ import com.hotelPremier.classes.Dominio.Habitacion;
 public class ActualizarHabitacionObserver implements EstadiaObserver {
     @Override
     public void actualizar(Estadia estadia) {
-        if (!"ENCURSO".equals(estadia.getEstado())) {
-            return;
-        }
         Habitacion habitacion = estadia.getHabitacion();
         if (habitacion != null) {
             habitacion.setEstado("OCUPADA");
@@ -134,12 +131,9 @@ import com.hotelPremier.classes.Dominio.Reserva;
 public class ActualizarReservaObserver implements EstadiaObserver {
     @Override
     public void actualizar(Estadia estadia) {
-        if (!"ENCURSO".equals(estadia.getEstado())) {
-            return;
-        }
         Reserva reserva = estadia.getReserva();
-        if (reserva != null && "PENDIENTE".equals(reserva.getEstado())) {
-            reserva.setEstadoReserva(new com.hotelPremier.classes.Dominio.reserva.estado.ReservaConsumida());
+        if (reserva != null) {
+            reserva.consumir();
         }
     }
 }
@@ -232,7 +226,7 @@ public class Estadia {
         String estadoAnterior = this.estado;
         this.estadoEstadia = nuevoEstado;
         this.estado = nuevoEstado.getNombre();
-        if ("ENCURSO".equals(this.estado) && !"ENCURSO".equals(estadoAnterior)) {
+        if (!estadoAnterior.equals(this.estado)) {
             notificarObservers();
         }
     }
@@ -255,8 +249,6 @@ public class Estadia {
                 syncEstado();
             }
             setEstadoEstadia(new EstadiaEnCurso());
-        } else {
-            notificarObservers();
         }
     }
     public void agregarHuesped(com.hotelPremier.classes.Dominio.Huesped huesped) {
@@ -316,7 +308,8 @@ public abstract class CalculoFacturaBase implements CalculoFacturaStrategy {
             throw new IllegalArgumentException("La estadía debe tener fechas de check-in y check-out");
         }
         long diffInMillis = estadia.getCheckout().getTime() - estadia.getCheckin().getTime();
-        return TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+        long noches = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+        return Math.max(1, noches);
     }
     protected BigDecimal calcularDescuentoPorNoches(Estadia estadia, BigDecimal costoBase) {
         long noches = calcularCantidadNoches(estadia);
@@ -567,9 +560,6 @@ import com.hotelPremier.classes.Dominio.Habitacion;
 public class CheckoutFacturaObserver implements FacturaObserver {
     @Override
     public void actualizar(Factura factura) {
-        if (!"GENERADA".equals(factura.getEstado())) {
-            return;
-        }
         Estadia estadia = factura.getEstadia();
         if (estadia != null) {
             estadia.finalizar();
@@ -593,9 +583,6 @@ import com.hotelPremier.classes.Dominio.NotaDeCredito;
 public class NotaCreditoFacturaObserver implements FacturaObserver {
     @Override
     public void actualizar(Factura factura) {
-        if (!"CANCELADA".equals(factura.getEstado())) {
-            return;
-        }
         NotaDeCredito notaCredito = factura.getNotaDeCredito();
         if (notaCredito == null) {
             throw new IllegalStateException("No se puede cancelar la factura sin una nota de crédito asociada");
@@ -612,9 +599,6 @@ import com.hotelPremier.classes.Dominio.Pago;
 public class PagoFacturaObserver implements FacturaObserver {
     @Override
     public void actualizar(Factura factura) {
-        if (!"PAGADA".equals(factura.getEstado())) {
-            return;
-        }
         Pago pago = factura.getPago();
         if (pago == null) {
             throw new IllegalStateException("No se puede marcar la factura como PAGADA sin un pago asociado");
@@ -1500,6 +1484,9 @@ public abstract class EstadoReserva {
     public Estadia checkIn(Reserva reserva) {
         throw new IllegalStateException("No se puede hacer check-in en estado " + getNombre());
     }
+    public void consumir(Reserva reserva) {
+        throw new IllegalStateException("No se puede consumir la reserva en estado " + getNombre());
+    }
 }
 //[classes/Dominio/reserva/estado/ReservaCancelada.java]
 package com.hotelPremier.classes.Dominio.reserva.estado;
@@ -1540,6 +1527,10 @@ public class ReservaPendiente extends EstadoReserva {
         estadia.setReserva(reserva);
         reserva.setEstadia(estadia);
         return estadia;
+    }
+    @Override
+    public void consumir(Reserva reserva) {
+        reserva.setEstadoReserva(new ReservaConsumida());
     }
 }
 //[classes/Dominio/Reserva.java]
@@ -1646,6 +1637,12 @@ public class Reserva {
             syncEstado();
         }
         return estadoReserva.checkIn(this);
+    }
+    public void consumir() {
+        if (estadoReserva == null) {
+            syncEstado();
+        }
+        estadoReserva.consumir(this);
     }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -2707,8 +2704,6 @@ import com.hotelPremier.classes.DTO.HuespedDTO;
 public class HuespedController {
     @Autowired 
     private HuespedService huespedService;
-        los end path van en plural.
-        no se pone dar baja/alta, se pone solo el huespedes y se va cambiando el get/post/ etc.
     @GetMapping("/huespedes")
     public ResponseEntity<List<HuespedDTO>> getHuespedes(
             @RequestParam(required = false) String dni,
@@ -2816,18 +2811,22 @@ public class ReservaController {
     ) {
         return ResponseEntity.ok(reservaService.buscarPorApellidoNombre(apellido, nombre));
     }
-    @DeleteMapping
-    public ResponseEntity<?> eliminarReserva(@RequestBody ReservaDTO dto) {
+    @PutMapping("/cancelar")
+    public ResponseEntity<?> cancelarReserva(@RequestBody ReservaDTO dto) {
         if (dto.getId_reserva() == null) {
             return ResponseEntity.badRequest()
                     .body("Debe enviar un id_reserva dentro del JSON");
         }
-        boolean eliminada = reservaService.deleteReserva(dto.getId_reserva());
-        if (!eliminada) {
+        try {
+            ReservaDTO reservaCancelada = reservaService.cancelarReserva(dto.getId_reserva());
+            return ResponseEntity.ok(reservaCancelada);
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No existe una reserva con ID " + dto.getId_reserva());
+                    .body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
-        return ResponseEntity.ok("Reserva eliminada correctamente");
     }
 }
 //[controller/UsuarioController.java]
@@ -2889,10 +2888,11 @@ import com.hotelPremier.classes.Dominio.Factura;
 import java.util.List;
 @Repository
 public interface FacturaRepository extends JpaRepository<Factura,Integer> {
-        @Query("""
+    @Query("""
         SELECT f
         FROM Factura f
-        WHERE f.responsablepago.huesped.huespedID.dni = :dni
+        WHERE TYPE(f.responsablepago) = PersonaFisica
+          AND f.responsablepago.huesped.huespedID.dni = :dni
     """)
     List<Factura> buscarPorDni(@Param("dni") String dni);
 }
@@ -3092,8 +3092,6 @@ public class EstadiaService {
         prepararEstadiaParaInicio(estadia);
         estadia.iniciarEstadia();
         estadiaRepository.save(estadia);
-        if (estadia.getHabitacion() != null) {
-        }
         return estadia;
     }
     private void prepararEstadiaParaInicio(Estadia estadia) {
@@ -3711,12 +3709,12 @@ public class ReservaService {
         }
         return mapper.toDtosReserva(lista);
     }
-    public boolean deleteReserva(Integer id) {
-        if (!reservaRepository.existsById(id)) {
-            return false;
-        }
-        reservaRepository.deleteById(id);
-        return true;
+    public ReservaDTO cancelarReserva(Integer idReserva) {
+        Reserva reserva = reservaRepository.findById(idReserva)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + idReserva));
+        reserva.cancelar();
+        reservaRepository.save(reserva);
+        return mapper.toDTOReserva(reserva);
     }
     public Estadia hacerCheckIn(Integer idReserva) {
         Reserva reserva = reservaRepository.findById(idReserva)
