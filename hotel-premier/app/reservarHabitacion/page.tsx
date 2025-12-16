@@ -150,7 +150,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           });
 
           // Obtener reservas en el rango de fechas
-          const responseReservas = await axios.get(`http://localhost:8080/api/reservas`, {
+          const responseReservas = await axios.get(`http://localhost:8080/reservas`, {
             params: {
               desde: desdeFecha,
               hasta: hastaFecha
@@ -661,7 +661,7 @@ const fechaHastaSeleccion = rangos.length
                         const responseHabitaciones = await axios.get(`http://localhost:8080/habitaciones`, {
                           params: { tipo: tipoSeleccionado },
                         });
-                        const responseReservas = await axios.get(`http://localhost:8080/api/reservas`, {
+                        const responseReservas = await axios.get(`http://localhost:8080/reservas`, {
                           params: { desde: desdeFecha, hasta: hastaFecha },
                         });
                         const habitacionesData = responseHabitaciones.data || [];

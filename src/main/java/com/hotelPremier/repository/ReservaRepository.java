@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -21,8 +22,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
           AND r.fecha_hasta >= :desde
     """)
     List<Reserva> buscarEntreFechas(
-            @Param("desde") Date desde,
-            @Param("hasta") Date hasta
+            @Param("desde") LocalDate desde,
+            @Param("hasta") LocalDate hasta
     );
 
     // =============================

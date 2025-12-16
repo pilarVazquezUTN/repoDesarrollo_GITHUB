@@ -12,6 +12,7 @@ import com.hotelPremier.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -78,7 +79,7 @@ public class ReservaService {
     /**
      * Busca reservas dentro de un rango de fechas.
      */
-    public List<ReservaDTO> buscarEntreFechas(Date desde, Date hasta) {
+    public List<ReservaDTO> buscarEntreFechas(LocalDate desde, LocalDate hasta) {
         List<Reserva> reservas = reservaRepository.buscarEntreFechas(desde, hasta);
         return mapper.toDtosReserva(reservas);
     }

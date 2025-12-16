@@ -14,6 +14,11 @@ import java.util.List;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 
+
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+
 @RestController
 @RequestMapping("/reservas")
 @Tag(name = "Reservas", description = "Gestión de reservas de habitaciones")
@@ -31,11 +36,14 @@ public class ReservaController {
     @Operation(summary = "Buscar reservas entre fechas")
     @GetMapping
     public ResponseEntity<?> buscarEntreFechas(
-        @RequestParam Date desde,
-        @RequestParam Date hasta
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta
     ) {
-        return ResponseEntity.ok(reservaService.buscarEntreFechas(desde, hasta));
+        return ResponseEntity.ok(
+            reservaService.buscarEntreFechas(desde, hasta)
+        );
     }
+
 
     @Operation(summary = "Buscar reservas por apellido y nombre")
     @GetMapping("/buscar")
