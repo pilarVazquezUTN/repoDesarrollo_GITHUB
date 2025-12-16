@@ -26,18 +26,18 @@ public class HuespedController {
     @Autowired 
     private HuespedService huespedService;
 
-    // @Operation(summary = "Buscar huéspedes")
-    // @GetMapping("/huespedes")
-    // public ResponseEntity<List<HuespedDTO>> getHuespedes(
-    //     @RequestParam(required = false) String dni,
-    //     @RequestParam(required = false) String nombre,
-    //     @RequestParam(required = false) String apellido,
-    //     @RequestParam(required = false) String tipoDocumento
-    // ) {
-    //     return ResponseEntity.ok(
-    //         huespedService.buscarHuespedes(dni, nombre, apellido, tipoDocumento)
-    //     );
-    // }
+    @Operation(summary = "Buscar huéspedes")
+    @GetMapping("/huespedes")
+    public ResponseEntity<List<HuespedDTO>> getHuespedes(
+        @RequestParam(required = false) String dni,
+        @RequestParam(required = false) String nombre,
+        @RequestParam(required = false) String apellido,
+        @RequestParam(required = false) String tipoDocumento
+    ) {
+        return ResponseEntity.ok(
+            huespedService.buscarHuespedes(dni, nombre, apellido, tipoDocumento)
+        );
+    }
 
     // @Operation(summary = "Dar de alta huésped")
     // @PostMapping("/huespedes")
