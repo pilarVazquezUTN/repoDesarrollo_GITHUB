@@ -219,10 +219,10 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
       return;
     }
 
-    // Validar si hay reserva en estado "EN CURSO" o "Pendiente" (reservada)
+    // Validar si hay reserva en estado "ENCURSO" o "PENDIENTE" (reservada)
     const tieneReservaEnCurso = habitacion.listareservas?.some(r => {
       const enRango = fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta);
-      return enRango && (r.estado === "EN CURSO" || r.estado === "Pendiente");
+      return enRango && (r.estado === "ENCURSO" || r.estado === "PENDIENTE");
     });
     if (tieneReservaEnCurso) {
       setMostrarCartel(true);
@@ -510,7 +510,7 @@ const fechaHastaSeleccion = rangos.length
                         const esSeleccionado = seleccionados.includes(key);
 
                         // 1. CHEQUEO FUERA DE SERVICIO
-                        const esFueraServicio = hab.estado === "FueraDeServicio";
+                        const esFueraServicio = hab.estado === "FUERA_DE_SERVICIO";
 
                         // 2. CHEQUEO RESERVA FINALIZADA (OCUPADA - ROJA)
                         const esOcupada = !esFueraServicio && hab.listareservas?.some((reserva: ReservaDTO) => {
