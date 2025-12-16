@@ -5,7 +5,6 @@ import java.util.List;
 import com.hotelPremier.service.HuespedService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,44 +16,42 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hotelPremier.classes.DTO.HuespedDTO;
 
-@RestController
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
+@RestController
+@Tag(name = "Huéspedes", description = "ABM y búsqueda de huéspedes")
 public class HuespedController {
-    
+
     @Autowired 
     private HuespedService huespedService;
 
-    @GetMapping("/huespedes")
-    public ResponseEntity<List<HuespedDTO>> getHuespedes(
-            @RequestParam(required = false) String dni,
-            @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) String apellido,
-            @RequestParam(required = false) String tipoDocumento
-    ) {
-        dni = (dni != null && dni.isEmpty()) ? null : dni;
-        nombre = (nombre != null && nombre.isEmpty()) ? null : nombre;
-        apellido = (apellido != null && apellido.isEmpty()) ? null : apellido;
-        tipoDocumento = (tipoDocumento != null && tipoDocumento.isEmpty()) ? null : tipoDocumento;
+    // @Operation(summary = "Buscar huéspedes")
+    // @GetMapping("/huespedes")
+    // public ResponseEntity<List<HuespedDTO>> getHuespedes(
+    //     @RequestParam(required = false) String dni,
+    //     @RequestParam(required = false) String nombre,
+    //     @RequestParam(required = false) String apellido,
+    //     @RequestParam(required = false) String tipoDocumento
+    // ) {
+    //     return ResponseEntity.ok(
+    //         huespedService.buscarHuespedes(dni, nombre, apellido, tipoDocumento)
+    //     );
+    // }
 
-        return ResponseEntity.ok(
-            huespedService.buscarHuespedes(dni, nombre, apellido, tipoDocumento)
-        );
-    }
-    
-    @PostMapping("/huespedes")
-    public ResponseEntity<HuespedDTO> addHuesped(@RequestBody HuespedDTO huesped) {
-        HuespedDTO addedHuesped = huespedService.addHuesped(huesped);
-        return new ResponseEntity<>(addedHuesped, HttpStatus.OK);
-    }
-    
+    // @Operation(summary = "Dar de alta huésped")
+    // @PostMapping("/huespedes")
+    // public ResponseEntity<HuespedDTO> addHuesped(@RequestBody HuespedDTO huesped) {
+    //     return ResponseEntity.ok(huespedService.addHuesped(huesped));
+    // }
+
+    @Operation(summary = "Eliminar huésped")
     @DeleteMapping("/huespedes/{tipo}/{dni}")
     public ResponseEntity<?> deleteHuesped(
-            @PathVariable String tipo,
-            @PathVariable String dni
+        @PathVariable String tipo,
+        @PathVariable String dni
     ) {
         huespedService.deleteHuesped(tipo, dni);
         return ResponseEntity.noContent().build();
     }
-
-
 }

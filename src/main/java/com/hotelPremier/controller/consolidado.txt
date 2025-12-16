@@ -1,0 +1,377 @@
+//[consolidado.txt]
+//[consolidado.txt]
+//[EstadiaController.java]
+package com.hotelPremier.controller;
+
+import com.hotelPremier.service.EstadiaService;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+// import java.util.List;
+
+@RestController
+@RequestMapping("/estadias")
+public class EstadiaController {
+
+    @Autowired
+    private EstadiaService estadiaService;
+
+    // ============================================
+    // GET /api/estadias/sin-factura
+    // ============================================
+    // @GetMapping("/sin-factura")
+    // public List<EstadiaDTO> listarSinFactura() {
+    //     return estadiaService.obtenerEstadiasSinFactura();
+    // }
+
+    @GetMapping("/enCurso/{numHabitacion}")
+    public ResponseEntity<?> obtenerEnCurso(@PathVariable Integer numHabitacion) {
+
+        EstadiaDTO dto = estadiaService.obtenerEstadiaEnCurso(numHabitacion);
+
+        if (dto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No hay estadía ENCURSO para la habitación " + numHabitacion);
+        }
+
+        return ResponseEntity.ok(dto);
+    }
+}
+//[FacturaController.java]
+package com.hotelPremier.controller;
+
+import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.service.FacturaService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/facturas")
+public class FacturaController {
+
+    @Autowired
+    private FacturaService facturaService;
+
+    // ======================================
+    // CU07 - Obtener facturas por habitación
+    // ======================================
+    @GetMapping("/habitacion/{nro}")
+    public ResponseEntity<List<FacturaDTO>> obtenerPorHabitacion(@PathVariable Integer nro) {
+        return ResponseEntity.ok(facturaService.obtenerFacturasPorHabitacion(nro));
+    }
+
+    @GetMapping("/dni/{dni}")
+    public ResponseEntity<List<FacturaDTO>> obtenerPorDni(@PathVariable String dni) {
+        return ResponseEntity.ok(facturaService.buscarPorDni(dni));
+    }
+
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<FacturaDTO>> filtrarFacturas(
+            @RequestParam(required = false) String cuit,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String numero
+    ) {
+        return ResponseEntity.ok(
+                facturaService.filtrarFacturas(cuit, tipo, numero)
+        );
+    }
+    @PostMapping
+    public ResponseEntity<?> crearFactura(@RequestBody FacturaDTO facturaDTO) {
+        try {
+            FacturaDTO creada = facturaService.crearFactura(facturaDTO);
+            System.err.println(creada);
+            return ResponseEntity.ok("Factura creada correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+}
+//[HabitacionController.java]
+package com.hotelPremier.controller;
+
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.service.HabitacionService;
+
+import java.sql.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HabitacionController {
+    @Autowired
+    ClassMapper classMapper;
+
+    @Autowired
+    HabitacionService habitacionService;
+
+    @GetMapping("/habitaciones")
+    public ResponseEntity<List<HabitacionDTO>> getHabitaciones(
+        @RequestParam String tipo
+    ){
+        List<HabitacionDTO> listaHabitaciones = habitacionService.getHabitaciones(tipo);
+        return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
+    }
+
+    @GetMapping("/numHabitacion")
+    public HabitacionDTO getHabitacion(
+        @RequestParam Integer numero
+    ){
+        HabitacionDTO habitacionDTO = habitacionService.getHabitacion(numero);
+        return (habitacionDTO);
+    }
+
+    @GetMapping("/listaHabitaciones") 
+    public ResponseEntity<List<HabitacionDTO>> buscarListaHabitaciones(
+        @RequestParam String tipo,
+        @RequestParam Date fechaDesde,
+        @RequestParam Date fechaHasta
+    ){
+        
+        List<HabitacionDTO> listaHabitaciones = habitacionService.buscarListaHabitaciones(tipo,fechaDesde,fechaHasta);
+        return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
+    }
+
+    @GetMapping("/detalleHabitaciones")
+    public ResponseEntity<List<HabitacionDTO>> obtenerHabitacionesConDetalle(
+        @RequestParam String tipo,
+        @RequestParam Date fechaDesde,
+        @RequestParam Date fechaHasta
+    ){
+        List<HabitacionDTO> listaHabitaciones = habitacionService.obtenerHabitacionesConDetalle(tipo,fechaDesde,fechaHasta);
+        return new ResponseEntity<>(listaHabitaciones, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/{nro}/huespedes")
+    public List<Huesped> getHuespedesDeHabitacion(@PathVariable Integer nro) {
+        return habitacionService.obtenerHuespedesPorHabitacion(nro);
+    }
+
+}
+//[HuespedController.java]
+package com.hotelPremier.controller;
+
+import java.util.List;
+
+import com.hotelPremier.service.HuespedService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hotelPremier.classes.DTO.HuespedDTO;
+
+@RestController
+
+public class HuespedController {
+    
+    @Autowired 
+    private HuespedService huespedService;
+
+    @GetMapping("/huespedes")
+    public ResponseEntity<List<HuespedDTO>> getHuespedes(
+            @RequestParam(required = false) String dni,
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) String apellido,
+            @RequestParam(required = false) String tipoDocumento
+    ) {
+        dni = (dni != null && dni.isEmpty()) ? null : dni;
+        nombre = (nombre != null && nombre.isEmpty()) ? null : nombre;
+        apellido = (apellido != null && apellido.isEmpty()) ? null : apellido;
+        tipoDocumento = (tipoDocumento != null && tipoDocumento.isEmpty()) ? null : tipoDocumento;
+
+        return ResponseEntity.ok(
+            huespedService.buscarHuespedes(dni, nombre, apellido, tipoDocumento)
+        );
+    }
+    
+    @PostMapping("/huespedes")
+    public ResponseEntity<HuespedDTO> addHuesped(@RequestBody HuespedDTO huesped) {
+        HuespedDTO addedHuesped = huespedService.addHuesped(huesped);
+        return new ResponseEntity<>(addedHuesped, HttpStatus.OK);
+    }
+    
+    @DeleteMapping("/huespedes/{tipo}/{dni}")
+    public ResponseEntity<?> deleteHuesped(
+            @PathVariable String tipo,
+            @PathVariable String dni
+    ) {
+        huespedService.deleteHuesped(tipo, dni);
+        return ResponseEntity.noContent().build();
+    }
+
+
+}
+//[NotaDeCreditoController.java]
+package com.hotelPremier.controller;
+
+import com.hotelPremier.classes.DTO.NotaDeCreditoDTO;
+import com.hotelPremier.service.NotaDeCreditoService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/notadecredito")
+public class NotaDeCreditoController {
+
+    @Autowired
+    private NotaDeCreditoService service;
+
+    @PostMapping
+    public ResponseEntity<?> ingresarNotaCredito(@RequestBody NotaDeCreditoDTO dto) {
+        try {
+            String mensaje = service.ingresarNotaDeCredito(dto);
+            return ResponseEntity.ok(mensaje);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+}
+//[PagoController.java]
+package com.hotelPremier.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.hotelPremier.classes.DTO.PagoDTO;
+import com.hotelPremier.service.PagoService;
+
+@RestController
+@RequestMapping("/pagos")
+public class PagoController {
+
+    @Autowired
+    private PagoService pagoService;
+
+    @PostMapping
+    public ResponseEntity<String> registrar(@RequestBody PagoDTO dto) {
+        return ResponseEntity.ok(pagoService.ingresarPago(dto));
+    }
+}
+//[ReservaController.java]
+package com.hotelPremier.controller;
+
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.service.ReservaService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
+
+@RestController
+@RequestMapping("/reservas")
+public class ReservaController {
+
+    @Autowired
+    private ReservaService reservaService;
+
+    // ==========================================================
+    // 1) GUARDAR RESERVA
+    // ==========================================================
+    @PostMapping
+    public ResponseEntity<?> guardarReservas(@RequestBody List<ReservaDTO> listaDTO) {
+        List<ReservaDTO> guardadas = reservaService.guardarLista(listaDTO);
+        return ResponseEntity.ok(guardadas);
+    }
+
+    // ==========================================================
+    // 2) BUSCAR ENTRE FECHAS
+    // ==========================================================
+    @GetMapping
+    public ResponseEntity<?> buscarEntreFechas(
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date desde,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date hasta
+    ) {
+
+        if (desde == null || hasta == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Debe enviar parámetros ?desde=YYYY-MM-DD&hasta=YYYY-MM-DD");
+        }
+
+        return ResponseEntity.ok(reservaService.buscarEntreFechas(desde, hasta));
+    }
+
+    // ==========================================================
+    // 3) BUSCAR POR APELLIDO + NOMBRE (dinámico)
+    // ==========================================================
+    @GetMapping("/buscar")
+    public ResponseEntity<?> buscarPorApellidoNombre(
+            @RequestParam(required = false, defaultValue = "") String apellido,
+            @RequestParam(required = false, defaultValue = "") String nombre
+    ) {
+        return ResponseEntity.ok(reservaService.buscarPorApellidoNombre(apellido, nombre));
+    }
+
+    // ==========================================================
+    // 4) CANCELAR RESERVA POR ID (CU06)
+    // ==========================================================
+    /**
+     * Cancela una reserva cambiando su estado a CANCELADA usando el patrón State.
+     * No se elimina físicamente la reserva, solo se cambia su estado.
+     * 
+     * @param dto DTO con el id_reserva a cancelar
+     * @return Respuesta con el resultado de la operación
+     */
+    @PutMapping("/cancelar")
+    public ResponseEntity<?> cancelarReserva(@RequestBody ReservaDTO dto) {
+
+        if (dto.getId_reserva() == null) {
+            return ResponseEntity.badRequest()
+                    .body("Debe enviar un id_reserva dentro del JSON");
+        }
+
+        try {
+            ReservaDTO reservaCancelada = reservaService.cancelarReserva(dto.getId_reserva());
+            return ResponseEntity.ok(reservaCancelada);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+    }
+
+}
+//[UsuarioController.java]
+package com.hotelPremier.controller;
+
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class UsuarioController {
+    
+}

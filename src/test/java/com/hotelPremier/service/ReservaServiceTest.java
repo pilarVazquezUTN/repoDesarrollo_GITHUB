@@ -164,7 +164,7 @@ class ReservaServiceTest {
         when(mapper.toDTOReserva(any(Reserva.class)))
                 .thenReturn(new ReservaDTO());
 
-        ReservaDTO resultado = reservaService.cancelarReserva(1);
+        reservaService.cancelarReserva(1);
 
         verify(reservaRepository, times(1)).save(reserva);
         assertEquals("CANCELADA", reserva.getEstado());
