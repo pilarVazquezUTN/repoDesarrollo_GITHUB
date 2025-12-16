@@ -384,14 +384,15 @@ export default function Facturar() {
         };
 
         // Console log: datos que se envían al backend
-        console.log("=== DATOS ENVIADOS AL BACKEND ===");
-        console.log("Factura DTO:", JSON.stringify(facturaDTO, null, 2));
+        console.log("==========================================");
+        console.log("=== DTO DE FACTURA QUE SE ENVÍA AL BACKEND ===");
+        console.log(JSON.stringify(facturaDTO, null, 2));
+        console.log("==========================================");
         console.log("Estadía actual:", JSON.stringify(estadia, null, 2));
         console.log("Consumos seleccionados IDs:", consumosIds);
         console.log("Items seleccionados:", itemsSeleccionados);
         console.log("Items facturar:", JSON.stringify(itemsFacturar, null, 2));
         console.log("Consumos disponibles:", JSON.stringify(consumos, null, 2));
-        console.log("=================================");
 
         try {
             // Si la estadía no tiene checkout, actualizarla primero
