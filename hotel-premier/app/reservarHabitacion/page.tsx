@@ -423,59 +423,71 @@ const fechaHastaSeleccion = rangos.length
   // RENDER
   // =========================
   return (
-    <main className="flex gap-8 px-6 py-6 items-start bg-white min-h-screen">
+    <main className="flex gap-8 px-8 py-8 items-start bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
 
       {/* FORMULARIO DE FECHAS Y TIPO */}
-      <form className="flex flex-col justify-center">
-        <label className="text-indigo-950 font-medium mb-1">Desde Fecha:</label>
-        <input
-          type="date"
-          value={desdeFecha}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDesdeFecha(e.target.value)}
-          onBlur={(e: React.FocusEvent<HTMLInputElement>) => validarDesde(e.target.value)}
-          className={`p-2 border rounded mb-1 text-indigo-950
-            ${(erroresFecha.desdeInvalido || erroresFecha.ordenInvalido || (!desdeFecha && tipoSeleccionado)) 
-              ? "border-red-500 bg-red-100" 
-              : ""}`}
-        />
-        {erroresFecha.desdeInvalido && <span className="text-red-600 text-sm mb-2 block">La fecha no puede ser menor a hoy</span>}
-        {erroresFecha.ordenInvalido && <span className="text-red-600 text-sm mb-2 block">La fecha "Desde" no puede ser posterior a "Hasta"</span>}
+      <div className="bg-white rounded-xl shadow-lg p-6 w-80 h-fit sticky top-4">
+        <h2 className="text-2xl font-bold text-indigo-950 mb-6 pb-3 border-b-2 border-indigo-200">Filtros de Búsqueda</h2>
+        <form className="flex flex-col space-y-4">
+          <div>
+            <label className="text-indigo-950 font-semibold mb-2 block text-sm">Desde Fecha:</label>
+            <input
+              type="date"
+              value={desdeFecha}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDesdeFecha(e.target.value)}
+              onBlur={(e: React.FocusEvent<HTMLInputElement>) => validarDesde(e.target.value)}
+              className={`w-full p-3 border-2 rounded-lg text-indigo-950 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                ${(erroresFecha.desdeInvalido || erroresFecha.ordenInvalido || (!desdeFecha && tipoSeleccionado)) 
+                  ? "border-red-500 bg-red-50" 
+                  : "border-gray-300 hover:border-indigo-400"}`}
+            />
+            {erroresFecha.desdeInvalido && <span className="text-red-600 text-xs mt-1 block">La fecha no puede ser menor a hoy</span>}
+            {erroresFecha.ordenInvalido && <span className="text-red-600 text-xs mt-1 block">La fecha "Desde" no puede ser posterior a "Hasta"</span>}
+          </div>
 
-        <label className="text-indigo-950 font-medium mb-1">Hasta Fecha:</label>
-        <input
-          type="date"
-          value={hastaFecha}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHastaFecha(e.target.value)}
-          onBlur={(e: React.FocusEvent<HTMLInputElement>) => validarHasta(e.target.value)}
-          className={`p-2 border rounded mb-1 text-indigo-950
-            ${(erroresFecha.hastaInvalido || erroresFecha.ordenInvalido || (!hastaFecha && tipoSeleccionado)) 
-              ? "border-red-500 bg-red-100" 
-              : ""}`}
-        />
-        {erroresFecha.hastaInvalido && <span className="text-red-600 text-sm mb-2 block">La fecha no puede ser menor a hoy</span>}
-        {erroresFecha.ordenInvalido && <span className="text-red-600 text-sm mb-2 block">La fecha "Hasta" no puede ser anterior a "Desde"</span>}
+          <div>
+            <label className="text-indigo-950 font-semibold mb-2 block text-sm">Hasta Fecha:</label>
+            <input
+              type="date"
+              value={hastaFecha}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHastaFecha(e.target.value)}
+              onBlur={(e: React.FocusEvent<HTMLInputElement>) => validarHasta(e.target.value)}
+              className={`w-full p-3 border-2 rounded-lg text-indigo-950 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                ${(erroresFecha.hastaInvalido || erroresFecha.ordenInvalido || (!hastaFecha && tipoSeleccionado)) 
+                  ? "border-red-500 bg-red-50" 
+                  : "border-gray-300 hover:border-indigo-400"}`}
+            />
+            {erroresFecha.hastaInvalido && <span className="text-red-600 text-xs mt-1 block">La fecha no puede ser menor a hoy</span>}
+            {erroresFecha.ordenInvalido && <span className="text-red-600 text-xs mt-1 block">La fecha "Hasta" no puede ser anterior a "Desde"</span>}
+          </div>
 
-        <label className="text-indigo-950 font-medium mb-1">Tipo de Habitación:</label>
-        <select
-          value={tipoSeleccionado}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTipoSeleccionado(e.target.value as TipoHabitacion)}
-          onFocus={() => {
-            setErroresFecha(prev => ({
-              desdeInvalido: prev.desdeInvalido || !desdeFecha,
-              hastaInvalido: prev.hastaInvalido || !hastaFecha,
-              ordenInvalido: prev.ordenInvalido
-            }));
-          }}
-          className={`p-2 border rounded mb-4 ${!fechasValidas ? "bg-gray-200 cursor-not-allowed text-gray-400" : "text-indigo-950"}`}
-        >
-          <option value="" disabled>Seleccionar tipo</option>
-          <option value={TipoHabitacion.IndividualEstandar}>Individual Estandar</option>
-          <option value={TipoHabitacion.DobleEstandar}>Doble Estandar</option>
-          <option value={TipoHabitacion.DobleSuperior}>Doble Superior</option>
-          <option value={TipoHabitacion.SuperiorFamilyPlan}>Superior Family Plan</option>
-          <option value={TipoHabitacion.Suite}>Suite</option>
-        </select>
-      </form>
+          <div>
+            <label className="text-indigo-950 font-semibold mb-2 block text-sm">Tipo de Habitación:</label>
+            <select
+              value={tipoSeleccionado}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTipoSeleccionado(e.target.value as TipoHabitacion)}
+              onFocus={() => {
+                setErroresFecha(prev => ({
+                  desdeInvalido: prev.desdeInvalido || !desdeFecha,
+                  hastaInvalido: prev.hastaInvalido || !hastaFecha,
+                  ordenInvalido: prev.ordenInvalido
+                }));
+              }}
+              className={`w-full p-3 border-2 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                ${!fechasValidas 
+                  ? "bg-gray-100 cursor-not-allowed text-gray-400 border-gray-300" 
+                  : "text-indigo-950 border-gray-300 hover:border-indigo-400 bg-white"}`}
+            >
+              <option value="" disabled>Seleccionar tipo</option>
+              <option value={TipoHabitacion.IndividualEstandar}>Individual Estandar</option>
+              <option value={TipoHabitacion.DobleEstandar}>Doble Estandar</option>
+              <option value={TipoHabitacion.DobleSuperior}>Doble Superior</option>
+              <option value={TipoHabitacion.SuperiorFamilyPlan}>Superior Family Plan</option>
+              <option value={TipoHabitacion.Suite}>Suite</option>
+            </select>
+          </div>
+        </form>
+      </div>
 
       {mostrarCartel && (
         <CartelHabitacionNoDisponible
@@ -512,26 +524,26 @@ const fechaHastaSeleccion = rangos.length
       )}
 
       {/* TABLA ESTADO HABITACIÓN */}
-      <section className="flex-2 max-h-[800px]">
+      <section className="flex-1 max-h-[800px] overflow-auto">
         {tipoSeleccionado && fechasIntervalo.length > 0 ? (
           
           <>
-          
-            <table className="w-full border-collapse border shadow-lg">
-              <thead className="bg-indigo-950 text-white sticky top-0 z-10">
+            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+            <table className="w-full border-collapse">
+              <thead className="bg-gradient-to-r from-indigo-950 to-indigo-900 text-white sticky top-0 z-10 shadow-md">
                 <tr>
-                  <th className="p-2">Fecha</th>
+                  <th className="p-4 font-semibold text-left">Fecha</th>
                   {tipoSeleccionado && (
-                    <th colSpan={habitaciones.length} className="p-2">Habitaciones</th>
+                    <th colSpan={habitaciones.length} className="p-4 font-semibold text-center">Habitaciones</th>
                   )}
                 </tr>
               </thead>
 
               <tbody>
-                <tr>
-                  <td className="p-2 border"></td>
+                <tr className="bg-indigo-50">
+                  <td className="p-3 border-b-2 border-indigo-200 font-semibold text-indigo-950"></td>
                   {tipoSeleccionado && habitaciones.map(hab => (
-                    <td key={hab?.numero} className="p-2 border text-center">{hab?.numero}</td>
+                    <td key={hab?.numero} className="p-3 border-b-2 border-indigo-200 text-center font-bold text-indigo-950">{hab?.numero}</td>
                   ))}
                 </tr>
 
@@ -540,8 +552,8 @@ const fechaHastaSeleccion = rangos.length
                   const fechaDisplay = format(fechaDate,"dd/MM/yyyy");
 
                   return (
-                    <tr key={fechaString}>
-                      <td className="p-2 border text-center font-medium">{fechaDisplay}</td>
+                    <tr key={fechaString} className="hover:bg-indigo-50/50 transition-colors">
+                      <td className="p-3 border-b border-gray-200 text-center font-semibold text-indigo-950 bg-white sticky left-0 z-5">{fechaDisplay}</td>
                       {tipoSeleccionado && habitaciones.map((hab: HabitacionDTO) => {
                         
                         const key = `${fechaString}|${hab?.numero}`;
@@ -588,8 +600,9 @@ const fechaHastaSeleccion = rangos.length
                         return (
                           <td
                             key={hab.numero}
-                            className={`p-4 border cursor-pointer ${bgClass}`}
+                            className={`p-4 border-b border-gray-200 cursor-pointer transition-all hover:scale-105 hover:shadow-md ${bgClass}`}
                             onClick={(e: React.MouseEvent<HTMLTableCellElement>) => toggleSeleccion(fechaDate, hab, e)}
+                            title={esFueraServicio ? "Fuera de servicio" : esOcupada ? "Ocupada" : esReservada ? "Reservada" : esSeleccionado ? "Seleccionada" : "Disponible"}
                           ></td>
                         );
                       })}
@@ -598,32 +611,51 @@ const fechaHastaSeleccion = rangos.length
                 })}
               </tbody>
             </table>
+            </div>
 
              {/* LEYENDA */}
-             <li className="flex items-center gap-2 mt-4 flex-wrap justify-center">
-               <span className="w-4 h-4 rounded-full bg-yellow-200"></span><span>RESERVADA</span>
-               <span className="w-4 h-4 rounded-full bg-yellow-500"></span><span>SELECCIONADA</span>
-               <span className="w-4 h-4 rounded-full border" style={{backgroundColor: '#f5f7fa'}}></span><span>DISPONIBLE</span>
-               <span className="w-4 h-4 rounded-full bg-gray-700"></span><span>FUERA DE SERVICIO</span>
-               <span className="w-4 h-4 rounded-full bg-red-500"></span><span>OCUPADA</span>
-             </li>
+             <div className="bg-white rounded-xl shadow-lg p-4 mt-6">
+               <h3 className="text-lg font-semibold text-indigo-950 mb-3 text-center">Leyenda</h3>
+               <ul className="flex items-center gap-4 flex-wrap justify-center">
+                 <li className="flex items-center gap-2">
+                   <span className="w-5 h-5 rounded-full bg-yellow-200 border-2 border-yellow-300 shadow-sm"></span>
+                   <span className="text-sm font-medium text-gray-700">RESERVADA</span>
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <span className="w-5 h-5 rounded-full bg-yellow-500 border-2 border-yellow-600 shadow-sm"></span>
+                   <span className="text-sm font-medium text-gray-700">SELECCIONADA</span>
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <span className="w-5 h-5 rounded-full border-2 border-gray-300 shadow-sm" style={{backgroundColor: 'aliceblue'}}></span>
+                   <span className="text-sm font-medium text-gray-700">DISPONIBLE</span>
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <span className="w-5 h-5 rounded-full bg-gray-700 border-2 border-gray-800 shadow-sm"></span>
+                   <span className="text-sm font-medium text-gray-700">FUERA DE SERVICIO</span>
+                 </li>
+                 <li className="flex items-center gap-2">
+                   <span className="w-5 h-5 rounded-full bg-red-500 border-2 border-red-600 shadow-sm"></span>
+                   <span className="text-sm font-medium text-gray-700">OCUPADA</span>
+                 </li>
+               </ul>
+             </div>
 
-            {errorSeleccion && (
-                <div className="text-red-600 text-center mt-2 font-semibold">
-                  {errorSeleccion}
-                </div>
-              )}
-        
-            <div className="flex justify-center gap-4 mt-6">
-            <Link href="/menu">
-              <button className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800">
-                Cancelar
-              </button>
-            </Link>
+             {errorSeleccion && (
+                 <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mt-4 shadow-md">
+                   <p className="font-semibold">{errorSeleccion}</p>
+                 </div>
+               )}
+         
+             <div className="flex justify-center gap-4 mt-6">
+             <Link href="/menu">
+               <button className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all shadow-md hover:shadow-lg font-semibold">
+                 Cancelar
+               </button>
+             </Link>
 
-            <button
-              className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
-               onClick={async () => {
+             <button
+               className="px-6 py-3 bg-gradient-to-r from-indigo-950 to-indigo-900 text-white rounded-lg hover:from-indigo-900 hover:to-indigo-800 transition-all shadow-md hover:shadow-lg font-semibold transform hover:scale-105"
+                onClick={async () => {
                 if (seleccionados.length === 0) {
                   setErrorSeleccion("Debes seleccionar al menos una habitación.");
                   setTimeout(() => setErrorSeleccion(""), 2000);
@@ -653,17 +685,23 @@ const fechaHastaSeleccion = rangos.length
             {mostrarCartelOH && <OcuparHabitacionIgualmente onClose={() => setMostrarCartelOH(false)} />}
           </>
         ): (
-            <div className="text-gray-400 text-center mt-20">
-                Seleccione un rango de fechas y tipo para ver la disponibilidad.
+            <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+              <div className="text-gray-400 text-lg mb-2">
+                📅 Seleccione un rango de fechas y tipo para ver la disponibilidad
+              </div>
+              <p className="text-sm text-gray-500">Complete los filtros en el panel lateral para comenzar</p>
             </div>
         )}
 
         {/* FORMULARIO DE DATOS DEL HUÉSPED */}
         {mostrarFormulario && (
-          <div className="mt-8 p-6 border rounded-lg bg-white shadow-lg">
-            <h3 className="text-xl font-bold text-indigo-950 mb-4">
-              Reserva a nombre de:
-            </h3>
+          <div className="mt-8 p-8 border-2 border-indigo-200 rounded-xl bg-white shadow-2xl">
+            <div className="mb-6 pb-4 border-b-2 border-indigo-200">
+              <h3 className="text-2xl font-bold text-indigo-950">
+                Reserva a nombre de:
+              </h3>
+              <p className="text-sm text-gray-600 mt-1">Complete los datos del huésped para confirmar la reserva</p>
+            </div>
             <form onSubmit={async (e) => {
               e.preventDefault();
 
@@ -743,9 +781,9 @@ const fechaHastaSeleccion = rangos.length
                 alert("Hubo un error al registrar las reservas.");
               }
             }}>
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <label className="text-indigo-950 font-medium mb-1 block">Apellido:</label>
+                  <label className="text-indigo-950 font-semibold mb-2 block text-sm">Apellido:</label>
                   <input
                     type="text"
                     value={apellido}
@@ -766,21 +804,28 @@ const fechaHastaSeleccion = rangos.length
                         }
                       }
                     }}
-                    className={`p-2 border rounded w-full text-indigo-950 ${
-                      errorApellido || errorApellidoObligatorio ? "border-red-500 bg-red-100" : ""
+                    className={`w-full p-3 border-2 rounded-lg text-indigo-950 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
+                      errorApellido || errorApellidoObligatorio 
+                        ? "border-red-500 bg-red-50" 
+                        : "border-gray-300 hover:border-indigo-400"
                     }`}
                     autoFocus
+                    placeholder="Ingrese el apellido"
                   />
                   {errorApellido && (
-                    <p className="text-red-500 text-sm mt-1">Ingrese solo letras.</p>
+                    <p className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                      <span>⚠</span> Ingrese solo letras.
+                    </p>
                   )}
                   {errorApellidoObligatorio && (
-                    <p className="text-red-500 text-sm mt-1">El apellido es obligatorio.</p>
+                    <p className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                      <span>⚠</span> El apellido es obligatorio.
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="text-indigo-950 font-medium mb-1 block">Nombre:</label>
+                  <label className="text-indigo-950 font-semibold mb-2 block text-sm">Nombre:</label>
                   <input
                     type="text"
                     value={nombre}
@@ -801,20 +846,27 @@ const fechaHastaSeleccion = rangos.length
                         }
                       }
                     }}
-                    className={`p-2 border rounded w-full text-indigo-950 ${
-                      errorNombre || errorNombreObligatorio ? "border-red-500 bg-red-100" : ""
+                    className={`w-full p-3 border-2 rounded-lg text-indigo-950 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
+                      errorNombre || errorNombreObligatorio 
+                        ? "border-red-500 bg-red-50" 
+                        : "border-gray-300 hover:border-indigo-400"
                     }`}
+                    placeholder="Ingrese el nombre"
                   />
                   {errorNombre && (
-                    <p className="text-red-500 text-sm mt-1">Ingrese solo letras.</p>
+                    <p className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                      <span>⚠</span> Ingrese solo letras.
+                    </p>
                   )}
                   {errorNombreObligatorio && (
-                    <p className="text-red-500 text-sm mt-1">El nombre es obligatorio.</p>
+                    <p className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                      <span>⚠</span> El nombre es obligatorio.
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="text-indigo-950 font-medium mb-1 block">Teléfono:</label>
+                  <label className="text-indigo-950 font-semibold mb-2 block text-sm">Teléfono:</label>
                   <input
                     type="text"
                     value={telefono}
@@ -835,19 +887,26 @@ const fechaHastaSeleccion = rangos.length
                         }
                       }
                     }}
-                    className={`p-2 border rounded w-full text-indigo-950 ${
-                      errorTelefono || errorTelefonoObligatorio ? "border-red-500 bg-red-100" : ""
+                    className={`w-full p-3 border-2 rounded-lg text-indigo-950 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${
+                      errorTelefono || errorTelefonoObligatorio 
+                        ? "border-red-500 bg-red-50" 
+                        : "border-gray-300 hover:border-indigo-400"
                     }`}
+                    placeholder="Ingrese el teléfono"
                   />
                   {errorTelefono && (
-                    <p className="text-red-500 text-sm mt-1">Ingrese un teléfono válido.</p>
+                    <p className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                      <span>⚠</span> Ingrese un teléfono válido.
+                    </p>
                   )}
                   {errorTelefonoObligatorio && (
-                    <p className="text-red-500 text-sm mt-1">El teléfono es obligatorio.</p>
+                    <p className="text-red-600 text-xs mt-1 flex items-center gap-1">
+                      <span>⚠</span> El teléfono es obligatorio.
+                    </p>
                   )}
                 </div>
 
-                <div className="flex justify-center gap-4 mt-6">
+                <div className="flex justify-center gap-4 mt-8 pt-4 border-t border-gray-200">
                   <button
                     type="button"
                     onClick={() => {
@@ -855,13 +914,13 @@ const fechaHastaSeleccion = rangos.length
                       setSeleccionados([]);
                       setRangos([]);
                     }}
-                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                    className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all shadow-md hover:shadow-lg font-semibold"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
+                    className="px-6 py-3 bg-gradient-to-r from-indigo-950 to-indigo-900 text-white rounded-lg hover:from-indigo-900 hover:to-indigo-800 transition-all shadow-md hover:shadow-lg font-semibold transform hover:scale-105"
                   >
                     Confirmar Reserva
                   </button>
@@ -875,44 +934,51 @@ const fechaHastaSeleccion = rangos.length
 
       {/* TABLA DERECHA */}
       {!ocultarTabla && seleccionados.length > 0 && (
-        <section className="flex-1">
-          <h2 className="bg-indigo-950 text-white font-bold text-center mb-0">
-            Habitaciones Seleccionadas:
-          </h2>
-          <table className="w-full border-collapse border shadow-lg">
-            <thead className="bg-indigo-950 text-white">
-              <tr>
-                <th className="p-3 border">Eliminar</th>
-                <th className="p-3 border">Habitación</th>
-                <th className="p-3 border">Fecha Desde</th>
-                <th className="p-3 border">Fecha Hasta</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rangos.map((ran: { numero: number; desde: string; hasta: string }, index: number) => {
-                const fechaDesde = format(parseISO(ran.desde),"dd/MM/yyyy");
-                const fechaHasta = format(parseISO(ran.hasta),"dd/MM/yyyy");
-                return (
-                  <tr key={index} className="bg-white hover:bg-indigo-100">
-                    <td className="p-3 border text-center"><button
-                        onClick={() => deleteSeleccionado(ran)} 
-                        className=" text-white p-1 rounded hover:bg-red-700"
-                    >
-                        <FontAwesomeIcon icon={faTrashCan} className="text-black" />
-                      </button>
-                    </td>
-                    <td className="p-3 border text-center">{ran.numero}</td>
-                    <td className="p-3 border text-center">{fechaDesde}</td>
-                    <td className="p-3 border text-center">{fechaHasta}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <section className="flex-1 bg-white rounded-xl shadow-xl p-6 h-fit sticky top-4">
+          <div className="mb-4 pb-3 border-b-2 border-indigo-200">
+            <h2 className="text-xl font-bold text-indigo-950">
+              Habitaciones Seleccionadas
+            </h2>
+            <p className="text-sm text-gray-600 mt-1">{seleccionados.length} día(s) seleccionado(s)</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead className="bg-gradient-to-r from-indigo-950 to-indigo-900 text-white">
+                <tr>
+                  <th className="p-3 text-left font-semibold">Eliminar</th>
+                  <th className="p-3 text-center font-semibold">Habitación</th>
+                  <th className="p-3 text-center font-semibold">Fecha Desde</th>
+                  <th className="p-3 text-center font-semibold">Fecha Hasta</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rangos.map((ran: { numero: number; desde: string; hasta: string }, index: number) => {
+                  const fechaDesde = format(parseISO(ran.desde),"dd/MM/yyyy");
+                  const fechaHasta = format(parseISO(ran.hasta),"dd/MM/yyyy");
+                  return (
+                    <tr key={index} className="bg-white hover:bg-indigo-50 transition-colors border-b border-gray-200">
+                      <td className="p-3 text-center">
+                        <button
+                          onClick={() => deleteSeleccionado(ran)} 
+                          className="p-2 rounded-lg hover:bg-red-100 transition-all text-red-600 hover:text-red-700"
+                          title="Eliminar esta selección"
+                        >
+                          <FontAwesomeIcon icon={faTrashCan} />
+                        </button>
+                      </td>
+                      <td className="p-3 text-center font-semibold text-indigo-950">{ran.numero}</td>
+                      <td className="p-3 text-center text-gray-700">{fechaDesde}</td>
+                      <td className="p-3 text-center text-gray-700">{fechaHasta}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
 
           <button
             onClick={eliminarSeleccionados}
-            className="block mx-auto mt-6 px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
+            className="w-full mt-6 px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all shadow-md hover:shadow-lg font-semibold"
           >
             Eliminar Todas
           </button>
