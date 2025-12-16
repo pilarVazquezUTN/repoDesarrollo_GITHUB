@@ -351,7 +351,6 @@ export default function Facturar() {
             setErrores(["Faltan datos para generar la factura"]);
             return;
         }
-
         // Obtener IDs de consumos seleccionados
         const consumosIds: number[] = [];
         itemsSeleccionados.forEach(id => {

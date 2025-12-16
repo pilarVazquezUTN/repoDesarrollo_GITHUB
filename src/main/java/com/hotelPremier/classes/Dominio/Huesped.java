@@ -31,10 +31,10 @@ public class Huesped {
     @Column(name="email")
     private String email;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "id_direccion")
     private Direccion direccion;
-
+    
     @Column(name="cuit")
     private String cuit;
 
