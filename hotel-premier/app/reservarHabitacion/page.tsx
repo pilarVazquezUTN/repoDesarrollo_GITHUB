@@ -1,5 +1,6 @@
 'use client';
 
+import React from "react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { format, parseISO, eachDayOfInterval, isAfter } from "date-fns";
@@ -12,7 +13,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan  } from "@fortawesome/free-solid-svg-icons";
 import CartelListaHabitaciones from "../carteles/cartelListaHabitaciones";
 import Link from "next/link";
-import { validarFechasReserva } from "@/app/validaciones/validaciones";
+import { validarFechasReserva, esSoloLetras, esSoloNumeros, esObligatorio, telefonoValido } from "@/app/validaciones/validaciones";
+import ReservaConfirmada from "../carteles/reservaConfirmada";
 
 
 // =========================
@@ -21,11 +23,20 @@ import { validarFechasReserva } from "@/app/validaciones/validaciones";
 type TipoHabitacion = "IndividualEstandar" | "DobleEstandar" | "Suite" | "DobleSuperior" | "SuperiorFamilyPlan";
 
 interface ReservaDTO {
-  id: number;
-  nro_habitacion: number;
+  id_reserva?: number;
   fecha_desde: string;
   fecha_hasta: string;
   estado: string;
+  nombre?: string;
+  apellido?: string;
+  telefono?: string;
+  habitacion?: {
+    numero: number;
+    estado: string;
+    precio: number;
+    cantidadPersonas: number;
+    tipohabitacion: string;
+  };
 }
 
 interface EstadiaDTO {
@@ -39,8 +50,8 @@ interface HabitacionDTO {
   precio: number;
   cantidadPersonas: number;
   tipohabitacion: string;
-  listareservas: ReservaDTO[]; 
-  listaestadias: EstadiaDTO[];
+  listareservas?: ReservaDTO[]; 
+  listaestadias?: EstadiaDTO[];
 }
 
 interface Props {
@@ -71,6 +82,18 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const router = useRouter();
   //erne
   const [ultimoClick, setUltimoClick] = useState<string | null>(null);
+  const [reservas, setReservas] = useState<ReservaDTO[]>([]);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [errorNombre, setErrorNombre] = useState(false);
+  const [errorApellido, setErrorApellido] = useState(false);
+  const [errorTelefono, setErrorTelefono] = useState(false);
+  const [errorNombreObligatorio, setErrorNombreObligatorio] = useState(false);
+  const [errorApellidoObligatorio, setErrorApellidoObligatorio] = useState(false);
+  const [errorTelefonoObligatorio, setErrorTelefonoObligatorio] = useState(false);
+  const [mostrarCartelConfirmacion, setMostrarCartelConfirmacion] = useState(false);
 
   // =========================
   // CONFIGURACIÓN HABITACIONES
@@ -102,36 +125,65 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   // =========================
   // FETCH DE DATOS
   // =========================
+  // Validaciones de formulario
   useEffect(() => {
-    
-    const fetchDetalleHabitaciones = async () => {
+    setErrorNombre(nombre !== "" && !esSoloLetras(nombre));
+  }, [nombre]);
+
+  useEffect(() => {
+    setErrorApellido(apellido !== "" && !esSoloLetras(apellido));
+  }, [apellido]);
+
+  useEffect(() => {
+    setErrorTelefono(telefono !== "" && (!esSoloNumeros(telefono) || !telefonoValido(telefono)));
+  }, [telefono]);
+
+  useEffect(() => {
+    const fetchHabitacionesYReservas = async () => {
       if (fechasValidas && tipoSeleccionado) {
         try {
-          const response = await axios.get(`http://localhost:8080/detalleHabitaciones`, {
+          // Obtener habitaciones por tipo
+          const responseHabitaciones = await axios.get(`http://localhost:8080/habitaciones`, {
             params: { 
-                tipo: tipoSeleccionado,
-                fechaDesde: desdeFecha, 
-                fechaHasta: hastaFecha 
+              tipo: tipoSeleccionado
             },
           });
-          const dataNormalizada = response.data.map((h: any) => ({
-            ...h,
-            listaestadias: h.listaestadias?.map((e: any) => ({
-              checkIn: e.checkin,
-              checkOut: e.checkout
-            })) ?? [],
-            listaReservas: h.listareservas ?? []
-          }));
 
-          setHabitaciones(dataNormalizada);
+          // Obtener reservas en el rango de fechas
+          const responseReservas = await axios.get(`http://localhost:8080/api/reservas`, {
+            params: {
+              desde: desdeFecha,
+              hasta: hastaFecha
+            },
+          });
+
+          const habitacionesData = responseHabitaciones.data || [];
+          const reservasData = responseReservas.data || [];
+
+          // Mapear reservas a cada habitación
+          const habitacionesConReservas = habitacionesData.map((h: any) => {
+            const reservasDeEstaHabitacion = reservasData.filter((r: ReservaDTO) => 
+              r.habitacion?.numero === h.numero
+            );
+
+            return {
+              ...h,
+              listareservas: reservasDeEstaHabitacion,
+              listaestadias: [] // No se usa en este caso de uso
+            };
+          });
+
+          setHabitaciones(habitacionesConReservas);
+          setReservas(reservasData);
         } catch(err) {
-          console.error("Error al cargar detalle habitaciones:", err);
+          console.error("Error al cargar habitaciones y reservas:", err);
           setHabitaciones([]);
+          setReservas([]);
         }
       }
     };
 
-    fetchDetalleHabitaciones();
+    fetchHabitacionesYReservas();
   }, [fechasValidas, tipoSeleccionado, desdeFecha, hastaFecha]);
 
   // =========================
@@ -145,30 +197,34 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
     return fechaTarget >= inicio && fechaTarget <= fin;
   };
 
-  const toggleSeleccion = (fechaDate: Date, habitacion: HabitacionDTO, event: any) => {
+  const toggleSeleccion = (fechaDate: Date, habitacion: HabitacionDTO, event: React.MouseEvent<HTMLTableCellElement>) => {
     const fechaString = format(fechaDate, "yyyy-MM-dd");
     const keyActual = `${fechaString}|${habitacion.numero}`;
 
-    // VALIDACIONES EXACTAS COMO LAS TENÍAS
+    // VALIDACIONES: No permitir seleccionar si está fuera de servicio
     if (habitacion.estado === "FueraDeServicio") {
       setMostrarCartel(true);
       setTimeout(() => setMostrarCartel(false), 2500);
       return;
     }
 
-    const tieneEstadia = habitacion.listaestadias?.some(e =>
-      fechaEnRango(fechaString, e.checkIn, e.checkOut)
-    );
-    if (tieneEstadia) {
+    // Validar si hay reserva en estado "Finalizada" (ocupada)
+    const tieneReservaFinalizada = habitacion.listareservas?.some(r => {
+      const enRango = fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta);
+      return enRango && r.estado === "Finalizada";
+    });
+    if (tieneReservaFinalizada) {
       setMostrarCartel(true);
       setTimeout(() => setMostrarCartel(false), 2500);
       return;
     }
 
-    const tieneReserva = habitacion.listareservas?.some(r =>
-      fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta)
-    );
-    if (tieneReserva) {
+    // Validar si hay reserva en estado "EN CURSO" o "Pendiente" (reservada)
+    const tieneReservaEnCurso = habitacion.listareservas?.some(r => {
+      const enRango = fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta);
+      return enRango && (r.estado === "EN CURSO" || r.estado === "Pendiente");
+    });
+    if (tieneReservaEnCurso) {
       setMostrarCartel(true);
       setTimeout(() => setMostrarCartel(false), 2500);
       return;
@@ -190,19 +246,19 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           end: inicio < fin ? fin : inicio,
         });
 
-        const claves = intervalo.map(f =>
+        const claves = intervalo.map((f: Date) =>
           `${format(f, "yyyy-MM-dd")}|${habitacion.numero}`
         );
 
-        setSeleccionados(prev => [...new Set([...prev, ...claves])]);
+        setSeleccionados((prev: string[]) => [...new Set([...prev, ...claves])]);
         return;
       }
     }
 
     // Selección simple
-    setSeleccionados(prev =>
+    setSeleccionados((prev: string[]) =>
       prev.includes(keyActual)
-        ? prev.filter(item => item !== keyActual)
+        ? prev.filter((item: string) => item !== keyActual)
         : [...prev, keyActual]
     );
 
@@ -216,15 +272,15 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
     const fechasABorrar = eachDayOfInterval({
       start: parseISO(ran.desde),
       end: parseISO(ran.hasta)
-    }).map(f => `${format(f,"yyyy-MM-dd")}|${ran.numero}`);
+    }).map((f: Date) => `${format(f,"yyyy-MM-dd")}|${ran.numero}`);
 
-    setSeleccionados(prev =>
-      prev.filter(sel => !fechasABorrar.includes(sel))
+    setSeleccionados((prev: string[]) =>
+      prev.filter((sel: string) => !fechasABorrar.includes(sel))
     );
   };
 
     const construirHabitacionesDTO = (): HabitacionDTO[] => {
-      const lista: HabitacionDTO[] = seleccionados.map(sel => {
+      const lista: HabitacionDTO[] = seleccionados.map((sel: string) => {
         const [fecha, numero] = sel.split("|");
         const habitacion = (Array.isArray(habitaciones) ? habitaciones : []).find(h => h.numero === Number(numero));
 
@@ -244,7 +300,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
 const listaHabitacionUnica = (): HabitacionDTO[] => {
   const listaUnica: Record<number, HabitacionDTO> = {};
 
-  seleccionados.forEach(sel => {
+  seleccionados.forEach((sel: string) => {
     const [fecha, numero] = sel.split("|");
     const num = Number(numero);
 
@@ -318,11 +374,11 @@ const listaHabitacionUnica = (): HabitacionDTO[] => {
 
 // Cálculo de fechas reales según selección
 const fechaDesdeSeleccion = rangos.length
-  ? rangos.reduce((min, r) => r.desde < min ? r.desde : min, rangos[0].desde)
+  ? rangos.reduce((min: string, r: { numero: number; desde: string; hasta: string }) => r.desde < min ? r.desde : min, rangos[0].desde)
   : desdeFecha;
 
 const fechaHastaSeleccion = rangos.length
-  ? rangos.reduce((max, r) => r.hasta > max ? r.hasta : max, rangos[0].hasta)
+  ? rangos.reduce((max: string, r: { numero: number; desde: string; hasta: string }) => r.hasta > max ? r.hasta : max, rangos[0].hasta)
   : hastaFecha;
 
   // =========================
@@ -337,8 +393,8 @@ const fechaHastaSeleccion = rangos.length
         <input
           type="date"
           value={desdeFecha}
-          onChange={(e) => setDesdeFecha(e.target.value)}
-          onBlur={(e) => validarDesde(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDesdeFecha(e.target.value)}
+          onBlur={(e: React.FocusEvent<HTMLInputElement>) => validarDesde(e.target.value)}
           className={`p-2 border rounded mb-1 text-indigo-950
             ${(erroresFecha.desdeInvalido || erroresFecha.ordenInvalido || (!desdeFecha && tipoSeleccionado)) 
               ? "border-red-500 bg-red-100" 
@@ -351,8 +407,8 @@ const fechaHastaSeleccion = rangos.length
         <input
           type="date"
           value={hastaFecha}
-          onChange={(e) => setHastaFecha(e.target.value)}
-          onBlur={(e) => validarHasta(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHastaFecha(e.target.value)}
+          onBlur={(e: React.FocusEvent<HTMLInputElement>) => validarHasta(e.target.value)}
           className={`p-2 border rounded mb-1 text-indigo-950
             ${(erroresFecha.hastaInvalido || erroresFecha.ordenInvalido || (!hastaFecha && tipoSeleccionado)) 
               ? "border-red-500 bg-red-100" 
@@ -364,7 +420,7 @@ const fechaHastaSeleccion = rangos.length
         <label className="text-indigo-950 font-medium mb-1">Tipo de Habitación:</label>
         <select
           value={tipoSeleccionado}
-          onChange={(e) => setTipoSeleccionado(e.target.value as TipoHabitacion)}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTipoSeleccionado(e.target.value as TipoHabitacion)}
           onFocus={() => {
             setErroresFecha(prev => ({
               desdeInvalido: prev.desdeInvalido || !desdeFecha,
@@ -397,9 +453,25 @@ const fechaHastaSeleccion = rangos.length
              desdeFecha={desdeFecha}
              hastaFecha={hastaFecha}
              rangos={rangos}
-             onClose={() => setMostrarCartelLista(false)}
+             onClose={() => {
+               setMostrarCartelLista(false);
+               setSeleccionados([]);
+               setRangos([]);
+             }}
+             onAceptar={() => {
+               setMostrarCartelLista(false);
+               setMostrarFormulario(true);
+             }}
            />
        )}
+
+      {mostrarCartelConfirmacion && (
+        <ReservaConfirmada
+          onClose={() => {
+            setMostrarCartelConfirmacion(false);
+          }}
+        />
+      )}
 
       {/* TABLA ESTADO HABITACIÓN */}
       <section className="flex-2 max-h-[800px]">
@@ -425,14 +497,14 @@ const fechaHastaSeleccion = rangos.length
                   ))}
                 </tr>
 
-                {fechasIntervalo.map(fechaDate => {
+                {fechasIntervalo.map((fechaDate: Date) => {
                   const fechaString = format(fechaDate,"yyyy-MM-dd");
                   const fechaDisplay = format(fechaDate,"dd/MM/yyyy");
 
                   return (
                     <tr key={fechaString}>
                       <td className="p-2 border text-center font-medium">{fechaDisplay}</td>
-                      {tipoSeleccionado && habitaciones.map(hab => {
+                      {tipoSeleccionado && habitaciones.map((hab: HabitacionDTO) => {
                         
                         const key = `${fechaString}|${hab?.numero}`;
                         const esSeleccionado = seleccionados.includes(key);
@@ -440,32 +512,34 @@ const fechaHastaSeleccion = rangos.length
                         // 1. CHEQUEO FUERA DE SERVICIO
                         const esFueraServicio = hab.estado === "FueraDeServicio";
 
-                        // 2. CHEQUEO ESTADÍA (OCUPADA)
-                        const esOcupada = !esFueraServicio && hab.listaestadias?.some(estadia => 
-                            fechaEnRango(fechaString, estadia.checkIn, estadia.checkOut)
-                        );
+                        // 2. CHEQUEO RESERVA FINALIZADA (OCUPADA - ROJA)
+                        const esOcupada = !esFueraServicio && hab.listareservas?.some((reserva: ReservaDTO) => {
+                          const enRango = fechaEnRango(fechaString, reserva.fecha_desde, reserva.fecha_hasta);
+                          return enRango && reserva.estado === "Finalizada";
+                        });
 
-                        // 3. CHEQUEO RESERVA
-                        const esReservada = !esFueraServicio && !esOcupada && hab.listareservas?.some(reserva => 
-                            fechaEnRango(fechaString, reserva.fecha_desde, reserva.fecha_hasta)
-                        );
+                        // 3. CHEQUEO RESERVA EN CURSO/PENDIENTE (RESERVADA - AMARILLO CLARO)
+                        const esReservada = !esFueraServicio && !esOcupada && hab.listareservas?.some((reserva: ReservaDTO) => {
+                          const enRango = fechaEnRango(fechaString, reserva.fecha_desde, reserva.fecha_hasta);
+                          return enRango && (reserva.estado === "EN CURSO" || reserva.estado === "Pendiente");
+                        });
                         
                         let bgClass = "bg-white"; 
                         if (esFueraServicio) {
-                            bgClass = "bg-gray-700"; 
+                            bgClass = "bg-gray-700"; // Gris para fuera de servicio
                         } else if (esOcupada) {
-                            bgClass = "bg-blue-900"; 
+                            bgClass = "bg-red-500"; // Roja para ocupada (Finalizada)
                         } else if (esReservada) {
-                            bgClass = "bg-red-500";  
+                            bgClass = "bg-yellow-200"; // Amarillo claro para reservada (EN CURSO/Pendiente)
                         } else if (esSeleccionado) {
-                            bgClass = "bg-green-500"; 
+                            bgClass = "bg-yellow-200"; // Amarillo claro cuando el usuario selecciona
                         }
 
                         return (
                           <td
                             key={hab.numero}
                             className={`p-4 border cursor-pointer ${bgClass}`}
-                            onClick={(e) => toggleSeleccion(fechaDate, hab, e)}
+                            onClick={(e: React.MouseEvent<HTMLTableCellElement>) => toggleSeleccion(fechaDate, hab, e)}
                           ></td>
                         );
                       })}
@@ -477,11 +551,10 @@ const fechaHastaSeleccion = rangos.length
 
             {/* LEYENDA */}
             <li className="flex items-center gap-2 mt-4 flex-wrap justify-center">
-              <span className="w-4 h-4 rounded-full bg-red-500"></span><span>RESERVADA</span>
+              <span className="w-4 h-4 rounded-full bg-yellow-200"></span><span>RESERVADA</span>
               <span className="w-4 h-4 rounded-full bg-white border"></span><span>DISPONIBLE</span>
               <span className="w-4 h-4 rounded-full bg-gray-700"></span><span>FUERA DE SERVICIO</span>
-              <span className="w-4 h-4 rounded-full bg-blue-900"></span><span>OCUPADA</span>
-              <span className="w-4 h-4 rounded-full bg-green-500"></span><span>SELECCIONADA</span>
+              <span className="w-4 h-4 rounded-full bg-red-500"></span><span>OCUPADA</span>
             </li>
 
             {errorSeleccion && (
@@ -502,27 +575,24 @@ const fechaHastaSeleccion = rangos.length
                onClick={async () => {
                 if (seleccionados.length === 0) {
                   setErrorSeleccion("Debes seleccionar al menos una habitación.");
-                  setTimeout(() => setErrorSeleccion(""), 2000); // Se borra a los 3s
+                  setTimeout(() => setErrorSeleccion(""), 2000);
                   return;
                 }
 
-                 const listaHab = listaHabitacionUnica();
-                 console.log("listaHab:", JSON.stringify(listaHab, null, 2));
-                 try { const response = await axios.post( "http://localhost:8080/listados",
-                     listaHab,
-                     { params:
-                         { fechaDesde: desdeFecha,
-                           fechaHasta: hastaFecha
-                         }
-                     }
-                 );
-                 setListaBackend(response.data); // guardás la respuesta del backend
-                 console.log("ACA RESPUESTA BACK"+ response.data);
-                  setMostrarCartelLista(true); //
-                      } catch (err) { console.error("Error al generar listado:", err);
-                                    alert("Hubo un error al generar el listado."); }
+                // Generar lista con formato del caso de uso
+                const listaHab = listaHabitacionUnica();
+                const listaFormateada = rangos.map((rango: { numero: number; desde: string; hasta: string }) => {
+                  const hab = listaHab.find(h => h.numero === rango.numero);
+                  return {
+                    numero: rango.numero,
+                    tipo: hab?.tipohabitacion || tipoSeleccionado,
+                    desde: rango.desde,
+                    hasta: rango.hasta
+                  };
+                });
 
-
+                setListaBackend(listaFormateada);
+                setMostrarCartelLista(true);
               }}
               > Aceptar
             </button>
@@ -535,6 +605,217 @@ const fechaHastaSeleccion = rangos.length
             <div className="text-gray-400 text-center mt-20">
                 Seleccione un rango de fechas y tipo para ver la disponibilidad.
             </div>
+        )}
+
+        {/* FORMULARIO DE DATOS DEL HUÉSPED */}
+        {mostrarFormulario && (
+          <div className="mt-8 p-6 border rounded-lg bg-white shadow-lg">
+            <h3 className="text-xl font-bold text-indigo-950 mb-4">
+              Reserva a nombre de:
+            </h3>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+
+              // Validar campos obligatorios
+              setErrorNombreObligatorio(!esObligatorio(nombre));
+              setErrorApellidoObligatorio(!esObligatorio(apellido));
+              setErrorTelefonoObligatorio(!esObligatorio(telefono));
+
+              if (!esObligatorio(nombre) || !esObligatorio(apellido) || !esObligatorio(telefono)) {
+                return;
+              }
+
+              if (errorNombre || errorApellido || errorTelefono) {
+                return;
+              }
+
+              // Crear lista de reservas DTO
+              const listaReservasDTO = rangos.map((rango: { numero: number; desde: string; hasta: string }) => ({
+                nro_habitacion: rango.numero,
+                fecha_desde: rango.desde,
+                fecha_hasta: rango.hasta,
+                nombre: nombre.toUpperCase(),
+                apellido: apellido.toUpperCase(),
+                telefono: telefono
+              }));
+
+              try {
+                const response = await axios.post("http://localhost:8080/reservas", listaReservasDTO, {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+
+                if (response.status === 200 || response.status === 201) {
+                  setMostrarFormulario(false);
+                  setMostrarCartelConfirmacion(true);
+                  setSeleccionados([]);
+                  setRangos([]);
+                  setNombre("");
+                  setApellido("");
+                  setTelefono("");
+                  // Recargar datos
+                  const fetchHabitacionesYReservas = async () => {
+                    if (fechasValidas && tipoSeleccionado) {
+                      try {
+                        const responseHabitaciones = await axios.get(`http://localhost:8080/habitaciones`, {
+                          params: { tipo: tipoSeleccionado },
+                        });
+                        const responseReservas = await axios.get(`http://localhost:8080/api/reservas`, {
+                          params: { desde: desdeFecha, hasta: hastaFecha },
+                        });
+                        const habitacionesData = responseHabitaciones.data || [];
+                        const reservasData = responseReservas.data || [];
+                        const habitacionesConReservas = habitacionesData.map((h: any) => {
+                          const reservasDeEstaHabitacion = reservasData.filter((r: ReservaDTO) => 
+                            r.habitacion?.numero === h.numero
+                          );
+                          return {
+                            ...h,
+                            listareservas: reservasDeEstaHabitacion,
+                            listaestadias: []
+                          };
+                        });
+                        setHabitaciones(habitacionesConReservas);
+                        setReservas(reservasData);
+                      } catch(err) {
+                        console.error("Error al recargar datos:", err);
+                      }
+                    }
+                  };
+                  fetchHabitacionesYReservas();
+                }
+              } catch (err) {
+                console.error("Error al registrar reservas:", err);
+                alert("Hubo un error al registrar las reservas.");
+              }
+            }}>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-indigo-950 font-medium mb-1 block">Apellido:</label>
+                  <input
+                    type="text"
+                    value={apellido}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const valor = e.target.value.toUpperCase();
+                      setApellido(valor);
+                      setErrorApellidoObligatorio(false);
+                    }}
+                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        const inputs = e.currentTarget.form?.querySelectorAll("input");
+                        if (inputs) {
+                          const index = Array.from(inputs).indexOf(e.currentTarget as HTMLInputElement);
+                          if (index > 0) {
+                            (inputs[index - 1] as HTMLInputElement).focus();
+                          }
+                        }
+                      }
+                    }}
+                    className={`p-2 border rounded w-full text-indigo-950 ${
+                      errorApellido || errorApellidoObligatorio ? "border-red-500 bg-red-100" : ""
+                    }`}
+                    autoFocus
+                  />
+                  {errorApellido && (
+                    <p className="text-red-500 text-sm mt-1">Ingrese solo letras.</p>
+                  )}
+                  {errorApellidoObligatorio && (
+                    <p className="text-red-500 text-sm mt-1">El apellido es obligatorio.</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="text-indigo-950 font-medium mb-1 block">Nombre:</label>
+                  <input
+                    type="text"
+                    value={nombre}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const valor = e.target.value.toUpperCase();
+                      setNombre(valor);
+                      setErrorNombreObligatorio(false);
+                    }}
+                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        const inputs = e.currentTarget.form?.querySelectorAll("input");
+                        if (inputs) {
+                          const index = Array.from(inputs).indexOf(e.currentTarget as HTMLInputElement);
+                          if (index > 0) {
+                            (inputs[index - 1] as HTMLInputElement).focus();
+                          }
+                        }
+                      }
+                    }}
+                    className={`p-2 border rounded w-full text-indigo-950 ${
+                      errorNombre || errorNombreObligatorio ? "border-red-500 bg-red-100" : ""
+                    }`}
+                  />
+                  {errorNombre && (
+                    <p className="text-red-500 text-sm mt-1">Ingrese solo letras.</p>
+                  )}
+                  {errorNombreObligatorio && (
+                    <p className="text-red-500 text-sm mt-1">El nombre es obligatorio.</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="text-indigo-950 font-medium mb-1 block">Teléfono:</label>
+                  <input
+                    type="text"
+                    value={telefono}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const valor = e.target.value.toUpperCase();
+                      setTelefono(valor);
+                      setErrorTelefonoObligatorio(false);
+                    }}
+                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        const inputs = e.currentTarget.form?.querySelectorAll("input");
+                        if (inputs) {
+                          const index = Array.from(inputs).indexOf(e.currentTarget as HTMLInputElement);
+                          if (index > 0) {
+                            (inputs[index - 1] as HTMLInputElement).focus();
+                          }
+                        }
+                      }
+                    }}
+                    className={`p-2 border rounded w-full text-indigo-950 ${
+                      errorTelefono || errorTelefonoObligatorio ? "border-red-500 bg-red-100" : ""
+                    }`}
+                  />
+                  {errorTelefono && (
+                    <p className="text-red-500 text-sm mt-1">Ingrese un teléfono válido.</p>
+                  )}
+                  {errorTelefonoObligatorio && (
+                    <p className="text-red-500 text-sm mt-1">El teléfono es obligatorio.</p>
+                  )}
+                </div>
+
+                <div className="flex justify-center gap-4 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMostrarFormulario(false);
+                      setSeleccionados([]);
+                      setRangos([]);
+                    }}
+                    className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-indigo-950 text-white rounded hover:bg-indigo-800"
+                  >
+                    Confirmar Reserva
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
         )}
       </section>
       
@@ -555,7 +836,7 @@ const fechaHastaSeleccion = rangos.length
               </tr>
             </thead>
             <tbody>
-              {rangos.map((ran,index) => {
+              {rangos.map((ran: { numero: number; desde: string; hasta: string }, index: number) => {
                 const fechaDesde = format(parseISO(ran.desde),"dd/MM/yyyy");
                 const fechaHasta = format(parseISO(ran.hasta),"dd/MM/yyyy");
                 return (
