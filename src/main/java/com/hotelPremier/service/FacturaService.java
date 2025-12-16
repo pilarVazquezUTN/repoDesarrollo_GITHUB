@@ -118,6 +118,9 @@ public class FacturaService {
 
         Factura factura = mapper.toEntityFactura(dto);
         estadia.generarFactura(factura);
+        
+        // Finalizar la estadía (cambiar estado de ENCURSO a FINALIZADA) ya que se está haciendo el checkout
+        estadia.finalizar();
 
         CalculoFacturaStrategy estrategia =
                 SelectorEstrategiaCalculo.seleccionarEstrategia(estadia, datosFactura);
