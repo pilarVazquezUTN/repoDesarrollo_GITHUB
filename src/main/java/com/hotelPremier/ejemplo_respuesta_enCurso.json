@@ -1,0 +1,95 @@
+{
+  "id_estadia": 15,
+  "checkin": "2024-01-15",
+  "checkout": "2024-01-20",
+  "estado": "ENCURSO",
+  "habitacion": {
+    "numero": 101,
+    "estado": "OCUPADA",
+    "precio": 150.0,
+    "cantidadPersonas": 2,
+    "tipohabitacion": "DOBLE_ESTANDAR"
+  },
+  "listahuesped": [
+    {
+      "nombre": "Juan",
+      "apellido": "Pérez",
+      "huespedID": {
+        "tipoDocumento": "DNI",
+        "dni": "12345678"
+      },
+      "fechaNacimiento": "1985-05-15",
+      "telefono": "+5491123456789",
+      "email": "juan.perez@email.com",
+      "direccion": {
+        "id_direccionDTO": 1,
+        "calle": "Av. Corrientes",
+        "numero": 1234,
+        "localidad": "Buenos Aires",
+        "departamento": "A",
+        "piso": 5,
+        "codigoPostal": 1043,
+        "provincia": "CABA",
+        "pais": "Argentina"
+      },
+      "cuit": null,
+      "posicionIva": "CONSUMIDOR_FINAL",
+      "ocupacion": "Ingeniero",
+      "nacionalidad": "Argentina"
+    },
+    {
+      "nombre": "María",
+      "apellido": "González",
+      "huespedID": {
+        "tipoDocumento": "DNI",
+        "dni": "87654321"
+      },
+      "fechaNacimiento": "1990-08-22",
+      "telefono": "+5491198765432",
+      "email": "maria.gonzalez@email.com",
+      "direccion": {
+        "id_direccionDTO": 2,
+        "calle": "Av. Santa Fe",
+        "numero": 5678,
+        "localidad": "Buenos Aires",
+        "departamento": null,
+        "piso": null,
+        "codigoPostal": 1425,
+        "provincia": "CABA",
+        "pais": "Argentina"
+      },
+      "cuit": null,
+      "posicionIva": "CONSUMIDOR_FINAL",
+      "ocupacion": "Abogada",
+      "nacionalidad": "Argentina"
+    }
+  ],
+  "listaconsumos": [
+    {
+      "servicioExtraID": {
+        "id_servicio": 1,
+        "id_estadia": 15
+      },
+      "tipo_servicio": "ROOM_SERVICE",
+      "precio": 25.50
+    },
+    {
+      "servicioExtraID": {
+        "id_servicio": 2,
+        "id_estadia": 15
+      },
+      "tipo_servicio": "LAVANDERIA",
+      "precio": 15.00
+    },
+    {
+      "servicioExtraID": {
+        "id_servicio": 3,
+        "id_estadia": 15
+      },
+      "tipo_servicio": "MINIBAR",
+      "precio": 45.75
+    }
+  ],
+  "listafactura": null,
+  "reserva": null
+}

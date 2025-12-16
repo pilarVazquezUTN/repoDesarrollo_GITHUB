@@ -11,6 +11,7 @@ public class EstadiaDTO {
     private HabitacionDTO habitacion;
     private List<HuespedDTO> listahuesped;
     private List<FacturaDTO> listafactura;
+    private List<ServicioExtraDTO> listaconsumos;
     private ReservaDTO reserva;
     private String estado;
 
@@ -48,6 +49,9 @@ public class EstadiaDTO {
 
     public List<FacturaDTO> getListafactura() { return listafactura; }
     public void setListafactura(List<FacturaDTO> listafactura) { this.listafactura = listafactura; }
+
+    public List<ServicioExtraDTO> getListaconsumos() { return listaconsumos; }
+    public void setListaconsumos(List<ServicioExtraDTO> listaconsumos) { this.listaconsumos = listaconsumos; }
 
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }

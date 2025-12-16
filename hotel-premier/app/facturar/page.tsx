@@ -135,53 +135,82 @@ export default function Facturar() {
         setErrores([]);
 
         try {
-            // Buscar huéspedes de la habitación
-            const responseHuespedes = await axios.get(`http://localhost:8080/${nroHabitacion}/huespedes`);
+            // Primero buscar estadía en curso
+            const responseEstadia = await axios.get(`http://localhost:8080/estadias/enCurso/${nroHabitacion}`);
             
-            if (!responseHuespedes.data || responseHuespedes.data.length === 0) {
+            if (!responseEstadia.data) {
                 setErrores(["La habitación no está ocupada"]);
                 return;
             }
 
-            setHuespedes(responseHuespedes.data);
+            const estadiaData = responseEstadia.data;
+            const estadiaId = estadiaData.id_estadia || estadiaData.id;
+            
+            // Calcular precio total de la estadía si no viene
+            const precioTotal = estadiaData.precioTotal || 0;
+            
+            setEstadia({
+                id_estadia: estadiaId,
+                checkin: estadiaData.checkin,
+                checkout: estadiaData.checkout,
+                precioTotal: precioTotal
+            });
+
+            // Obtener huéspedes asociados a la estadía
+            try {
+                const responseHuespedes = await axios.get(`http://localhost:8080/estadias/${estadiaId}/huespedes`);
+                
+                if (!responseHuespedes.data || responseHuespedes.data.length === 0) {
+                    // Si la estadía viene con huéspedes incluidos, intentar obtenerlos del objeto
+                    if (estadiaData.listahuesped || estadiaData.huespedes) {
+                        setHuespedes(estadiaData.listahuesped || estadiaData.huespedes || []);
+                    } else {
+                        setErrores(["No se encontraron huéspedes para esta estadía"]);
+                        return;
+                    }
+                } else {
+                    setHuespedes(responseHuespedes.data);
+                }
+            } catch (error) {
+                console.error("Error al cargar huéspedes de la estadía:", error);
+                // Si la estadía viene con huéspedes incluidos, intentar obtenerlos del objeto
+                if (estadiaData.listahuesped || estadiaData.huespedes) {
+                    setHuespedes(estadiaData.listahuesped || estadiaData.huespedes || []);
+                } else {
+                    setErrores(["Error al cargar los huéspedes de la estadía"]);
+                    return;
+                }
+            }
+
             setMostrarTabla(true);
             setMostrarItems(false);
             setHuespedSeleccionado(null);
             setResponsablePago(null);
 
-            // Buscar estadía en curso y consumos
+            // Obtener consumos asociados a la estadía
             try {
-                const responseEstadia = await axios.get(`http://localhost:8080/estadias/enCurso/${nroHabitacion}`);
-                
-                if (responseEstadia.data) {
-                    const estadiaData = responseEstadia.data;
-                    // Calcular precio total de la estadía si no viene
-                    // Por ahora asumimos que viene en el objeto o lo calculamos
-                    const precioTotal = estadiaData.precioTotal || 0;
-                    
-                    setEstadia({
-                        id_estadia: estadiaData.id_estadia || estadiaData.id,
-                        checkin: estadiaData.checkin,
-                        checkout: estadiaData.checkout,
-                        precioTotal: precioTotal
-                    });
-                }
-            } catch (error) {
-                console.error("Error al cargar estadía:", error);
-                // Si no hay estadía en curso, no es un error crítico
-                setEstadia(null);
-            }
-
-            try {
-                const responseConsumos = await axios.get(`http://localhost:8080/consumos`, {
-                    params: { numeroHabitacion: nroHabitacion }
-                });
-                
+                const responseConsumos = await axios.get(`http://localhost:8080/estadias/${estadiaId}/consumos`);
                 setConsumos(responseConsumos.data || []);
             } catch (error) {
-                console.error("Error al cargar consumos:", error);
-                setConsumos([]);
+                console.error("Error al cargar consumos de la estadía:", error);
+                // Si la estadía viene con consumos incluidos, intentar obtenerlos del objeto
+                if (estadiaData.listaConsumos || estadiaData.consumos) {
+                    setConsumos(estadiaData.listaConsumos || estadiaData.consumos || []);
+                } else {
+                    setConsumos([]);
+                }
             }
+        } catch (error: any) {
+            console.error("Error al buscar estadía:", error);
+            if (error.response?.status === 404) {
+                setErrores(["La habitación no está ocupada"]);
+            } else {
+                setErrores(["Error al cargar los datos de la habitación"]);
+            }
+            setEstadia(null);
+            setHuespedes([]);
+            setConsumos([]);
+        }
 
         } catch (error: any) {
             console.error("Error al buscar huéspedes:", error);

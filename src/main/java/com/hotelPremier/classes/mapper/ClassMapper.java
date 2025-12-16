@@ -11,6 +11,8 @@ import com.hotelPremier.classes.Dominio.*;
 import com.hotelPremier.classes.Dominio.responsablePago.PersonaFisica;
 import com.hotelPremier.classes.Dominio.responsablePago.PersonaJuridica;
 import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtraID;
 
 @Mapper(componentModel = "spring")
 public interface ClassMapper {
@@ -110,6 +112,22 @@ public interface ClassMapper {
     FacturaDTO toDTOFactura(Factura f);
 
     List<FacturaDTO> toDTOsFactura(List<Factura> lista);
+
+
+    // =====================================================
+    // SERVICIO EXTRA
+    // =====================================================
+
+    @Mappings({
+        @Mapping(target = "servicioExtraID", source = "servicioExtraID"),
+        @Mapping(target = "estadia", ignore = true)
+    })
+    ServicioExtraDTO toDTOServicioExtra(ServicioExtra s);
+
+    List<ServicioExtraDTO> toDTOsServicioExtra(List<ServicioExtra> lista);
+
+    ServicioExtraIDDTO toDTO(ServicioExtraID id);
+    ServicioExtraID toEntity(ServicioExtraIDDTO dto);
 
 
     // =====================================================
