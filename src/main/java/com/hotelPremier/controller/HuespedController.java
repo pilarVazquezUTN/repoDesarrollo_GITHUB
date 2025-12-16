@@ -46,16 +46,6 @@ public class HuespedController {
     //     return ResponseEntity.ok(huespedService.addHuesped(huesped));
     // }
 
-    @Operation(summary = "Modificar huésped")
-    @PutMapping("/huespedes/{tipo}/{dni}")
-    public ResponseEntity<HuespedDTO> updateHuesped(
-        @PathVariable String tipo,
-        @PathVariable String dni,
-        @RequestBody HuespedDTO huesped
-    ) {
-        return ResponseEntity.ok(huespedService.updateHuesped(tipo, dni, huesped));
-    }
-
     @Operation(summary = "Eliminar huésped")
     @DeleteMapping("/huespedes/{tipo}/{dni}")
     public ResponseEntity<?> deleteHuesped(
@@ -64,5 +54,13 @@ public class HuespedController {
     ) {
         huespedService.deleteHuesped(tipo, dni);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Modificar huésped")
+    @PutMapping("/huespedes")
+    public ResponseEntity<HuespedDTO> updateHuesped(
+        @RequestBody HuespedDTO huespedDTO
+    ) {
+        return ResponseEntity.ok(huespedService.updateHuesped(huespedDTO));
     }
 }

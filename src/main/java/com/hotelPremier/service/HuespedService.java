@@ -71,47 +71,6 @@ public class HuespedService {
     }
 
     /**
-     * Actualiza un huésped existente por tipo y número de documento.
-     */
-    public HuespedDTO updateHuesped(String tipoDocumento, String dni, HuespedDTO huespedDTO) {
-        
-        HuespedID id = new HuespedID();
-        id.setTipoDocumento(tipoDocumento);
-        id.setDni(dni);
-
-        Huesped huespedExistente = huespedRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Huesped no encontrado"));
-
-        // Actualizar campos del huésped (excepto el ID que no debe cambiar)
-        huespedExistente.setNombre(huespedDTO.getNombre());
-        huespedExistente.setApellido(huespedDTO.getApellido());
-        huespedExistente.setFechaNacimiento(huespedDTO.getFechaNacimiento());
-        huespedExistente.setTelefono(huespedDTO.getTelefono());
-        huespedExistente.setEmail(huespedDTO.getEmail());
-        huespedExistente.setCuit(huespedDTO.getCuit());
-        huespedExistente.setPosicionIva(huespedDTO.getPosicionIva());
-        huespedExistente.setOcupacion(huespedDTO.getOcupacion());
-        huespedExistente.setNacionalidad(huespedDTO.getNacionalidad());
-
-        // Actualizar dirección si existe
-        if (huespedDTO.getDireccion() != null) {
-            // Convertir DTO a entidad usando el mapper del huésped completo
-            Huesped huespedTemporal = mapper.toEntity(huespedDTO);
-            Direccion direccionNueva = huespedTemporal.getDireccion();
-            
-            if (huespedExistente.getDireccion() != null) {
-                // Preservar el ID de la dirección existente
-                direccionNueva.setID(huespedExistente.getDireccion().getID());
-            }
-            direccionRepository.save(direccionNueva);
-            huespedExistente.setDireccion(direccionNueva);
-        }
-
-        Huesped updated = huespedRepository.save(huespedExistente);
-        return mapper.toDTO(updated);
-    }
-
-    /**
      * Elimina un huésped por tipo y número de documento.
      */
     public void deleteHuesped(String tipoDocumento, String dni) {
@@ -125,5 +84,73 @@ public class HuespedService {
         }
 
         huespedRepository.deleteById(id);
+    }
+
+    /**
+     * Actualiza un huésped existente por tipo y número de documento.
+     */
+    public HuespedDTO updateHuesped(HuespedDTO huespedDTO) {
+        // Extraer tipo y dni del DTO
+        if (huespedDTO.getHuespedID() == null) {
+            throw new RuntimeException("El DTO debe contener el ID del huésped (tipoDocumento y dni)");
+        }
+        
+        String tipoDocumento = huespedDTO.getHuespedID().getTipoDocumento();
+        String dni = huespedDTO.getHuespedID().getDni();
+        
+        if (tipoDocumento == null || dni == null) {
+            throw new RuntimeException("El DTO debe contener tipoDocumento y dni en huespedID");
+        }
+        
+        HuespedID id = new HuespedID();
+        id.setTipoDocumento(tipoDocumento);
+        id.setDni(dni);
+
+        Huesped huespedExistente = huespedRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Huesped no encontrado"));
+
+        // Actualizar los campos del huésped existente con los datos del DTO
+        huespedExistente.setNombre(huespedDTO.getNombre());
+        huespedExistente.setApellido(huespedDTO.getApellido());
+        huespedExistente.setFechaNacimiento(huespedDTO.getFechaNacimiento());
+        huespedExistente.setTelefono(huespedDTO.getTelefono());
+        huespedExistente.setEmail(huespedDTO.getEmail());
+        huespedExistente.setCuit(huespedDTO.getCuit());
+        huespedExistente.setPosicionIva(huespedDTO.getPosicionIva());
+        huespedExistente.setOcupacion(huespedDTO.getOcupacion());
+        huespedExistente.setNacionalidad(huespedDTO.getNacionalidad());
+
+        // Actualizar la dirección si existe
+        if (huespedDTO.getDireccion() != null) {
+            if (huespedExistente.getDireccion() != null) {
+                // Si ya tiene dirección, actualizar sus campos
+                Direccion direccionExistente = huespedExistente.getDireccion();
+                direccionExistente.setCalle(huespedDTO.getDireccion().getCalle());
+                direccionExistente.setNumero(huespedDTO.getDireccion().getNumero());
+                direccionExistente.setLocalidad(huespedDTO.getDireccion().getLocalidad());
+                direccionExistente.setDepartamento(huespedDTO.getDireccion().getDepartamento());
+                direccionExistente.setPiso(huespedDTO.getDireccion().getPiso());
+                direccionExistente.setCodigoPostal(huespedDTO.getDireccion().getCodigoPostal());
+                direccionExistente.setProvincia(huespedDTO.getDireccion().getProvincia());
+                direccionExistente.setPais(huespedDTO.getDireccion().getPais());
+                direccionRepository.save(direccionExistente);
+            } else {
+                // Si no tiene dirección, crear una nueva
+                Direccion nuevaDireccion = new Direccion();
+                nuevaDireccion.setCalle(huespedDTO.getDireccion().getCalle());
+                nuevaDireccion.setNumero(huespedDTO.getDireccion().getNumero());
+                nuevaDireccion.setLocalidad(huespedDTO.getDireccion().getLocalidad());
+                nuevaDireccion.setDepartamento(huespedDTO.getDireccion().getDepartamento());
+                nuevaDireccion.setPiso(huespedDTO.getDireccion().getPiso());
+                nuevaDireccion.setCodigoPostal(huespedDTO.getDireccion().getCodigoPostal());
+                nuevaDireccion.setProvincia(huespedDTO.getDireccion().getProvincia());
+                nuevaDireccion.setPais(huespedDTO.getDireccion().getPais());
+                direccionRepository.save(nuevaDireccion);
+                huespedExistente.setDireccion(nuevaDireccion);
+            }
+        }
+
+        Huesped updated = huespedRepository.save(huespedExistente);
+        return mapper.toDTO(updated);
     }
 }
