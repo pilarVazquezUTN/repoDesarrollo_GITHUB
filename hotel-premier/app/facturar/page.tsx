@@ -149,23 +149,27 @@ export default function Facturar() {
             setHuespedSeleccionado(null);
             setResponsablePago(null);
 
-            // Buscar estadía y consumos
+            // Buscar estadía en curso y consumos
             try {
-                const responseEstadia = await axios.get(`http://localhost:8080/estadias`, {
-                    params: { numeroHabitacion: nroHabitacion }
-                });
+                const responseEstadia = await axios.get(`http://localhost:8080/estadias/enCurso/${nroHabitacion}`);
                 
-                if (responseEstadia.data && responseEstadia.data.length > 0) {
-                    const estadiaData = responseEstadia.data[0];
+                if (responseEstadia.data) {
+                    const estadiaData = responseEstadia.data;
+                    // Calcular precio total de la estadía si no viene
+                    // Por ahora asumimos que viene en el objeto o lo calculamos
+                    const precioTotal = estadiaData.precioTotal || 0;
+                    
                     setEstadia({
                         id_estadia: estadiaData.id_estadia || estadiaData.id,
                         checkin: estadiaData.checkin,
                         checkout: estadiaData.checkout,
-                        precioTotal: estadiaData.precioTotal || 0
+                        precioTotal: precioTotal
                     });
                 }
             } catch (error) {
                 console.error("Error al cargar estadía:", error);
+                // Si no hay estadía en curso, no es un error crítico
+                setEstadia(null);
             }
 
             try {
@@ -221,14 +225,20 @@ export default function Facturar() {
         const items: ItemFacturar[] = [];
         
         // Agregar estadía si existe
-        if (estadia && estadia.precioTotal > 0) {
-            items.push({
-                id: 1,
-                tipo: 'estadia',
-                descripcion: `Estadía (${estadia.checkin} - ${estadia.checkout})`,
-                precio: estadia.precioTotal,
-                estadiaId: estadia.id_estadia
-            });
+        if (estadia) {
+            // Si no viene precioTotal, calcularlo basado en días
+            // Por ahora usamos el precioTotal si existe, sino 0 (se puede ajustar después)
+            const precioEstadia = estadia.precioTotal || 0;
+            
+            if (precioEstadia > 0) {
+                items.push({
+                    id: 1,
+                    tipo: 'estadia',
+                    descripcion: `Estadía (${estadia.checkin} - ${estadia.checkout})`,
+                    precio: precioEstadia,
+                    estadiaId: estadia.id_estadia
+                });
+            }
         }
 
         // Agregar consumos pendientes (solo los que no estén facturados)
