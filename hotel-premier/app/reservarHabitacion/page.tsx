@@ -730,13 +730,18 @@ const fechaHastaSeleccion = rangos.length
               const listaReservasDTO = rangos.map((rango: { numero: number; desde: string; hasta: string }) => ({
                 fecha_desde: rango.desde,
                 fecha_hasta: rango.hasta,
-                nombre: nombre.toUpperCase(),
-                apellido: apellido.toUpperCase(),
+                nombre: nombre,
+                apellido: apellido,
                 telefono: telefono,
                 habitacion: {
                   numero: rango.numero
                 }
               }));
+
+              // Imprimir en consola lo que se envía
+              console.log("=== DTO ENVIADO A LA BASE DE DATOS ===");
+              console.log(JSON.stringify(listaReservasDTO, null, 2));
+              console.log("======================================");
 
               try {
                 const response = await axios.post("http://localhost:8080/reservas", listaReservasDTO, {
