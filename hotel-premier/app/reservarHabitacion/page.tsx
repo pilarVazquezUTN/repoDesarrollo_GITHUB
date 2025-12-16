@@ -423,7 +423,7 @@ const fechaHastaSeleccion = rangos.length
   // RENDER
   // =========================
   return (
-    <main className="flex gap-8 px-6 py-6 items-start">
+    <main className="flex gap-8 px-6 py-6 items-start bg-white min-h-screen">
 
       {/* FORMULARIO DE FECHAS Y TIPO */}
       <form className="flex flex-col justify-center">
