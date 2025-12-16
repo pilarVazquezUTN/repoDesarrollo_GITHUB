@@ -64,6 +64,9 @@ export default function Facturar() {
         tipoFactura: 'A' | 'B';
         esTercero: boolean;
     } | null>(null);
+    
+    // Estado de factura generada
+    const [facturaGenerada, setFacturaGenerada] = useState<any>(null);
 
     // Validar número de habitación
     const validarNroHabitacion = (valor: string) => {
@@ -374,7 +377,6 @@ export default function Facturar() {
             tipo: responsablePago.tipoFactura,
             fechaHoraCheckoutReal: fechaHoraCheckout,
             consumosIds: consumosIds,
-            totalEstimado: calcularTotal() + calcularIVA(),
             estadia: {
                 id_estadia: estadia.id_estadia
             },
@@ -412,16 +414,17 @@ export default function Facturar() {
             const response = await axios.post("http://localhost:8080/facturas", facturaDTO);
             
             if (response.status === 200 || response.status === 201) {
-                // Éxito - redirigir o mostrar mensaje
-                alert("Factura generada exitosamente");
-                // Limpiar formulario
-                setNroHabitacion("");
-                setHoraSalida("");
-                setHuespedes([]);
+                // Console log: factura recibida del backend
+                console.log("=== FACTURA GENERADA POR EL BACKEND ===");
+                console.log("Factura completa:", JSON.stringify(response.data, null, 2));
+                console.log("========================================");
+                
+                // Guardar factura generada
+                setFacturaGenerada(response.data);
+                
+                // Limpiar formulario pero mantener la factura visible
                 setMostrarTabla(false);
                 setMostrarItems(false);
-                setResponsablePago(null);
-                setErrores([]);
             }
         } catch (error: any) {
             console.error("Error al generar factura:", error);
@@ -650,24 +653,6 @@ export default function Facturar() {
                             ))}
                         </div>
 
-                        {/* RESUMEN */}
-                        <div className="border-t-2 border-indigo-200 pt-4 space-y-2">
-                            <div className="flex justify-between text-gray-700">
-                                <span>Subtotal:</span>
-                                <span>${calcularTotal().toFixed(2)}</span>
-                            </div>
-                            {responsablePago.tipoFactura === 'A' && (
-                                <div className="flex justify-between text-gray-700">
-                                    <span>IVA (21%):</span>
-                                    <span>${calcularIVA().toFixed(2)}</span>
-                                </div>
-                            )}
-                            <div className="flex justify-between text-2xl font-bold text-indigo-950 pt-2 border-t-2 border-indigo-200">
-                                <span>Total:</span>
-                                <span>${(calcularTotal() + calcularIVA()).toFixed(2)}</span>
-                            </div>
-                        </div>
-
                         <div className="mt-6 flex justify-center gap-4">
                             <Link href="/menu">
                                 <button
@@ -685,6 +670,72 @@ export default function Facturar() {
                             >
                                 Aceptar
                             </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* FACTURA GENERADA */}
+                {facturaGenerada && (
+                    <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <h2 className="text-xl font-bold text-indigo-950 mb-4 pb-3 border-b-2 border-indigo-200">
+                            Factura Generada
+                        </h2>
+
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-gray-600 text-sm">Número de Factura:</p>
+                                    <p className="text-indigo-950 font-semibold text-lg">#{facturaGenerada.id}</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-600 text-sm">Fecha:</p>
+                                    <p className="text-indigo-950 font-semibold">
+                                        {new Date(facturaGenerada.fecha).toLocaleDateString('es-AR')}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-600 text-sm">Tipo:</p>
+                                    <p className="text-indigo-950 font-semibold">Factura {facturaGenerada.tipo}</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-600 text-sm">Estado:</p>
+                                    <p className="text-indigo-950 font-semibold">{facturaGenerada.estado}</p>
+                                </div>
+                            </div>
+
+                            <div className="border-t-2 border-indigo-200 pt-4">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-2xl font-bold text-indigo-950">Total:</span>
+                                    <span className="text-3xl font-bold text-indigo-950">
+                                        ${facturaGenerada.total?.toFixed(2) || '0.00'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 flex justify-center gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setFacturaGenerada(null);
+                                        setNroHabitacion("");
+                                        setHoraSalida("");
+                                        setHuespedes([]);
+                                        setResponsablePago(null);
+                                        setErrores([]);
+                                    }}
+                                    className="px-6 py-3 bg-gradient-to-r from-indigo-950 to-indigo-900 text-white rounded-lg hover:from-indigo-900 hover:to-indigo-800 transition-all shadow-md hover:shadow-lg font-semibold"
+                                >
+                                    Nueva Factura
+                                </button>
+                                <Link href="/menu">
+                                    <button
+                                        type="button"
+                                        className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all shadow-md hover:shadow-lg font-semibold"
+                                    >
+                                        Volver al Menú
+                                    </button>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 )}
