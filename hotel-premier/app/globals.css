@@ -25,3 +25,20 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Estilos para tabla de reservas */
+table.reserva-habitacion-table {
+  text-indent: 0;
+  border-color: inherit;
+  border-collapse: collapse;
+  background-color: #f5f7fa;
+}
+
+table.reserva-habitacion-table tbody {
+  background-color: #f5f7fa;
+}
+
+/* Color de fondo por defecto para todas las celdas (disponible) */
+table.reserva-habitacion-table td:not(.bg-gray-700):not(.bg-red-500):not(.bg-yellow-200):not(.bg-yellow-500) {
+  background-color: #f5f7fa;
+}
