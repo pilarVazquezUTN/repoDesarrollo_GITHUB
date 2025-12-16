@@ -517,7 +517,7 @@ const fechaHastaSeleccion = rangos.length
           
           <>
           
-            <table className="w-full border-collapse border shadow-lg">
+            <table className="w-full border-collapse border shadow-lg bg-gray-50">
               <thead className="bg-indigo-950 text-white sticky top-0 z-10">
                 <tr>
                   <th className="p-2">Fecha</th>
@@ -527,11 +527,11 @@ const fechaHastaSeleccion = rangos.length
                 </tr>
               </thead>
 
-              <tbody>
+              <tbody className="bg-gray-50">
                 <tr>
-                  <td className="p-2 border"></td>
+                  <td className="p-2 border bg-gray-50"></td>
                   {tipoSeleccionado && habitaciones.map(hab => (
-                    <td key={hab?.numero} className="p-2 border text-center">{hab?.numero}</td>
+                    <td key={hab?.numero} className="p-2 border text-center bg-gray-50">{hab?.numero}</td>
                   ))}
                 </tr>
 
@@ -541,7 +541,7 @@ const fechaHastaSeleccion = rangos.length
 
                   return (
                     <tr key={fechaString}>
-                      <td className="p-2 border text-center font-medium">{fechaDisplay}</td>
+                      <td className="p-2 border text-center font-medium bg-gray-50">{fechaDisplay}</td>
                       {tipoSeleccionado && habitaciones.map((hab: HabitacionDTO) => {
                         
                         const key = `${fechaString}|${hab?.numero}`;
@@ -574,7 +574,7 @@ const fechaHastaSeleccion = rangos.length
                           console.log(`  esSeleccionado: ${esSeleccionado}`);
                         }
                         
-                         let bgClass = "bg-white"; 
+                         let bgClass = "bg-gray-50"; // Color claro para disponible
                          if (esFueraServicio) {
                              bgClass = "bg-gray-700"; // Gris para fuera de servicio
                          } else if (esOcupada) {
@@ -603,7 +603,7 @@ const fechaHastaSeleccion = rangos.length
              <li className="flex items-center gap-2 mt-4 flex-wrap justify-center">
                <span className="w-4 h-4 rounded-full bg-yellow-200"></span><span>RESERVADA</span>
                <span className="w-4 h-4 rounded-full bg-yellow-500"></span><span>SELECCIONADA</span>
-               <span className="w-4 h-4 rounded-full bg-white border"></span><span>DISPONIBLE</span>
+               <span className="w-4 h-4 rounded-full bg-gray-50 border"></span><span>DISPONIBLE</span>
                <span className="w-4 h-4 rounded-full bg-gray-700"></span><span>FUERA DE SERVICIO</span>
                <span className="w-4 h-4 rounded-full bg-red-500"></span><span>OCUPADA</span>
              </li>
