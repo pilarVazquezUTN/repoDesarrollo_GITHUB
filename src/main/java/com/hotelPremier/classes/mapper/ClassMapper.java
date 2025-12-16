@@ -126,8 +126,8 @@ public interface ClassMapper {
 
     List<ServicioExtraDTO> toDTOsServicioExtra(List<ServicioExtra> lista);
 
-    ServicioExtraIDDTO toDTO(ServicioExtraID id);
-    ServicioExtraID toEntity(ServicioExtraIDDTO dto);
+    ServicioExtraIDDTO toDTOServicioExtraID(ServicioExtraID id);
+    ServicioExtraID toEntityServicioExtraID(ServicioExtraIDDTO dto);
 
 
     // =====================================================
