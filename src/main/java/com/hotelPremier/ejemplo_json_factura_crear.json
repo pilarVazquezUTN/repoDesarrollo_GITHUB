@@ -1,0 +1,11 @@
+{
+  "tipo": "A",
+  "fechaHoraCheckoutReal": "2025-02-04T14:30:00",
+  "estadia": {
+    "id_estadia": 1
+  },
+  "consumosIds": [1, 2, 3],
+  "responsablepago": {
+    "id": 5
+  }
+}

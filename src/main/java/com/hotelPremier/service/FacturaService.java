@@ -98,6 +98,7 @@ public class FacturaService {
     /**
      * Crea una factura calculando el total con Strategy.
      * El backend calcula automáticamente todos los valores.
+     * Actualiza el checkout de la estadía con la fecha de checkout real de la factura.
      */
     public FacturaDTO crearFacturaConCalculo(FacturaDTO dto, DatosFactura datosFactura) {
 
@@ -107,6 +108,13 @@ public class FacturaService {
 
         Estadia estadia = estadiaRepository.findById(dto.getEstadia().getID())
                 .orElseThrow(() -> new IllegalArgumentException("Estadia no encontrada"));
+
+        // Actualizar el checkout de la estadía con la fecha de checkout real de la factura
+        if (datosFactura.getFechaHoraCheckoutReal() != null) {
+            java.time.LocalDateTime fechaHoraCheckout = datosFactura.getFechaHoraCheckoutReal();
+            java.util.Date checkoutDate = java.sql.Timestamp.valueOf(fechaHoraCheckout);
+            estadia.setCheckout(checkoutDate);
+        }
 
         Factura factura = mapper.toEntityFactura(dto);
         estadia.generarFactura(factura);
@@ -127,6 +135,8 @@ public class FacturaService {
             factura.setResponsablePago(rp);
         }
 
+        // Guardar la estadía actualizada (con el nuevo checkout)
+        estadiaRepository.save(estadia);
         facturaRepository.save(factura);
 
         return mapper.toDTOFactura(factura);
