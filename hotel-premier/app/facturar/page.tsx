@@ -144,6 +144,11 @@ export default function Facturar() {
             }
 
             const estadiaData = responseEstadia.data;
+            
+            // Console log: datos recibidos del backend
+            console.log("=== DATOS RECIBIDOS DEL BACKEND ===");
+            console.log("Estadía completa:", JSON.stringify(estadiaData, null, 2));
+            console.log("=====================================");
 
             // Extraer huéspedes de la estadía
             const huespedesData = estadiaData.listahuesped || [];
@@ -197,6 +202,18 @@ export default function Facturar() {
             }));
 
             setConsumos(consumosMapeados);
+            
+            // Console log: datos procesados
+            console.log("=== DATOS PROCESADOS ===");
+            console.log("Huéspedes mapeados:", huespedesMapeados.length);
+            console.log("Consumos mapeados:", consumosMapeados.length);
+            console.log("Estadía guardada:", {
+                id_estadia: estadiaData.id_estadia || estadiaData.id,
+                checkin: estadiaData.checkin,
+                checkout: estadiaData.checkout,
+                precioTotal: precioEstadia
+            });
+            console.log("========================");
 
         } catch (error: any) {
             console.error("Error al buscar estadía:", error);
@@ -366,7 +383,32 @@ export default function Facturar() {
             }
         };
 
+        // Console log: datos que se envían al backend
+        console.log("=== DATOS ENVIADOS AL BACKEND ===");
+        console.log("Factura DTO:", JSON.stringify(facturaDTO, null, 2));
+        console.log("Estadía actual:", JSON.stringify(estadia, null, 2));
+        console.log("Consumos seleccionados IDs:", consumosIds);
+        console.log("Items seleccionados:", itemsSeleccionados);
+        console.log("Items facturar:", JSON.stringify(itemsFacturar, null, 2));
+        console.log("Consumos disponibles:", JSON.stringify(consumos, null, 2));
+        console.log("=================================");
+
         try {
+            // Si la estadía no tiene checkout, actualizarla primero
+            if (estadia && !estadia.checkout) {
+                console.log("=== ACTUALIZANDO ESTADÍA CON CHECKOUT ===");
+                const fechaCheckoutUpdate = new Date().toISOString().split('T')[0];
+                try {
+                    await axios.put(`http://localhost:8080/estadias/${estadia.id_estadia}`, {
+                        checkout: fechaCheckoutUpdate
+                    });
+                    console.log("Estadía actualizada con checkout:", fechaCheckoutUpdate);
+                } catch (updateError: any) {
+                    console.error("Error al actualizar estadía:", updateError);
+                    // Continuar de todas formas, el backend puede manejarlo
+                }
+            }
+
             const response = await axios.post("http://localhost:8080/facturas", facturaDTO);
             
             if (response.status === 200 || response.status === 201) {
@@ -381,9 +423,14 @@ export default function Facturar() {
                 setResponsablePago(null);
                 setErrores([]);
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error al generar factura:", error);
-            setErrores(["Error al generar la factura"]);
+            if (error.response?.data) {
+                console.error("Detalles del error del backend:", error.response.data);
+                setErrores([error.response.data || "Error al generar la factura"]);
+            } else {
+                setErrores(["Error al generar la factura"]);
+            }
         }
     };
 
