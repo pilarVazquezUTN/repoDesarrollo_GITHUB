@@ -150,7 +150,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           });
 
           // Obtener reservas en el rango de fechas
-          const responseReservas = await axios.get(`http://localhost:8080/reservas`, {
+          const responseReservas = await axios.get(`http://localhost:8080/api/reservas`, {
             params: {
               desde: desdeFecha,
               hasta: hastaFecha
@@ -160,11 +160,17 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           const habitacionesData = responseHabitaciones.data || [];
           const reservasData = responseReservas.data || [];
 
+          console.log("Habitaciones recibidas:", habitacionesData);
+          console.log("Reservas recibidas:", reservasData);
+
           // Mapear reservas a cada habitación
+          // El endpoint puede devolver reservas con habitacion.numero o nro_habitacion directamente
           const habitacionesConReservas = habitacionesData.map((h: any) => {
-            const reservasDeEstaHabitacion = reservasData.filter((r: ReservaDTO) => 
-              r.habitacion?.numero === h.numero
-            );
+            const reservasDeEstaHabitacion = reservasData.filter((r: any) => {
+              // Verificar si viene con habitacion.numero o nro_habitacion
+              const numeroReserva = r.habitacion?.numero || r.nro_habitacion;
+              return numeroReserva === h.numero;
+            });
 
             return {
               ...h,
@@ -173,6 +179,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
             };
           });
 
+          console.log("Habitaciones con reservas mapeadas:", habitacionesConReservas);
           setHabitaciones(habitacionesConReservas);
           setReservas(reservasData);
         } catch(err) {
@@ -202,16 +209,16 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
     const keyActual = `${fechaString}|${habitacion.numero}`;
 
     // VALIDACIONES: No permitir seleccionar si está fuera de servicio
-    if (habitacion.estado === "FueraDeServicio") {
+    if (habitacion.estado === "FUERA_DE_SERVICIO") {
       setMostrarCartel(true);
       setTimeout(() => setMostrarCartel(false), 2500);
       return;
     }
 
-    // Validar si hay reserva en estado "Finalizada" (ocupada)
-    const tieneReservaFinalizada = habitacion.listareservas?.some(r => {
+    // Validar si hay reserva en estado "FINALIZADA" (ocupada)
+    const tieneReservaFinalizada = habitacion.listareservas?.some((r: ReservaDTO) => {
       const enRango = fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta);
-      return enRango && r.estado === "Finalizada";
+      return enRango && r.estado === "FINALIZADA";
     });
     if (tieneReservaFinalizada) {
       setMostrarCartel(true);
@@ -220,7 +227,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
     }
 
     // Validar si hay reserva en estado "ENCURSO" o "PENDIENTE" (reservada)
-    const tieneReservaEnCurso = habitacion.listareservas?.some(r => {
+    const tieneReservaEnCurso = habitacion.listareservas?.some((r: ReservaDTO) => {
       const enRango = fechaEnRango(fechaString, r.fecha_desde, r.fecha_hasta);
       return enRango && (r.estado === "ENCURSO" || r.estado === "PENDIENTE");
     });
@@ -515,14 +522,25 @@ const fechaHastaSeleccion = rangos.length
                         // 2. CHEQUEO RESERVA FINALIZADA (OCUPADA - ROJA)
                         const esOcupada = !esFueraServicio && hab.listareservas?.some((reserva: ReservaDTO) => {
                           const enRango = fechaEnRango(fechaString, reserva.fecha_desde, reserva.fecha_hasta);
-                          return enRango && reserva.estado === "Finalizada";
+                          return enRango && reserva.estado === "FINALIZADA";
                         });
 
                         // 3. CHEQUEO RESERVA EN CURSO/PENDIENTE (RESERVADA - AMARILLO CLARO)
                         const esReservada = !esFueraServicio && !esOcupada && hab.listareservas?.some((reserva: ReservaDTO) => {
                           const enRango = fechaEnRango(fechaString, reserva.fecha_desde, reserva.fecha_hasta);
-                          return enRango && (reserva.estado === "EN CURSO" || reserva.estado === "Pendiente");
+                          return enRango && (reserva.estado === "ENCURSO" || reserva.estado === "PENDIENTE");
                         });
+                        
+                        // Debug: solo para la primera celda de la primera habitación
+                        if (hab.numero === habitaciones[0]?.numero && fechaString === fechasIntervalo[0]?.toISOString().split('T')[0]) {
+                          console.log(`Debug celda - Hab: ${hab.numero}, Fecha: ${fechaString}`);
+                          console.log(`  Estado habitación: ${hab.estado}`);
+                          console.log(`  Reservas de esta habitación:`, hab.listareservas);
+                          console.log(`  esFueraServicio: ${esFueraServicio}`);
+                          console.log(`  esOcupada: ${esOcupada}`);
+                          console.log(`  esReservada: ${esReservada}`);
+                          console.log(`  esSeleccionado: ${esSeleccionado}`);
+                        }
                         
                         let bgClass = "bg-white"; 
                         if (esFueraServicio) {
