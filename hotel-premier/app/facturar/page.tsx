@@ -161,23 +161,30 @@ export default function Facturar() {
             }
 
             // Mapear huéspedes al formato TipoHuesped
-            const huespedesMapeados: TipoHuesped[] = huespedesData.map((h: any) => ({
-                id: h.id || 0,
-                nombre: h.nombre || "",
-                apellido: h.apellido || "",
-                fechaNacimiento: h.fechaNacimiento || "",
-                nacionalidad: h.nacionalidad || "",
-                ocupacion: h.ocupacion || "",
-                email: h.email || "",
-                telefono: h.telefono || "",
-                direccionHuesped: h.direccion || {},
-                cuit: h.cuit || "",
-                posicionIva: h.posicionIva || "CF",
-                huespedID: {
-                    tipoDocumento: h.huespedID?.tipoDocumento || h.tipoDocumento || "",
-                    dni: h.huespedID?.dni || h.dni || ""
-                }
-            }));
+            const huespedesMapeados: TipoHuesped[] = huespedesData.map((h: any) => {
+                // Console log para ver qué datos vienen del huésped
+                console.log("Datos completos del huésped recibidos:", JSON.stringify(h, null, 2));
+                
+                return {
+                    id: h.id || 0,
+                    nombre: h.nombre || "",
+                    apellido: h.apellido || "",
+                    fechaNacimiento: h.fechaNacimiento || "",
+                    nacionalidad: h.nacionalidad || "",
+                    ocupacion: h.ocupacion || "",
+                    email: h.email || "",
+                    telefono: h.telefono || "",
+                    direccionHuesped: h.direccion || {},
+                    cuit: h.cuit || "",
+                    posicionIva: h.posicionIva || "CF",
+                    huespedID: {
+                        tipoDocumento: h.huespedID?.tipoDocumento || h.tipoDocumento || "",
+                        dni: h.huespedID?.dni || h.dni || ""
+                    },
+                    // Guardar datos adicionales que puedan venir (como responsablePagoId)
+                    responsablePagoId: h.responsablePagoId || h.responsablePago?.id || null
+                } as any;
+            });
 
             setHuespedes(huespedesMapeados);
             setMostrarTabla(true);
@@ -229,7 +236,7 @@ export default function Facturar() {
     };
 
     // Seleccionar responsable de pago
-    const seleccionarResponsable = (huesped: TipoHuesped) => {
+    const seleccionarResponsable = async (huesped: TipoHuesped) => {
         // Validar edad primero
         if (huesped.fechaNacimiento) {
             const edad = calcularEdad(huesped.fechaNacimiento);
@@ -241,16 +248,53 @@ export default function Facturar() {
         
         setHuespedSeleccionado(huesped);
 
-        // Si se eligió un huésped → tipo A
-        setResponsablePago({
-            id: huesped.id,
-            nombre: `${huesped.nombre} ${huesped.apellido}`,
-            tipoFactura: 'A',
-            esTercero: false
-        });
+        // Buscar responsable de pago
+        // Primero verificar si viene en los datos del huésped
+        const responsablePagoId = (huesped as any).responsablePagoId;
+        
+        if (responsablePagoId) {
+            // Si viene el ID directamente, usarlo
+            setResponsablePago({
+                id: responsablePagoId,
+                nombre: `${huesped.nombre} ${huesped.apellido}`,
+                tipoFactura: 'A',
+                esTercero: false
+            });
+            prepararItems();
+            return;
+        }
 
-        // Preparar items para facturar
-        prepararItems();
+        // Si no viene, buscar por DNI y tipo de documento
+        try {
+            const response = await axios.get(`http://localhost:8080/responsablesPago`, {
+                params: {
+                    dni: huesped.huespedID.dni,
+                    tipoDocumento: huesped.huespedID.tipoDocumento
+                }
+            });
+
+            if (response.data && response.data.length > 0) {
+                // Si existe, usar su ID
+                const responsableId = response.data[0].id;
+                
+                // Si se eligió un huésped → tipo A
+                setResponsablePago({
+                    id: responsableId,
+                    nombre: `${huesped.nombre} ${huesped.apellido}`,
+                    tipoFactura: 'A',
+                    esTercero: false
+                });
+
+                // Preparar items para facturar
+                prepararItems();
+            } else {
+                // Si no existe, mostrar error
+                setErrores(["El responsable de pago no existe. Debe darlo de alta primero."]);
+            }
+        } catch (error) {
+            console.error("Error al buscar responsable de pago:", error);
+            setErrores(["Error al buscar el responsable de pago"]);
+        }
     };
 
     // Preparar items a facturar

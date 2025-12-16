@@ -129,7 +129,10 @@ public class FacturaService {
         factura.setEstadia(estadia);
         factura.setFecha(new java.util.Date());
 
-        if (dto.getResponsablepago() != null && dto.getResponsablepago().getId() != null) {
+        // Solo asignar ResponsablePago si tiene un ID válido (mayor que 0)
+        if (dto.getResponsablepago() != null && 
+            dto.getResponsablepago().getId() != null && 
+            dto.getResponsablepago().getId() > 0) {
             ResponsablePago rp = responsablePagoRepository.findById(dto.getResponsablepago().getId())
                     .orElseThrow(() -> new IllegalArgumentException("ResponsablePago no encontrado"));
             factura.setResponsablePago(rp);
@@ -168,7 +171,10 @@ public class FacturaService {
         // Si no tiene estadía, crear factura simple (caso excepcional)
         Factura factura = mapper.toEntityFactura(dto);
 
-        if (dto.getResponsablepago() != null && dto.getResponsablepago().getId() != null) {
+        // Solo asignar ResponsablePago si tiene un ID válido (mayor que 0)
+        if (dto.getResponsablepago() != null && 
+            dto.getResponsablepago().getId() != null && 
+            dto.getResponsablepago().getId() > 0) {
             ResponsablePago rp = responsablePagoRepository.findById(dto.getResponsablepago().getId())
                     .orElseThrow(() -> new RuntimeException("ResponsablePago no encontrado"));
             factura.setResponsablePago(rp);
