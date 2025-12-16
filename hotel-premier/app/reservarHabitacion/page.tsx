@@ -517,7 +517,7 @@ const fechaHastaSeleccion = rangos.length
           
           <>
           
-            <table className="reserva-habitacion-table w-full border shadow-lg">
+            <table className="w-full border-collapse border shadow-lg">
               <thead className="bg-indigo-950 text-white sticky top-0 z-10">
                 <tr>
                   <th className="p-2">Fecha</th>
@@ -574,7 +574,7 @@ const fechaHastaSeleccion = rangos.length
                           console.log(`  esSeleccionado: ${esSeleccionado}`);
                         }
                         
-                         let bgClass = ""; // Color claro para disponible (se aplica por CSS)
+                         let bgClass = ""; // Color claro para disponible (se aplica por CSS de la tabla) 
                          if (esFueraServicio) {
                              bgClass = "bg-gray-700"; // Gris para fuera de servicio
                          } else if (esOcupada) {
