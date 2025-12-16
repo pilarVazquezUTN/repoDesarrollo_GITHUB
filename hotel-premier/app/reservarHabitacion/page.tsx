@@ -426,6 +426,7 @@ const fechaHastaSeleccion = rangos.length
     <main className="flex gap-8 px-8 py-8 items-start bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
 
       {/* FORMULARIO DE FECHAS Y TIPO */}
+      {!mostrarFormulario && (
       <div className="bg-white rounded-xl shadow-lg p-6 w-80 h-fit sticky top-4">
         <h2 className="text-2xl font-bold text-indigo-950 mb-6 pb-3 border-b-2 border-indigo-200">Filtros de Búsqueda</h2>
         <form className="flex flex-col space-y-4">
@@ -488,6 +489,7 @@ const fechaHastaSeleccion = rangos.length
           </div>
         </form>
       </div>
+      )}
 
       {mostrarCartel && (
         <CartelHabitacionNoDisponible
@@ -523,13 +525,15 @@ const fechaHastaSeleccion = rangos.length
         />
       )}
 
-      {/* TABLA ESTADO HABITACIÓN */}
-      <section className="flex-1 max-h-[800px] overflow-auto">
-        {tipoSeleccionado && fechasIntervalo.length > 0 ? (
-          
-          <>
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-            <table className="w-full border-collapse">
+       {/* TABLA ESTADO HABITACIÓN */}
+       {!mostrarFormulario && (
+       <section className="flex-1">
+         {tipoSeleccionado && fechasIntervalo.length > 0 ? (
+           
+           <>
+             <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+             <div className="max-h-[600px] overflow-y-auto overflow-x-auto">
+             <table className="w-full border-collapse">
               <thead className="bg-gradient-to-r from-indigo-950 to-indigo-900 text-white sticky top-0 z-10 shadow-md">
                 <tr>
                   <th className="p-4 font-semibold text-left">Fecha</th>
@@ -612,6 +616,7 @@ const fechaHastaSeleccion = rangos.length
               </tbody>
             </table>
             </div>
+            </div>
 
              {/* LEYENDA */}
              <div className="bg-white rounded-xl shadow-lg p-4 mt-6">
@@ -685,17 +690,20 @@ const fechaHastaSeleccion = rangos.length
             {mostrarCartelOH && <OcuparHabitacionIgualmente onClose={() => setMostrarCartelOH(false)} />}
           </>
         ): (
-            <div className="bg-white rounded-xl shadow-lg p-12 text-center">
-              <div className="text-gray-400 text-lg mb-2">
-                📅 Seleccione un rango de fechas y tipo para ver la disponibilidad
-              </div>
-              <p className="text-sm text-gray-500">Complete los filtros en el panel lateral para comenzar</p>
-            </div>
-        )}
+             <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+               <div className="text-gray-400 text-lg mb-2">
+                 📅 Seleccione un rango de fechas y tipo para ver la disponibilidad
+               </div>
+               <p className="text-sm text-gray-500">Complete los filtros en el panel lateral para comenzar</p>
+             </div>
+         )}
+       </section>
+       )}
 
-        {/* FORMULARIO DE DATOS DEL HUÉSPED */}
-        {mostrarFormulario && (
-          <div className="mt-8 p-8 border-2 border-indigo-200 rounded-xl bg-white shadow-2xl">
+       {/* FORMULARIO DE DATOS DEL HUÉSPED */}
+       {mostrarFormulario && (
+         <section className="flex-1 w-full flex justify-center">
+          <div className="w-full max-w-2xl p-8 border-2 border-indigo-200 rounded-xl bg-white shadow-2xl">
             <div className="mb-6 pb-4 border-b-2 border-indigo-200">
               <h3 className="text-2xl font-bold text-indigo-950">
                 Reserva a nombre de:
@@ -926,14 +934,13 @@ const fechaHastaSeleccion = rangos.length
                   </button>
                 </div>
               </div>
-            </form>
-          </div>
-        )}
-      </section>
-      
+             </form>
+           </div>
+         </section>
+       )}
 
-      {/* TABLA DERECHA */}
-      {!ocultarTabla && seleccionados.length > 0 && (
+       {/* TABLA DERECHA */}
+       {!ocultarTabla && !mostrarFormulario && seleccionados.length > 0 && (
         <section className="flex-1 bg-white rounded-xl shadow-xl p-6 h-fit sticky top-4">
           <div className="mb-4 pb-3 border-b-2 border-indigo-200">
             <h2 className="text-xl font-bold text-indigo-950">
