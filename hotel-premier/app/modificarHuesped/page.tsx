@@ -66,6 +66,9 @@ export default function ModificarHuesped() {
             setHuespedOriginal(huesped);
             
             // Cargar datos en el formulario
+            // El backend envía "direccion" no "direccionHuesped"
+            const direccion = (huesped as any).direccion || huesped.direccionHuesped;
+            
             setFormData({
                 apellido: huesped.apellido || "",
                 nombre: huesped.nombre || "",
@@ -73,14 +76,14 @@ export default function ModificarHuesped() {
                 dni: huesped.huespedID.dni || "",
                 cuit: huesped.cuit || "",
                 posicionIva: huesped.posicionIva || "CONSUMIDOR FINAL",
-                calle: huesped.direccionHuesped?.calle || "",
-                numero: huesped.direccionHuesped?.numero?.toString() || "",
-                departamento: huesped.direccionHuesped?.departamento || "",
-                piso: huesped.direccionHuesped?.piso?.toString() || "",
-                codigoPostal: huesped.direccionHuesped?.codigoPostal?.toString() || "",
-                localidad: huesped.direccionHuesped?.localidad || "",
-                provincia: huesped.direccionHuesped?.provincia || "",
-                pais: huesped.direccionHuesped?.pais || "",
+                calle: direccion?.calle || "",
+                numero: direccion?.numero?.toString() || "",
+                departamento: direccion?.departamento || "",
+                piso: direccion?.piso?.toString() || "",
+                codigoPostal: direccion?.codigoPostal?.toString() || "",
+                localidad: direccion?.localidad || "",
+                provincia: direccion?.provincia || "",
+                pais: direccion?.pais || "",
                 fechaNacimiento: huesped.fechaNacimiento || "",
                 telefono: huesped.telefono || "",
                 email: huesped.email || "",
