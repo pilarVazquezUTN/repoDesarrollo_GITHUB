@@ -139,7 +139,19 @@ public class FacturaService {
         estadiaRepository.save(estadia);
         facturaRepository.save(factura);
 
-        return mapper.toDTOFactura(factura);
+        // Obtener el DTO y limpiar campos que no deben mostrarse en la respuesta
+        FacturaDTO facturaDTO = mapper.toDTOFactura(factura);
+        
+        // Limpiar campos que no deben mostrarse en la respuesta
+        facturaDTO.setFechaHoraCheckoutReal(null);
+        facturaDTO.setTotalEstimado(null);
+        
+        // Asegurar que consumosIds sea un array vacío si es null
+        if (facturaDTO.getConsumosIds() == null) {
+            facturaDTO.setConsumosIds(new java.util.ArrayList<>());
+        }
+        
+        return facturaDTO;
     }
 
     /**

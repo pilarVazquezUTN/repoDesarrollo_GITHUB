@@ -1,9 +1,11 @@
 package com.hotelPremier.classes.DTO;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacturaDTO {
 
     private Integer id;
@@ -17,11 +19,12 @@ public class FacturaDTO {
     private ResponsablePagoDTO responsablepago;   // 👈 AHORA ES DTO
     
     // Campos opcionales para cálculo automático con Strategy
-    private List<Integer> consumosIds; // IDs de los servicios extra seleccionados
+    private List<Integer> consumosIds = new java.util.ArrayList<>(); // IDs de los servicios extra seleccionados
     private LocalDateTime fechaHoraCheckoutReal; // Fecha y hora real del checkout
     private Float totalEstimado; // Total estimado enviado por el frontend (para validación)
 
     public FacturaDTO() {
+        this.consumosIds = new java.util.ArrayList<>();
     }
 
     public FacturaDTO(Integer id,
@@ -42,6 +45,7 @@ public class FacturaDTO {
         this.notacredito = notacredito;
         this.pago = pago;
         this.responsablepago = responsablepago;
+        this.consumosIds = new java.util.ArrayList<>();
     }
 
     public Integer getID() {
@@ -118,11 +122,16 @@ public class FacturaDTO {
 
     // Getters y setters para campos de cálculo
     public List<Integer> getConsumosIds() {
+        // Asegurar que siempre retorne un array vacío en lugar de null
+        if (consumosIds == null) {
+            consumosIds = new java.util.ArrayList<>();
+        }
         return consumosIds;
     }
 
     public void setConsumosIds(List<Integer> consumosIds) {
-        this.consumosIds = consumosIds;
+        // Si se intenta setear null, usar array vacío
+        this.consumosIds = consumosIds != null ? consumosIds : new java.util.ArrayList<>();
     }
 
     public LocalDateTime getFechaHoraCheckoutReal() {
