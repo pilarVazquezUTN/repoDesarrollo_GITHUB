@@ -21,7 +21,7 @@ public class EstadiaController {
     private EstadiaService estadiaService;
 
     // ============================================
-    // GET /api/estadias/sin-factura
+    // GET /estadias/sin-factura
     // ============================================
     // @GetMapping("/sin-factura")
     // public List<EstadiaDTO> listarSinFactura() {
