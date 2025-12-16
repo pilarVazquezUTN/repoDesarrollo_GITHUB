@@ -97,6 +97,7 @@ public class FacturaService {
 
     /**
      * Crea una factura calculando el total con Strategy.
+     * El backend calcula automáticamente todos los valores.
      */
     public FacturaDTO crearFacturaConCalculo(FacturaDTO dto, DatosFactura datosFactura) {
 
@@ -113,23 +114,8 @@ public class FacturaService {
         CalculoFacturaStrategy estrategia =
                 SelectorEstrategiaCalculo.seleccionarEstrategia(estadia, datosFactura);
 
+        // El backend calcula automáticamente el total - no se valida contra totalEstimado
         BigDecimal totalCalculado = estrategia.calcularTotal(estadia, datosFactura);
-
-        if (datosFactura.getTotalEstimado() != null) {
-            BigDecimal totalEstimado = BigDecimal.valueOf(datosFactura.getTotalEstimado());
-            BigDecimal diferencia = totalCalculado.subtract(totalEstimado).abs();
-
-            if (diferencia.compareTo(new BigDecimal("0.01")) > 0) {
-                throw new IllegalArgumentException(
-                        String.format(
-                                "El total calculado (%.2f) no coincide con el estimado (%.2f). Diferencia: %.2f",
-                                totalCalculado.floatValue(),
-                                totalEstimado.floatValue(),
-                                diferencia.floatValue()
-                        )
-                );
-            }
-        }
 
         factura.setTotal(totalCalculado.floatValue());
         factura.setEstadia(estadia);
@@ -147,23 +133,18 @@ public class FacturaService {
     }
 
     /**
-     * Crea una factura usando cálculo automático o método simple.
+     * Crea una factura calculando automáticamente todos los valores.
+     * Si tiene estadía, siempre calcula automáticamente usando Strategy.
      */
     public FacturaDTO crearFactura(FacturaDTO dto) {
 
-        if (dto.getFechaHoraCheckoutReal() != null &&
-            dto.getEstadia() != null &&
-            dto.getEstadia().getID() != null) {
+        // Si tiene estadía, siempre calcular automáticamente
+        if (dto.getEstadia() != null && dto.getEstadia().getID() != null) {
             return crearFacturaConCalculoAutomatico(dto);
         }
 
+        // Si no tiene estadía, crear factura simple (caso excepcional)
         Factura factura = mapper.toEntityFactura(dto);
-
-        if (dto.getEstadia() != null && dto.getEstadia().getID() != null) {
-            Estadia est = estadiaRepository.findById(dto.getEstadia().getID())
-                    .orElseThrow(() -> new RuntimeException("Estadia no encontrada"));
-            est.generarFactura(factura);
-        }
 
         if (dto.getResponsablepago() != null && dto.getResponsablepago().getId() != null) {
             ResponsablePago rp = responsablePagoRepository.findById(dto.getResponsablepago().getId())
@@ -178,11 +159,13 @@ public class FacturaService {
 
     /**
      * Construye los datos de cálculo y genera la factura automáticamente.
+     * El backend calcula todo automáticamente - el frontend solo envía los datos necesarios.
      */
     private FacturaDTO crearFacturaConCalculoAutomatico(FacturaDTO dto) {
 
         DatosFactura datosFactura = new DatosFactura();
 
+        // Cargar los consumos seleccionados si se proporcionaron IDs
         List<ServicioExtra> consumos = new ArrayList<>();
         if (dto.getConsumosIds() != null && !dto.getConsumosIds().isEmpty() && dto.getEstadia() != null) {
             consumos = servicioExtraRepository.findByEstadiaIdAndServicioIds(
@@ -194,7 +177,7 @@ public class FacturaService {
         datosFactura.setConsumosSeleccionados(consumos);
         datosFactura.setTipoFactura(dto.getTipo());
         datosFactura.setFechaHoraCheckoutReal(dto.getFechaHoraCheckoutReal());
-        datosFactura.setTotalEstimado(dto.getTotalEstimado() != null ? dto.getTotalEstimado() : dto.getTotal());
+        // No se usa totalEstimado - el backend calcula todo automáticamente
 
         return crearFacturaConCalculo(dto, datosFactura);
     }
