@@ -162,15 +162,45 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
 
           console.log("Habitaciones recibidas:", habitacionesData);
           console.log("Reservas recibidas:", reservasData);
+          
+          // Ver estructura completa de una reserva para debug
+          if (reservasData.length > 0) {
+            console.log("Estructura completa primera reserva:", JSON.stringify(reservasData[0], null, 2));
+            console.log("Todos los campos de la reserva:", Object.keys(reservasData[0]));
+            console.log("Valor de habitacion en reserva:", reservasData[0].habitacion);
+            console.log("Valor de nro_habitacion en reserva:", reservasData[0].nro_habitacion);
+          }
 
           // Mapear reservas a cada habitación
-          // El endpoint puede devolver reservas con habitacion.numero o nro_habitacion directamente
+          // El endpoint puede devolver reservas con habitacion.numero, nro_habitacion, o habitacion como objeto
           const habitacionesConReservas = habitacionesData.map((h: any) => {
             const reservasDeEstaHabitacion = reservasData.filter((r: any) => {
-              // Verificar si viene con habitacion.numero o nro_habitacion
-              const numeroReserva = r.habitacion?.numero || r.nro_habitacion;
-              return numeroReserva === h.numero;
+              // Verificar todas las posibles formas en que puede venir el número de habitación
+              let numeroReserva = null;
+              
+              // Caso 1: r.habitacion.numero (objeto habitacion con numero)
+              if (r.habitacion && typeof r.habitacion === 'object' && r.habitacion.numero) {
+                numeroReserva = r.habitacion.numero;
+              }
+              // Caso 2: r.nro_habitacion (campo directo)
+              else if (r.nro_habitacion !== undefined && r.nro_habitacion !== null) {
+                numeroReserva = r.nro_habitacion;
+              }
+              // Caso 3: r.habitacion es un número directamente
+              else if (typeof r.habitacion === 'number') {
+                numeroReserva = r.habitacion;
+              }
+              
+              const coincide = numeroReserva === h.numero;
+              if (coincide) {
+                console.log(`✓ Reserva ${r.id_reserva} (${r.fecha_desde} a ${r.fecha_hasta}, estado: ${r.estado}) asignada a habitación ${h.numero}`);
+              }
+              return coincide;
             });
+            
+            if (reservasDeEstaHabitacion.length > 0) {
+              console.log(`Habitación ${h.numero} tiene ${reservasDeEstaHabitacion.length} reserva(s)`);
+            }
 
             return {
               ...h,
@@ -209,7 +239,8 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
     const keyActual = `${fechaString}|${habitacion.numero}`;
 
     // VALIDACIONES: No permitir seleccionar si está fuera de servicio
-    if (habitacion.estado === "FUERA_DE_SERVICIO") {
+    // El estado puede venir como "FUERADESERVICIO" o "FUERA_DE_SERVICIO"
+    if (habitacion.estado === "FUERADESERVICIO" || habitacion.estado === "FUERA_DE_SERVICIO") {
       setMostrarCartel(true);
       setTimeout(() => setMostrarCartel(false), 2500);
       return;
@@ -517,7 +548,8 @@ const fechaHastaSeleccion = rangos.length
                         const esSeleccionado = seleccionados.includes(key);
 
                         // 1. CHEQUEO FUERA DE SERVICIO
-                        const esFueraServicio = hab.estado === "FUERA_DE_SERVICIO";
+                        // El estado puede venir como "FUERADESERVICIO" o "FUERA_DE_SERVICIO"
+                        const esFueraServicio = hab.estado === "FUERADESERVICIO" || hab.estado === "FUERA_DE_SERVICIO";
 
                         // 2. CHEQUEO RESERVA FINALIZADA (OCUPADA - ROJA)
                         const esOcupada = !esFueraServicio && hab.listareservas?.some((reserva: ReservaDTO) => {
