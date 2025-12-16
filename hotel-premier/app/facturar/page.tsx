@@ -135,7 +135,7 @@ export default function Facturar() {
         setErrores([]);
 
         try {
-            // Primero buscar estadía en curso
+            // Buscar estadía en curso de la habitación (incluye huéspedes y consumos)
             const responseEstadia = await axios.get(`http://localhost:8080/estadias/enCurso/${nroHabitacion}`);
             
             if (!responseEstadia.data) {
@@ -144,76 +144,62 @@ export default function Facturar() {
             }
 
             const estadiaData = responseEstadia.data;
-            const estadiaId = estadiaData.id_estadia || estadiaData.id;
-            
-            // Calcular precio total de la estadía si no viene
-            const precioTotal = estadiaData.precioTotal || 0;
-            
-            setEstadia({
-                id_estadia: estadiaId,
-                checkin: estadiaData.checkin,
-                checkout: estadiaData.checkout,
-                precioTotal: precioTotal
-            });
 
-            // Obtener huéspedes asociados a la estadía
-            try {
-                const responseHuespedes = await axios.get(`http://localhost:8080/estadias/${estadiaId}/huespedes`);
-                
-                if (!responseHuespedes.data || responseHuespedes.data.length === 0) {
-                    // Si la estadía viene con huéspedes incluidos, intentar obtenerlos del objeto
-                    if (estadiaData.listahuesped || estadiaData.huespedes) {
-                        setHuespedes(estadiaData.listahuesped || estadiaData.huespedes || []);
-                    } else {
-                        setErrores(["No se encontraron huéspedes para esta estadía"]);
-                        return;
-                    }
-                } else {
-                    setHuespedes(responseHuespedes.data);
-                }
-            } catch (error) {
-                console.error("Error al cargar huéspedes de la estadía:", error);
-                // Si la estadía viene con huéspedes incluidos, intentar obtenerlos del objeto
-                if (estadiaData.listahuesped || estadiaData.huespedes) {
-                    setHuespedes(estadiaData.listahuesped || estadiaData.huespedes || []);
-                } else {
-                    setErrores(["Error al cargar los huéspedes de la estadía"]);
-                    return;
-                }
+            // Extraer huéspedes de la estadía
+            const huespedesData = estadiaData.listahuesped || [];
+            if (huespedesData.length === 0) {
+                setErrores(["La habitación no tiene huéspedes asignados"]);
+                return;
             }
 
+            // Mapear huéspedes al formato TipoHuesped
+            const huespedesMapeados: TipoHuesped[] = huespedesData.map((h: any) => ({
+                id: h.id || 0,
+                nombre: h.nombre || "",
+                apellido: h.apellido || "",
+                fechaNacimiento: h.fechaNacimiento || "",
+                nacionalidad: h.nacionalidad || "",
+                ocupacion: h.ocupacion || "",
+                email: h.email || "",
+                telefono: h.telefono || "",
+                direccionHuesped: h.direccion || {},
+                cuit: h.cuit || "",
+                posicionIva: h.posicionIva || "CF",
+                huespedID: {
+                    tipoDocumento: h.huespedID?.tipoDocumento || h.tipoDocumento || "",
+                    dni: h.huespedID?.dni || h.dni || ""
+                }
+            }));
+
+            setHuespedes(huespedesMapeados);
             setMostrarTabla(true);
             setMostrarItems(false);
             setHuespedSeleccionado(null);
             setResponsablePago(null);
 
-            // Obtener consumos asociados a la estadía
-            try {
-                const responseConsumos = await axios.get(`http://localhost:8080/estadias/${estadiaId}/consumos`);
-                setConsumos(responseConsumos.data || []);
-            } catch (error) {
-                console.error("Error al cargar consumos de la estadía:", error);
-                // Si la estadía viene con consumos incluidos, intentar obtenerlos del objeto
-                if (estadiaData.listaConsumos || estadiaData.consumos) {
-                    setConsumos(estadiaData.listaConsumos || estadiaData.consumos || []);
-                } else {
-                    setConsumos([]);
-                }
-            }
-        } catch (error: any) {
-            console.error("Error al buscar estadía:", error);
-            if (error.response?.status === 404) {
-                setErrores(["La habitación no está ocupada"]);
-            } else {
-                setErrores(["Error al cargar los datos de la habitación"]);
-            }
-            setEstadia(null);
-            setHuespedes([]);
-            setConsumos([]);
-        }
+            // Guardar estadía
+            // El precio puede venir en diferentes campos o calcularse después
+            const precioEstadia = estadiaData.precioTotal || estadiaData.precio || 0;
+            setEstadia({
+                id_estadia: estadiaData.id_estadia || estadiaData.id,
+                checkin: estadiaData.checkin,
+                checkout: estadiaData.checkout || null,
+                precioTotal: precioEstadia
+            });
+
+            // Extraer consumos de la estadía
+            const consumosData = estadiaData.listaconsumos || [];
+            const consumosMapeados: Consumo[] = consumosData.map((c: any, index: number) => ({
+                id: c.id || index + 1,
+                descripcion: c.descripcion || `Consumo ${index + 1}`,
+                precio: c.price || c.precio || 0,
+                fecha: c.fecha || new Date().toISOString().split('T')[0]
+            }));
+
+            setConsumos(consumosMapeados);
 
         } catch (error: any) {
-            console.error("Error al buscar huéspedes:", error);
+            console.error("Error al buscar estadía:", error);
             if (error.response?.status === 404) {
                 setErrores(["La habitación no está ocupada"]);
             } else {
@@ -254,20 +240,15 @@ export default function Facturar() {
         const items: ItemFacturar[] = [];
         
         // Agregar estadía si existe
-        if (estadia) {
-            // Si no viene precioTotal, calcularlo basado en días
-            // Por ahora usamos el precioTotal si existe, sino 0 (se puede ajustar después)
-            const precioEstadia = estadia.precioTotal || 0;
-            
-            if (precioEstadia > 0) {
-                items.push({
-                    id: 1,
-                    tipo: 'estadia',
-                    descripcion: `Estadía (${estadia.checkin} - ${estadia.checkout})`,
-                    precio: precioEstadia,
-                    estadiaId: estadia.id_estadia
-                });
-            }
+        if (estadia && estadia.id_estadia) {
+            const checkoutDisplay = estadia.checkout || "En curso";
+            items.push({
+                id: 1,
+                tipo: 'estadia',
+                descripcion: `Estadía (${estadia.checkin} - ${checkoutDisplay})`,
+                precio: estadia.precioTotal || 0, // Si no hay precio, se puede calcular o mostrar 0
+                estadiaId: estadia.id_estadia
+            });
         }
 
         // Agregar consumos pendientes (solo los que no estén facturados)
@@ -351,6 +332,7 @@ export default function Facturar() {
             setErrores(["Faltan datos para generar la factura"]);
             return;
         }
+
         // Obtener IDs de consumos seleccionados
         const consumosIds: number[] = [];
         itemsSeleccionados.forEach(id => {
@@ -358,10 +340,10 @@ export default function Facturar() {
             if (item?.tipo === 'consumo') {
                 // Buscar el consumo original por descripción/precio
                 const consumo = consumos.find(c => 
-                    c.descripcion === item.descripcion && 
+                    (c.descripcion === item.descripcion || item.descripcion.includes(c.descripcion)) && 
                     Math.abs(c.precio - item.precio) < 0.01
                 );
-                if (consumo) {
+                if (consumo && consumo.id) {
                     consumosIds.push(consumo.id);
                 }
             }

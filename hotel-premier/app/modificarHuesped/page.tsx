@@ -316,7 +316,7 @@ export default function ModificarHuesped() {
         );
     }
 
-    return (
+  return (
         <main className="flex gap-8 px-8 py-8 items-start bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
             <div className="w-full max-w-7xl mx-auto">
                 {/* TÍTULO */}
@@ -711,7 +711,7 @@ export default function ModificarHuesped() {
                                     <p className="text-red-600 text-xs mt-1">Campo obligatorio.</p>
                                 )}
                             </div>
-                        </form>
+      </form>
                     </div>
                 </div>
 
@@ -824,6 +824,6 @@ export default function ModificarHuesped() {
                     }}
                 />
             )}
-        </main>
-    );
+    </main>
+  );
 }
