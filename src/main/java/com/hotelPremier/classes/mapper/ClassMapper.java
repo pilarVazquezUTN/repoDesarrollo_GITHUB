@@ -63,7 +63,9 @@ public interface ClassMapper {
         @Mapping(target = "habitacion", ignore = true),
         @Mapping(target = "listahuesped", source = "listahuesped"),
         @Mapping(target = "listafactura", ignore = true),
-        @Mapping(target = "reserva", ignore = true)
+        @Mapping(target = "listaconsumos", ignore = true),
+        @Mapping(target = "reserva", ignore = true),
+        @Mapping(target = "ID", ignore = true)
     })
     EstadiaDTO toDTOEstadia(Estadia e);
 
@@ -119,8 +121,7 @@ public interface ClassMapper {
     // =====================================================
 
     @Mappings({
-        @Mapping(target = "servicioExtraID", source = "servicioExtraID"),
-        @Mapping(target = "estadia", ignore = true)
+        @Mapping(target = "servicioExtraID", source = "servicioExtraID")
     })
     ServicioExtraDTO toDTOServicioExtra(ServicioExtra s);
 
