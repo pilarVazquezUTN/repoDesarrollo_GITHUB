@@ -574,16 +574,16 @@ const fechaHastaSeleccion = rangos.length
                           console.log(`  esSeleccionado: ${esSeleccionado}`);
                         }
                         
-                        let bgClass = "bg-white"; 
-                        if (esFueraServicio) {
-                            bgClass = "bg-gray-700"; // Gris para fuera de servicio
-                        } else if (esOcupada) {
-                            bgClass = "bg-red-500"; // Roja para ocupada (Finalizada)
-                        } else if (esReservada) {
-                            bgClass = "bg-yellow-200"; // Amarillo claro para reservada (EN CURSO/Pendiente)
-                        } else if (esSeleccionado) {
-                            bgClass = "bg-yellow-200"; // Amarillo claro cuando el usuario selecciona
-                        }
+                         let bgClass = "bg-white"; 
+                         if (esFueraServicio) {
+                             bgClass = "bg-gray-700"; // Gris para fuera de servicio
+                         } else if (esOcupada) {
+                             bgClass = "bg-red-500"; // Roja para ocupada (Finalizada)
+                         } else if (esReservada) {
+                             bgClass = "bg-yellow-200"; // Amarillo claro para reservada de BD (EN CURSO/Pendiente)
+                         } else if (esSeleccionado) {
+                             bgClass = "bg-yellow-500"; // Amarillo oscuro cuando el usuario selecciona
+                         }
 
                         return (
                           <td
@@ -599,13 +599,14 @@ const fechaHastaSeleccion = rangos.length
               </tbody>
             </table>
 
-            {/* LEYENDA */}
-            <li className="flex items-center gap-2 mt-4 flex-wrap justify-center">
-              <span className="w-4 h-4 rounded-full bg-yellow-200"></span><span>RESERVADA</span>
-              <span className="w-4 h-4 rounded-full bg-white border"></span><span>DISPONIBLE</span>
-              <span className="w-4 h-4 rounded-full bg-gray-700"></span><span>FUERA DE SERVICIO</span>
-              <span className="w-4 h-4 rounded-full bg-red-500"></span><span>OCUPADA</span>
-            </li>
+             {/* LEYENDA */}
+             <li className="flex items-center gap-2 mt-4 flex-wrap justify-center">
+               <span className="w-4 h-4 rounded-full bg-yellow-200"></span><span>RESERVADA</span>
+               <span className="w-4 h-4 rounded-full bg-yellow-500"></span><span>SELECCIONADA</span>
+               <span className="w-4 h-4 rounded-full bg-white border"></span><span>DISPONIBLE</span>
+               <span className="w-4 h-4 rounded-full bg-gray-700"></span><span>FUERA DE SERVICIO</span>
+               <span className="w-4 h-4 rounded-full bg-red-500"></span><span>OCUPADA</span>
+             </li>
 
             {errorSeleccion && (
                 <div className="text-red-600 text-center mt-2 font-semibold">
