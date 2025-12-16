@@ -66,15 +66,16 @@ export default function BuscarHuesped() {
         }
 
         try {
-            // Construir parámetros según el endpoint especificado
-            // Endpoint: GET /huespedes/buscar?apellido=A&nombre=B&tipo=DNI&numero=12345678
-            const params: any = {};
-            if (apellido) params.apellido = apellido;
-            if (nombre) params.nombre = nombre;
-            if (tipoDoc) params.tipo = tipoDoc;
-            if (numeroDoc) params.numero = numeroDoc;
+            // Construir parámetros - siempre enviar todos, incluso si están vacíos
+            // Ejemplo: http://localhost:8080/huespedes?nombre=&apellido=M&tipoDocumento&dni=
+            const params: any = {
+                apellido: apellido || "",
+                nombre: nombre || "",
+                tipoDocumento: tipoDoc || "",
+                dni: numeroDoc || ""
+            };
 
-            const response = await axios.get("http://localhost:8080/huespedes/buscar", {
+            const response = await axios.get("http://localhost:8080/huespedes", {
                 params
             });
 
