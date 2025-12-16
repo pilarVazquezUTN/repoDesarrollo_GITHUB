@@ -71,6 +71,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
   const [errorSeleccion, setErrorSeleccion] = useState("");
   
   const [seleccionados, setSeleccionados] = useState<string[]>([]);
+  const [habitacionesSeleccionadasInfo, setHabitacionesSeleccionadasInfo] = useState<Record<number, HabitacionDTO>>({});
   const [mostrarCartelOH, setMostrarCartelOH] = useState(false);
   const [mostrarCartel, setMostrarCartel] = useState(false);
   
@@ -160,7 +161,7 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           const habitacionesData = responseHabitaciones.data || [];
           const reservasData = responseReservas.data || [];
 
-Y          console.log("Habitaciones recibidas:", habitacionesData);
+          console.log("Habitaciones recibidas:", habitacionesData);
           console.log("Reservas recibidas:", reservasData);
           
           // Ver estructura completa de una reserva para debug
@@ -289,22 +290,57 @@ Y          console.log("Habitaciones recibidas:", habitacionesData);
         );
 
         setSeleccionados((prev: string[]) => [...new Set([...prev, ...claves])]);
+        
+        // Guardar información de la habitación
+        setHabitacionesSeleccionadasInfo((prevInfo) => ({
+          ...prevInfo,
+          [habitacion.numero]: habitacion
+        }));
+        
         return;
       }
     }
 
     // Selección simple
-    setSeleccionados((prev: string[]) =>
-      prev.includes(keyActual)
+    setSeleccionados((prev: string[]) => {
+      const estaSeleccionado = prev.includes(keyActual);
+      const nuevaSeleccion = estaSeleccionado
         ? prev.filter((item: string) => item !== keyActual)
-        : [...prev, keyActual]
-    );
+        : [...prev, keyActual];
+      
+      // Guardar información de la habitación cuando se selecciona
+      if (!estaSeleccionado) {
+        setHabitacionesSeleccionadasInfo((prevInfo) => ({
+          ...prevInfo,
+          [habitacion.numero]: habitacion
+        }));
+      } else {
+        // Si se deseleccionó, verificar si todavía hay selecciones de esta habitación
+        const tieneOtrasSelecciones = nuevaSeleccion.some((sel: string) => {
+          const [_, numero] = sel.split("|");
+          return Number(numero) === habitacion.numero;
+        });
+        
+        if (!tieneOtrasSelecciones) {
+          setHabitacionesSeleccionadasInfo((prevInfo) => {
+            const nuevaInfo = { ...prevInfo };
+            delete nuevaInfo[habitacion.numero];
+            return nuevaInfo;
+          });
+        }
+      }
+      
+      return nuevaSeleccion;
+    });
 
     // guardar último click
     setUltimoClick(keyActual);
   };
 
-  const eliminarSeleccionados = () => setSeleccionados([]);
+  const eliminarSeleccionados = () => {
+    setSeleccionados([]);
+    setHabitacionesSeleccionadasInfo({});
+  };
 
   const deleteSeleccionado = (ran:{ numero: number; desde: string; hasta: string }) => {
     const fechasABorrar = eachDayOfInterval({
@@ -312,9 +348,25 @@ Y          console.log("Habitaciones recibidas:", habitacionesData);
       end: parseISO(ran.hasta)
     }).map((f: Date) => `${format(f,"yyyy-MM-dd")}|${ran.numero}`);
 
-    setSeleccionados((prev: string[]) =>
-      prev.filter((sel: string) => !fechasABorrar.includes(sel))
-    );
+    setSeleccionados((prev: string[]) => {
+      const nuevasSelecciones = prev.filter((sel: string) => !fechasABorrar.includes(sel));
+      
+      // Limpiar el mapa si ya no hay selecciones de esta habitación
+      const tieneSelecciones = nuevasSelecciones.some((sel: string) => {
+        const [_, numero] = sel.split("|");
+        return Number(numero) === ran.numero;
+      });
+      
+      if (!tieneSelecciones) {
+        setHabitacionesSeleccionadasInfo((prevInfo) => {
+          const nuevaInfo = { ...prevInfo };
+          delete nuevaInfo[ran.numero];
+          return nuevaInfo;
+        });
+      }
+      
+      return nuevasSelecciones;
+    });
   };
 
     const construirHabitacionesDTO = (): HabitacionDTO[] => {
@@ -344,7 +396,11 @@ const listaHabitacionUnica = (): HabitacionDTO[] => {
 
     if (listaUnica[num]) return;
 
-    const habitacion = (Array.isArray(habitaciones) ? habitaciones : [])
+    // Primero intentar obtener la información guardada cuando se seleccionó
+    const habitacionGuardada = habitacionesSeleccionadasInfo[num];
+    
+    // Si no está guardada, intentar buscarla en el estado actual de habitaciones
+    const habitacion = habitacionGuardada || (Array.isArray(habitaciones) ? habitaciones : [])
       .find(h => h.numero === num);
 
     listaUnica[num] = {
@@ -509,6 +565,7 @@ const fechaHastaSeleccion = rangos.length
                setMostrarCartelLista(false);
                setSeleccionados([]);
                setRangos([]);
+               setHabitacionesSeleccionadasInfo({});
              }}
              onAceptar={() => {
                setMostrarCartelLista(false);
@@ -755,6 +812,7 @@ const fechaHastaSeleccion = rangos.length
                   setMostrarCartelConfirmacion(true);
                   setSeleccionados([]);
                   setRangos([]);
+                  setHabitacionesSeleccionadasInfo({});
                   setNombre("");
                   setApellido("");
                   setTelefono("");
@@ -926,6 +984,7 @@ const fechaHastaSeleccion = rangos.length
                       setMostrarFormulario(false);
                       setSeleccionados([]);
                       setRangos([]);
+                      setHabitacionesSeleccionadasInfo({});
                     }}
                     className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all shadow-md hover:shadow-lg font-semibold"
                   >
