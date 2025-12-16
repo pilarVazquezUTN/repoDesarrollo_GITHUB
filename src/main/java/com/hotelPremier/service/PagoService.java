@@ -32,15 +32,8 @@ public class PagoService {
     @Autowired
     private FacturaRepository facturaRepository;
 
-
     /**
-     * Registra un pago usando el patrón Strategy para validar y calcular importes.
-     * 
-     * 1) Obtiene la Factura real desde la BD
-     * 2) Selecciona la Strategy según el medio de pago
-     * 3) Valida los datos del pago usando la Strategy
-     * 4) Calcula el importe final del pago
-     * 5) Registra el Pago asociado a la Factura
+     * Registra un pago validando medios e importes.
      */
     public String ingresarPago(PagoDTO dto) {
 
@@ -48,68 +41,55 @@ public class PagoService {
         if (dto.getFactura() == null || dto.getFactura().getID() == null)
             throw new IllegalArgumentException("Factura inválida.");
 
-        // 1) Obtener la Factura real desde la BD
         Factura factura = facturaRepository.findById(dto.getFactura().getID())
             .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada."));
 
         if (dto.getMedios() == null || dto.getMedios().isEmpty())
             throw new IllegalArgumentException("Debe enviar al menos un medio de pago.");
 
-        // Convertir DTOs a entidades y procesar con Strategy
         List<MedioDePago> listaMedios = new ArrayList<>();
         BigDecimal sumaCalculada = BigDecimal.ZERO;
 
-        // Crear el Pago primero para poder pasarlo a las validaciones
         Pago pago = new Pago();
         pago.setFecha(new Date());
         pago.setFactura(factura);
 
         for (MedioDePagoDTO mpDTO : dto.getMedios()) {
-            // Convertir DTO a entidad
+
             MedioDePago medioPago = convertirDTO(mpDTO);
-            
-            // 2) Seleccionar la Strategy según el medio de pago
-            MedioPagoStrategy estrategia = SelectorMedioPagoStrategy.seleccionarEstrategia(medioPago);
-            
-            // 3) Validar los datos del pago usando la Strategy
+
+            MedioPagoStrategy estrategia =
+                    SelectorMedioPagoStrategy.seleccionarEstrategia(medioPago);
+
             estrategia.validar(medioPago, pago);
-            
-            // 4) Calcular el importe final del pago
+
             BigDecimal montoBase = BigDecimal.valueOf(medioPago.getMonto());
             BigDecimal importeFinal = estrategia.calcularImporteFinal(montoBase, medioPago);
-            
-            // Actualizar el monto del medio de pago con el importe final calculado
+
             medioPago.setMonto(importeFinal.floatValue());
-            
+
             sumaCalculada = sumaCalculada.add(importeFinal);
             listaMedios.add(medioPago);
         }
 
-        // Validar que la suma de los medios (con importes finales calculados) coincida con el monto del pago
         BigDecimal montoPago = BigDecimal.valueOf(dto.getMonto());
         BigDecimal diferencia = sumaCalculada.subtract(montoPago).abs();
-        
-        // Tolerancia de 0.01 para diferencias por redondeo
+
         if (diferencia.compareTo(new BigDecimal("0.01")) > 0) {
             throw new IllegalArgumentException(
-                String.format("La suma de los medios calculados (%.2f) no coincide con el monto del pago (%.2f). " +
-                            "Diferencia: %.2f",
-                            sumaCalculada.floatValue(),
-                            montoPago.floatValue(),
-                            diferencia.floatValue())
+                String.format(
+                    "La suma de los medios calculados (%.2f) no coincide con el monto del pago (%.2f).",
+                    sumaCalculada.floatValue(),
+                    montoPago.floatValue()
+                )
             );
         }
 
-        // 5) Asignar los medios de pago y el monto calculado al pago
-        pago.setMonto(sumaCalculada.floatValue()); // Usar la suma calculada
+        pago.setMonto(sumaCalculada.floatValue());
         pago.setListamediodepago(listaMedios);
 
         factura.setPago(pago);
-        
-        // Preparar factura para pago: registrar observers que reaccionarán al cambio de estado
         prepararFacturaParaPago(factura);
-        
-        // Pagar factura (usa State para validar, luego notifica observers)
         factura.pagar();
 
         pagoRepository.save(pago);
@@ -118,7 +98,9 @@ public class PagoService {
         return "Pago registrado correctamente.";
     }
 
-
+    /**
+     * Convierte un DTO de medio de pago en su entidad correspondiente.
+     */
     private MedioDePago convertirDTO(MedioDePagoDTO dto) {
 
         if (dto.getTipo() == null) {
@@ -181,10 +163,7 @@ public class PagoService {
     }
 
     /**
-     * Prepara la factura para pago registrando los observers necesarios.
-     * El registro de observers está claramente separado del cambio de estado.
-     * 
-     * @param factura La factura a preparar
+     * Registra los observers necesarios para pagar una factura.
      */
     private void prepararFacturaParaPago(Factura factura) {
         factura.registrarObserver(new PagoFacturaObserver());

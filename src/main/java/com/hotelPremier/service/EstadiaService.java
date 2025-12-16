@@ -21,57 +21,35 @@ public class EstadiaService {
     @Autowired
     private ClassMapper mapper;
 
-    // ============================================
-    // LISTAR ESTADIAS SIN FACTURA
-    // ============================================
+    /**
+     * Obtiene las estadías que aún no tienen factura asociada.
+     */
     public List<EstadiaDTO> obtenerEstadiasSinFactura() {
-
         List<Estadia> lista = estadiaRepository.estadiasSinFactura();
-
         return mapper.toDTOsEstadia(lista);
     }
 
+    /**
+     * Obtiene la estadía en curso de una habitación.
+     */
     public EstadiaDTO obtenerEstadiaEnCurso(Integer nroHabitacion) {
         Estadia estadia = estadiaRepository.estadiaEnCurso(nroHabitacion);
-        if (estadia == null) System.out.println("No se encontro una estadia para esta habitacion " + nroHabitacion);
         if (estadia == null) return null;
-        System.err.println("Si se encontro una estadia");
-
-        return mapper.toDTOsEstadia(java.util.List.of(estadia)).get(0);
+        return mapper.toDTOsEstadia(List.of(estadia)).get(0);
     }
 
-    // ============================================
-    // INICIAR ESTADIA CON PATRÓN OBSERVER
-    // ============================================
     /**
-     * Inicia una estadía registrando los observers y notificándolos cuando cambia a ENCURSO.
-     * 
-     * Los observers registrados son:
-     * - ActualizarHabitacionObserver: cambia la habitación a OCUPADA
-     * - ActualizarReservaObserver: cambia la reserva a CONSUMIDA
-     * 
-     * @param estadia La estadía a iniciar
-     * @return La estadía iniciada
+     * Inicia una estadía cambiando su estado a ENCURSO.
      */
     public Estadia iniciarEstadia(Estadia estadia) {
-        // Preparar estadía para inicio: registrar observers que reaccionarán al cambio de estado
         prepararEstadiaParaInicio(estadia);
-
-        // Iniciar la estadía (cambia a ENCURSO y notifica a los observers)
         estadia.iniciarEstadia();
-
-        // Persistir los cambios (habitación y reserva fueron actualizados por los observers)
         estadiaRepository.save(estadia);
-        // La habitación y reserva se persisten automáticamente si están en el contexto de persistencia
-
         return estadia;
     }
 
     /**
-     * Prepara la estadía para inicio registrando los observers necesarios.
-     * El registro de observers está claramente separado del cambio de estado.
-     * 
-     * @param estadia La estadía a preparar
+     * Registra los observers necesarios para iniciar una estadía.
      */
     private void prepararEstadiaParaInicio(Estadia estadia) {
         estadia.registrarObserver(new ActualizarHabitacionObserver());

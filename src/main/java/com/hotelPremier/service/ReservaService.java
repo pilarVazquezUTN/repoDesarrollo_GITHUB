@@ -34,17 +34,15 @@ public class ReservaService {
     @Autowired
     private ClassMapper mapper;
 
-
-    // ============================================
-    // 1) GUARDAR LISTA DE RESERVAS
-    // ============================================
+    /**
+     * Registra una lista de reservas validando habitación y fechas.
+     */
     public List<ReservaDTO> guardarLista(List<ReservaDTO> listaDTO) {
 
         List<Reserva> entidades = new ArrayList<>();
 
         for (ReservaDTO dto : listaDTO) {
 
-            // validación base
             if (dto.getHabitacion() == null)
                 throw new RuntimeException("El DTO de reserva no contiene la habitación.");
 
@@ -52,11 +50,9 @@ public class ReservaService {
             if (nro == null)
                 throw new RuntimeException("El DTO no trae número de habitación.");
 
-            // obtener habitación desde BD
             Habitacion hab = habitacionRepository.findById(nro)
                     .orElseThrow(() -> new RuntimeException("Habitación inexistente: " + nro));
 
-            // validar superposición
             Integer solapa = reservaRepository.haySuperposicion(
                     nro,
                     dto.getFecha_desde(),
@@ -66,14 +62,12 @@ public class ReservaService {
             if (solapa != null && solapa > 0)
                 throw new RuntimeException("La habitación " + nro + " ya tiene reservas en ese rango.");
 
-            // convertir DTO → Entity (sin habitacion)
             Reserva r = mapper.toEntityReserva(dto);
             if (r.getEstado() == null || r.getEstado().trim().isEmpty()) {
                 r.setEstado("PENDIENTE");
             }
-            // agregar habitación real
-            r.setHabitacion(hab);
 
+            r.setHabitacion(hab);
             entidades.add(r);
         }
 
@@ -81,17 +75,17 @@ public class ReservaService {
         return mapper.toDtosReserva(entidades);
     }
 
-    // ============================================
-    // 2) BUSCAR ENTRE FECHAS
-    // ============================================
+    /**
+     * Busca reservas dentro de un rango de fechas.
+     */
     public List<ReservaDTO> buscarEntreFechas(Date desde, Date hasta) {
         List<Reserva> reservas = reservaRepository.buscarEntreFechas(desde, hasta);
         return mapper.toDtosReserva(reservas);
     }
 
-    // ============================================
-    // 3) BUSCAR POR APELLIDO + NOMBRE
-    // ============================================
+    /**
+     * Busca reservas por apellido y/o nombre.
+     */
     public List<ReservaDTO> buscarPorApellidoNombre(String apellido, String nombre) {
 
         boolean tieneApe = apellido != null && !apellido.trim().isEmpty();
@@ -116,72 +110,34 @@ public class ReservaService {
         return mapper.toDtosReserva(lista);
     }
 
-    // ============================================
-    // 4) CANCELAR RESERVA (PATRÓN STATE)
-    // ============================================
     /**
-     * Cancela una reserva cambiando su estado a CANCELADA usando el patrón State.
-     * No se elimina físicamente la reserva, solo se cambia su estado.
-     * 
-     * @param idReserva ID de la reserva a cancelar
-     * @return DTO de la reserva cancelada
-     * @throws IllegalArgumentException si la reserva no existe
-     * @throws IllegalStateException si la reserva no puede cancelarse (ya está consumida o cancelada)
+     * Cancela una reserva cambiando su estado a CANCELADA.
      */
     public ReservaDTO cancelarReserva(Integer idReserva) {
-        // 1. Buscar la reserva
+
         Reserva reserva = reservaRepository.findById(idReserva)
                 .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + idReserva));
 
-        // 2. Usar el patrón State: el dominio valida y ejecuta la lógica
-        // Si la reserva no está en PENDIENTE, lanzará IllegalStateException
         reserva.cancelar();
-
-        // 3. Persistir el cambio de estado
         reservaRepository.save(reserva);
 
         return mapper.toDTOReserva(reserva);
     }
 
-    // ============================================
-    // 5) HACER CHECK-IN DE UNA RESERVA
-    // ============================================
     /**
-     * Hace check-in de una reserva usando los patrones State y Observer.
-     * 
-     * La lógica de negocio está en el dominio (Reserva.checkIn()):
-     * - Valida que la reserva esté en estado PENDIENTE (patrón State)
-     * - Cambia la reserva a estado CONSUMIDA
-     * - Crea una nueva Estadia en estado ENCURSO
-     * - Asocia la estadía con la reserva
-     * 
-     * Luego usa el patrón Observer para:
-     * - Actualizar la habitación a OCUPADA
-     * - Confirmar que la reserva esté en CONSUMIDA
-     * 
-     * @param idReserva ID de la reserva a consumir
-     * @return La nueva Estadia creada
-     * @throws IllegalArgumentException si la reserva no existe o no está en estado PENDIENTE
+     * Realiza el check-in de una reserva y crea la estadía asociada.
      */
     public Estadia hacerCheckIn(Integer idReserva) {
-        // 1. Buscar la reserva
+
         Reserva reserva = reservaRepository.findById(idReserva)
                 .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + idReserva));
 
-        // 2. Usar el patrón State: el dominio valida y ejecuta la lógica
-        // Si la reserva no está en PENDIENTE, lanzará IllegalStateException
         Estadia estadia = reserva.checkIn();
-
-        // 3. Usar el patrón Observer: iniciar la estadía notificando a los observers
-        // Esto actualiza la habitación a OCUPADA y confirma la reserva en CONSUMIDA
         estadia = estadiaService.iniciarEstadia(estadia);
 
-        // 4. Persistir los cambios
-        // La reserva cambió a CONSUMIDA, la habitación a OCUPADA, y la estadía está iniciada
         reservaRepository.save(reserva);
         estadiaRepository.save(estadia);
-        
-        // Persistir la habitación si fue actualizada por el observer
+
         if (estadia.getHabitacion() != null) {
             habitacionRepository.save(estadia.getHabitacion());
         }

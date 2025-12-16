@@ -24,15 +24,6 @@ public class FacturaController {
         return ResponseEntity.ok(facturaService.obtenerFacturasPorHabitacion(nro));
     }
 
-    // ======================================
-    // CU07 - Actualizar factura (ID dentro del DTO)
-    // ======================================
-    @PutMapping
-    public ResponseEntity<String> actualizarFactura(@RequestBody FacturaDTO facturaDTO) {
-        facturaService.actualizarFactura(facturaDTO);
-        return ResponseEntity.ok("Factura actualizada correctamente.");
-    }
-
     @GetMapping("/dni/{dni}")
     public ResponseEntity<List<FacturaDTO>> obtenerPorDni(@PathVariable String dni) {
         return ResponseEntity.ok(facturaService.buscarPorDni(dni));

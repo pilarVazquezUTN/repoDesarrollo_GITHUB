@@ -25,60 +25,54 @@ public class HuespedService {
     @Autowired
     private DireccionRepository direccionRepository;
 
-
-    // ============================
-    // 1) OBTENER TODOS LOS HUESPEDES
-    // ============================
+    /**
+     * Obtiene todos los huéspedes registrados.
+     */
     public List<HuespedDTO> findAll() {
         return mapper.toDtos(huespedRepository.findAll());
     }
 
-
-    // ============================
-    // 2) BUSCAR SOLO POR DNI (si lo necesitás)
-    // ============================
+    /**
+     * Busca huéspedes por DNI.
+     */
     public List<HuespedDTO> findByCategory(String dni) {
         return mapper.toDtos(
                 huespedRepository.findByHuespedID_Dni(dni)
         );
     }
 
-
-    // ============================
-    // 3) BÚSQUEDA MULTIPARÁMETRO (principal)
-    // ============================
+    /**
+     * Busca huéspedes por múltiples criterios.
+     */
     public List<HuespedDTO> buscarHuespedes(
             String dni,
             String nombre,
             String apellido,
             String tipoDocumento
     ) {
-
-        // El repositorio devuelve List<Huesped>
         List<Huesped> lista = huespedRepository.buscarHuespedes(
                 dni, nombre, apellido, tipoDocumento
         );
-
-        // MapStruct convierte a DTO
         return mapper.toDtos(lista);
     }
 
-
+    /**
+     * Registra un nuevo huésped junto con su dirección.
+     */
     public HuespedDTO addHuesped(HuespedDTO huespedDTO) {
 
-        
-        // MapStruct convierte DTO → Entity
         Huesped huesped = mapper.toEntity(huespedDTO);
         Direccion direccion = huesped.getDireccion();
-        
-        direccionRepository.save(direccion);
 
-        // Guardar en DB
+        direccionRepository.save(direccion);
         Huesped saved = huespedRepository.save(huesped);
 
-        // Convertimos de vuelta a DTO
         return mapper.toDTO(saved);
     }
+
+    /**
+     * Elimina un huésped por tipo y número de documento.
+     */
     public void deleteHuesped(String tipoDocumento, String dni) {
 
         HuespedID id = new HuespedID();
@@ -91,6 +85,4 @@ public class HuespedService {
 
         huespedRepository.deleteById(id);
     }
-
-
 }

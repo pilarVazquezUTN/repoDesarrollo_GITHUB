@@ -4,6 +4,7 @@ import com.hotelPremier.classes.Dominio.Estadia;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+
 /**
  * Estrategia de cálculo para facturas con checkout tarde (entre 11:01 y 18:00).
  * Aplica recargo del 50% del valor diario.

@@ -68,8 +68,7 @@ class ReservaServiceTest {
         when(mapper.toEntityReserva(any(ReservaDTO.class)))
                 .thenReturn(reserva);
 
-        when(habitacionRepository.findById(101))
-                .thenReturn(Optional.of(habitacion));
+        when(habitacionRepository.findById(101)).thenReturn(Optional.of(habitacion));
 
         when(reservaRepository.haySuperposicion(
                 eq(101), any(), any())
@@ -148,7 +147,6 @@ class ReservaServiceTest {
         verify(reservaRepository, never())
                 .saveAll(any());
     }
-
 
     // ============================
     // Cancelar reserva pendiente

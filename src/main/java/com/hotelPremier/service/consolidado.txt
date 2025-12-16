@@ -1,0 +1,1156 @@
+//[EstadiaService.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.estadia.observer.ActualizarHabitacionObserver;
+import com.hotelPremier.classes.Dominio.estadia.observer.ActualizarReservaObserver;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.repository.EstadiaRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class EstadiaService {
+
+    @Autowired
+    private EstadiaRepository estadiaRepository;
+
+    @Autowired
+    private ClassMapper mapper;
+
+    // ============================================
+    // LISTAR ESTADIAS SIN FACTURA
+    // ============================================
+    public List<EstadiaDTO> obtenerEstadiasSinFactura() {
+
+        List<Estadia> lista = estadiaRepository.estadiasSinFactura();
+
+        return mapper.toDTOsEstadia(lista);
+    }
+
+    public EstadiaDTO obtenerEstadiaEnCurso(Integer nroHabitacion) {
+        Estadia estadia = estadiaRepository.estadiaEnCurso(nroHabitacion);
+        if (estadia == null) System.out.println("No se encontro una estadia para esta habitacion " + nroHabitacion);
+        if (estadia == null) return null;
+        System.err.println("Si se encontro una estadia");
+
+        return mapper.toDTOsEstadia(java.util.List.of(estadia)).get(0);
+    }
+
+    // ============================================
+    // INICIAR ESTADIA CON PATRÓN OBSERVER
+    // ============================================
+    /**
+     * Inicia una estadía registrando los observers y notificándolos cuando cambia a ENCURSO.
+     * 
+     * Los observers registrados son:
+     * - ActualizarHabitacionObserver: cambia la habitación a OCUPADA
+     * - ActualizarReservaObserver: cambia la reserva a CONSUMIDA
+     * 
+     * @param estadia La estadía a iniciar
+     * @return La estadía iniciada
+     */
+    public Estadia iniciarEstadia(Estadia estadia) {
+        // Preparar estadía para inicio: registrar observers que reaccionarán al cambio de estado
+        prepararEstadiaParaInicio(estadia);
+
+        // Iniciar la estadía (cambia a ENCURSO y notifica a los observers)
+        estadia.iniciarEstadia();
+
+        // Persistir los cambios (habitación y reserva fueron actualizados por los observers)
+        estadiaRepository.save(estadia);
+        // La habitación y reserva se persisten automáticamente si están en el contexto de persistencia
+
+        return estadia;
+    }
+
+    /**
+     * Prepara la estadía para inicio registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param estadia La estadía a preparar
+     */
+    private void prepararEstadiaParaInicio(Estadia estadia) {
+        estadia.registrarObserver(new ActualizarHabitacionObserver());
+        estadia.registrarObserver(new ActualizarReservaObserver());
+    }
+}
+//[FacturaService.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.factura.calculo.CalculoFacturaStrategy;
+import com.hotelPremier.classes.Dominio.factura.calculo.DatosFactura;
+import com.hotelPremier.classes.Dominio.factura.calculo.SelectorEstrategiaCalculo;
+import com.hotelPremier.classes.Dominio.factura.observer.CheckoutFacturaObserver;
+import com.hotelPremier.classes.Dominio.factura.observer.PagoFacturaObserver;
+import com.hotelPremier.classes.Dominio.factura.observer.NotaCreditoFacturaObserver;
+import com.hotelPremier.classes.Dominio.responsablePago.PersonaFisica;
+import com.hotelPremier.classes.Dominio.responsablePago.PersonaJuridica;
+import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import com.hotelPremier.repository.EstadiaRepository;
+import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.repository.HabitacionRepository;
+import com.hotelPremier.repository.ResponsablePagoRepository;
+import com.hotelPremier.repository.ServicioExtraRepository;
+import com.hotelPremier.classes.mapper.ClassMapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class FacturaService {
+
+    @Autowired
+    private FacturaRepository facturaRepository;
+
+    @Autowired
+    private EstadiaRepository estadiaRepository;
+
+    @Autowired
+    private ResponsablePagoRepository responsablePagoRepository;
+
+    @Autowired
+    private ServicioExtraRepository servicioExtraRepository;
+
+    @Autowired
+    private HabitacionRepository habitacionRepository;
+
+    @Autowired
+    private ClassMapper mapper;
+
+    // ===========================================
+    // CU07 - Facturas por número de habitación
+    // ===========================================
+    /**
+     * Obtiene las facturas asociadas a estadías en curso para una habitación específica.
+     * 
+     * Nota: Se listan facturas activas asociadas a estadías en curso (ENCURSO).
+     * Normalmente las facturas se consultan post checkout, pero este endpoint
+     * permite consultar facturas de estadías activas.
+     */
+    public List<FacturaDTO> obtenerFacturasPorHabitacion(Integer nroHabitacion) {
+
+        List<Factura> lista = facturaRepository.findAll().stream()
+                .filter(f -> f.getEstadia() != null &&
+                             f.getEstadia().getHabitacion() != null &&
+                             "ENCURSO".equals(f.getEstadia().getEstado()) &&
+                             f.getEstadia().getHabitacion().getNumero().equals(nroHabitacion))
+                .toList();
+
+        return lista.stream()
+                .map(mapper::toDTOFactura)
+                .toList();
+    }
+
+
+    // ===========================================
+    //   BUSCAR FACTURAS POR DNI (Persona Física)
+    // ===========================================
+    public List<FacturaDTO> buscarPorDni(String dni) {
+
+        List<Factura> lista = facturaRepository.buscarPorDni(dni);
+
+        return lista.stream()
+                .map(mapper::toDTOFactura)
+                .toList();
+    }
+
+    // ===========================================
+    //   FILTRO GENERAL: CUIT, TipoDoc, NumeroDoc
+    // ===========================================
+    public List<FacturaDTO> filtrarFacturas(String cuit, String tipoDocumento, String numeroDocumento) {
+
+        List<Factura> lista = facturaRepository.findAll();
+
+        List<Factura> filtradas = lista.stream()
+                .filter(f -> coincideCuit(f, cuit))
+                .filter(f -> coincideTipoDoc(f, tipoDocumento))
+                .filter(f -> coincideNumeroDoc(f, numeroDocumento))
+                .toList();
+
+        return filtradas.stream()
+                .map(mapper::toDTOFactura)
+                .toList();
+    }
+
+    // ============================================================
+    //     MÉTODOS AUXILIARES DE FILTRADO
+    // ============================================================
+
+    private boolean coincideCuit(Factura f, String cuit) {
+        if (cuit == null) return true;
+
+        ResponsablePago rp = f.getResponsablePago();
+        if (rp instanceof PersonaJuridica pj) {
+            return cuit.equals(pj.getCuit());
+        }
+        return false;
+    }
+
+    private boolean coincideTipoDoc(Factura f, String tipoDoc) {
+        if (tipoDoc == null) return true;
+
+        ResponsablePago rp = f.getResponsablePago();
+        if (rp instanceof PersonaFisica pf) {
+            return pf.getHuesped()
+                    .getHuespedID()
+                    .getTipoDocumento()
+                    .equalsIgnoreCase(tipoDoc);
+        }
+        return false;
+    }
+
+    private boolean coincideNumeroDoc(Factura f, String numeroDoc) {
+        if (numeroDoc == null) return true;
+
+        ResponsablePago rp = f.getResponsablePago();
+        if (rp instanceof PersonaFisica pf) {
+            return pf.getHuesped()
+                    .getHuespedID()
+                    .getDni()
+                    .equalsIgnoreCase(numeroDoc);
+        }
+        return false;
+    }
+
+    // ============================================================
+    //   CREAR FACTURA (POST /facturas) - CON PATRÓN STRATEGY
+    // ============================================================
+    /**
+     * Crea una factura usando el patrón Strategy para calcular el total.
+     * Valida que el total calculado coincida con el enviado por el frontend.
+     * 
+     * @param dto DTO con los datos de la factura (incluye total estimado)
+     * @param datosFactura Datos adicionales para el cálculo (consumos, hora checkout, etc.)
+     * @return DTO de la factura creada
+     * @throws IllegalArgumentException si el total calculado no coincide con el estimado
+     */
+    public FacturaDTO crearFacturaConCalculo(FacturaDTO dto, DatosFactura datosFactura) {
+        
+        // 1) Obtener la Estadia real desde la base
+        if (dto.getEstadia() == null || dto.getEstadia().getID() == null) {
+            throw new IllegalArgumentException("La factura debe tener una estadía asociada");
+        }
+        
+        Estadia estadia = estadiaRepository.findById(dto.getEstadia().getID())
+                .orElseThrow(() -> new IllegalArgumentException("Estadia no encontrada"));
+
+        // 2) Validar que la estadía permita generar facturas (patrón State)
+        Factura factura = mapper.toEntityFactura(dto);
+        estadia.generarFactura(factura);
+
+        // 3) Seleccionar la Strategy correcta según horario de checkout
+        CalculoFacturaStrategy estrategia = SelectorEstrategiaCalculo.seleccionarEstrategia(estadia, datosFactura);
+
+        // 4) Ejecutar la Strategy para calcular el total real
+        BigDecimal totalCalculado = estrategia.calcularTotal(estadia, datosFactura);
+
+        // 5) Comparar el total calculado con el recibido desde el frontend
+        if (datosFactura.getTotalEstimado() != null) {
+            BigDecimal totalEstimado = BigDecimal.valueOf(datosFactura.getTotalEstimado());
+            BigDecimal diferencia = totalCalculado.subtract(totalEstimado).abs();
+            
+            // Tolerancia de 0.01 para diferencias por redondeo
+            if (diferencia.compareTo(new BigDecimal("0.01")) > 0) {
+                throw new IllegalArgumentException(
+                    String.format("El total calculado (%.2f) no coincide con el estimado (%.2f). " +
+                                "Diferencia: %.2f", 
+                                totalCalculado.floatValue(), 
+                                totalEstimado.floatValue(),
+                                diferencia.floatValue())
+                );
+            }
+        }
+
+        // 6) Asignar el total calculado a la factura
+        factura.setTotal(totalCalculado.floatValue());
+        factura.setEstadia(estadia);
+        factura.setFecha(new java.util.Date());
+
+        // 7) Resolver RESPONSABLE DE PAGO
+        if (dto.getResponsablepago() != null && dto.getResponsablepago().getId() != null) {
+            ResponsablePago rp = responsablePagoRepository.findById(dto.getResponsablepago().getId())
+                                .orElseThrow(() -> new IllegalArgumentException("ResponsablePago no encontrado"));
+            factura.setResponsablePago(rp);
+        }
+
+        // 8) Persistir la factura
+        facturaRepository.save(factura);
+
+        return mapper.toDTOFactura(factura);
+    }
+
+    // ============================================================
+    //   CREAR FACTURA (POST /facturas) - MÉTODO UNIFICADO
+    // ============================================================
+    /**
+     * Crea una factura. Si el DTO incluye datos para cálculo automático (fechaHoraCheckoutReal),
+     * usa el patrón Strategy para calcular y validar el total.
+     * Si no, usa el método tradicional (compatibilidad hacia atrás).
+     */
+    public FacturaDTO crearFactura(FacturaDTO dto) {
+
+        // Si tiene fechaHoraCheckoutReal, usar cálculo automático con Strategy
+        if (dto.getFechaHoraCheckoutReal() != null && dto.getEstadia() != null && dto.getEstadia().getID() != null) {
+            return crearFacturaConCalculoAutomatico(dto);
+        }
+
+        // Método tradicional (compatibilidad)
+        Factura factura = mapper.toEntityFactura(dto);
+
+        // 1) Resolver ESTADIA y usar patrón State para validar operación
+        if (dto.getEstadia() != null && dto.getEstadia().getID() != null) {
+            Estadia est = estadiaRepository.findById(dto.getEstadia().getID())
+                                .orElseThrow(() -> new RuntimeException("Estadia no encontrada"));
+
+            // Usa el patrón State: valida que la estadía permita generar facturas
+            est.generarFactura(factura);
+        }
+
+        // 2) Resolver RESPONSABLE DE PAGO
+        if (dto.getResponsablepago() != null && dto.getResponsablepago().getId() != null) {
+            ResponsablePago rp = responsablePagoRepository.findById(dto.getResponsablepago().getId())
+                                .orElseThrow(() -> new RuntimeException("ResponsablePago no encontrado"));
+
+            factura.setResponsablePago(rp);
+        }
+
+        facturaRepository.save(factura);
+
+        return mapper.toDTOFactura(factura);
+    }
+
+    /**
+     * Método interno que construye DatosFactura desde el DTO y usa el cálculo automático.
+     */
+    private FacturaDTO crearFacturaConCalculoAutomatico(FacturaDTO dto) {
+        // Construir DatosFactura desde el DTO
+        DatosFactura datosFactura = new DatosFactura();
+        
+        // Obtener consumos seleccionados
+        List<ServicioExtra> consumos = new ArrayList<>();
+        if (dto.getConsumosIds() != null && !dto.getConsumosIds().isEmpty() && dto.getEstadia() != null) {
+            consumos = servicioExtraRepository.findByEstadiaIdAndServicioIds(
+                dto.getEstadia().getID(), 
+                dto.getConsumosIds()
+            );
+        }
+        datosFactura.setConsumosSeleccionados(consumos);
+        
+        // Tipo de factura
+        datosFactura.setTipoFactura(dto.getTipo());
+        
+        // Fecha y hora de checkout real
+        datosFactura.setFechaHoraCheckoutReal(dto.getFechaHoraCheckoutReal());
+        
+        // Total estimado
+        datosFactura.setTotalEstimado(dto.getTotalEstimado() != null ? dto.getTotalEstimado() : dto.getTotal());
+
+        // Usar el método con Strategy
+        return crearFacturaConCalculo(dto, datosFactura);
+    }
+
+    // ============================================================
+    //   GENERAR FACTURA FINAL CON PATRÓN OBSERVER
+    // ============================================================
+    /**
+     * Genera la factura final de una estadía usando los patrones State y Observer.
+     * 
+     * El patrón State valida que la transición a GENERADA sea válida.
+     * El patrón Observer ejecuta las consecuencias del dominio:
+     * - CheckoutFacturaObserver: finaliza estadía y libera habitación
+     * 
+     * @param facturaId ID de la factura a generar como final
+     * @return La factura generada
+     * @throws IllegalArgumentException si la factura no existe o no puede generarse
+     */
+    public FacturaDTO generarFacturaFinal(Integer facturaId) {
+        Factura factura = facturaRepository.findById(facturaId)
+                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
+
+        // Preparar factura para checkout: registrar observers que reaccionarán al cambio de estado
+        prepararFacturaParaCheckout(factura);
+
+        // Generar factura final (usa State para validar, luego notifica observers)
+        factura.generarFacturaFinal();
+
+        // Persistir cambios (estadía y habitación fueron actualizados por observers)
+        facturaRepository.save(factura);
+        
+        // Persistir estadía si fue actualizada
+        if (factura.getEstadia() != null) {
+            estadiaRepository.save(factura.getEstadia());
+            
+            // Persistir habitación si fue actualizada
+            if (factura.getEstadia().getHabitacion() != null) {
+                habitacionRepository.save(factura.getEstadia().getHabitacion());
+            }
+        }
+
+        return mapper.toDTOFactura(factura);
+    }
+
+    // ============================================================
+    //   PAGAR FACTURA CON PATRÓN OBSERVER
+    // ============================================================
+    /**
+     * Paga una factura usando los patrones State y Observer.
+     * 
+     * El patrón State valida que la transición a PAGADA sea válida.
+     * El patrón Observer ejecuta las consecuencias del dominio:
+     * - PagoFacturaObserver: valida que el pago esté registrado
+     * 
+     * @param facturaId ID de la factura a pagar
+     * @return La factura pagada
+     * @throws IllegalArgumentException si la factura no existe o no puede pagarse
+     */
+    public FacturaDTO pagarFactura(Integer facturaId) {
+        Factura factura = facturaRepository.findById(facturaId)
+                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
+
+        // Preparar factura para pago: registrar observers que reaccionarán al cambio de estado
+        prepararFacturaParaPago(factura);
+
+        // Pagar factura (usa State para validar, luego notifica observers)
+        factura.pagar();
+
+        // Persistir cambios
+        facturaRepository.save(factura);
+
+        return mapper.toDTOFactura(factura);
+    }
+
+    // ============================================================
+    //   APLICAR NOTA DE CRÉDITO CON PATRÓN OBSERVER
+    // ============================================================
+    /**
+     * Aplica una nota de crédito a una factura usando los patrones State y Observer.
+     * 
+     * El patrón State valida que la transición a CANCELADA sea válida.
+     * El patrón Observer ejecuta las consecuencias del dominio:
+     * - NotaCreditoFacturaObserver: valida que la NC esté asociada y el total sea 0
+     * 
+     * @param facturaId ID de la factura a cancelar
+     * @return La factura cancelada
+     * @throws IllegalArgumentException si la factura no existe o no puede cancelarse
+     */
+    public FacturaDTO aplicarNotaCreditoAFactura(Integer facturaId) {
+        Factura factura = facturaRepository.findById(facturaId)
+                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
+
+        // Preparar factura para nota de crédito: registrar observers que reaccionarán al cambio de estado
+        prepararFacturaParaNotaCredito(factura);
+
+        // Aplicar nota de crédito (usa State para validar, luego notifica observers)
+        factura.aplicarNotaCredito();
+
+        // Persistir cambios
+        facturaRepository.save(factura);
+
+        return mapper.toDTOFactura(factura);
+    }
+
+    // ============================================================
+    //   MÉTODOS AUXILIARES PARA REGISTRO DE OBSERVERS
+    // ============================================================
+    /**
+     * Prepara la factura para checkout registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param factura La factura a preparar
+     */
+    private void prepararFacturaParaCheckout(Factura factura) {
+        factura.registrarObserver(new CheckoutFacturaObserver());
+    }
+
+    /**
+     * Prepara la factura para pago registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param factura La factura a preparar
+     */
+    private void prepararFacturaParaPago(Factura factura) {
+        factura.registrarObserver(new PagoFacturaObserver());
+    }
+
+    /**
+     * Prepara la factura para nota de crédito registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param factura La factura a preparar
+     */
+    private void prepararFacturaParaNotaCredito(Factura factura) {
+        factura.registrarObserver(new NotaCreditoFacturaObserver());
+    }
+
+}
+//[HabitacionService.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.repository.HabitacionRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.hotelPremier.classes.mapper.ClassMapper ;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class HabitacionService {
+
+    @Autowired
+    private HabitacionRepository habitacionRepository;
+
+    @Autowired
+    private ClassMapper mapper;
+
+    //llama al repo para la bdd y devuelve el dto
+    public List<HabitacionDTO> getHabitaciones(String tipoHabitacion) {
+        return mapper.toDTOsHabitacion( habitacionRepository.buscarPorTipoHabitacion(tipoHabitacion) );
+    }
+
+    public HabitacionDTO getHabitacion(Integer numero){
+        return mapper.toDTOHab( habitacionRepository.findByNumero(numero) );
+    }
+
+    public List<HabitacionDTO> buscarListaHabitaciones(String tipo, Date fechaDesde, Date fechaHasta){ 
+        return mapper.toDTOsHabitacion( habitacionRepository.buscarListaHabitaciones(tipo,fechaDesde,fechaHasta) );
+    }
+
+
+    public List<HabitacionDTO> obtenerHabitacionesConDetalle(String tipo, Date fechaDesde, Date fechaHasta) {
+//trae una list de habitaciones de la bdd
+        List<Habitacion> habitaciones = habitacionRepository.buscarPorTipoHabitacion(tipo);
+        List<HabitacionDTO> resultado = new ArrayList<>();
+
+//por cada hab de la q trajo de la bdd
+        for (Habitacion h : habitaciones) {
+
+            // Hibernate carga las listas automáticamente con LAZY o EAGER
+            //agarra las listas de cada hab
+            List<Reserva> reservas = h.getListareservas()
+                .stream()//convertimos la lista a stream, para procesarlos mejor
+                .filter(r ->
+                    r.getFecha_desde().compareTo(fechaHasta) <= 0 &&
+                    r.getFecha_hasta().compareTo(fechaDesde) >= 0
+                )
+                //.map(reserva -> mapper.toDTOReserva(reserva))
+                .toList();
+
+            // ESTADÍAS FILTRADAS
+            //List<E<stadia> estadias = h.getListaEstadia();
+            List<Estadia> estadias = h.getListaEstadia()
+                .stream()
+                .map(e -> (Estadia) e) 
+                .filter(e ->
+                    e.getCheckin().compareTo(fechaHasta) <= 0 &&
+                    e.getCheckout().compareTo(fechaDesde) >= 0
+                )
+                //.map(estadia -> mapper.toDTOEstadia(estadia))
+                .toList();
+
+
+            List<ReservaDTO> reservasDTO = new ArrayList<>();
+            reservasDTO=mapper.toDtosReserva(reservas);
+
+            List<EstadiaDTO> estadiasDTO = new ArrayList<>();
+            estadiasDTO=mapper.toDTOsEstadia(estadias);
+            //List<Reserva> reservas = reservaService.getReservas(desdeFecha,hastaFecha);
+
+            resultado.add(new HabitacionDTO(h, reservasDTO, estadiasDTO));
+        }
+
+        return resultado;
+    }
+
+
+
+    /*public List<HabitacionDTO> obtenerPorTipo(String tipo) {
+        List<Habitacion> habitaciones = habitacionRepository.findByTipo(tipo);
+        return mapper.toDTOsHabitacion(habitaciones);
+    }
+*/
+    public List<Huesped> obtenerHuespedesPorHabitacion(Integer nroHabitacion) {
+
+        Habitacion habitacion = habitacionRepository.findById(nroHabitacion)
+                .orElse(null);
+
+        if (habitacion == null) {
+            // si no existe, devuelvo lista vacía
+            return List.of();
+        }
+        
+
+        List<Estadia> estadias = habitacion.getListaEstadia();
+        if (estadias == null) {
+            return List.of();
+        }
+
+        return estadias.stream()
+                .filter(e -> e.getListahuesped() != null) // evitar null
+                .flatMap(e -> e.getListahuesped().stream())
+                .distinct()
+                .toList();
+    }
+
+    
+     public List<HabitacionDTO> getHabitaciones() {
+        return mapper.toDTOsHabitacion(habitacionRepository.findAll());
+    }
+}
+//[HuespedService.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.HuespedID;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.repository.DireccionRepository;
+import com.hotelPremier.repository.HuespedRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class HuespedService {
+
+    @Autowired
+    private HuespedRepository huespedRepository;
+
+    @Autowired
+    private ClassMapper mapper;
+
+    @Autowired
+    private DireccionRepository direccionRepository;
+
+
+    // ============================
+    // 1) OBTENER TODOS LOS HUESPEDES
+    // ============================
+    public List<HuespedDTO> findAll() {
+        return mapper.toDtos(huespedRepository.findAll());
+    }
+
+
+    // ============================
+    // 2) BUSCAR SOLO POR DNI (si lo necesitás)
+    // ============================
+    public List<HuespedDTO> findByCategory(String dni) {
+        return mapper.toDtos(
+                huespedRepository.findByHuespedID_Dni(dni)
+        );
+    }
+
+
+    // ============================
+    // 3) BÚSQUEDA MULTIPARÁMETRO (principal)
+    // ============================
+    public List<HuespedDTO> buscarHuespedes(
+            String dni,
+            String nombre,
+            String apellido,
+            String tipoDocumento
+    ) {
+
+        // El repositorio devuelve List<Huesped>
+        List<Huesped> lista = huespedRepository.buscarHuespedes(
+                dni, nombre, apellido, tipoDocumento
+        );
+
+        // MapStruct convierte a DTO
+        return mapper.toDtos(lista);
+    }
+
+
+    public HuespedDTO addHuesped(HuespedDTO huespedDTO) {
+
+        
+        // MapStruct convierte DTO → Entity
+        Huesped huesped = mapper.toEntity(huespedDTO);
+        Direccion direccion = huesped.getDireccion();
+        
+        direccionRepository.save(direccion);
+
+        // Guardar en DB
+        Huesped saved = huespedRepository.save(huesped);
+
+        // Convertimos de vuelta a DTO
+        return mapper.toDTO(saved);
+    }
+    public void deleteHuesped(String tipoDocumento, String dni) {
+
+        HuespedID id = new HuespedID();
+        id.setTipoDocumento(tipoDocumento);
+        id.setDni(dni);
+
+        if (!huespedRepository.existsById(id)) {
+            throw new RuntimeException("Huesped no encontrado");
+        }
+
+        huespedRepository.deleteById(id);
+    }
+
+
+}
+//[NotaDeCreditoService.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.NotaDeCredito;
+import com.hotelPremier.classes.DTO.NotaDeCreditoDTO;
+import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.classes.Dominio.factura.observer.NotaCreditoFacturaObserver;
+import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.repository.NotaDeCreditoRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class NotaDeCreditoService {
+
+    @Autowired
+    private NotaDeCreditoRepository notaRepo;
+
+    @Autowired
+    private FacturaRepository facturaRepo;
+
+    /**
+     * CU19 - Ingresar Nota de Crédito
+     * REGLA: El importe de la NC debe cubrir el total de TODAS las facturas afectadas.
+     */
+    public String ingresarNotaDeCredito(NotaDeCreditoDTO dto) {
+
+        if (dto.getImporte() == null || dto.getImporte() <= 0) {
+            throw new IllegalArgumentException("El importe debe ser mayor a cero.");
+        }
+
+        if (dto.getFacturas() == null || dto.getFacturas().isEmpty()) {
+            throw new IllegalArgumentException("Debe indicar al menos una factura.");
+        }
+
+        // 1️⃣ Obtener IDs desde los FacturaDTO
+        List<Integer> ids = dto.getFacturas()
+                .stream()
+                .map(FacturaDTO::getID)
+                .toList();
+
+        // 2️⃣ Buscar las facturas reales
+        List<Factura> facturas = facturaRepo.findAllById(ids);
+
+        if (facturas.isEmpty()) {
+            throw new IllegalArgumentException("No se encontraron facturas válidas.");
+        }
+
+        // 3️⃣ Sumar totales de facturas
+        float sumaTotales = facturas.stream()
+                .map(Factura::getTotal)
+                .reduce(0f, Float::sum);
+
+        // 🔥 REGLA DE NEGOCIO: importe debe ser suficiente
+        if (dto.getImporte() < sumaTotales) {
+            throw new IllegalArgumentException(
+                "El importe de la nota de crédito es insuficiente. " +
+                "Debe ser al menos: " + sumaTotales
+            );
+        }
+
+        // 4️⃣ Crear y guardar la nota de crédito
+        NotaDeCredito nota = new NotaDeCredito();
+        nota.setImporte(dto.getImporte());
+
+        NotaDeCredito guardada = notaRepo.save(nota);
+
+        // 5️⃣ Aplicar NC a cada factura → total queda en 0
+        for (Factura factura : facturas) {
+            factura.setNotaDeCredito(guardada);
+            
+            // Preparar factura para nota de crédito: registrar observers que reaccionarán al cambio de estado
+            prepararFacturaParaNotaCredito(factura);
+            
+            // Aplicar nota de crédito (usa State para validar, luego notifica observers)
+            factura.aplicarNotaCredito();
+            
+            facturaRepo.save(factura);
+        }
+
+        return "Nota de crédito aplicada correctamente a " + facturas.size() + " factura(s).";
+    }
+
+    /**
+     * Prepara la factura para nota de crédito registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param factura La factura a preparar
+     */
+    private void prepararFacturaParaNotaCredito(Factura factura) {
+        factura.registrarObserver(new NotaCreditoFacturaObserver());
+    }
+}
+//[PagoService.java]
+package com.hotelPremier.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hotelPremier.classes.DTO.PagoDTO;
+import com.hotelPremier.classes.DTO.medioDePago.*;
+
+import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.classes.Dominio.Factura;
+
+import com.hotelPremier.classes.Dominio.medioDePago.*;
+import com.hotelPremier.classes.Dominio.medioDePago.strategy.MedioPagoStrategy;
+import com.hotelPremier.classes.Dominio.medioDePago.strategy.SelectorMedioPagoStrategy;
+import com.hotelPremier.classes.Dominio.factura.observer.PagoFacturaObserver;
+
+import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.repository.PagoRepository;
+
+import java.math.BigDecimal;
+
+@Service
+public class PagoService {
+
+    @Autowired
+    private PagoRepository pagoRepository;
+
+    @Autowired
+    private FacturaRepository facturaRepository;
+
+
+    /**
+     * Registra un pago usando el patrón Strategy para validar y calcular importes.
+     * 
+     * 1) Obtiene la Factura real desde la BD
+     * 2) Selecciona la Strategy según el medio de pago
+     * 3) Valida los datos del pago usando la Strategy
+     * 4) Calcula el importe final del pago
+     * 5) Registra el Pago asociado a la Factura
+     */
+    public String ingresarPago(PagoDTO dto) {
+
+        if (dto == null) throw new IllegalArgumentException("JSON vacío.");
+        if (dto.getFactura() == null || dto.getFactura().getID() == null)
+            throw new IllegalArgumentException("Factura inválida.");
+
+        // 1) Obtener la Factura real desde la BD
+        Factura factura = facturaRepository.findById(dto.getFactura().getID())
+            .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada."));
+
+        if (dto.getMedios() == null || dto.getMedios().isEmpty())
+            throw new IllegalArgumentException("Debe enviar al menos un medio de pago.");
+
+        // Convertir DTOs a entidades y procesar con Strategy
+        List<MedioDePago> listaMedios = new ArrayList<>();
+        BigDecimal sumaCalculada = BigDecimal.ZERO;
+
+        // Crear el Pago primero para poder pasarlo a las validaciones
+        Pago pago = new Pago();
+        pago.setFecha(new Date());
+        pago.setFactura(factura);
+
+        for (MedioDePagoDTO mpDTO : dto.getMedios()) {
+            // Convertir DTO a entidad
+            MedioDePago medioPago = convertirDTO(mpDTO);
+            
+            // 2) Seleccionar la Strategy según el medio de pago
+            MedioPagoStrategy estrategia = SelectorMedioPagoStrategy.seleccionarEstrategia(medioPago);
+            
+            // 3) Validar los datos del pago usando la Strategy
+            estrategia.validar(medioPago, pago);
+            
+            // 4) Calcular el importe final del pago
+            BigDecimal montoBase = BigDecimal.valueOf(medioPago.getMonto());
+            BigDecimal importeFinal = estrategia.calcularImporteFinal(montoBase, medioPago);
+            
+            // Actualizar el monto del medio de pago con el importe final calculado
+            medioPago.setMonto(importeFinal.floatValue());
+            
+            sumaCalculada = sumaCalculada.add(importeFinal);
+            listaMedios.add(medioPago);
+        }
+
+        // Validar que la suma de los medios (con importes finales calculados) coincida con el monto del pago
+        BigDecimal montoPago = BigDecimal.valueOf(dto.getMonto());
+        BigDecimal diferencia = sumaCalculada.subtract(montoPago).abs();
+        
+        // Tolerancia de 0.01 para diferencias por redondeo
+        if (diferencia.compareTo(new BigDecimal("0.01")) > 0) {
+            throw new IllegalArgumentException(
+                String.format("La suma de los medios calculados (%.2f) no coincide con el monto del pago (%.2f). " +
+                            "Diferencia: %.2f",
+                            sumaCalculada.floatValue(),
+                            montoPago.floatValue(),
+                            diferencia.floatValue())
+            );
+        }
+
+        // 5) Asignar los medios de pago y el monto calculado al pago
+        pago.setMonto(sumaCalculada.floatValue()); // Usar la suma calculada
+        pago.setListamediodepago(listaMedios);
+
+        factura.setPago(pago);
+        
+        // Preparar factura para pago: registrar observers que reaccionarán al cambio de estado
+        prepararFacturaParaPago(factura);
+        
+        // Pagar factura (usa State para validar, luego notifica observers)
+        factura.pagar();
+
+        pagoRepository.save(pago);
+        facturaRepository.save(factura);
+
+        return "Pago registrado correctamente.";
+    }
+
+
+    private MedioDePago convertirDTO(MedioDePagoDTO dto) {
+
+        if (dto.getTipo() == null) {
+            throw new IllegalArgumentException("Cada medio debe tener el campo 'tipo'.");
+        }
+
+        return switch (dto.getTipo().toUpperCase()) {
+
+            case "CHEQUE" -> {
+                Cheque c = new Cheque();
+                c.setMonto(dto.getMonto());
+                c.setFecha(dto.getFecha());
+                ChequeDTO d = (ChequeDTO) dto;
+                c.setNumeroCheque(d.getNumeroCheque());
+                c.setBanco(d.getBanco());
+                c.setPlazo(d.getPlazo());
+                yield c;
+            }
+
+            case "TARJETA_CREDITO" -> {
+                TarjetaCredito tc = new TarjetaCredito();
+                tc.setMonto(dto.getMonto());
+                tc.setFecha(dto.getFecha());
+                TarjetaCreditoDTO d = (TarjetaCreditoDTO) dto;
+                tc.setBanco(d.getBanco());
+                tc.setCuotas(d.getCuotas());
+                yield tc;
+            }
+
+            case "TARJETA_DEBITO" -> {
+                TarjetaDebito td = new TarjetaDebito();
+                td.setMonto(dto.getMonto());
+                td.setFecha(dto.getFecha());
+                TarjetaDebitoDTO d = (TarjetaDebitoDTO) dto;
+                td.setBanco(d.getBanco());
+                td.setDniTitular(d.getDniTitular());
+                yield td;
+            }
+
+            case "MONEDA_LOCAL" -> {
+                MonedaLocal ml = new MonedaLocal();
+                ml.setMonto(dto.getMonto());
+                ml.setFecha(dto.getFecha());
+                MonedaLocalDTO d = (MonedaLocalDTO) dto;
+                ml.setTipoMoneda(d.getTipoMoneda());
+                yield ml;
+            }
+
+            case "MONEDA_EXTRANJERA" -> {
+                MonedaExtranjera me = new MonedaExtranjera();
+                me.setMonto(dto.getMonto());
+                me.setFecha(dto.getFecha());
+                MonedaExtranjeraDTO d = (MonedaExtranjeraDTO) dto;
+                me.setTipoMoneda(d.getTipoMoneda());
+                yield me;
+            }
+
+            default -> throw new IllegalArgumentException("Tipo no reconocido: " + dto.getTipo());
+        };
+    }
+
+    /**
+     * Prepara la factura para pago registrando los observers necesarios.
+     * El registro de observers está claramente separado del cambio de estado.
+     * 
+     * @param factura La factura a preparar
+     */
+    private void prepararFacturaParaPago(Factura factura) {
+        factura.registrarObserver(new PagoFacturaObserver());
+    }
+}
+//[ReservaService.java]
+package com.hotelPremier.service;
+
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.repository.EstadiaRepository;
+import com.hotelPremier.repository.HabitacionRepository;
+import com.hotelPremier.repository.ReservaRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@Service
+public class ReservaService {
+
+    @Autowired
+    private ReservaRepository reservaRepository;
+
+    @Autowired
+    private HabitacionRepository habitacionRepository;
+
+    @Autowired
+    private EstadiaRepository estadiaRepository;
+
+    @Autowired
+    private EstadiaService estadiaService;
+
+    @Autowired
+    private ClassMapper mapper;
+
+    /**
+     * Registra una lista de reservas validando habitación y fechas.
+     */
+    public List<ReservaDTO> guardarLista(List<ReservaDTO> listaDTO) {
+
+        List<Reserva> entidades = new ArrayList<>();
+
+        for (ReservaDTO dto : listaDTO) {
+
+            if (dto.getHabitacion() == null)
+                throw new RuntimeException("El DTO de reserva no contiene la habitación.");
+
+            Integer nro = dto.getHabitacion().getNumero();
+            if (nro == null)
+                throw new RuntimeException("El DTO no trae número de habitación.");
+
+            Habitacion hab = habitacionRepository.findById(nro)
+                    .orElseThrow(() -> new RuntimeException("Habitación inexistente: " + nro));
+
+            Integer solapa = reservaRepository.haySuperposicion(
+                    nro,
+                    dto.getFecha_desde(),
+                    dto.getFecha_hasta()
+            );
+
+            if (solapa != null && solapa > 0)
+                throw new RuntimeException("La habitación " + nro + " ya tiene reservas en ese rango.");
+
+            Reserva r = mapper.toEntityReserva(dto);
+            if (r.getEstado() == null || r.getEstado().trim().isEmpty()) {
+                r.setEstado("PENDIENTE");
+            }
+
+            r.setHabitacion(hab);
+            entidades.add(r);
+        }
+
+        reservaRepository.saveAll(entidades);
+        return mapper.toDtosReserva(entidades);
+    }
+
+    /**
+     * Busca reservas dentro de un rango de fechas.
+     */
+    public List<ReservaDTO> buscarEntreFechas(Date desde, Date hasta) {
+        List<Reserva> reservas = reservaRepository.buscarEntreFechas(desde, hasta);
+        return mapper.toDtosReserva(reservas);
+    }
+
+    /**
+     * Busca reservas por apellido y/o nombre.
+     */
+    public List<ReservaDTO> buscarPorApellidoNombre(String apellido, String nombre) {
+
+        boolean tieneApe = apellido != null && !apellido.trim().isEmpty();
+        boolean tieneNom = nombre != null && !nombre.trim().isEmpty();
+
+        List<Reserva> lista;
+
+        if (tieneApe && tieneNom) {
+            lista = reservaRepository
+                    .findByApellidoStartingWithIgnoreCaseAndNombreStartingWithIgnoreCase(apellido, nombre);
+
+        } else if (tieneApe) {
+            lista = reservaRepository.findByApellidoStartingWithIgnoreCase(apellido);
+
+        } else if (tieneNom) {
+            lista = reservaRepository.findByNombreStartingWithIgnoreCase(nombre);
+
+        } else {
+            lista = reservaRepository.findAll();
+        }
+
+        return mapper.toDtosReserva(lista);
+    }
+
+    /**
+     * Cancela una reserva cambiando su estado a CANCELADA.
+     */
+    public ReservaDTO cancelarReserva(Integer idReserva) {
+
+        Reserva reserva = reservaRepository.findById(idReserva)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + idReserva));
+
+        reserva.cancelar();
+        reservaRepository.save(reserva);
+
+        return mapper.toDTOReserva(reserva);
+    }
+
+    /**
+     * Realiza el check-in de una reserva y crea la estadía asociada.
+     */
+    public Estadia hacerCheckIn(Integer idReserva) {
+
+        Reserva reserva = reservaRepository.findById(idReserva)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + idReserva));
+
+        Estadia estadia = reserva.checkIn();
+        estadia = estadiaService.iniciarEstadia(estadia);
+
+        reservaRepository.save(reserva);
+        estadiaRepository.save(estadia);
+
+        if (estadia.getHabitacion() != null) {
+            habitacionRepository.save(estadia.getHabitacion());
+        }
+
+        return estadia;
+    }
+}

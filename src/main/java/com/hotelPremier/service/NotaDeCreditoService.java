@@ -23,8 +23,7 @@ public class NotaDeCreditoService {
     private FacturaRepository facturaRepo;
 
     /**
-     * CU19 - Ingresar Nota de Crédito
-     * REGLA: El importe de la NC debe cubrir el total de TODAS las facturas afectadas.
+     * Registra una nota de crédito y la aplica a las facturas indicadas.
      */
     public String ingresarNotaDeCredito(NotaDeCreditoDTO dto) {
 
@@ -36,48 +35,36 @@ public class NotaDeCreditoService {
             throw new IllegalArgumentException("Debe indicar al menos una factura.");
         }
 
-        // 1️⃣ Obtener IDs desde los FacturaDTO
         List<Integer> ids = dto.getFacturas()
                 .stream()
                 .map(FacturaDTO::getID)
                 .toList();
 
-        // 2️⃣ Buscar las facturas reales
         List<Factura> facturas = facturaRepo.findAllById(ids);
 
         if (facturas.isEmpty()) {
             throw new IllegalArgumentException("No se encontraron facturas válidas.");
         }
 
-        // 3️⃣ Sumar totales de facturas
         float sumaTotales = facturas.stream()
                 .map(Factura::getTotal)
                 .reduce(0f, Float::sum);
 
-        // 🔥 REGLA DE NEGOCIO: importe debe ser suficiente
         if (dto.getImporte() < sumaTotales) {
             throw new IllegalArgumentException(
-                "El importe de la nota de crédito es insuficiente. " +
-                "Debe ser al menos: " + sumaTotales
+                "El importe de la nota de crédito es insuficiente. Debe ser al menos: " + sumaTotales
             );
         }
 
-        // 4️⃣ Crear y guardar la nota de crédito
         NotaDeCredito nota = new NotaDeCredito();
         nota.setImporte(dto.getImporte());
 
         NotaDeCredito guardada = notaRepo.save(nota);
 
-        // 5️⃣ Aplicar NC a cada factura → total queda en 0
         for (Factura factura : facturas) {
             factura.setNotaDeCredito(guardada);
-            
-            // Preparar factura para nota de crédito: registrar observers que reaccionarán al cambio de estado
             prepararFacturaParaNotaCredito(factura);
-            
-            // Aplicar nota de crédito (usa State para validar, luego notifica observers)
             factura.aplicarNotaCredito();
-            
             facturaRepo.save(factura);
         }
 
@@ -85,10 +72,7 @@ public class NotaDeCreditoService {
     }
 
     /**
-     * Prepara la factura para nota de crédito registrando los observers necesarios.
-     * El registro de observers está claramente separado del cambio de estado.
-     * 
-     * @param factura La factura a preparar
+     * Registra los observers necesarios para aplicar una nota de crédito.
      */
     private void prepararFacturaParaNotaCredito(Factura factura) {
         factura.registrarObserver(new NotaCreditoFacturaObserver());

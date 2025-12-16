@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+// import java.util.List;
 
 @RestController
 @RequestMapping("/estadias")
@@ -20,10 +20,10 @@ public class EstadiaController {
     // ============================================
     // GET /api/estadias/sin-factura
     // ============================================
-    @GetMapping("/sin-factura")
-    public List<EstadiaDTO> listarSinFactura() {
-        return estadiaService.obtenerEstadiasSinFactura();
-    }
+    // @GetMapping("/sin-factura")
+    // public List<EstadiaDTO> listarSinFactura() {
+    //     return estadiaService.obtenerEstadiasSinFactura();
+    // }
 
     @GetMapping("/enCurso/{numHabitacion}")
     public ResponseEntity<?> obtenerEnCurso(@PathVariable Integer numHabitacion) {
