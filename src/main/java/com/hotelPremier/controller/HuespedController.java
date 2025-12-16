@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,6 +45,16 @@ public class HuespedController {
     // public ResponseEntity<HuespedDTO> addHuesped(@RequestBody HuespedDTO huesped) {
     //     return ResponseEntity.ok(huespedService.addHuesped(huesped));
     // }
+
+    @Operation(summary = "Modificar huésped")
+    @PutMapping("/huespedes/{tipo}/{dni}")
+    public ResponseEntity<HuespedDTO> updateHuesped(
+        @PathVariable String tipo,
+        @PathVariable String dni,
+        @RequestBody HuespedDTO huesped
+    ) {
+        return ResponseEntity.ok(huespedService.updateHuesped(tipo, dni, huesped));
+    }
 
     @Operation(summary = "Eliminar huésped")
     @DeleteMapping("/huespedes/{tipo}/{dni}")

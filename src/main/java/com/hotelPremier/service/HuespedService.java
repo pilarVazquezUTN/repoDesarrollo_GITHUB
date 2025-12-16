@@ -71,6 +71,47 @@ public class HuespedService {
     }
 
     /**
+     * Actualiza un huésped existente por tipo y número de documento.
+     */
+    public HuespedDTO updateHuesped(String tipoDocumento, String dni, HuespedDTO huespedDTO) {
+        
+        HuespedID id = new HuespedID();
+        id.setTipoDocumento(tipoDocumento);
+        id.setDni(dni);
+
+        Huesped huespedExistente = huespedRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Huesped no encontrado"));
+
+        // Actualizar campos del huésped (excepto el ID que no debe cambiar)
+        huespedExistente.setNombre(huespedDTO.getNombre());
+        huespedExistente.setApellido(huespedDTO.getApellido());
+        huespedExistente.setFechaNacimiento(huespedDTO.getFechaNacimiento());
+        huespedExistente.setTelefono(huespedDTO.getTelefono());
+        huespedExistente.setEmail(huespedDTO.getEmail());
+        huespedExistente.setCuit(huespedDTO.getCuit());
+        huespedExistente.setPosicionIva(huespedDTO.getPosicionIva());
+        huespedExistente.setOcupacion(huespedDTO.getOcupacion());
+        huespedExistente.setNacionalidad(huespedDTO.getNacionalidad());
+
+        // Actualizar dirección si existe
+        if (huespedDTO.getDireccion() != null) {
+            // Convertir DTO a entidad usando el mapper del huésped completo
+            Huesped huespedTemporal = mapper.toEntity(huespedDTO);
+            Direccion direccionNueva = huespedTemporal.getDireccion();
+            
+            if (huespedExistente.getDireccion() != null) {
+                // Preservar el ID de la dirección existente
+                direccionNueva.setID(huespedExistente.getDireccion().getID());
+            }
+            direccionRepository.save(direccionNueva);
+            huespedExistente.setDireccion(direccionNueva);
+        }
+
+        Huesped updated = huespedRepository.save(huespedExistente);
+        return mapper.toDTO(updated);
+    }
+
+    /**
      * Elimina un huésped por tipo y número de documento.
      */
     public void deleteHuesped(String tipoDocumento, String dni) {
