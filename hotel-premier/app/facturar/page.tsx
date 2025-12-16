@@ -241,13 +241,11 @@ export default function Facturar() {
         
         setHuespedSeleccionado(huesped);
 
-        // Determinar tipo de factura según posición IVA
-        const tipoFactura = huesped.posicionIva === "RESPONSABLE INSCRIPTO" ? 'A' : 'B';
-        
+        // Si se eligió un huésped → tipo A
         setResponsablePago({
             id: huesped.id,
             nombre: `${huesped.nombre} ${huesped.apellido}`,
-            tipoFactura,
+            tipoFactura: 'A',
             esTercero: false
         });
 
@@ -301,7 +299,7 @@ export default function Facturar() {
                 setResponsablePago({
                     id: responsable.id,
                     nombre: razonSocial,
-                    tipoFactura: 'A', // Terceros siempre factura A
+                    tipoFactura: 'B', // Si se puso nombre de tercero con CUIT → tipo B
                     esTercero: true
                 });
                 prepararItems();
