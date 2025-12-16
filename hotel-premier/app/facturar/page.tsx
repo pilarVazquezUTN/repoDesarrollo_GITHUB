@@ -248,23 +248,7 @@ export default function Facturar() {
         
         setHuespedSeleccionado(huesped);
 
-        // Buscar responsable de pago
-        // Primero verificar si viene en los datos del huésped
-        const responsablePagoId = (huesped as any).responsablePagoId;
-        
-        if (responsablePagoId) {
-            // Si viene el ID directamente, usarlo
-            setResponsablePago({
-                id: responsablePagoId,
-                nombre: `${huesped.nombre} ${huesped.apellido}`,
-                tipoFactura: 'A',
-                esTercero: false
-            });
-            prepararItems();
-            return;
-        }
-
-        // Si no viene, buscar por DNI y tipo de documento
+        // Buscar responsable de pago por DNI y tipo de documento
         try {
             const response = await axios.get(`http://localhost:8080/responsablesPago`, {
                 params: {
@@ -273,9 +257,9 @@ export default function Facturar() {
                 }
             });
 
-            if (response.data && response.data.length > 0) {
-                // Si existe, usar su ID
-                const responsableId = response.data[0].id;
+            // El backend devuelve {"id": 5}
+            if (response.data && response.data.id) {
+                const responsableId = response.data.id;
                 
                 // Si se eligió un huésped → tipo A
                 setResponsablePago({
@@ -287,13 +271,16 @@ export default function Facturar() {
 
                 // Preparar items para facturar
                 prepararItems();
-            } else {
-                // Si no existe, mostrar error
-                setErrores(["El responsable de pago no existe. Debe darlo de alta primero."]);
             }
-        } catch (error) {
-            console.error("Error al buscar responsable de pago:", error);
-            setErrores(["Error al buscar el responsable de pago"]);
+        } catch (error: any) {
+            // Si no se encuentra (404), abrir página de alta en nueva ventana
+            if (error.response?.status === 404) {
+                window.open('/altaResponsableDePago', '_blank');
+                setErrores(["El responsable de pago no existe. Se abrió la página para darlo de alta."]);
+            } else {
+                console.error("Error al buscar responsable de pago:", error);
+                setErrores(["Error al buscar el responsable de pago"]);
+            }
         }
     };
 
@@ -334,27 +321,29 @@ export default function Facturar() {
     const handleFacturarTercero = (cuit: string, razonSocial: string) => {
         setMostrarTercero(false);
         
-        // Buscar o crear responsable de pago
+        // Buscar responsable de pago por CUIT
         axios.get(`http://localhost:8080/responsablesPago`, {
             params: { cuit: cuit.trim() }
         }).then(response => {
-            if (response.data && response.data.length > 0) {
-                const responsable = response.data[0];
+            // El backend devuelve {"id": 10}
+            if (response.data && response.data.id) {
                 setResponsablePago({
-                    id: responsable.id,
+                    id: response.data.id,
                     nombre: razonSocial,
                     tipoFactura: 'B', // Si se puso nombre de tercero con CUIT → tipo B
                     esTercero: true
                 });
                 prepararItems();
-            } else {
-                // Si no existe, redirigir a dar alta
-                router.push('/darAltaResponsablePago');
             }
         }).catch(error => {
-            console.error("Error al buscar responsable:", error);
-            // Si no existe, redirigir a dar alta
-            router.push('/darAltaResponsablePago');
+            // Si no se encuentra (404), abrir página de alta en nueva ventana
+            if (error.response?.status === 404) {
+                window.open('/altaResponsableDePago', '_blank');
+                setErrores(["El responsable de pago no existe. Se abrió la página para darlo de alta."]);
+            } else {
+                console.error("Error al buscar responsable:", error);
+                setErrores(["Error al buscar el responsable de pago"]);
+            }
         });
     };
 

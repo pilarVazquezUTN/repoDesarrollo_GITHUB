@@ -1,0 +1,74 @@
+package com.hotelPremier.controller;
+
+import com.hotelPremier.service.ResponsablePagoService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+@RestController
+@RequestMapping("/responsablesPago")
+@Tag(name = "Responsables de Pago", description = "Búsqueda de responsables de pago")
+public class ResponsablePagoController {
+
+    @Autowired
+    private ResponsablePagoService responsablePagoService;
+
+    @Operation(
+        summary = "Buscar responsable de pago",
+        description = "Busca el ID de un responsable de pago. Si viene CUIT busca en PersonaJuridica, " +
+                      "si no viene CUIT pero viene DNI y tipoDocumento busca en PersonaFisica."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Responsable de pago encontrado"),
+        @ApiResponse(responseCode = "404", description = "No se encontró responsable de pago")
+    })
+    @GetMapping
+    public ResponseEntity<?> buscarResponsablePago(
+        @Parameter(description = "DNI del huésped (requerido si no viene CUIT)", example = "40991234")
+        @RequestParam(required = false) String dni,
+        
+        @Parameter(description = "Tipo de documento (requerido si no viene CUIT)", example = "DNI")
+        @RequestParam(required = false) String tipoDocumento,
+        
+        @Parameter(description = "CUIT de la persona jurídica (opcional)", example = "20-12345678-9")
+        @RequestParam(required = false) String cuit
+    ) {
+        
+        Integer id = responsablePagoService.buscarResponsablePago(dni, tipoDocumento, cuit);
+        
+        if (id == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró responsable de pago con los datos proporcionados");
+        }
+        
+        // Devolver solo el ID en un objeto simple
+        return ResponseEntity.ok(new ResponsablePagoIdResponse(id));
+    }
+    
+    /**
+     * Clase interna para devolver solo el ID en la respuesta JSON.
+     */
+    private static class ResponsablePagoIdResponse {
+        private Integer id;
+        
+        public ResponsablePagoIdResponse(Integer id) {
+            this.id = id;
+        }
+        
+        public Integer getId() {
+            return id;
+        }
+        
+        public void setId(Integer id) {
+            this.id = id;
+        }
+    }
+}
