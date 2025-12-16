@@ -629,14 +629,16 @@ const fechaHastaSeleccion = rangos.length
                 return;
               }
 
-              // Crear lista de reservas DTO
+              // Crear lista de reservas DTO según formato esperado por el backend
               const listaReservasDTO = rangos.map((rango: { numero: number; desde: string; hasta: string }) => ({
-                nro_habitacion: rango.numero,
                 fecha_desde: rango.desde,
                 fecha_hasta: rango.hasta,
                 nombre: nombre.toUpperCase(),
                 apellido: apellido.toUpperCase(),
-                telefono: telefono
+                telefono: telefono,
+                habitacion: {
+                  numero: rango.numero
+                }
               }));
 
               try {
