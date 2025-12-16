@@ -161,7 +161,11 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           const habitacionesData = responseHabitaciones.data || [];
           const reservasData = responseReservas.data || [];
 
+<<<<<<< HEAD
           console.log("Habitaciones recibidas:", habitacionesData);
+=======
+         console.log("Habitaciones recibidas:", habitacionesData);
+>>>>>>> f8acfdea9cff0c2da09ce16d810eda810d104088
           console.log("Reservas recibidas:", reservasData);
           
           // Ver estructura completa de una reserva para debug
