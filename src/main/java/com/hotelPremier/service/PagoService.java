@@ -47,6 +47,10 @@ public class PagoService {
         if (dto.getMedios() == null || dto.getMedios().isEmpty())
             throw new IllegalArgumentException("Debe enviar al menos un medio de pago.");
 
+        if (pagoRepository.existsByFactura(factura)) {
+            throw new RuntimeException("La factura ya posee un pago registrado");
+        }
+
         List<MedioDePago> listaMedios = new ArrayList<>();
         BigDecimal sumaCalculada = BigDecimal.ZERO;
 

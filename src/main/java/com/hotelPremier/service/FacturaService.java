@@ -56,7 +56,7 @@ public class FacturaService {
         List<Factura> lista = facturaRepository.findAll().stream()
                 .filter(f -> f.getEstadia() != null &&
                              f.getEstadia().getHabitacion() != null &&
-                             "ENCURSO".equals(f.getEstadia().getEstado()) &&
+                             "FINALIZADA".equals(f.getEstadia().getEstado()) &&
                              f.getEstadia().getHabitacion().getNumero().equals(nroHabitacion))
                 .toList();
 
