@@ -69,7 +69,7 @@ export default function Header() {
           Facturar
         </Link>
 
-        <Link href="/darAltaHuesped"
+        {/*<Link href="/darAltaHuesped"
           className={` ${
                 pathname === "/darAltaHuesped"
                   ? "text-gray-500"
@@ -77,7 +77,7 @@ export default function Header() {
             }`}
         >
           Dar alta Huésped
-        </Link>
+        </Link> */}
 
         {/*<Link href="/darBajaHuesped"
           className={` ${
@@ -99,7 +99,7 @@ export default function Header() {
           Listar Ingresos
         </Link> */}
 
-        {/*<Link href="/cancelarReserva"
+        <Link href="/cancelarReserva"
           className={` ${
                 pathname === "/cancelarReserva"
                   ? "text-gray-500"
@@ -107,7 +107,7 @@ export default function Header() {
               }`}
         >
           Cancelar Reserva
-        </Link> */} 
+        </Link> 
 
         <Link href="/ocuparHabitacion"
           className={` ${

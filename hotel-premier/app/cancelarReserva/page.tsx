@@ -38,6 +38,8 @@ export default function CancelarReserva() {
   const [mostrarCartel, setMostrarCartel] = useState(false);
   const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
   const [mostrarCartelCancelacion, setMostrarCartelCancelacion] = useState(false);
+  const [mostrarCartelError, setMostrarCartelError] = useState(false);
+  const [mensajeError, setMensajeError] = useState("");
   const [cantidadCanceladas, setCantidadCanceladas] = useState(1);
   const [buscando, setBuscando] = useState(false);
   const [cancelando, setCancelando] = useState(false);
@@ -100,11 +102,15 @@ export default function CancelarReserva() {
 
       const reservasData = response.data || [];
       
-      // Mostrar todas las reservas (no solo pendientes)
-      setReservas(reservasData);
+      // Filtrar solo reservas en estado PENDIENTE (puede venir como "Pendiente" o "PENDIENTE")
+      const reservasPendientes = reservasData.filter((r: ReservaDTO) => 
+        r.estado?.toUpperCase() === "PENDIENTE"
+      );
+      
+      setReservas(reservasPendientes);
       setReservasSeleccionadas([]);
 
-      if (reservasData.length === 0) {
+      if (reservasPendientes.length === 0) {
         setMostrarCartel(true);
       }
     } catch (error) {
@@ -145,31 +151,81 @@ export default function CancelarReserva() {
     setCancelando(true);
     
     try {
-      // Cancelar todas las reservas seleccionadas
-      const promesasCancelacion = reservasSeleccionadas.map((idReserva) => {
-        const dto = {
-          id_reserva: idReserva
-        };
-        return axios.put("http://localhost:8080/reservas/cancelar", dto, {
-          headers: {
-            "Content-Type": "application/json"
+      // Cancelar todas las reservas seleccionadas una por una para capturar errores específicos
+      const reservasACancelar = [...reservasSeleccionadas];
+      const reservasCanceladasExitosas: number[] = [];
+      
+      for (const idReserva of reservasACancelar) {
+        try {
+          const dto = {
+            id_reserva: idReserva
+          };
+          
+          await axios.put("http://localhost:8080/reservas/cancelar", dto, {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          });
+          
+          reservasCanceladasExitosas.push(idReserva);
+        } catch (error: any) {
+          // Si es un error 400, extraer el mensaje del backend
+          if (error.response && error.response.status === 400) {
+            let mensajeError = "";
+            
+            // Intentar extraer el mensaje de diferentes formatos posibles
+            if (typeof error.response.data === 'string') {
+              mensajeError = error.response.data;
+            } else if (error.response.data?.message) {
+              mensajeError = error.response.data.message;
+            } else if (error.response.data?.error) {
+              mensajeError = error.response.data.error;
+            } else {
+              // Si no hay mensaje, construir uno con el estado de la reserva
+              const reservaFallida = reservas.find(r => r.id_reserva === idReserva);
+              const estado = reservaFallida?.estado || "DESCONOCIDO";
+              mensajeError = `Solo se pueden cancelar reservas en estado PENDIENTE. La reserva actual está en estado: ${estado}`;
+            }
+            
+            // Si el mensaje no menciona el estado, agregarlo
+            if (!mensajeError.includes("estado") && !mensajeError.includes("PENDIENTE")) {
+              const reservaFallida = reservas.find(r => r.id_reserva === idReserva);
+              const estado = reservaFallida?.estado || "DESCONOCIDO";
+              mensajeError = `Solo se pueden cancelar reservas en estado PENDIENTE. La reserva actual está en estado: ${estado}`;
+            }
+            
+            setMensajeError(mensajeError);
+            setMostrarCartelError(true);
+            setCancelando(false);
+            return;
           }
-        });
-      });
+          
+          // Si es otro tipo de error, lanzarlo para que se capture en el catch externo
+          throw error;
+        }
+      }
 
-      await Promise.all(promesasCancelacion);
+      // Si todas las cancelaciones fueron exitosas
+      if (reservasCanceladasExitosas.length > 0) {
+        const cantidad = reservasCanceladasExitosas.length;
+        setCantidadCanceladas(cantidad);
 
-      // Guardar cantidad antes de limpiar
-      const cantidad = reservasSeleccionadas.length;
-      setCantidadCanceladas(cantidad);
-
-      // Eliminar las reservas canceladas de la lista
-      setReservas((prev) => prev.filter((r) => !reservasSeleccionadas.includes(r.id_reserva)));
-      setReservasSeleccionadas([]);
-      setMostrarCartelCancelacion(true);
-    } catch (error) {
+        // Eliminar las reservas canceladas de la lista
+        setReservas((prev) => prev.filter((r) => !reservasCanceladasExitosas.includes(r.id_reserva)));
+        setReservasSeleccionadas([]);
+        setMostrarCartelCancelacion(true);
+      }
+    } catch (error: any) {
       console.error("Error al cancelar reservas:", error);
-      alert("Hubo un error al cancelar las reservas.");
+      
+      // Si es un error 400, ya fue manejado arriba
+      if (error.response && error.response.status === 400) {
+        return;
+      }
+      
+      // Para otros errores, mostrar mensaje genérico
+      setMensajeError("Hubo un error al cancelar las reservas.");
+      setMostrarCartelError(true);
     } finally {
       setCancelando(false);
     }
@@ -284,12 +340,15 @@ export default function CancelarReserva() {
         <div className="bg-white rounded-xl shadow-xl overflow-hidden">
           <div className="p-6 border-b-2 border-indigo-200">
             <h2 className="text-2xl font-bold text-indigo-950">
-              Reservas Encontradas
+              Reservas Pendientes
             </h2>
             <p className="text-sm text-gray-600 mt-1">
               {reservas.length > 0 
-                ? `${reservas.length} reserva(s) encontrada(s)` 
+                ? `${reservas.length} reserva(s) pendiente(s) encontrada(s)` 
                 : "No hay resultados para mostrar"}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Solo se pueden cancelar reservas en estado PENDIENTE
             </p>
           </div>
 
@@ -369,7 +428,7 @@ export default function CancelarReserva() {
                 🔍 Complete los criterios de búsqueda y presione "Buscar"
               </div>
               <p className="text-sm text-gray-500">
-                Ingrese el apellido para buscar reservas
+                Ingrese el apellido para buscar reservas pendientes
               </p>
             </div>
           )}
@@ -464,6 +523,42 @@ export default function CancelarReserva() {
                 className="px-6 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"
               >
                 ACEPTAR
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CARTEL DE ERROR DE CANCELACIÓN */}
+      {mostrarCartelError && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-[9999]">
+          <div className="relative bg-white rounded-xl shadow-xl p-8 w-auto min-w-[500px] max-w-[600px]">
+            <img
+              src="/imagenError.png"
+              alt="Error"
+              className="absolute top-4 left-4 w-12 h-12"
+            />
+            <button
+              className="absolute top-4 right-4 text-gray-700 hover:text-black text-xl font-bold"
+              onClick={() => setMostrarCartelError(false)}
+            >
+              ✕
+            </button>
+            <h2 className="text-xl font-bold text-red-700 text-center mb-4 mt-8">
+              Error al cancelar reserva
+            </h2>
+            <p className="text-gray-700 text-center mb-6 whitespace-pre-line">
+              {mensajeError}
+            </p>
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={() => {
+                  setMostrarCartelError(false);
+                  setMensajeError("");
+                }}
+                className="px-6 py-2 bg-indigo-950 text-white rounded-md hover:bg-indigo-800 transition"
+              >
+                Aceptar
               </button>
             </div>
           </div>
