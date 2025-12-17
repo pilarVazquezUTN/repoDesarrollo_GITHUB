@@ -116,7 +116,7 @@ export default function IngresarNotaCredito() {
       
       // Buscar facturas - asumiendo que hay un endpoint que acepta estos parámetros
       // Si no existe, podría ser necesario obtener todas y filtrar en el frontend
-      const response = await axios.get("http://localhost:8080/facturas", {
+      const response = await axios.get("http://localhost:8080/facturas/filtrar", {
         params
       });
       
@@ -178,12 +178,12 @@ export default function IngresarNotaCredito() {
         facturas: facturasSeleccionadas.map((id) => ({ id }))
       };
       
-      const response = await axios.post("http://localhost:8080/api/notas-crédito", notaCreditoDTO, {
+      const response = await axios.post("http://localhost:8080/notadecredito", notaCreditoDTO, {
         headers: {
           "Content-Type": "application/json"
         }
       });
-      
+      console.log(notaCreditoDTO);
       if (response.status === 200 || response.status === 201) {
         // Obtener la nota de crédito generada con todos sus datos
         const notaCredito = response.data;
