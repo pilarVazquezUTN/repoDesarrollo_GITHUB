@@ -100,7 +100,7 @@ export default function IngresarPago() {
     try {
       const response = await axios.get(`http://localhost:8080/facturas/habitacion/${nroHabitacion}`);
       const facturasData = response.data || [];
-      
+      console.log("Facturas recibidas:", facturasData);
       // Filtrar solo facturas pendientes
       const facturasPendientes = facturasData.filter((f: FacturaDTO) => 
         f.estado?.toUpperCase() === "PENDIENTE"
