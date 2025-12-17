@@ -16,8 +16,10 @@ public class FacturaPagada extends EstadoFactura {
 
     @Override
     public void aplicarNotaCredito(Factura factura) {
-        factura.setEstadoFactura(new FacturaCancelada());
+        // Establecer el total a 0 ANTES de cambiar el estado
+        // para que los observers vean el total correcto
         factura.setTotal(0);
+        factura.setEstadoFactura(new FacturaCancelada());
     }
 }
 

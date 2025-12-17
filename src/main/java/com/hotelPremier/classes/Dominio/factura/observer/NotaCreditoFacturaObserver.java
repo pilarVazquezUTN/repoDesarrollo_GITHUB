@@ -30,8 +30,12 @@ public class NotaCreditoFacturaObserver implements FacturaObserver {
         }
 
         // Verificar que el total esté en 0 (ya establecido por State)
-        if (factura.getTotal() != 0) {
-            throw new IllegalStateException("El total de la factura cancelada debe ser 0");
+        // Usar comparación con tolerancia para evitar problemas de precisión de punto flotante
+        float total = factura.getTotal();
+        if (Math.abs(total) > 0.01f) {
+            throw new IllegalStateException(
+                String.format("El total de la factura cancelada debe ser 0. Total actual: %.2f", total)
+            );
         }
 
         // La nota de crédito está aplicada y el total es 0
