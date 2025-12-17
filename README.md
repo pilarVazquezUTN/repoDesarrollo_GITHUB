@@ -1,4 +1,3 @@
-
 # 🏨 Hotel Premier – Sistema de Gestión Hotelera
 
 Proyecto desarrollado como **Trabajo Práctico Final 2025** para las materias **Diseño de Sistemas de Información** y **Desarrollo de Software** (UTN – FRSF).
@@ -64,9 +63,9 @@ El sistema permite gestionar reservas, estadías, huéspedes, facturación y pag
 │   ├── components
 │   └── public
 │
-├── sql
+├── sql						  → Archivo .sql de backup con tablas y datos precargados
 │
-├── EntregaDiseñoCU_Diagramas
+├── EntregaDiseñoCU_Diagramas			  → Diagramas 
 │
 └── README.md
 
@@ -78,10 +77,9 @@ El sistema permite gestionar reservas, estadías, huéspedes, facturación y pag
 
 ### 1️⃣ Backend (Spring Boot)
 
-Desde la carpeta `/api`:
+Desde la carpeta `/backend`:
 
 ```bash
-mvn clean install
 mvn spring-boot:run
 ```
 
@@ -104,7 +102,6 @@ http://localhost:8080/swagger-ui.html
 Desde la carpeta `/frontend`:
 
 ```bash
-npm install
 npm run dev
 ```
 
@@ -124,8 +121,8 @@ A continuación se detallan los **endpoints REST implementados**, organizados po
 
 ### 👤 Huéspedes
 
-- `GET /huespedes?dni=XXX&nombre=YYY&apellido=ZZZ&tipoDocumento=WWW`Búsqueda de huéspedes por distintos criterios (CU02).
-- `PUT /huespedes/modificar`Modificación de datos de un huésped existente (CU10).
+- `GET /huespedes?dni=XXX&nombre=YYY&apellido=ZZZ&tipoDocumento=WWW `Búsqueda de huéspedes por distintos criterios (CU02).
+- `PUT /huespedes/modificar` Modificación de datos de un huésped existente (CU10).
 - `DELETE /huespedes/{tipo}/{dni}`
   Baja lógica del huésped según tipo y número de documento (CU11).
 
@@ -133,9 +130,9 @@ A continuación se detallan los **endpoints REST implementados**, organizados po
 
 ### 📅 Reservas
 
-- `POST /reservas`Alta de una o varias reservas para un rango de fechas (CU04).
-- `GET /reservas?desde=YYYY-MM-DD&hasta=YYYY-MM-DD`Listado de reservas entre dos fechas.
-- `GET /reservas/buscar?apellido=XXX&nombre=YYY`Búsqueda de reservas por datos del huésped (CU06).
+- `POST /reservas `Alta de una o varias reservas para un rango de fechas (CU04).
+- `GET /reservas?desde=YYYY-MM-DD&hasta=YYYY-MM-DD` Listado de reservas entre dos fechas.
+- `GET /reservas/buscar?apellido=XXX&nombre=YYY` Búsqueda de reservas por datos del huésped (CU06).
 - `PUT /reservas/cancelar`
   Cancelación de una o varias reservas existentes (CU06).
 
@@ -157,8 +154,8 @@ A continuación se detallan los **endpoints REST implementados**, organizados po
 
 ### 🧾 Facturas
 
-- `GET /facturas/habitacion/{nro}`Obtiene las facturas asociadas a una habitación.
-- `GET /facturas/filtrar?cuit=XXX&tipo=YYY&numero=ZZZ`Búsqueda y filtrado de facturas por distintos criterios.
+- `GET /facturas/habitacion/{nro}` Obtiene las facturas asociadas a una habitación.
+- `GET /facturas/filtrar?cuit=XXX&tipo=YYY&numero=ZZZ` Búsqueda y filtrado de facturas por distintos criterios.
 - `POST /facturas`
   Generación de una nueva factura para una estadía (CU07).
 
