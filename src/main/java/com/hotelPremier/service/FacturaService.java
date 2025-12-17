@@ -82,17 +82,11 @@ public class FacturaService {
      * Permite usar cualquiera de estos campos de forma independiente o combinada.
      * Si solo se proporciona el número de documento, busca por DNI.
      */
-    public List<FacturaDTO> filtrarFacturas(String cuit, String tipoDocumento, String numeroDocumento) {
-
-        // Normalizar valores vacíos a null
-        cuit = (cuit != null && cuit.trim().isEmpty()) ? null : cuit;
-        tipoDocumento = (tipoDocumento != null && tipoDocumento.trim().isEmpty()) ? null : tipoDocumento;
-        numeroDocumento = (numeroDocumento != null && numeroDocumento.trim().isEmpty()) ? null : numeroDocumento;
-
-        // Si no se proporciona ningún filtro, retornar lista vacía
-        if (cuit == null && tipoDocumento == null && numeroDocumento == null) {
-            return new ArrayList<>();
-        }
+    public List<FacturaDTO> filtrarFacturas(
+        String cuit,
+        String tipoDocumento,
+        String numeroDocumento
+    ) {
 
         List<Factura> lista = facturaRepository.findAll();
 
@@ -267,18 +261,19 @@ public class FacturaService {
      */
     public FacturaDTO aplicarNotaCreditoAFactura(Integer facturaId) {
 
-        Factura factura = facturaRepository.findById(facturaId)
-                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
+            Factura factura = facturaRepository.findById(facturaId)
+                    .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
 
-        prepararFacturaParaNotaCredito(factura);
-        factura.aplicarNotaCredito();
-        facturaRepository.save(factura);
+            prepararFacturaParaNotaCredito(factura);
+            factura.aplicarNotaCredito();
+            facturaRepository.save(factura);
 
-        return mapper.toDTOFactura(factura);
-    }
+            return mapper.toDTOFactura(factura);
+        }
 
-    private boolean coincideCuit(Factura f, String cuit) {
-        if (cuit == null) return true;
+        private boolean coincideCuit(Factura f, String cuit) {
+        if (cuit == null || cuit.isBlank()) return true;
+
         if (f.getResponsablePago() instanceof PersonaJuridica pj) {
             return cuit.equals(pj.getCuit());
         }
@@ -286,20 +281,29 @@ public class FacturaService {
     }
 
     private boolean coincideTipoDoc(Factura f, String tipoDoc) {
-        if (tipoDoc == null) return true;
+        if (tipoDoc == null || tipoDoc.isBlank()) return true;
+
         if (f.getResponsablePago() instanceof PersonaFisica pf) {
-            return pf.getHuesped().getHuespedID().getTipoDocumento().equalsIgnoreCase(tipoDoc);
+            return pf.getHuesped()
+                    .getHuespedID()
+                    .getTipoDocumento()
+                    .equalsIgnoreCase(tipoDoc);
         }
         return false;
     }
 
     private boolean coincideNumeroDoc(Factura f, String numeroDoc) {
-        if (numeroDoc == null) return true;
+        if (numeroDoc == null || numeroDoc.isBlank()) return true;
+
         if (f.getResponsablePago() instanceof PersonaFisica pf) {
-            return pf.getHuesped().getHuespedID().getDni().equalsIgnoreCase(numeroDoc);
+            return pf.getHuesped()
+                    .getHuespedID()
+                    .getDni()
+                    .equalsIgnoreCase(numeroDoc);
         }
         return false;
     }
+
 
     private void prepararFacturaParaCheckout(Factura factura) {
         factura.registrarObserver(new CheckoutFacturaObserver());
