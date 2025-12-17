@@ -73,19 +73,25 @@ public class PagoService {
         }
 
         BigDecimal montoPago = BigDecimal.valueOf(dto.getMonto());
-        BigDecimal diferencia = sumaCalculada.subtract(montoPago).abs();
-
-        if (diferencia.compareTo(new BigDecimal("0.01")) > 0) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "La suma de los medios calculados (%.2f) no coincide con el monto del pago (%.2f).",
-                    sumaCalculada.floatValue(),
-                    montoPago.floatValue()
-                )
-            );
+        
+        // Validar que el monto del pago no sea mayor que la suma calculada
+        // Se permite pagar de más (el cambio se devuelve), pero no se permite pagar de menos
+        if (montoPago.compareTo(sumaCalculada) > 0) {
+            BigDecimal diferencia = montoPago.subtract(sumaCalculada);
+            // Permitir una pequeña tolerancia para redondeos (0.01)
+            if (diferencia.compareTo(new BigDecimal("0.01")) > 0) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "El monto del pago (%.2f) no puede ser mayor que la suma de los medios calculados (%.2f).",
+                        montoPago.floatValue(),
+                        sumaCalculada.floatValue()
+                    )
+                );
+            }
         }
 
-        pago.setMonto(sumaCalculada.floatValue());
+        // El monto del pago registrado es el monto recibido (puede ser menor o igual a la suma calculada)
+        pago.setMonto(montoPago.floatValue());
         pago.setListamediodepago(listaMedios);
 
         factura.setPago(pago);
