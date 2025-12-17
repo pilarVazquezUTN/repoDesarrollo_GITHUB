@@ -27,6 +27,7 @@ interface MedioPagoSeleccionado {
   fecha: string;
   // Moneda
   tipoMoneda?: string;
+  cotizacion?: number;
   // Tarjeta crédito
   banco?: string;
   cuotas?: number;
@@ -99,7 +100,7 @@ export default function IngresarPago() {
     
     try {
       const response = await axios.get(`http://localhost:8080/facturas/habitacion/${nroHabitacion}`);
-      const facturasData = response.data || [];
+      const facturasData: FacturaDTO[] = response.data || [];
       console.log("Facturas recibidas:", facturasData);
       // Filtrar solo facturas pendientes
       const facturasPendientes = facturasData.filter((f: FacturaDTO) => 
@@ -143,6 +144,7 @@ export default function IngresarPago() {
       monto: 0,
       fecha: new Date().toISOString().split('T')[0],
       tipoMoneda: tipo === "MONEDA_LOCAL" || tipo === "MONEDA_EXTRANJERA" ? "ARS" : undefined,
+      cotizacion: undefined,
       banco: undefined,
       cuotas: undefined,
       dniTitular: undefined,
@@ -172,6 +174,12 @@ export default function IngresarPago() {
     if (medioPagoSeleccionado === "MONEDA_LOCAL" || medioPagoSeleccionado === "MONEDA_EXTRANJERA") {
       if (!medioPagoActual.tipoMoneda) {
         errores.push("Moneda");
+      }
+    }
+    
+    if (medioPagoSeleccionado === "MONEDA_EXTRANJERA") {
+      if (!medioPagoActual.cotizacion || medioPagoActual.cotizacion <= 0) {
+        errores.push("Cotización");
       }
     }
     
@@ -295,6 +303,10 @@ export default function IngresarPago() {
             medioDTO.tipoMoneda = medio.tipoMoneda;
           }
           
+          if (medio.tipo === "MONEDA_EXTRANJERA") {
+            medioDTO.cotizacion = medio.cotizacion;
+          }
+          
           if (medio.tipo === "TARJETA_CREDITO") {
             medioDTO.banco = medio.banco;
             medioDTO.cuotas = medio.cuotas;
@@ -333,7 +345,7 @@ export default function IngresarPago() {
   };
   
   // Manejar Shift+Tab
-  const handleKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDownInput = (e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (e.key === "Tab" && e.shiftKey) {
       e.preventDefault();
       const form = e.currentTarget.form;
@@ -445,9 +457,12 @@ export default function IngresarPago() {
                   </tr>
                 </thead>
                 <tbody>
-                  {facturas.map((f) => (
+                  {facturas.map((f: FacturaDTO) => {
+                    const facturaId = f.id;
+                    const esSeleccionada = facturaSeleccionada?.id === facturaId;
+                    return (
                     <tr
-                      key={f.id}
+                      key={facturaId}
                       className="bg-white hover:bg-indigo-50 transition-colors cursor-pointer"
                       onClick={() => seleccionarFactura(f)}
                     >
@@ -455,13 +470,13 @@ export default function IngresarPago() {
                         <input
                           type="radio"
                           name="factura"
-                          checked={facturaSeleccionada?.id === f.id}
+                          checked={esSeleccionada}
                           onChange={() => seleccionarFactura(f)}
                           className="w-4 h-4 text-indigo-950 focus:ring-indigo-500"
                         />
                       </td>
                       <td className="p-4 border-b border-gray-200 font-medium text-indigo-950">
-                        {f.id}
+                        {facturaId}
                       </td>
                       <td className="p-4 border-b border-gray-200 text-gray-700">
                         {format(parseISO(f.fecha), "dd/MM/yyyy")}
@@ -476,7 +491,8 @@ export default function IngresarPago() {
                         {obtenerNombreResponsable(f)}
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -616,6 +632,25 @@ export default function IngresarPago() {
                           </>
                         )}
                       </select>
+                    </div>
+                  )}
+                  
+                  {medioPagoSeleccionado === "MONEDA_EXTRANJERA" && (
+                    <div>
+                      <label className="text-indigo-950 font-semibold mb-2 block text-sm">Cotización:</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={medioPagoActual.cotizacion || ""}
+                        onChange={(e) => setMedioPagoActual({ ...medioPagoActual, cotizacion: parseFloat(e.target.value) || 0 })}
+                        onKeyDown={handleKeyDownInput}
+                        className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Ingrese la cotización"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Cotización de {medioPagoActual.tipoMoneda || "la moneda"} respecto a ARS
+                      </p>
                     </div>
                   )}
                   

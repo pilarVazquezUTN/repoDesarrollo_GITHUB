@@ -155,6 +155,7 @@ public class PagoService {
                 me.setFecha(dto.getFecha());
                 MonedaExtranjeraDTO d = (MonedaExtranjeraDTO) dto;
                 me.setTipoMoneda(d.getTipoMoneda());
+                me.setCotizacion(d.getCotizacion());
                 yield me;
             }
 
