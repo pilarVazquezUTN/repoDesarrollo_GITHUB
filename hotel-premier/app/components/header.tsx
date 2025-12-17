@@ -109,7 +109,17 @@ export default function Header() {
           Cancelar Reserva
         </Link> 
 
-        <Link href="/ocuparHabitacion"
+        <Link href="/ingresarPago"
+          className={` ${
+                pathname === "/ingresarPago"
+                  ? "text-gray-500"
+                  : "hover:text-gray-500"
+              }`}
+        >
+          Ingresar Pago
+        </Link>
+
+        {/*<Link href="/ocuparHabitacion"
           className={` ${
                 pathname === "/ocuparHabitacion"
                   ? "text-gray-500"
@@ -117,7 +127,7 @@ export default function Header() {
               }`}
         >
           Ocupar Habitacion
-        </Link>
+        </Link> */}
 
 
       </nav>
