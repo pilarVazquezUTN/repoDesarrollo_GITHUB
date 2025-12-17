@@ -78,9 +78,21 @@ public class FacturaService {
     }
 
     /**
-     * Filtra facturas por CUIT o documento.
+     * Filtra facturas por CUIT, tipo de documento o número de documento.
+     * Permite usar cualquiera de estos campos de forma independiente o combinada.
+     * Si solo se proporciona el número de documento, busca por DNI.
      */
     public List<FacturaDTO> filtrarFacturas(String cuit, String tipoDocumento, String numeroDocumento) {
+
+        // Normalizar valores vacíos a null
+        cuit = (cuit != null && cuit.trim().isEmpty()) ? null : cuit;
+        tipoDocumento = (tipoDocumento != null && tipoDocumento.trim().isEmpty()) ? null : tipoDocumento;
+        numeroDocumento = (numeroDocumento != null && numeroDocumento.trim().isEmpty()) ? null : numeroDocumento;
+
+        // Si no se proporciona ningún filtro, retornar lista vacía
+        if (cuit == null && tipoDocumento == null && numeroDocumento == null) {
+            return new ArrayList<>();
+        }
 
         List<Factura> lista = facturaRepository.findAll();
 

@@ -47,12 +47,17 @@ public class FacturaController {
 
     @Operation(
         summary = "Filtrar facturas",
-        description = "Permite filtrar facturas por CUIT, tipo de documento y número"
+        description = "Permite filtrar facturas por CUIT, tipo de documento o número de documento. " +
+                     "Se puede usar cualquiera de estos campos de forma independiente o combinada. " +
+                     "Si solo se proporciona el número de documento, busca por DNI."
     )
     @GetMapping("/filtrar")
     public ResponseEntity<List<FacturaDTO>> filtrarFacturas(
+        @Parameter(description = "CUIT para buscar facturas de PersonaJuridica", example = "20-12345678-9")
         @RequestParam(required = false) String cuit,
+        @Parameter(description = "Tipo de documento (DNI, LC, LE, etc.)", example = "DNI")
         @RequestParam(required = false) String tipo,
+        @Parameter(description = "Número de documento (DNI)", example = "40123456")
         @RequestParam(required = false) String numero
     ) {
         return ResponseEntity.ok(
