@@ -4,6 +4,7 @@ import com.hotelPremier.classes.DTO.ReservaDTO;
 import com.hotelPremier.service.ReservaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,12 +59,20 @@ public class ReservaController {
 
     @Operation(
         summary = "Cancelar reserva",
-        description = "Cancela una reserva utilizando el patrón State (cambia el estado a cancelada)"
+        description = "Cancela una reserva utilizando el patrón State (cambia el estado a cancelada). Solo permite cancelar reservas en estado PENDIENTE."
     )
     @PutMapping("/cancelar")
     public ResponseEntity<?> cancelarReserva(@RequestBody ReservaDTO dto) {
-        return ResponseEntity.ok(
-            reservaService.cancelarReserva(dto.getId_reserva())
-        );
+        try {
+            return ResponseEntity.ok(
+                reservaService.cancelarReserva(dto.getId_reserva())
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
 }

@@ -113,11 +113,24 @@ public class ReservaService {
 
     /**
      * Cancela una reserva cambiando su estado a CANCELADA.
+     * Solo permite cancelar reservas en estado PENDIENTE.
      */
     public ReservaDTO cancelarReserva(Integer idReserva) {
 
         Reserva reserva = reservaRepository.findById(idReserva)
                 .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + idReserva));
+
+        // Validar que la reserva esté en estado PENDIENTE
+        String estadoActual = reserva.getEstado();
+        if (estadoActual == null || estadoActual.trim().isEmpty()) {
+            estadoActual = "PENDIENTE"; // Estado por defecto
+        }
+        
+        if (!estadoActual.equalsIgnoreCase("PENDIENTE")) {
+            throw new IllegalStateException(
+                "Solo se pueden cancelar reservas en estado PENDIENTE. La reserva actual está en estado: " + estadoActual
+            );
+        }
 
         reserva.cancelar();
         reservaRepository.save(reserva);
