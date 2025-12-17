@@ -46,14 +46,12 @@ public interface ClassMapper {
     })
     Huesped toEntity(HuespedDTO dto);
 
-
     // =====================================================
     // HUESPED ID
     // =====================================================
 
     HuespedIDDTO toDTO(HuespedID id);
     HuespedID toEntity(HuespedIDDTO dto);
-
 
     // =====================================================
     // ESTADIA
@@ -62,7 +60,7 @@ public interface ClassMapper {
     @Mappings({
         @Mapping(target = "habitacion", ignore = true),
         @Mapping(target = "listahuesped", source = "listahuesped"),
-        @Mapping(target = "listafactura", ignore = true),
+        @Mapping(target = "listafactura", ignore = true), // 🚫 evita ciclo
         @Mapping(target = "listaconsumos", ignore = true),
         @Mapping(target = "reserva", ignore = true),
         @Mapping(target = "ID", ignore = true)
@@ -79,7 +77,6 @@ public interface ClassMapper {
     })
     Estadia toEntity(EstadiaDTO dto);
 
-
     // =====================================================
     // RESERVA
     // =====================================================
@@ -93,28 +90,30 @@ public interface ClassMapper {
     })
     Reserva toEntityReserva(ReservaDTO dto);
 
-
     // =====================================================
     // FACTURA
     // =====================================================
 
     @Mappings({
-        @Mapping(target = "estadia", ignore = true),          // Se resuelve en service
-        @Mapping(target = "pago", ignore = true),             // Se resuelve en service
-        @Mapping(target = "notaDeCredito", ignore = true),    // Se resuelve en service
-        @Mapping(target = "responsablePago", ignore = true)   // Se resuelve en service
+        @Mapping(target = "estadia", ignore = true),        // 🚫 NO volver a estadia
+        @Mapping(target = "pago", ignore = true),           // 🚫 corta el loop
+        @Mapping(target = "notaDeCredito", ignore = true),
+        @Mapping(target = "responsablePago", ignore = true)
     })
     Factura toEntityFactura(FacturaDTO dto);
 
     @Mappings({
-        @Mapping(target = "estadia", source = "estadia"),
+        @Mapping(target = "estadia", ignore = true),        // 🚫 clave
+        @Mapping(target = "pago", ignore = true),           // 🚫 clave
         @Mapping(target = "notacredito", source = "notaDeCredito"),
-        @Mapping(target = "responsablepago", expression = "java(toDTO(f.getResponsablePago()))")
+        @Mapping(
+            target = "responsablepago",
+            expression = "java(toDTO(f.getResponsablePago()))"
+        )
     })
     FacturaDTO toDTOFactura(Factura f);
 
     List<FacturaDTO> toDTOsFactura(List<Factura> lista);
-
 
     // =====================================================
     // SERVICIO EXTRA
@@ -129,7 +128,6 @@ public interface ClassMapper {
 
     ServicioExtraIDDTO toDTOServicioExtraID(ServicioExtraID id);
     ServicioExtraID toEntityServicioExtraID(ServicioExtraIDDTO dto);
-
 
     // =====================================================
     // RESPONSABLE DE PAGO (Manual)
