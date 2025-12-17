@@ -28,6 +28,7 @@ interface MedioPagoSeleccionado {
   // Moneda
   tipoMoneda?: string;
   cotizacion?: number;
+  montoConvertido?: number; // Monto en ARS para cálculos internos
   // Tarjeta crédito
   banco?: string;
   cuotas?: number;
@@ -143,7 +144,7 @@ export default function IngresarPago() {
       tipo: tipo,
       monto: 0,
       fecha: new Date().toISOString().split('T')[0],
-      tipoMoneda: tipo === "MONEDA_LOCAL" || tipo === "MONEDA_EXTRANJERA" ? "ARS" : undefined,
+      tipoMoneda: tipo === "MONEDA_LOCAL" ? "ARS" : undefined,
       cotizacion: undefined,
       banco: undefined,
       cuotas: undefined,
@@ -218,11 +219,21 @@ export default function IngresarPago() {
       return;
     }
     
-    // Agregar el medio de pago
-    setMediosPago([...mediosPago, { ...medioPagoActual }]);
+    // Calcular monto en ARS (si es moneda extranjera, multiplicar por cotización)
+    let montoEnARS = medioPagoActual.monto;
+    if (medioPagoSeleccionado === "MONEDA_EXTRANJERA" && medioPagoActual.cotizacion) {
+      montoEnARS = medioPagoActual.monto * medioPagoActual.cotizacion;
+    }
     
-    // Actualizar total acumulado
-    const nuevoTotal = totalAcumulado + medioPagoActual.monto;
+    // Agregar el medio de pago (guardar el monto original, pero usar el convertido para cálculos)
+    const medioPagoAGuardar = {
+      ...medioPagoActual,
+      montoConvertido: montoEnARS // Guardar el monto convertido para cálculos
+    };
+    setMediosPago([...mediosPago, medioPagoAGuardar]);
+    
+    // Actualizar total acumulado usando el monto convertido
+    const nuevoTotal = totalAcumulado + montoEnARS;
     setTotalAcumulado(nuevoTotal);
     
     // Calcular vuelto y actualizar total a pagar
@@ -250,8 +261,9 @@ export default function IngresarPago() {
     const nuevosMedios = mediosPago.filter((_, i) => i !== index);
     setMediosPago(nuevosMedios);
     
-    // Recalcular totales
-    const nuevoTotal = totalAcumulado - medio.monto;
+    // Recalcular totales (usar monto convertido si existe, sino el monto original)
+    const montoAEliminar = (medio as any).montoConvertido || medio.monto;
+    const nuevoTotal = totalAcumulado - montoAEliminar;
     setTotalAcumulado(nuevoTotal);
     
     const deudaOriginal = facturaSeleccionada!.total;
@@ -539,12 +551,26 @@ export default function IngresarPago() {
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-indigo-950 mb-3">Medios de Pago Utilizados:</h3>
                 <div className="space-y-2">
-                  {mediosPago.map((medio, index) => (
+                  {mediosPago.map((medio, index) => {
+                    const montoMostrar = medio.tipo === "MONEDA_EXTRANJERA" && medio.montoConvertido
+                      ? medio.montoConvertido
+                      : medio.monto;
+                    const montoOriginal = medio.tipo === "MONEDA_EXTRANJERA" ? medio.monto : null;
+                    
+                    return (
                     <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div className="flex-1">
-                        <p className="font-semibold text-indigo-950">{medio.tipo}</p>
+                        <p className="font-semibold text-indigo-950">
+                          {medio.tipo}
+                          {medio.tipo === "MONEDA_EXTRANJERA" && medio.tipoMoneda && ` (${medio.tipoMoneda})`}
+                        </p>
+                        {medio.tipo === "MONEDA_EXTRANJERA" && montoOriginal && (
+                          <p className="text-xs text-gray-500">
+                            {montoOriginal.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {medio.tipoMoneda} × {medio.cotizacion} = 
+                          </p>
+                        )}
                         <p className="text-sm text-gray-600">
-                          ${medio.monto.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          ${montoMostrar.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ARS
                         </p>
                       </div>
                       <button
@@ -554,7 +580,8 @@ export default function IngresarPago() {
                         Eliminar
                       </button>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div className="mt-4 p-3 bg-indigo-100 rounded-lg">
                   <p className="text-sm text-gray-600">Total Acumulado:</p>
@@ -613,7 +640,7 @@ export default function IngresarPago() {
                   </div>
                   
                   {/* Campos específicos según medio de pago */}
-                  {(medioPagoSeleccionado === "MONEDA_LOCAL" || medioPagoSeleccionado === "MONEDA_EXTRANJERA") && (
+                  {medioPagoSeleccionado === "MONEDA_LOCAL" && (
                     <div>
                       <label className="text-indigo-950 font-semibold mb-2 block text-sm">Moneda:</label>
                       <select
@@ -624,13 +651,23 @@ export default function IngresarPago() {
                       >
                         <option value="">Seleccionar moneda</option>
                         <option value="ARS">ARS (Pesos Argentinos)</option>
-                        {medioPagoSeleccionado === "MONEDA_EXTRANJERA" && (
-                          <>
-                            <option value="USD">USD (Dólares)</option>
-                            <option value="EUR">EUR (Euros)</option>
-                            <option value="BRL">BRL (Reales)</option>
-                          </>
-                        )}
+                      </select>
+                    </div>
+                  )}
+                  
+                  {medioPagoSeleccionado === "MONEDA_EXTRANJERA" && (
+                    <div>
+                      <label className="text-indigo-950 font-semibold mb-2 block text-sm">Moneda:</label>
+                      <select
+                        value={medioPagoActual.tipoMoneda || ""}
+                        onChange={(e) => setMedioPagoActual({ ...medioPagoActual, tipoMoneda: e.target.value })}
+                        onKeyDown={handleKeyDownInput}
+                        className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      >
+                        <option value="">Seleccionar moneda</option>
+                        <option value="USD">USD (Dólares)</option>
+                        <option value="EUR">EUR (Euros)</option>
+                        <option value="BRL">BRL (Reales)</option>
                       </select>
                     </div>
                   )}
