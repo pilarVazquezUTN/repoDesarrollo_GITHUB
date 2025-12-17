@@ -822,6 +822,3 @@ function FacturaSaldadaCartel({ onClose }: { onClose: () => void }) {
     </div>
   );
 }
-    </main>
-  );
-}
