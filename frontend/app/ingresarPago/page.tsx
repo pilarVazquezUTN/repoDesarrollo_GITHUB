@@ -809,7 +809,7 @@ export default function IngresarPago() {
                     onClick={agregarMedioPago}
                     className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg font-semibold"
                   >
-                    Agregar Medio de Pago
+                    Guardar
                   </button>
                 </div>
               )}
