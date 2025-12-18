@@ -314,9 +314,11 @@ El uso de este patrón facilita la extensión del sistema ante nuevos eventos de
 
 ## 🧪 Testing
 
-Se implementaron tests unitarios en la capa de servicio utilizando **JUnit y Mockito**, alcanzando una cobertura mínima del **80%** en al menos 3 servicios.
+Se implementaron tests unitarios en la capa de servicio utilizando **JUnit y Mockito**, alcanzando una cobertura mínima del **80%** de los casos posibles en 4 archivos de la capa de servicios.
 
 Para ejecutar los tests:
+
+Desde la carpeta `/backend`:
 
 ```bash
 mvn test

@@ -118,6 +118,15 @@ export default function Header() {
         >
           Ingresar Pago
         </Link>
+        <Link href="/ingresarNotaCredito"
+          className={` ${
+                pathname === "/ingresarNotaCredito"
+                  ? "text-gray-500"
+                  : "hover:text-gray-500"
+              }`}
+        >
+          Ingresar Nota De Credito
+        </Link>
 
         {/*<Link href="/ocuparHabitacion"
           className={` ${
