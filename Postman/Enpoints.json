@@ -122,6 +122,62 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Estadia",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"checkin\": \"2025-12-17\",\r\n  \"habitacion\": {\r\n    \"numero\": 104\r\n  },\r\n  \"listahuesped\": [\r\n    {\r\n      \"huespedID\": {\r\n        \"tipoDocumento\": \"DNI\",\r\n        \"dni\": \"35499876\"\r\n      }\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/estadias",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"estadias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Huesped",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"huespedID\": {\r\n    \"tipoDocumento\": \"DNI\",\r\n    \"dni\": \"12345678\"\r\n  },\r\n  \"nombre\": \"Juan\",\r\n  \"apellido\": \"Pérez\",\r\n  \"fechaNacimiento\": \"1990-05-15\",\r\n  \"telefono\": \"351-1234567\",\r\n  \"email\": \"juan@email.com\",\r\n  \"cuit\": \"20-12345678-9\",\r\n  \"posicionIva\": \"CONSUMIDOR_FINAL\",\r\n  \"ocupacion\": \"Ingeniero\",\r\n  \"nacionalidad\": \"Argentina\",\r\n  \"direccion\": {\r\n    \"calle\": \"San Martín\",\r\n    \"numero\": 1234,\r\n    \"localidad\": \"Córdoba\",\r\n    \"departamento\": \"A\",\r\n    \"piso\": 3,\r\n    \"codigoPostal\": 5000,\r\n    \"provincia\": \"Córdoba\",\r\n    \"pais\": \"Argentina\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/huespedes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"huespedes"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
