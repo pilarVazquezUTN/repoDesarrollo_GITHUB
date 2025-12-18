@@ -97,7 +97,7 @@ El repositorio incluye un backup de la base de datos con las tablas y datos nece
 
 #### Pasos para restaurar el backup en pgAdmin
 
-1. AbrirpgAdmin (Obligatorio Postrgre 18)
+1. Abrir pgAdmin **(Obligatorio Postrgre 18)**
 2. Crear una base de datos vacía (por ejemplo `hotelpremier`)
 3. Hacer clic derecho sobre la base de datos creada
 4. Seleccionar Restore
@@ -106,7 +106,7 @@ El repositorio incluye un backup de la base de datos con las tablas y datos nece
 
 #### Configuración en application.properties
 
-Una vez restaurada la base de datos, verificar que los datos de conexión en`application.properties` coincidan con la base creada:
+Una vez restaurada la base de datos, verificar que los datos de conexión en `application.properties` coincidan con la base creada:
 
 spring.datasource.url=jdbc:postgresql://localhost:5432/hotelpremier
 spring.datasource.username=USUARIO
