@@ -93,33 +93,26 @@ El sistema permite gestionar reservas, estadías, huéspedes, facturación y pag
 
 ### 1️⃣ Cargar base de datos en PostgreSQL (pgAdmin)
 
-El repositorio incluye un **backup de la base de datos** con las tablas y datos necesarios para probar el sistema.
-
-El archivo se encuentra en:
-
-/sql/hotelpremier.backup
+El repositorio incluye un backup de la base de datos con las tablas y datos necesarios para probar el sistema.
 
 #### Pasos para restaurar el backup en pgAdmin
 
-    1. AbrirpgAdmin **(Obligatorio Postrgre 18)**
-    2. Crear una base de datos vacía (por ejemplo `hotelpremier`)
-    3. Hacer clic derecho sobre la base de datos creada
-    4. Seleccionar **Restore**
-    5. En la opción **Filename**, seleccionar el archivo:
-
-    /sql/hotelpremier.backup
-
-    6. Presionar**Restore** y esperar a que finalice el proceso
+1. Abrir pgAdmin **(Obligatorio Postrgre 18)**
+2. Crear una base de datos vacía (por ejemplo `hotelpremier`)
+3. Hacer clic derecho sobre la base de datos creada
+4. Seleccionar Restore
+5. En la opción Filename, seleccionar el archivo: /sql/hotelpremier.backup
+6. Presionar Restore y esperar a que finalice el proceso
 
 #### Configuración en application.properties
 
-    Una vez restaurada la base de datos, verificar que los datos de conexión en`application.properties` coincidan con la base creada:
+Una vez restaurada la base de datos, verificar que los datos de conexión en `application.properties` coincidan con la base creada:
 
     spring.datasource.url=jdbc:postgresql://localhost:5432/hotelpremier
     spring.datasource.username=USUARIO
     spring.datasource.password=PASSWORD
 
-    De esta forma, el backend podrá conectarse correctamente a la base de datos restaurada.
+De esta forma, el backend podrá conectarse correctamente a la base de datos restaurada.
 
 ---
 
