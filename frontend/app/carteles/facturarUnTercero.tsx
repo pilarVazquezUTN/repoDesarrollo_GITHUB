@@ -29,15 +29,26 @@ export default function FacturarUnTerceroModal({ onClose, onAceptar }: Props) {
         params: { cuit: cuit.trim() }
       });
 
-      if (response.data && response.data.length > 0) {
-        setRazonSocial(response.data[0].razonSocial || "");
+      // El backend puede devolver un objeto {id: X, razonSocial: "..."} o un array
+      const data = response.data;
+      
+      if (data && data.id) {
+        // Respuesta es un objeto único con id
+        setRazonSocial(data.razonSocial || data.nombre || "Responsable encontrado");
+      } else if (Array.isArray(data) && data.length > 0) {
+        // Respuesta es un array
+        setRazonSocial(data[0].razonSocial || data[0].nombre || "Responsable encontrado");
       } else {
         setError("No se encontró un responsable de pago con ese CUIT");
         setRazonSocial("");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al buscar CUIT:", error);
-      setError("Error al buscar el CUIT. Verifique que sea correcto.");
+      if (error.response?.status === 404) {
+        setError("No se encontró un responsable de pago con ese CUIT");
+      } else {
+        setError("Error al buscar el CUIT. Verifique que sea correcto.");
+      }
       setRazonSocial("");
     } finally {
       setBuscando(false);

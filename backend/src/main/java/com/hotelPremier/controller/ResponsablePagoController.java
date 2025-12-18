@@ -40,18 +40,20 @@ public class ResponsablePagoController {
         @Parameter(description = "CUIT de la persona jurídica (opcional)", example = "20-12345678-9")
         @RequestParam(required = false) String cuit
     ) {
-        Integer id = responsablePagoService.buscarResponsablePago(dni, tipoDocumento, cuit);
-        return ResponseEntity.ok(new ResponsablePagoIdResponse(id));
+        var result = responsablePagoService.buscarResponsablePago(dni, tipoDocumento, cuit);
+        return ResponseEntity.ok(new ResponsablePagoIdResponse(result.id(), result.razonSocial()));
     }
     
     /**
-     * Clase interna para devolver solo el ID en la respuesta JSON.
+     * Clase interna para devolver el ID y razón social (si aplica) en la respuesta JSON.
      */
     private static class ResponsablePagoIdResponse {
         private Integer id;
+        private String razonSocial;
         
-        public ResponsablePagoIdResponse(Integer id) {
+        public ResponsablePagoIdResponse(Integer id, String razonSocial) {
             this.id = id;
+            this.razonSocial = razonSocial;
         }
         
         public Integer getId() {
@@ -60,6 +62,14 @@ public class ResponsablePagoController {
         
         public void setId(Integer id) {
             this.id = id;
+        }
+        
+        public String getRazonSocial() {
+            return razonSocial;
+        }
+        
+        public void setRazonSocial(String razonSocial) {
+            this.razonSocial = razonSocial;
         }
     }
 }
