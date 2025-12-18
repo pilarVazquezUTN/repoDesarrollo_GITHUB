@@ -1,7 +1,7 @@
 package com.hotelPremier.classes.Dominio.factura.estado;
 
 import com.hotelPremier.classes.Dominio.Factura;
-import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.classes.exception.NegocioException;
 
 /**
  * Clase abstracta que define el comportamiento según el estado de la factura.

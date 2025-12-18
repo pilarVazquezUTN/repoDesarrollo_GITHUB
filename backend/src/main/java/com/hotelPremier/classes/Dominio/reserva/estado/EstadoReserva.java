@@ -2,7 +2,7 @@ package com.hotelPremier.classes.Dominio.reserva.estado;
 
 import com.hotelPremier.classes.Dominio.Reserva;
 import com.hotelPremier.classes.Dominio.Estadia;
-import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.classes.exception.NegocioException;
 
 /**
  * Clase abstracta que define el comportamiento según el estado de la reserva.

@@ -7,7 +7,4 @@ import com.hotelPremier.classes.Dominio.Direccion;
 
 @Repository
 public interface DireccionRepository extends JpaRepository<Direccion,Integer> {
-
-    @Override
-    Direccion save(Direccion direccion);
 }

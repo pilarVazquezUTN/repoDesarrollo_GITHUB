@@ -28,7 +28,7 @@ El sistema permite gestionar reservas, estadías, huéspedes, facturación y pag
 - PostgreSQL
 - Maven
 - JUnit 5 + Mockito
-- Swagger (OpenAPI)
+- Swagger
 
 ### Frontend
 
@@ -48,7 +48,7 @@ El sistema permite gestionar reservas, estadías, huéspedes, facturación y pag
 
 ```
 .
-├── backend 					 → Backend Spring Boot
+├── backend 					    → Backend Spring Boot
 │   └── src
 │       ├── main
 │       │   ├── java
@@ -63,23 +63,23 @@ El sistema permite gestionar reservas, estadías, huéspedes, facturación y pag
 │       │   │           ├── controller
 │       │   │           ├── repository
 │       │   │           └── service
-│       │   └── resources
+│       │   └── resources			   → application.properties
 │       └── test
 │           └── java
 │               └── com
 │                   └── hotelPremier
 │                       └── service
 │
-├── frontend 					  → Frontend en Next.js
+├── frontend 					   → Frontend en Next.js
 │   ├── app
 │   ├── components
 │   └── public
 │
-├── sql						  → Archivo .sql de backup con tablas y datos precargados
+├── sql						   → Archivo .sql de backup con tablas y datos precargados
 │
-├── Postman				          → Archivo con export de postman, con ejemplos de endpoints
+├── Postman				           → Archivo con export de postman, con ejemplos de endpoints
 │
-├── EntregaDiseñoCU_Diagramas			  → Diagramas 
+├── EntregaDiseñoCU_Diagramas			   → Diagramas de clases, secuencia , entidad relacion 
 │
 └── README.md
 

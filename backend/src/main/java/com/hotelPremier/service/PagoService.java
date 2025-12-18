@@ -18,8 +18,8 @@ import com.hotelPremier.classes.Dominio.medioDePago.strategy.MedioPagoStrategy;
 import com.hotelPremier.classes.Dominio.medioDePago.strategy.SelectorMedioPagoStrategy;
 import com.hotelPremier.classes.Dominio.factura.observer.PagoFacturaObserver;
 
-import com.hotelPremier.exception.NegocioException;
-import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.classes.exception.NegocioException;
+import com.hotelPremier.classes.exception.RecursoNoEncontradoException;
 import com.hotelPremier.repository.FacturaRepository;
 import com.hotelPremier.repository.PagoRepository;
 

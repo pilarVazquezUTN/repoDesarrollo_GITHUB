@@ -1,6 +1,6 @@
 package com.hotelPremier.service;
 
-import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.classes.exception.RecursoNoEncontradoException;
 import com.hotelPremier.repository.ResponsablePagoRepository;
 import com.hotelPremier.classes.Dominio.responsablePago.PersonaFisica;
 import com.hotelPremier.classes.Dominio.responsablePago.PersonaJuridica;

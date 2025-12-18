@@ -1,4 +1,4 @@
-package com.hotelPremier.exception;
+package com.hotelPremier.classes.exception;
 
 /**
  * Excepción lanzada cuando una operación viola una regla de negocio.

@@ -19,8 +19,8 @@ import com.hotelPremier.classes.DTO.PagoDTO;
 import com.hotelPremier.classes.DTO.FacturaDTO;
 import com.hotelPremier.classes.DTO.medioDePago.MonedaLocalDTO;
 import com.hotelPremier.classes.Dominio.Factura;
-import com.hotelPremier.exception.NegocioException;
-import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.classes.exception.NegocioException;
+import com.hotelPremier.classes.exception.RecursoNoEncontradoException;
 import com.hotelPremier.repository.FacturaRepository;
 import com.hotelPremier.repository.PagoRepository;
 

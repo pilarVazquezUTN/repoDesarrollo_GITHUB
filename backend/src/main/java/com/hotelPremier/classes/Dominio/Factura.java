@@ -10,7 +10,7 @@ import com.hotelPremier.classes.Dominio.factura.estado.FacturaGenerada;
 import com.hotelPremier.classes.Dominio.factura.estado.FacturaPagada;
 import com.hotelPremier.classes.Dominio.factura.estado.FacturaCancelada;
 import com.hotelPremier.classes.Dominio.factura.observer.FacturaObserver;
-import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.classes.exception.NegocioException;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

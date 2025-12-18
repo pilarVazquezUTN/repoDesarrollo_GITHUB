@@ -2,7 +2,7 @@ package com.hotelPremier.classes.Dominio.factura.observer;
 
 import com.hotelPremier.classes.Dominio.Factura;
 import com.hotelPremier.classes.Dominio.NotaDeCredito;
-import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.classes.exception.NegocioException;
 
 /**
  * Observer que reacciona cuando una factura pasa a estado CANCELADA.

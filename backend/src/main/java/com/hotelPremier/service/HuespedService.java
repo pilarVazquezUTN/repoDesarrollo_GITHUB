@@ -4,7 +4,7 @@ import com.hotelPremier.classes.DTO.HuespedDTO;
 import com.hotelPremier.classes.Dominio.Direccion;
 import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.Dominio.HuespedID;
-import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.classes.exception.RecursoNoEncontradoException;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.DireccionRepository;
 import com.hotelPremier.repository.HuespedRepository;

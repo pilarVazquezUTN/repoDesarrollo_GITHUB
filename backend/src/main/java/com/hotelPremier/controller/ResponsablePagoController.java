@@ -46,7 +46,8 @@ public class ResponsablePagoController {
     
     /**
      * Clase interna para devolver el ID y razón social (si aplica) en la respuesta JSON.
-     */
+    * Esto es solo para devolverle un DTO especifico al frontend
+    */
     private static class ResponsablePagoIdResponse {
         private Integer id;
         private String razonSocial;

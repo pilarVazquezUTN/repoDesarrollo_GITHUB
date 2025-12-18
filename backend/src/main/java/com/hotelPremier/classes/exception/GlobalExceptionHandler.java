@@ -1,4 +1,4 @@
-package com.hotelPremier.exception;
+package com.hotelPremier.classes.exception;
 
 import com.hotelPremier.classes.DTO.ErrorResponse;
 import org.springframework.http.HttpStatus;

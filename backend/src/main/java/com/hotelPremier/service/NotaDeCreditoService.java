@@ -5,8 +5,8 @@ import com.hotelPremier.classes.Dominio.NotaDeCredito;
 import com.hotelPremier.classes.DTO.NotaDeCreditoDTO;
 import com.hotelPremier.classes.DTO.FacturaDTO;
 import com.hotelPremier.classes.Dominio.factura.observer.NotaCreditoFacturaObserver;
-import com.hotelPremier.exception.NegocioException;
-import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.classes.exception.NegocioException;
+import com.hotelPremier.classes.exception.RecursoNoEncontradoException;
 import com.hotelPremier.repository.FacturaRepository;
 import com.hotelPremier.repository.NotaDeCreditoRepository;
 

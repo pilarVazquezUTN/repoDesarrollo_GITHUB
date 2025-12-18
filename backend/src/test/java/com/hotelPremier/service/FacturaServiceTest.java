@@ -17,7 +17,7 @@ import com.hotelPremier.classes.DTO.EstadiaDTO;
 import com.hotelPremier.classes.DTO.FacturaDTO;
 import com.hotelPremier.classes.Dominio.*;
 import com.hotelPremier.classes.mapper.ClassMapper;
-import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.classes.exception.RecursoNoEncontradoException;
 import com.hotelPremier.repository.*;
 
 @ExtendWith(MockitoExtension.class)

@@ -5,7 +5,7 @@ import com.hotelPremier.classes.Dominio.Estadia;
 import com.hotelPremier.classes.Dominio.estadia.observer.ActualizarHabitacionObserver;
 import com.hotelPremier.classes.Dominio.estadia.observer.ActualizarReservaObserver;
 import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
-import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.classes.exception.RecursoNoEncontradoException;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.EstadiaRepository;
 import com.hotelPremier.repository.ServicioExtraRepository;

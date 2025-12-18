@@ -4,7 +4,7 @@ import com.hotelPremier.classes.Dominio.Estadia;
 import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
 import com.hotelPremier.classes.Dominio.Factura;
-import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.classes.exception.NegocioException;
 import java.util.Date;
 
 /**

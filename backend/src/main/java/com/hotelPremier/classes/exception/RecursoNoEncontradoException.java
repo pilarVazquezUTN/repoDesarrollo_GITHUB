@@ -1,4 +1,4 @@
-package com.hotelPremier.exception;
+package com.hotelPremier.classes.exception;
 
 /**
  * Excepción lanzada cuando un recurso solicitado no existe en el sistema.
