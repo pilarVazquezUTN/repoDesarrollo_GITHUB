@@ -50,9 +50,14 @@ public class FacturaService {
     private ClassMapper mapper;
 
     /**
-     * Obtiene las facturas de estadías en curso para una habitación.
+     * Obtiene las facturas de estadías finalizadas para una habitación.
      */
     public List<FacturaDTO> obtenerFacturasPorHabitacion(Integer nroHabitacion) {
+
+        // Verificar que la habitación existe
+        if (habitacionRepository.findByNumero(nroHabitacion) == null) {
+            throw new RecursoNoEncontradoException("Habitación no encontrada con número: " + nroHabitacion);
+        }
 
         List<Factura> lista = facturaRepository.findAll().stream()
                 .filter(f -> f.getEstadia() != null &&

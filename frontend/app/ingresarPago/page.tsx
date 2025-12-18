@@ -115,7 +115,7 @@ export default function IngresarPago() {
       }
     } catch (error: any) {
       console.error("Error al buscar facturas:", error);
-      setMensajeError("Error al buscar facturas. Verifique el número de habitación.");
+      setMensajeError("Error al buscar facturas. El numero de habitacion no existe.");
       setFacturas([]);
     } finally {
       setBuscando(false);
@@ -604,7 +604,7 @@ export default function IngresarPago() {
                   className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="">Seleccionar medio de pago</option>
-                  <option value="MONEDA_LOCAL">Moneda</option>
+                  <option value="MONEDA_LOCAL">Moneda Local</option>
                   <option value="CHEQUE">Cheques</option>
                   <option value="TARJETA_CREDITO">Tarjetas de crédito</option>
                   <option value="TARJETA_DEBITO">Tarjetas de débito</option>
@@ -623,7 +623,8 @@ export default function IngresarPago() {
                       value={medioPagoActual.monto || ""}
                       onChange={(e) => setMedioPagoActual({ ...medioPagoActual, monto: parseFloat(e.target.value) || 0 })}
                       onKeyDown={handleKeyDownInput}
-                      className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      onWheel={(e) => e.currentTarget.blur()}
+                      className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       placeholder="0.00"
                     />
                   </div>
@@ -682,7 +683,8 @@ export default function IngresarPago() {
                         value={medioPagoActual.cotizacion || ""}
                         onChange={(e) => setMedioPagoActual({ ...medioPagoActual, cotizacion: parseFloat(e.target.value) || 0 })}
                         onKeyDown={handleKeyDownInput}
-                        className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        onWheel={(e) => e.currentTarget.blur()}
+                        className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         placeholder="Ingrese la cotización"
                       />
                       <p className="text-xs text-gray-500 mt-1">
@@ -718,7 +720,8 @@ export default function IngresarPago() {
                           value={medioPagoActual.cuotas || ""}
                           onChange={(e) => setMedioPagoActual({ ...medioPagoActual, cuotas: parseInt(e.target.value) || 0 })}
                           onKeyDown={handleKeyDownInput}
-                          className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          onWheel={(e) => e.currentTarget.blur()}
+                          className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           placeholder="1"
                         />
                       </div>
@@ -767,7 +770,8 @@ export default function IngresarPago() {
                           value={medioPagoActual.numeroCheque || ""}
                           onChange={(e) => setMedioPagoActual({ ...medioPagoActual, numeroCheque: parseInt(e.target.value) || 0 })}
                           onKeyDown={handleKeyDownInput}
-                          className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          onWheel={(e) => e.currentTarget.blur()}
+                          className="w-full p-3 border-2 rounded-lg text-indigo-950 border-gray-300 hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           placeholder="Número de cheque"
                         />
                       </div>
