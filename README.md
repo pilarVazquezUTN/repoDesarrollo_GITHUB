@@ -108,9 +108,9 @@ El repositorio incluye un backup de la base de datos con las tablas y datos nece
 
 Una vez restaurada la base de datos, verificar que los datos de conexión en `application.properties` coincidan con la base creada:
 
-spring.datasource.url=jdbc:postgresql://localhost:5432/hotelpremier
-spring.datasource.username=USUARIO
-spring.datasource.password=PASSWORD
+    spring.datasource.url=jdbc:postgresql://localhost:5432/hotelpremier
+    spring.datasource.username=USUARIO
+    spring.datasource.password=PASSWORD
 
 De esta forma, el backend podrá conectarse correctamente a la base de datos restaurada.
 
