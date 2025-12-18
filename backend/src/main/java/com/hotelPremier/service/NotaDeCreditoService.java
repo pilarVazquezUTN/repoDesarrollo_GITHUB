@@ -5,6 +5,8 @@ import com.hotelPremier.classes.Dominio.NotaDeCredito;
 import com.hotelPremier.classes.DTO.NotaDeCreditoDTO;
 import com.hotelPremier.classes.DTO.FacturaDTO;
 import com.hotelPremier.classes.Dominio.factura.observer.NotaCreditoFacturaObserver;
+import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
 import com.hotelPremier.repository.FacturaRepository;
 import com.hotelPremier.repository.NotaDeCreditoRepository;
 
@@ -43,7 +45,7 @@ public class NotaDeCreditoService {
         List<Factura> facturas = facturaRepo.findAllById(ids);
 
         if (facturas.isEmpty()) {
-            throw new IllegalArgumentException("No se encontraron facturas válidas.");
+            throw new RecursoNoEncontradoException("No se encontraron facturas válidas con los IDs proporcionados.");
         }
 
         float sumaTotales = facturas.stream()
@@ -51,8 +53,9 @@ public class NotaDeCreditoService {
                 .reduce(0f, Float::sum);
 
         if (dto.getImporte() < sumaTotales) {
-            throw new IllegalArgumentException(
-                "El importe de la nota de crédito es insuficiente. Debe ser al menos: " + sumaTotales
+            throw new NegocioException(
+                String.format("El importe de la nota de crédito (%.2f) es insuficiente. Debe ser al menos: %.2f", 
+                    dto.getImporte(), sumaTotales)
             );
         }
 

@@ -10,6 +10,7 @@ import com.hotelPremier.classes.Dominio.factura.estado.FacturaGenerada;
 import com.hotelPremier.classes.Dominio.factura.estado.FacturaPagada;
 import com.hotelPremier.classes.Dominio.factura.estado.FacturaCancelada;
 import com.hotelPremier.classes.Dominio.factura.observer.FacturaObserver;
+import com.hotelPremier.exception.NegocioException;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -164,7 +165,7 @@ public class Factura {
         // Si la factura está en PENDIENTE, puede pasar a GENERADA
         // (PENDIENTE = antes del cálculo, GENERADA = checkout confirmado)
         if (!"PENDIENTE".equals(this.estado)) {
-            throw new IllegalStateException("Solo se puede generar una factura final desde estado PENDIENTE. Estado actual: " + this.estado);
+            throw new NegocioException("Solo se puede generar una factura final desde estado PENDIENTE. Estado actual: " + this.estado);
         }
         
         // Cambiar a GENERADA usando State (método centralizado para transiciones)

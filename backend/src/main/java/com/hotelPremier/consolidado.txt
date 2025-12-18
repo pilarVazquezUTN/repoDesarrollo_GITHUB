@@ -1,0 +1,3864 @@
+//[classes/Dominio/Direccion.java]
+    package com.hotelPremier.classes.Dominio;
+    import jakarta.persistence.*;
+    @Entity
+    @Table(name="direccion")
+    public class Direccion {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "id_direccion")
+        private Integer id_direccion;
+        @Column(name="calle")
+        private String calle;
+        @Column(name="numero")
+        private Integer numero;
+        @Column(name="localidad")
+        private String localidad;
+        @Column(name="departamento")
+        private String departamento;
+        @Column(name="piso")
+        private Integer piso;
+        @Column(name="codigopostal")
+        private Integer codigoPostal;
+        @Column(name="provincia")
+        private String provincia;
+        @Column(name="pais")
+        private String pais;
+        public Integer getID() { return id_direccion; }
+        public void setID(Integer id){ this.id_direccion = id; }
+        public String getCalle() { return calle; }
+        public void setCalle(String calle) { this.calle = calle; }
+        public Integer getNumero() { return numero; }
+        public void setNumero(Integer numero) { this.numero = numero; }
+        public String getLocalidad() { return localidad; }
+        public void setLocalidad(String localidad) { this.localidad = localidad; }
+        public String getDepartamento() { return departamento; }
+        public void setDepartamento(String departamento) { this.departamento = departamento; }
+        public Integer getPiso() { return piso; }
+        public void setPiso(Integer piso) { this.piso = piso; }
+        public Integer getCodigoPostal() { return codigoPostal; }
+        public void setCodigoPostal(Integer codigoPostal) { this.codigoPostal = codigoPostal; }
+        public String getProvincia() { return provincia; }
+        public void setProvincia(String provincia) { this.provincia = provincia; }
+        public String getPais() { return pais; }
+        public void setPais(String pais) { this.pais = pais; }
+    }
+//[classes/Dominio/estadia/estado/EstadiaEnCurso.java]
+package com.hotelPremier.classes.Dominio.estadia.estado;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import com.hotelPremier.classes.Dominio.Factura;
+import java.util.List;
+public class EstadiaEnCurso extends EstadoEstadia {
+    @Override
+    public String getNombre() {
+        return "ENCURSO";
+    }
+    @Override
+    public void agregarHuesped(Estadia estadia, Huesped huesped) {
+        List<Huesped> lista = estadia.getListahuesped();
+        if (lista != null && !lista.contains(huesped)) {
+            lista.add(huesped);
+        }
+    }
+    @Override
+    public void agregarServicioExtra(Estadia estadia, ServicioExtra servicio) {
+    }
+    @Override
+    public void generarFactura(Estadia estadia, Factura factura) {
+        List<Factura> lista = estadia.getListafactura();
+        if (lista != null) {
+            factura.setEstadia(estadia);
+            lista.add(factura);
+        }
+    }
+    @Override
+    public void finalizar(Estadia estadia) {
+        estadia.setEstadoEstadia(new EstadiaFinalizada());
+    }
+}
+//[classes/Dominio/estadia/estado/EstadiaFinalizada.java]
+package com.hotelPremier.classes.Dominio.estadia.estado;
+public class EstadiaFinalizada extends EstadoEstadia {
+    @Override
+    public String getNombre() {
+        return "FINALIZADA";
+    }
+}
+//[classes/Dominio/estadia/estado/EstadoEstadia.java]
+package com.hotelPremier.classes.Dominio.estadia.estado;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.exception.NegocioException;
+import java.util.Date;
+public abstract class EstadoEstadia {
+    public abstract String getNombre();
+    public void agregarHuesped(Estadia estadia, Huesped huesped) {
+        throw new NegocioException("No se puede agregar huésped en estado " + getNombre());
+    }
+    public void agregarServicioExtra(Estadia estadia, ServicioExtra servicio) {
+        throw new NegocioException("No se puede agregar servicio extra en estado " + getNombre());
+    }
+    public void generarFactura(Estadia estadia, Factura factura) {
+        throw new NegocioException("No se puede generar una factura para una estadía en estado " + getNombre());
+    }
+    public void modificarFechas(Estadia estadia, Date nuevoCheckin, Date nuevoCheckout) {
+        throw new NegocioException("No se pueden modificar fechas en estado " + getNombre());
+    }
+    public void finalizar(Estadia estadia) {
+        throw new NegocioException("No se puede finalizar en estado " + getNombre());
+    }
+}
+//[classes/Dominio/estadia/observer/ActualizarHabitacionObserver.java]
+package com.hotelPremier.classes.Dominio.estadia.observer;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+public class ActualizarHabitacionObserver implements EstadiaObserver {
+    @Override
+    public void actualizar(Estadia estadia) {
+        Habitacion habitacion = estadia.getHabitacion();
+        if (habitacion != null) {
+            habitacion.setEstado("OCUPADA");
+        }
+    }
+}
+//[classes/Dominio/estadia/observer/ActualizarReservaObserver.java]
+package com.hotelPremier.classes.Dominio.estadia.observer;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Reserva;
+public class ActualizarReservaObserver implements EstadiaObserver {
+    @Override
+    public void actualizar(Estadia estadia) {
+        Reserva reserva = estadia.getReserva();
+        if (reserva != null) {
+            reserva.consumir();
+        }
+    }
+}
+//[classes/Dominio/estadia/observer/EstadiaObserver.java]
+package com.hotelPremier.classes.Dominio.estadia.observer;
+import com.hotelPremier.classes.Dominio.Estadia;
+public interface EstadiaObserver {
+    void actualizar(Estadia estadia);
+}
+//[classes/Dominio/Estadia.java]
+package com.hotelPremier.classes.Dominio;
+import java.util.Date;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hotelPremier.classes.Dominio.estadia.estado.EstadoEstadia;
+import com.hotelPremier.classes.Dominio.estadia.estado.EstadiaEnCurso;
+import com.hotelPremier.classes.Dominio.estadia.estado.EstadiaFinalizada;
+import com.hotelPremier.classes.Dominio.estadia.observer.EstadiaObserver;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+@Entity
+@Table(name="estadia")
+public class Estadia {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id_estadia")
+    private Integer id_estadia;
+    @Temporal(TemporalType.DATE)
+    @Column(name="checkin")
+    private Date checkin;
+    @Temporal(TemporalType.DATE)
+    @Column(name="checkout")
+    private Date checkout;
+    @ManyToOne
+    @JoinColumn(name = "nro_habitacion")
+    @JsonBackReference(value = "habitacion-estadias")
+    private Habitacion habitacion;
+    @ManyToMany(mappedBy = "listaEstadia", fetch = FetchType.EAGER)
+    @JsonManagedReference(value = "estadia-huespedes")
+    private List<Huesped> listahuesped;
+    @OneToMany(mappedBy = "estadia")
+    @JsonManagedReference(value = "estadia-facturas")
+    private List<Factura> listafactura;
+    @OneToOne
+    @JoinColumn(name = "id_reserva")
+    @JsonBackReference(value = "reserva-estadia")
+    private Reserva reserva;
+    @Column(name="estado")
+    private String estado;
+    @Transient
+    private EstadoEstadia estadoEstadia;
+    @Transient
+    private List<EstadiaObserver> observers = new ArrayList<>();
+    public Estadia() {
+        this.estado = "ENCURSO";
+        this.estadoEstadia = new EstadiaEnCurso();
+    }
+    public Integer getId_estadia() { return id_estadia; }
+    public void setId_estadia(Integer id_estadia) { this.id_estadia = id_estadia; }
+    public Date getCheckin() { return checkin; }
+    public void setCheckin(Date checkin) { this.checkin = checkin; }
+    public Date getCheckout() { return checkout; }
+    public void setCheckout(Date checkout) { this.checkout = checkout; }
+    public Habitacion getHabitacion() { return habitacion; }
+    public void setHabitacion(Habitacion habitacion) { this.habitacion = habitacion; }
+    public List<Huesped> getListahuesped() { return listahuesped; }
+    public void setListahuesped(List<Huesped> listahuesped) { this.listahuesped = listahuesped; }
+    public List<Factura> getListafactura() { return listafactura; }
+    public void setListafactura(List<Factura> listafactura) { this.listafactura = listafactura; }
+    public Reserva getReserva() { return reserva; }
+    public void setReserva(Reserva reserva) { this.reserva = reserva; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { 
+        this.estado = estado;
+        syncEstado();
+    }
+    @PostLoad
+    @PostPersist
+    private void syncEstado() {
+        if (estado == null || estado.isEmpty()) {
+            estado = "ENCURSO"; // Estado por defecto
+        }
+        switch (estado.toUpperCase()) {
+            case "FINALIZADA" -> estadoEstadia = new EstadiaFinalizada();
+            default -> estadoEstadia = new EstadiaEnCurso();
+        }
+    }
+    public void setEstadoEstadia(EstadoEstadia nuevoEstado) {
+        String estadoAnterior = this.estado;
+        this.estadoEstadia = nuevoEstado;
+        this.estado = nuevoEstado.getNombre();
+        if (!estadoAnterior.equals(this.estado)) {
+            notificarObservers();
+        }
+    }
+    public void registrarObserver(EstadiaObserver observer) {
+        if (observer != null && !observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
+    public void eliminarObserver(EstadiaObserver observer) {
+        observers.remove(observer);
+    }
+    private void notificarObservers() {
+        for (EstadiaObserver observer : observers) {
+            observer.actualizar(this);
+        }
+    }
+    public void iniciarEstadia() {
+        if (!"ENCURSO".equals(this.estado)) {
+            if (estadoEstadia == null) {
+                syncEstado();
+            }
+            setEstadoEstadia(new EstadiaEnCurso());
+        }
+    }
+    public void agregarHuesped(com.hotelPremier.classes.Dominio.Huesped huesped) {
+        if (estadoEstadia == null) {
+            syncEstado();
+        }
+        estadoEstadia.agregarHuesped(this, huesped);
+    }
+    public void agregarServicioExtra(com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra servicio) {
+        if (estadoEstadia == null) {
+            syncEstado();
+        }
+        estadoEstadia.agregarServicioExtra(this, servicio);
+    }
+    public void generarFactura(Factura factura) {
+        if (estadoEstadia == null) {
+            syncEstado();
+        }
+        estadoEstadia.generarFactura(this, factura);
+    }
+    public void modificarFechas(Date nuevoCheckin, Date nuevoCheckout) {
+        if (estadoEstadia == null) {
+            syncEstado();
+        }
+        estadoEstadia.modificarFechas(this, nuevoCheckin, nuevoCheckout);
+    }
+    public void finalizar() {
+        if (estadoEstadia == null) {
+            syncEstado();
+        }
+        estadoEstadia.finalizar(this);
+    }
+}
+//[classes/Dominio/factura/calculo/CalculoFacturaBase.java]
+package com.hotelPremier.classes.Dominio.factura.calculo;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.concurrent.TimeUnit;
+public abstract class CalculoFacturaBase implements CalculoFacturaStrategy {
+    private static final BigDecimal IVA = new BigDecimal("0.21"); // 21% IVA
+    protected static final int HORA_LIMITE_CHECKOUT_NORMAL = 11; // 11:00
+    protected BigDecimal calcularCostoBase(Estadia estadia) {
+        if (estadia.getHabitacion() == null) {
+            throw new IllegalArgumentException("La estadía debe tener una habitación asociada");
+        }
+        Habitacion habitacion = estadia.getHabitacion();
+        float precioPorNoche = habitacion.getPrecio();
+        long noches = calcularCantidadNoches(estadia);
+        return BigDecimal.valueOf(precioPorNoche)
+                .multiply(BigDecimal.valueOf(noches))
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+    protected long calcularCantidadNoches(Estadia estadia) {
+        if (estadia.getCheckin() == null || estadia.getCheckout() == null) {
+            throw new IllegalArgumentException("La estadía debe tener fechas de check-in y check-out");
+        }
+        long diffInMillis = estadia.getCheckout().getTime() - estadia.getCheckin().getTime();
+        long noches = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+        return Math.max(1, noches);
+    }
+    protected BigDecimal calcularDescuentoPorNoches(Estadia estadia, BigDecimal costoBase) {
+        long noches = calcularCantidadNoches(estadia);
+        if (noches > 14) {
+            return costoBase.multiply(new BigDecimal("0.15")).setScale(2, RoundingMode.HALF_UP);
+        } else if (noches > 7) {
+            return costoBase.multiply(new BigDecimal("0.10")).setScale(2, RoundingMode.HALF_UP);
+        }
+        return BigDecimal.ZERO;
+    }
+    protected BigDecimal calcularTotalConsumos(DatosFactura datos) {
+        if (datos.getConsumosSeleccionados() == null || datos.getConsumosSeleccionados().isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        return datos.getConsumosSeleccionados().stream()
+                .filter(consumo -> consumo.getPrecio() != null)
+                .map(consumo -> BigDecimal.valueOf(consumo.getPrecio()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+    protected BigDecimal calcularIVA(BigDecimal subtotal, String tipoFactura) {
+        if (tipoFactura == null || !tipoFactura.equalsIgnoreCase("A")) {
+            return BigDecimal.ZERO;
+        }
+        return subtotal.multiply(IVA).setScale(2, RoundingMode.HALF_UP);
+    }
+    protected abstract BigDecimal calcularRecargoCheckout(Estadia estadia, DatosFactura datos);
+    protected int obtenerHoraCheckout(Estadia estadia, DatosFactura datos) {
+        if (datos.getFechaHoraCheckoutReal() == null) {
+            return HORA_LIMITE_CHECKOUT_NORMAL; // Por defecto, sin recargo
+        }
+        return datos.getFechaHoraCheckoutReal().getHour();
+    }
+    protected BigDecimal obtenerPrecioDiario(Estadia estadia) {
+        if (estadia.getHabitacion() == null) {
+            throw new IllegalArgumentException("La estadía debe tener una habitación asociada");
+        }
+        return BigDecimal.valueOf(estadia.getHabitacion().getPrecio());
+    }
+    @Override
+    public BigDecimal calcularTotal(Estadia estadia, DatosFactura datos) {
+        BigDecimal costoBase = calcularCostoBase(estadia);
+        BigDecimal descuento = calcularDescuentoPorNoches(estadia, costoBase);
+        BigDecimal subtotalHabitacion = costoBase.subtract(descuento);
+        BigDecimal recargoCheckout = calcularRecargoCheckout(estadia, datos);
+        BigDecimal totalConsumos = calcularTotalConsumos(datos);
+        BigDecimal subtotal = subtotalHabitacion.add(recargoCheckout).add(totalConsumos);
+        BigDecimal iva = calcularIVA(subtotal, datos.getTipoFactura());
+        return subtotal.add(iva).setScale(2, RoundingMode.HALF_UP);
+    }
+}
+//[classes/Dominio/factura/calculo/CalculoFacturaCheckoutMuyTarde.java]
+package com.hotelPremier.classes.Dominio.factura.calculo;
+import com.hotelPremier.classes.Dominio.Estadia;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+public class CalculoFacturaCheckoutMuyTarde extends CalculoFacturaBase {
+    private static final int HORA_LIMITE = 18;
+    @Override
+    protected BigDecimal calcularRecargoCheckout(Estadia estadia, DatosFactura datos) {
+        int horaCheckout = obtenerHoraCheckout(estadia, datos);
+        if (horaCheckout > HORA_LIMITE) {
+            return obtenerPrecioDiario(estadia).setScale(2, RoundingMode.HALF_UP);
+        }
+        return BigDecimal.ZERO;
+    }
+}
+//[classes/Dominio/factura/calculo/CalculoFacturaCheckoutTarde.java]
+package com.hotelPremier.classes.Dominio.factura.calculo;
+import com.hotelPremier.classes.Dominio.Estadia;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+public class CalculoFacturaCheckoutTarde extends CalculoFacturaBase {
+    private static final int HORA_LIMITE_INFERIOR = 11;
+    private static final int HORA_LIMITE_SUPERIOR = 18;
+    @Override
+    protected BigDecimal calcularRecargoCheckout(Estadia estadia, DatosFactura datos) {
+        int horaCheckout = obtenerHoraCheckout(estadia, datos);
+        if (horaCheckout > HORA_LIMITE_INFERIOR && horaCheckout <= HORA_LIMITE_SUPERIOR) {
+            BigDecimal precioDiario = obtenerPrecioDiario(estadia);
+            return precioDiario.multiply(new BigDecimal("0.50"))
+                    .setScale(2, RoundingMode.HALF_UP);
+        }
+        return BigDecimal.ZERO;
+    }
+}
+//[classes/Dominio/factura/calculo/CalculoFacturaNormal.java]
+package com.hotelPremier.classes.Dominio.factura.calculo;
+import com.hotelPremier.classes.Dominio.Estadia;
+import java.math.BigDecimal;
+public class CalculoFacturaNormal extends CalculoFacturaBase {
+    @Override
+    protected BigDecimal calcularRecargoCheckout(Estadia estadia, DatosFactura datos) {
+        return BigDecimal.ZERO;
+    }
+}
+//[classes/Dominio/factura/calculo/CalculoFacturaStrategy.java]
+package com.hotelPremier.classes.Dominio.factura.calculo;
+import com.hotelPremier.classes.Dominio.Estadia;
+import java.math.BigDecimal;
+public interface CalculoFacturaStrategy {
+    BigDecimal calcularTotal(Estadia estadia, DatosFactura datos);
+}
+//[classes/Dominio/factura/calculo/DatosFactura.java]
+package com.hotelPremier.classes.Dominio.factura.calculo;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import java.time.LocalDateTime;
+import java.util.List;
+public class DatosFactura {
+    private List<ServicioExtra> consumosSeleccionados;
+    private String tipoFactura; // "A" o "B"
+    private LocalDateTime fechaHoraCheckoutReal;
+    private Float totalEstimado; // Opcional, enviado por el frontend
+    public DatosFactura() {
+    }
+    public DatosFactura(List<ServicioExtra> consumosSeleccionados,
+                        String tipoFactura,
+                        LocalDateTime fechaHoraCheckoutReal,
+                        Float totalEstimado) {
+        this.consumosSeleccionados = consumosSeleccionados;
+        this.tipoFactura = tipoFactura;
+        this.fechaHoraCheckoutReal = fechaHoraCheckoutReal;
+        this.totalEstimado = totalEstimado;
+    }
+    public List<ServicioExtra> getConsumosSeleccionados() {
+        return consumosSeleccionados;
+    }
+    public void setConsumosSeleccionados(List<ServicioExtra> consumosSeleccionados) {
+        this.consumosSeleccionados = consumosSeleccionados;
+    }
+    public String getTipoFactura() {
+        return tipoFactura;
+    }
+    public void setTipoFactura(String tipoFactura) {
+        this.tipoFactura = tipoFactura;
+    }
+    public LocalDateTime getFechaHoraCheckoutReal() {
+        return fechaHoraCheckoutReal;
+    }
+    public void setFechaHoraCheckoutReal(LocalDateTime fechaHoraCheckoutReal) {
+        this.fechaHoraCheckoutReal = fechaHoraCheckoutReal;
+    }
+    public Float getTotalEstimado() {
+        return totalEstimado;
+    }
+    public void setTotalEstimado(Float totalEstimado) {
+        this.totalEstimado = totalEstimado;
+    }
+}
+//[classes/Dominio/factura/calculo/SelectorEstrategiaCalculo.java]
+package com.hotelPremier.classes.Dominio.factura.calculo;
+import com.hotelPremier.classes.Dominio.Estadia;
+public class SelectorEstrategiaCalculo {
+    private static final int HORA_LIMITE_NORMAL = 11;
+    private static final int HORA_LIMITE_TARDE = 18;
+    public static CalculoFacturaStrategy seleccionarEstrategia(Estadia estadia, DatosFactura datos) {
+        if (datos.getFechaHoraCheckoutReal() == null) {
+            return new CalculoFacturaNormal();
+        }
+        int horaCheckout = datos.getFechaHoraCheckoutReal().getHour();
+        if (horaCheckout <= HORA_LIMITE_NORMAL) {
+            return new CalculoFacturaNormal();
+        } else if (horaCheckout <= HORA_LIMITE_TARDE) {
+            return new CalculoFacturaCheckoutTarde();
+        } else {
+            return new CalculoFacturaCheckoutMuyTarde();
+        }
+    }
+}
+//[classes/Dominio/factura/estado/EstadoFactura.java]
+package com.hotelPremier.classes.Dominio.factura.estado;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.exception.NegocioException;
+public abstract class EstadoFactura {
+    public abstract String getNombre();
+    public void pagar(Factura factura) {
+        throw new NegocioException("No se puede pagar en estado " + getNombre());
+    }
+    public void cancelar(Factura factura) {
+        throw new NegocioException("No se puede cancelar en estado " + getNombre());
+    }
+    public void aplicarNotaCredito(Factura factura) {
+        throw new NegocioException("No se puede aplicar nota de crédito en estado " + getNombre());
+    }
+}
+//[classes/Dominio/factura/estado/FacturaCancelada.java]
+package com.hotelPremier.classes.Dominio.factura.estado;
+public class FacturaCancelada extends EstadoFactura {
+    @Override
+    public String getNombre() {
+        return "CANCELADA";
+    }
+}
+//[classes/Dominio/factura/estado/FacturaGenerada.java]
+package com.hotelPremier.classes.Dominio.factura.estado;
+import com.hotelPremier.classes.Dominio.Factura;
+public class FacturaGenerada extends EstadoFactura {
+    @Override
+    public String getNombre() {
+        return "GENERADA";
+    }
+    @Override
+    public void pagar(Factura factura) {
+        factura.setEstadoFactura(new FacturaPagada());
+    }
+    @Override
+    public void aplicarNotaCredito(Factura factura) {
+        factura.setTotal(0);
+        factura.setEstadoFactura(new FacturaCancelada());
+    }
+}
+//[classes/Dominio/factura/estado/FacturaPagada.java]
+package com.hotelPremier.classes.Dominio.factura.estado;
+import com.hotelPremier.classes.Dominio.Factura;
+public class FacturaPagada extends EstadoFactura {
+    @Override
+    public String getNombre() {
+        return "PAGADA";
+    }
+    @Override
+    public void aplicarNotaCredito(Factura factura) {
+        factura.setTotal(0);
+        factura.setEstadoFactura(new FacturaCancelada());
+    }
+}
+//[classes/Dominio/factura/estado/FacturaPendiente.java]
+package com.hotelPremier.classes.Dominio.factura.estado;
+import com.hotelPremier.classes.Dominio.Factura;
+public class FacturaPendiente extends EstadoFactura {
+    @Override
+    public String getNombre() {
+        return "PENDIENTE";
+    }
+    @Override
+    public void pagar(Factura factura) {
+        factura.setEstadoFactura(new FacturaPagada());
+    }
+    @Override
+    public void aplicarNotaCredito(Factura factura) {
+        factura.setTotal(0);
+        factura.setEstadoFactura(new FacturaCancelada());
+    }
+}
+//[classes/Dominio/factura/observer/CheckoutFacturaObserver.java]
+package com.hotelPremier.classes.Dominio.factura.observer;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+public class CheckoutFacturaObserver implements FacturaObserver {
+    @Override
+    public void actualizar(Factura factura) {
+        Estadia estadia = factura.getEstadia();
+        if (estadia != null) {
+            estadia.finalizar();
+            Habitacion habitacion = estadia.getHabitacion();
+            if (habitacion != null) {
+                habitacion.setEstado("DISPONIBLE");
+            }
+        }
+    }
+}
+//[classes/Dominio/factura/observer/FacturaObserver.java]
+package com.hotelPremier.classes.Dominio.factura.observer;
+import com.hotelPremier.classes.Dominio.Factura;
+public interface FacturaObserver {
+    void actualizar(Factura factura);
+}
+//[classes/Dominio/factura/observer/NotaCreditoFacturaObserver.java]
+package com.hotelPremier.classes.Dominio.factura.observer;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.NotaDeCredito;
+import com.hotelPremier.exception.NegocioException;
+public class NotaCreditoFacturaObserver implements FacturaObserver {
+    @Override
+    public void actualizar(Factura factura) {
+        NotaDeCredito notaCredito = factura.getNotaDeCredito();
+        if (notaCredito == null) {
+            throw new NegocioException("No se puede cancelar la factura sin una nota de crédito asociada");
+        }
+        float total = factura.getTotal();
+        if (Math.abs(total) > 0.01f) {
+            throw new NegocioException(
+                String.format("El total de la factura cancelada debe ser 0. Total actual: %.2f", total)
+            );
+        }
+    }
+}
+//[classes/Dominio/factura/observer/PagoFacturaObserver.java]
+package com.hotelPremier.classes.Dominio.factura.observer;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.exception.NegocioException;
+public class PagoFacturaObserver implements FacturaObserver {
+    @Override
+    public void actualizar(Factura factura) {
+        Pago pago = factura.getPago();
+        if (pago == null) {
+            throw new NegocioException("No se puede marcar la factura como PAGADA sin un pago asociado");
+        }
+    }
+}
+//[classes/Dominio/Factura.java]
+package com.hotelPremier.classes.Dominio;
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
+import com.hotelPremier.classes.Dominio.factura.estado.EstadoFactura;
+import com.hotelPremier.classes.Dominio.factura.estado.FacturaPendiente;
+import com.hotelPremier.classes.Dominio.factura.estado.FacturaGenerada;
+import com.hotelPremier.classes.Dominio.factura.estado.FacturaPagada;
+import com.hotelPremier.classes.Dominio.factura.estado.FacturaCancelada;
+import com.hotelPremier.classes.Dominio.factura.observer.FacturaObserver;
+import com.hotelPremier.exception.NegocioException;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+@Entity
+@Table(name = "factura")
+public class Factura {
+    @Id
+    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer ID;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "fecha")
+    private Date fecha;
+    @Column(name = "total")
+    private float total;
+    @Column(name = "tipo")
+    private String tipo;
+    @Column(name = "estado")
+    private String estado;
+    @Transient
+    private EstadoFactura estadoFactura;
+    @Transient
+    private List<FacturaObserver> observers = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "id_estadia")
+    @JsonBackReference(value = "estadia-facturas")
+    private Estadia estadia;
+    @ManyToOne
+    @JoinColumn(name = "id_notacredito")
+    private NotaDeCredito notacredito;
+    @OneToOne
+    @JoinColumn(name = "pago")
+    private Pago pago;
+    @ManyToOne
+    @JoinColumn(name = "responsablepago")
+    private ResponsablePago responsablepago;
+    public Factura() {
+        this.estado = "PENDIENTE";
+        this.estadoFactura = new FacturaPendiente();
+    }
+    public Factura(Date fecha, float total, String tipo, String estado,
+                   Estadia estadia, NotaDeCredito notacredito, Pago pago,
+                   ResponsablePago responsablepago) {
+        this.fecha = fecha;
+        this.total = total;
+        this.tipo = tipo;
+        this.estado = estado;
+        this.estadia = estadia;
+        this.notacredito = notacredito;
+        this.pago = pago;
+        this.responsablepago = responsablepago;
+        syncEstado();
+    }
+    public Integer getID() { return ID; }
+    public Date getFecha() { return fecha; }
+    public void setFecha(Date fecha) { this.fecha = fecha; }
+    public float getTotal() { return total; }
+    public void setTotal(float total) { this.total = total; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { 
+        this.estado = estado;
+        syncEstado();
+    }
+    public void pagar() {
+        if (estadoFactura == null) {
+            syncEstado();
+        }
+        estadoFactura.pagar(this);
+    }
+    public void cancelar() {
+        if (estadoFactura == null) {
+            syncEstado();
+        }
+        estadoFactura.cancelar(this);
+    }
+    public void aplicarNotaCredito() {
+        if (estadoFactura == null) {
+            syncEstado();
+        }
+        estadoFactura.aplicarNotaCredito(this);
+    }
+    public void generarFacturaFinal() {
+        if (estadoFactura == null) {
+            syncEstado();
+        }
+        if (!"PENDIENTE".equals(this.estado)) {
+            throw new NegocioException("Solo se puede generar una factura final desde estado PENDIENTE. Estado actual: " + this.estado);
+        }
+        setEstadoFactura(new FacturaGenerada());
+    }
+    public void registrarObserver(FacturaObserver observer) {
+        if (observer != null && !observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
+    public void eliminarObserver(FacturaObserver observer) {
+        observers.remove(observer);
+    }
+    public void setEstadoFactura(EstadoFactura nuevoEstado) {
+        String estadoAnterior = this.estado;
+        this.estadoFactura = nuevoEstado;
+        this.estado = nuevoEstado.getNombre();
+        if (!estadoAnterior.equals(this.estado)) {
+            notificarObservers();
+        }
+    }
+    @PostLoad
+    @PostPersist
+    private void syncEstado() {
+        if (estado == null || estado.isEmpty()) {
+            estado = "PENDIENTE";
+        }
+        switch (estado.toUpperCase()) {
+            case "GENERADA" -> estadoFactura = new FacturaGenerada();
+            case "PAGADA" -> estadoFactura = new FacturaPagada();
+            case "CANCELADA" -> estadoFactura = new FacturaCancelada();
+            default -> estadoFactura = new FacturaPendiente();
+        }
+    }
+    private void notificarObservers() {
+        for (FacturaObserver observer : observers) {
+            observer.actualizar(this);
+        }
+    }
+    public Estadia getEstadia() { return estadia; }
+    public void setEstadia(Estadia estadia) { this.estadia = estadia; }
+    public NotaDeCredito getNotaDeCredito() { return notacredito; }
+    public void setNotaDeCredito(NotaDeCredito notacredito) { this.notacredito = notacredito; }
+    public Pago getPago() { return pago; }
+    public void setPago(Pago pago) { this.pago = pago; }
+    public ResponsablePago getResponsablePago() { return responsablepago; }
+    public void setResponsablePago(ResponsablePago responsablepago) {
+        this.responsablepago = responsablepago;
+    }
+}
+//[classes/Dominio/habitacion/DobleEstandar.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+@Entity
+@DiscriminatorValue("DobleEstandar")
+public class DobleEstandar  extends Habitacion {
+    @Column(name = "camasindividuales")
+    private Integer camasIndividuales;
+    @Column(name = "camadoble")
+    private Integer camaDoble;
+}
+//[classes/Dominio/habitacion/DobleSuperior.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+@Entity
+@DiscriminatorValue("DobleSuperior")
+public class DobleSuperior  extends Habitacion{
+    @Column(name = "camasindividuales")
+    private Integer camasIndividuales;
+    @Column(name = "camadoble")
+    private Integer camaDoble;
+}
+//[classes/Dominio/habitacion/IndividualEstandar.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+@Entity
+@DiscriminatorValue("IndividualEstandar")
+public class IndividualEstandar  extends Habitacion{
+    @Column(name = "camaskingsize")
+    private Integer camasKingSize;
+}
+//[classes/Dominio/habitacion/Suite.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+@Entity
+@DiscriminatorValue("Suite")
+public class Suite extends Habitacion{
+    @Column(name = "camaskingsize")
+    private Integer camasKingSize;
+}
+//[classes/Dominio/habitacion/SuperiorFamilyPlan.java]
+package com.hotelPremier.classes.Dominio.habitacion;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+@Entity
+@DiscriminatorValue("SuperiorFamilyPlan")
+public class SuperiorFamilyPlan extends Habitacion{
+    @Column(name = "camasindividuales")
+    private Integer camasIndividuales;
+    @Column(name = "camadoble")
+    private Integer camaDoble;
+}
+//[classes/Dominio/Habitacion.java]
+package com.hotelPremier.classes.Dominio;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipohabitacion")
+@Table(name="habitacion")
+public class Habitacion  {
+    @Id 
+    private Integer numero; 
+    @Column(name="estado") 
+    private String estado;
+    @Column(name="precio")  
+    private float precio;
+    @Column(name="cantidadpersonas")
+    private Integer cantidadPersonas;    
+    @Column(name = "tipohabitacion", insertable=false, updatable=false)
+    private String tipohabitacion;
+    @OneToMany(mappedBy = "habitacion")
+    @JsonManagedReference(value = "habitacion-reservas")
+    private List<Reserva> listareservas;
+    @OneToMany(mappedBy = "habitacion")
+    @JsonManagedReference(value = "habitacion-estadias")
+    private List<Estadia> listaestadias;
+    public Habitacion() {
+    }
+    public Habitacion(
+            Integer numero,
+            String estado,
+            float precio,
+            Integer cantidadPersonas,
+            String tipohabitacion,
+            List<Reserva> listareservas,
+            List<Estadia> listaestadias
+    ) {
+        this.numero = numero;
+        this.estado = estado;
+        this.precio = precio;
+        this.cantidadPersonas = cantidadPersonas;
+        this.tipohabitacion = tipohabitacion;
+        this.listareservas = listareservas;
+        this.listaestadias = listaestadias;
+    }
+    public Integer getNumero() { return numero; }
+    public void setNumero(Integer numero) { this.numero = numero; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+    public float getPrecio() { return precio; }
+    public void setPrecio(float precio) { this.precio = precio; }
+    public Integer getCantidadPersonas() { return cantidadPersonas; }
+    public void setCantidadPersonas(Integer cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
+    public String getTipohabitacion() { return this.tipohabitacion; }
+    public List<Reserva> getListareservas(){ return this.listareservas; }
+    public void setListareservas(List<Reserva> listres){ this.listareservas = listres; }
+    public List<Estadia> getListaEstadia() { return this.listaestadias; }
+    public void setListaEstadia(List<Estadia> listaestadias) { this.listaestadias = listaestadias; }
+    public String getTipo(){
+        if (this instanceof com.hotelPremier.classes.Dominio.habitacion.IndividualEstandar) return "IndividualEstandar";
+        if (this instanceof com.hotelPremier.classes.Dominio.habitacion.DobleEstandar) return "DobleEstandar";
+        if (this instanceof com.hotelPremier.classes.Dominio.habitacion.DobleSuperior) return "DobleSuperior";
+        if (this instanceof com.hotelPremier.classes.Dominio.habitacion.SuperiorFamilyPlan) return "SuperiorFamilyPlan";
+        if (this instanceof com.hotelPremier.classes.Dominio.habitacion.Suite) return "Suite";
+        return null;
+    }
+}
+//[classes/Dominio/Huesped.java]
+package com.hotelPremier.classes.Dominio;
+import java.util.Date;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
+import jakarta.persistence.*;
+@Entity
+@Table(name = "huesped")
+public class Huesped {
+    @Column(name="apellido")
+    private String apellido;
+    @Column(name="nombre")
+    private String nombre;
+    @EmbeddedId
+    private HuespedID huespedID;
+    @Temporal(TemporalType.DATE)
+    @Column(name="fechanacimiento")
+    private Date fechaNacimiento;
+    @Column(name="telefono")
+    private String telefono;
+    @Column(name="email")
+    private String email;
+    @ManyToOne
+    @JoinColumn(name = "id_direccion")
+    private Direccion direccion;
+    @Column(name="cuit")
+    private String cuit;
+    @Column(name="posicioniva")
+    private String posicionIva;
+    @Column(name="ocupacion")
+    private String ocupacion;
+    @Column(name="nacionalidad")
+    private String nacionalidad;
+ @ManyToMany
+@JoinTable(
+    name = "relac_estadia_huesped",
+    joinColumns = {
+        @JoinColumn(name = "dni", referencedColumnName = "dni"),
+        @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento")
+    },
+    inverseJoinColumns = @JoinColumn(name = "id_estadia")
+)
+@JsonBackReference(value = "estadia-huespedes")
+private List<Estadia> listaEstadia;
+    @OneToOne
+    @JoinColumn(name = "id_responsablepago")
+    private ResponsablePago responsablePago;
+    public Huesped() {
+        this.huespedID = new HuespedID();
+    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+    public Date getFechaNacimiento() { return fechaNacimiento; }
+    public void setFechaNacimiento(Date fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public HuespedID getHuespedID() { return huespedID; }
+    public void setHuespedID(HuespedID huespedID) { this.huespedID = huespedID; }
+    public Direccion getDireccion() { return direccion; }
+    public void setDireccion(Direccion direccion) { this.direccion = direccion; }
+    public String getCuit() { return cuit; }
+    public void setCuit(String cuit) { this.cuit = cuit; }
+    public String getPosicionIva() { return posicionIva; }
+    public void setPosicionIva(String posicionIva) { this.posicionIva = posicionIva; }
+    public String getOcupacion() { return ocupacion; }
+    public void setOcupacion(String ocupacion) { this.ocupacion = ocupacion; }
+    public String getNacionalidad() { return nacionalidad; }
+    public void setNacionalidad(String nacionalidad) { this.nacionalidad = nacionalidad; }
+    public List<Estadia> getListaEstadia() { return listaEstadia; }
+    public void setListaEstadia(List<Estadia> listaEstadia) { this.listaEstadia = listaEstadia; }
+    public ResponsablePago getResponsablePago() { return responsablePago; }
+    public void setResponsablePago(ResponsablePago responsablePago) { this.responsablePago = responsablePago; }
+}
+//[classes/Dominio/HuespedID.java]
+package com.hotelPremier.classes.Dominio;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import java.io.Serializable;
+import java.util.Objects;
+@Embeddable
+public class HuespedID implements Serializable {
+    @Column(name = "tipodocumento")
+    private String tipoDocumento;
+    @Column(name = "dni")
+    private String dni;
+    public String getTipoDocumento() { return tipoDocumento; }
+    public void setTipoDocumento(String tipoDocumento) { this.tipoDocumento = tipoDocumento; }
+    public String getDni() { return dni; }
+    public void setDni(String dni) { this.dni = dni; }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HuespedID)) return false;
+        HuespedID that = (HuespedID) o;
+        return Objects.equals(tipoDocumento, that.tipoDocumento) &&
+               Objects.equals(dni, that.dni);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(tipoDocumento, dni);
+    }
+}
+//[classes/Dominio/medioDePago/Cheque.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+import jakarta.persistence.*;
+import java.util.Date;
+@Entity
+@DiscriminatorValue("CHEQUE")
+public class Cheque extends MedioDePago {
+    @Column(name = "numero_cheque")
+    private Integer numeroCheque;
+    @Column(name = "banco")
+    private String banco;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "plazo")
+    private Date plazo;
+    public Integer getNumeroCheque() {
+        return numeroCheque;
+    }
+    public void setNumeroCheque(Integer numeroCheque) {
+        this.numeroCheque = numeroCheque;
+    }
+    public String getBanco() {
+        return banco;
+    }
+    public void setBanco(String banco) {
+        this.banco = banco;
+    }
+    public Date getPlazo() {
+        return plazo;
+    }
+    public void setPlazo(Date plazo) {
+        this.plazo = plazo;
+    }
+}
+//[classes/Dominio/medioDePago/MedioDePago.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+import java.util.Date;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hotelPremier.classes.Dominio.Pago;
+import jakarta.persistence.*;
+@Entity
+@Table(name = "medio_pago")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_medio", discriminatorType = DiscriminatorType.STRING)
+public abstract class MedioDePago {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_mediodepago")
+    private Integer id;
+    @Column(name = "monto")
+    private float monto;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "fecha")
+    private Date fecha;
+    @ManyToMany(mappedBy = "listamediodepago")
+    @JsonIgnore
+    private List<Pago> pagos;
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public float getMonto() {
+        return monto;
+    }
+    public void setMonto(float monto) {
+        this.monto = monto;
+    }
+    public Date getFecha() {
+        return fecha;
+    }
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+    public List<Pago> getPagos() {
+        return pagos;
+    }
+    public void setPagos(List<Pago> pagos) {
+        this.pagos = pagos;
+    }
+}
+//[classes/Dominio/medioDePago/MonedaExtranjera.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+import jakarta.persistence.*;
+@Entity
+@DiscriminatorValue("MONEDA_EXTRANJERA")
+public class MonedaExtranjera extends MedioDePago {
+    @Column(name="tipo_moneda")
+    private String tipoMoneda;
+    @Column(name="cotizacion")
+    private Double cotizacion;
+    public String getTipoMoneda() {
+        return tipoMoneda;
+    }
+    public void setTipoMoneda(String tipoMoneda) {
+        this.tipoMoneda = tipoMoneda;
+    }
+    public Double getCotizacion() {
+        return cotizacion;
+    }
+    public void setCotizacion(Double cotizacion) {
+        this.cotizacion = cotizacion;
+    }
+}
+//[classes/Dominio/medioDePago/MonedaLocal.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+import jakarta.persistence.*;
+@Entity
+@DiscriminatorValue("MONEDA_LOCAL")
+public class MonedaLocal extends MedioDePago {
+    @Column(name="tipo_moneda")
+    private String tipoMoneda;
+    public String getTipoMoneda() {
+        return tipoMoneda;
+    }
+    public void setTipoMoneda(String tipoMoneda) {
+        this.tipoMoneda = tipoMoneda;
+    }
+}
+//[classes/Dominio/medioDePago/strategy/MedioPagoStrategy.java]
+package com.hotelPremier.classes.Dominio.medioDePago.strategy;
+import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.classes.Dominio.medioDePago.MedioDePago;
+import java.math.BigDecimal;
+public interface MedioPagoStrategy {
+    void validar(MedioDePago medioPago, Pago pago);
+    BigDecimal calcularImporteFinal(BigDecimal montoBase, MedioDePago medioPago);
+}
+//[classes/Dominio/medioDePago/strategy/PagoChequeStrategy.java]
+package com.hotelPremier.classes.Dominio.medioDePago.strategy;
+import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.classes.Dominio.medioDePago.MedioDePago;
+import com.hotelPremier.classes.Dominio.medioDePago.Cheque;
+import java.math.BigDecimal;
+import java.util.Date;
+public class PagoChequeStrategy implements MedioPagoStrategy {
+    @Override
+    public void validar(MedioDePago medioPago, Pago pago) {
+        if (!(medioPago instanceof Cheque cheque)) {
+            throw new IllegalArgumentException("El medio de pago no es un cheque");
+        }
+        if (cheque.getBanco() == null || cheque.getBanco().trim().isEmpty()) {
+            throw new IllegalArgumentException("El cheque debe tener un banco asociado");
+        }
+        if (cheque.getNumeroCheque() == null || cheque.getNumeroCheque() <= 0) {
+            throw new IllegalArgumentException("El cheque debe tener un número válido");
+        }
+        if (cheque.getPlazo() == null) {
+            throw new IllegalArgumentException("El cheque debe tener una fecha de plazo");
+        }
+        Date fechaActual = new Date();
+        if (cheque.getPlazo().before(fechaActual)) {
+            throw new IllegalArgumentException("El plazo del cheque no puede ser anterior a la fecha actual");
+        }
+        if (medioPago.getMonto() <= 0) {
+            throw new IllegalArgumentException("El monto del cheque debe ser mayor a cero");
+        }
+    }
+    @Override
+    public BigDecimal calcularImporteFinal(BigDecimal montoBase, MedioDePago medioPago) {
+        return montoBase;
+    }
+}
+//[classes/Dominio/medioDePago/strategy/PagoEfectivoStrategy.java]
+package com.hotelPremier.classes.Dominio.medioDePago.strategy;
+import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.classes.Dominio.medioDePago.MedioDePago;
+import java.math.BigDecimal;
+public class PagoEfectivoStrategy implements MedioPagoStrategy {
+    @Override
+    public void validar(MedioDePago medioPago, Pago pago) {
+        if (medioPago.getMonto() <= 0) {
+            throw new IllegalArgumentException("El monto del pago en efectivo debe ser mayor a cero");
+        }
+    }
+    @Override
+    public BigDecimal calcularImporteFinal(BigDecimal montoBase, MedioDePago medioPago) {
+        return montoBase;
+    }
+}
+//[classes/Dominio/medioDePago/strategy/PagoMonedaExtranjeraStrategy.java]
+package com.hotelPremier.classes.Dominio.medioDePago.strategy;
+import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.classes.Dominio.medioDePago.MedioDePago;
+import com.hotelPremier.classes.Dominio.medioDePago.MonedaExtranjera;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+public class PagoMonedaExtranjeraStrategy implements MedioPagoStrategy {
+    private static final BigDecimal RECARGO_MONEDA_EXTRANJERA = new BigDecimal("0.05"); // 5% de recargo
+    @Override
+    public void validar(MedioDePago medioPago, Pago pago) {
+        if (!(medioPago instanceof MonedaExtranjera monedaExtranjera)) {
+            throw new IllegalArgumentException("El medio de pago no es moneda extranjera");
+        }
+        if (monedaExtranjera.getTipoMoneda() == null || monedaExtranjera.getTipoMoneda().trim().isEmpty()) {
+            throw new IllegalArgumentException("La moneda extranjera debe tener un tipo de moneda especificado");
+        }
+        String tipoMoneda = monedaExtranjera.getTipoMoneda().toUpperCase();
+        if (!tipoMoneda.equals("USD") && !tipoMoneda.equals("EUR") && !tipoMoneda.equals("BRL")) {
+            throw new IllegalArgumentException("Tipo de moneda no soportado: " + tipoMoneda + ". Soportadas: USD, EUR, BRL");
+        }
+        if (monedaExtranjera.getCotizacion() == null || monedaExtranjera.getCotizacion() <= 0) {
+            throw new IllegalArgumentException("La cotización es obligatoria y debe ser mayor a cero");
+        }
+        if (medioPago.getMonto() <= 0) {
+            throw new IllegalArgumentException("El monto del pago debe ser mayor a cero");
+        }
+        if (medioPago.getFecha() == null) {
+            throw new IllegalArgumentException("La fecha del pago es obligatoria");
+        }
+    }
+    @Override
+    public BigDecimal calcularImporteFinal(BigDecimal montoBase, MedioDePago medioPago) {
+        if (!(medioPago instanceof MonedaExtranjera monedaExtranjera)) {
+            return montoBase;
+        }
+        BigDecimal cotizacion = BigDecimal.valueOf(monedaExtranjera.getCotizacion());
+        BigDecimal montoEnMonedaLocal = montoBase.multiply(cotizacion);
+        BigDecimal recargo = montoEnMonedaLocal.multiply(RECARGO_MONEDA_EXTRANJERA);
+        return montoEnMonedaLocal.add(recargo).setScale(2, RoundingMode.HALF_UP);
+    }
+}
+//[classes/Dominio/medioDePago/strategy/PagoTarjetaCreditoStrategy.java]
+package com.hotelPremier.classes.Dominio.medioDePago.strategy;
+import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.classes.Dominio.medioDePago.MedioDePago;
+import com.hotelPremier.classes.Dominio.medioDePago.TarjetaCredito;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+public class PagoTarjetaCreditoStrategy implements MedioPagoStrategy {
+    private static final BigDecimal INTERES_POR_CUOTA = new BigDecimal("0.03"); // 3% por cuota
+    private static final int CUOTAS_MAXIMAS = 12;
+    @Override
+    public void validar(MedioDePago medioPago, Pago pago) {
+        if (!(medioPago instanceof TarjetaCredito tarjeta)) {
+            throw new IllegalArgumentException("El medio de pago no es una tarjeta de crédito");
+        }
+        if (tarjeta.getBanco() == null || tarjeta.getBanco().trim().isEmpty()) {
+            throw new IllegalArgumentException("La tarjeta de crédito debe tener un banco asociado");
+        }
+        if (tarjeta.getCuotas() == null || tarjeta.getCuotas() <= 0) {
+            throw new IllegalArgumentException("La tarjeta de crédito debe tener al menos 1 cuota");
+        }
+        if (tarjeta.getCuotas() > CUOTAS_MAXIMAS) {
+            throw new IllegalArgumentException("El número de cuotas no puede exceder " + CUOTAS_MAXIMAS);
+        }
+        if (medioPago.getMonto() <= 0) {
+            throw new IllegalArgumentException("El monto del pago debe ser mayor a cero");
+        }
+        if (medioPago.getFecha() == null) {
+            throw new IllegalArgumentException("La fecha del pago es obligatoria");
+        }
+    }
+    @Override
+    public BigDecimal calcularImporteFinal(BigDecimal montoBase, MedioDePago medioPago) {
+        if (!(medioPago instanceof TarjetaCredito tarjeta)) {
+            return montoBase;
+        }
+        Integer cuotas = tarjeta.getCuotas();
+        if (cuotas == null || cuotas <= 1) {
+            return montoBase.setScale(2, RoundingMode.HALF_UP);
+        }
+        BigDecimal interes = montoBase
+                .multiply(INTERES_POR_CUOTA)
+                .multiply(BigDecimal.valueOf(cuotas - 1)); // Sin interés en la primera cuota
+        return montoBase.add(interes).setScale(2, RoundingMode.HALF_UP);
+    }
+}
+//[classes/Dominio/medioDePago/strategy/PagoTarjetaDebitoStrategy.java]
+package com.hotelPremier.classes.Dominio.medioDePago.strategy;
+import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.classes.Dominio.medioDePago.MedioDePago;
+import com.hotelPremier.classes.Dominio.medioDePago.TarjetaDebito;
+import java.math.BigDecimal;
+public class PagoTarjetaDebitoStrategy implements MedioPagoStrategy {
+    @Override
+    public void validar(MedioDePago medioPago, Pago pago) {
+        if (!(medioPago instanceof TarjetaDebito tarjeta)) {
+            throw new IllegalArgumentException("El medio de pago no es una tarjeta de débito");
+        }
+        if (tarjeta.getBanco() == null || tarjeta.getBanco().trim().isEmpty()) {
+            throw new IllegalArgumentException("La tarjeta de débito debe tener un banco asociado");
+        }
+        if (tarjeta.getDniTitular() == null || tarjeta.getDniTitular().trim().isEmpty()) {
+            throw new IllegalArgumentException("La tarjeta de débito debe tener el DNI del titular");
+        }
+        if (medioPago.getMonto() <= 0) {
+            throw new IllegalArgumentException("El monto del pago debe ser mayor a cero");
+        }
+        if (medioPago.getFecha() == null) {
+            throw new IllegalArgumentException("La fecha del pago es obligatoria");
+        }
+    }
+    @Override
+    public BigDecimal calcularImporteFinal(BigDecimal montoBase, MedioDePago medioPago) {
+        return montoBase;
+    }
+}
+//[classes/Dominio/medioDePago/strategy/SelectorMedioPagoStrategy.java]
+package com.hotelPremier.classes.Dominio.medioDePago.strategy;
+import com.hotelPremier.classes.Dominio.medioDePago.MedioDePago;
+import com.hotelPremier.classes.Dominio.medioDePago.Cheque;
+import com.hotelPremier.classes.Dominio.medioDePago.TarjetaCredito;
+import com.hotelPremier.classes.Dominio.medioDePago.TarjetaDebito;
+import com.hotelPremier.classes.Dominio.medioDePago.MonedaExtranjera;
+import com.hotelPremier.classes.Dominio.medioDePago.MonedaLocal;
+public class SelectorMedioPagoStrategy {
+    public static MedioPagoStrategy seleccionarEstrategia(MedioDePago medioPago) {
+        if (medioPago == null) {
+            throw new IllegalArgumentException("El medio de pago no puede ser nulo");
+        }
+        if (medioPago instanceof TarjetaCredito) {
+            return new PagoTarjetaCreditoStrategy();
+        }
+        if (medioPago instanceof TarjetaDebito) {
+            return new PagoTarjetaDebitoStrategy();
+        }
+        if (medioPago instanceof Cheque) {
+            return new PagoChequeStrategy();
+        }
+        if (medioPago instanceof MonedaExtranjera) {
+            return new PagoMonedaExtranjeraStrategy();
+        }
+        if (medioPago instanceof MonedaLocal) {
+            return new PagoEfectivoStrategy();
+        }
+        return new PagoEfectivoStrategy();
+    }
+    public static MedioPagoStrategy seleccionarEstrategiaPorTipo(String tipoMedioPago) {
+        if (tipoMedioPago == null || tipoMedioPago.trim().isEmpty()) {
+            throw new IllegalArgumentException("El tipo de medio de pago no puede ser nulo o vacío");
+        }
+        return switch (tipoMedioPago.toUpperCase()) {
+            case "TARJETA_CREDITO" -> new PagoTarjetaCreditoStrategy();
+            case "TARJETA_DEBITO" -> new PagoTarjetaDebitoStrategy();
+            case "CHEQUE" -> new PagoChequeStrategy();
+            case "MONEDA_EXTRANJERA" -> new PagoMonedaExtranjeraStrategy();
+            case "MONEDA_LOCAL", "EFECTIVO" -> new PagoEfectivoStrategy();
+            default -> throw new IllegalArgumentException("Tipo de medio de pago no reconocido: " + tipoMedioPago);
+        };
+    }
+}
+//[classes/Dominio/medioDePago/TarjetaCredito.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+import jakarta.persistence.*;
+@Entity
+@DiscriminatorValue("TARJETA_CREDITO")
+public class TarjetaCredito extends MedioDePago {
+    @Column(name = "banco")
+    private String banco;
+    @Column(name = "cuotas")
+    private Integer cuotas;
+    public String getBanco() {
+        return banco;
+    }
+    public void setBanco(String banco) {
+        this.banco = banco;
+    }
+    public Integer getCuotas() {
+        return cuotas;
+    }
+    public void setCuotas(Integer cuotas) {
+        this.cuotas = cuotas;
+    }
+}
+//[classes/Dominio/medioDePago/TarjetaDebito.java]
+package com.hotelPremier.classes.Dominio.medioDePago;
+import jakarta.persistence.*;
+@Entity
+@DiscriminatorValue("TARJETA_DEBITO")
+public class TarjetaDebito extends MedioDePago {
+    @Column(name="banco")
+    private String banco;
+    @Column(name="dni_titular")
+    private String dniTitular;
+    public String getBanco() {
+        return banco;
+    }
+    public void setBanco(String banco) {
+        this.banco = banco;
+    }
+    public String getDniTitular() {
+        return dniTitular;
+    }
+    public void setDniTitular(String dniTitular) {
+        this.dniTitular = dniTitular;
+    }
+}
+//[classes/Dominio/NotaDeCredito.java]
+package com.hotelPremier.classes.Dominio;
+import java.util.List;
+import jakarta.persistence.*;
+@Entity
+@Table(name = "nota_credito")
+public class NotaDeCredito {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_notacredito")
+    private Integer id;
+    @Column(name = "importe")
+    private float importe;
+    @OneToMany(mappedBy = "notacredito")
+    private List<Factura> facturas;
+    public Integer getId() { return id; }
+    public float getImporte() { return importe; }
+    public List<Factura> getFacturas() { return facturas; }
+    public void setImporte(float importe) { this.importe = importe; }
+    public void setFacturas(List<Factura> facturas) { this.facturas = facturas; }
+}
+//[classes/Dominio/Pago.java]
+package com.hotelPremier.classes.Dominio;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import com.hotelPremier.classes.Dominio.medioDePago.MedioDePago;
+import jakarta.persistence.*;
+@Entity
+@Table(name = "pago")
+public class Pago {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_pago")
+    private Integer id_pago;
+    @Column(name = "monto")
+    private float monto;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "fecha")
+    private Date fecha;
+    @OneToOne
+    @JoinColumn(name = "factura")
+    private Factura factura;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "pago_medio",
+        joinColumns = @JoinColumn(name = "id_pago"),
+        inverseJoinColumns = @JoinColumn(name = "id_mediodepago")
+    )
+    private List<MedioDePago> listamediodepago = new ArrayList<>();
+    public Pago() {
+    }
+    public Pago(Integer id_pago, float monto, Date fecha,
+                Factura factura, List<MedioDePago> listamediodepago) {
+        this.id_pago = id_pago;
+        this.monto = monto;
+        this.fecha = fecha;
+        this.factura = factura;
+        this.listamediodepago = listamediodepago;
+    }
+    public Integer getId_pago() {
+        return id_pago;
+    }
+    public void setId_pago(Integer id_pago) {
+        this.id_pago = id_pago;
+    }
+    public float getMonto() {
+        return monto;
+    }
+    public void setMonto(float monto) {
+        this.monto = monto;
+    }
+    public Date getFecha() {
+        return fecha;
+    }
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+    public Factura getFactura() {
+        return factura;
+    }
+    public void setFactura(Factura factura) {
+        this.factura = factura;
+    }
+    public List<MedioDePago> getListamediodepago() {
+        return listamediodepago;
+    }
+    public void setListamediodepago(List<MedioDePago> listamediodepago) {
+        this.listamediodepago = listamediodepago;
+    }
+}
+//[classes/Dominio/reserva/estado/EstadoReserva.java]
+package com.hotelPremier.classes.Dominio.reserva.estado;
+import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.exception.NegocioException;
+public abstract class EstadoReserva {
+    public abstract String getNombre();
+    public void cancelar(Reserva reserva) {
+        throw new NegocioException("No se puede cancelar en estado " + getNombre());
+    }
+    public Estadia checkIn(Reserva reserva) {
+        throw new NegocioException("No se puede hacer check-in en estado " + getNombre());
+    }
+    public void consumir(Reserva reserva) {
+        throw new NegocioException("No se puede consumir la reserva en estado " + getNombre());
+    }
+}
+//[classes/Dominio/reserva/estado/ReservaCancelada.java]
+package com.hotelPremier.classes.Dominio.reserva.estado;
+public class ReservaCancelada extends EstadoReserva {
+    @Override
+    public String getNombre() {
+        return "CANCELADA";
+    }
+}
+//[classes/Dominio/reserva/estado/ReservaConsumida.java]
+package com.hotelPremier.classes.Dominio.reserva.estado;
+public class ReservaConsumida extends EstadoReserva {
+    @Override
+    public String getNombre() {
+        return "CONSUMIDA";
+    }
+}
+//[classes/Dominio/reserva/estado/ReservaPendiente.java]
+package com.hotelPremier.classes.Dominio.reserva.estado;
+import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.classes.Dominio.Estadia;
+public class ReservaPendiente extends EstadoReserva {
+    @Override
+    public String getNombre() {
+        return "PENDIENTE";
+    }
+    @Override
+    public void cancelar(Reserva reserva) {
+        reserva.setEstadoReserva(new ReservaCancelada());
+    }
+    @Override
+    public Estadia checkIn(Reserva reserva) {
+        reserva.setEstadoReserva(new ReservaConsumida());
+        Estadia estadia = new Estadia();
+        estadia.setCheckin(reserva.getFecha_desde());
+        estadia.setCheckout(reserva.getFecha_hasta());
+        estadia.setHabitacion(reserva.getHabitacion());
+        estadia.setReserva(reserva);
+        reserva.setEstadia(estadia);
+        return estadia;
+    }
+    @Override
+    public void consumir(Reserva reserva) {
+        reserva.setEstadoReserva(new ReservaConsumida());
+    }
+}
+//[classes/Dominio/Reserva.java]
+package com.hotelPremier.classes.Dominio;
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hotelPremier.classes.Dominio.reserva.estado.EstadoReserva;
+import com.hotelPremier.classes.Dominio.reserva.estado.ReservaPendiente;
+import com.hotelPremier.classes.Dominio.reserva.estado.ReservaConsumida;
+import com.hotelPremier.classes.Dominio.reserva.estado.ReservaCancelada;
+import jakarta.persistence.*;
+@Entity
+@Table(name = "reserva")
+public class Reserva {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id_reserva")
+    private Integer id_reserva;
+    @Temporal(TemporalType.DATE)
+    @Column(name="fecha_desde")
+    private Date fecha_desde;
+    @Temporal(TemporalType.DATE)
+    @Column(name="fecha_hasta")
+    private Date fecha_hasta;
+    @Column(name="estado")
+    private String estado;
+    @Transient
+    private EstadoReserva estadoReserva;
+    @Column(name="nombre")
+    private String nombre;
+    @Column(name="apellido")
+    private String apellido;
+    @Column(name="telefono")
+    private String telefono;
+    @ManyToOne
+    @JoinColumn(name = "nro_habitacion")
+    @JsonBackReference(value = "habitacion-reservas")
+    private Habitacion habitacion;
+    @OneToOne(mappedBy = "reserva")
+    @JsonManagedReference(value = "reserva-estadia")
+    private Estadia estadia;
+    public Reserva() {
+        this.estado = "PENDIENTE";
+        this.estadoReserva = new ReservaPendiente();
+    }
+    public Reserva(
+            Integer id_reserva,
+            Date fecha_desde,
+            Date fecha_hasta,
+            String estado,
+            String nombre,
+            String apellido,
+            String telefono,
+            Habitacion habitacion,
+            Estadia estadia
+    ) {
+        this.id_reserva = id_reserva;
+        this.fecha_desde = fecha_desde;
+        this.fecha_hasta = fecha_hasta;
+        this.estado = estado;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.habitacion = habitacion;
+        this.estadia = estadia;
+        syncEstado();
+    }
+    public Integer getId_reserva() { return id_reserva; }
+    public void setId_reserva(Integer id_reserva) { this.id_reserva = id_reserva; }
+    public Date getFecha_desde() { return fecha_desde; }
+    public void setFecha_desde(Date fecha_desde) { this.fecha_desde = fecha_desde; }
+    public Date getFecha_hasta() { return fecha_hasta; }
+    public void setFecha_hasta(Date fecha_hasta) { this.fecha_hasta = fecha_hasta; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { 
+        this.estado = estado;
+        syncEstado();
+    }
+    @PostLoad
+    @PostPersist
+    private void syncEstado() {
+        if (estado == null || estado.isEmpty()) {
+            estado = "PENDIENTE"; // Estado por defecto
+        }
+        switch (estado.toUpperCase()) {
+            case "CONSUMIDA" -> estadoReserva = new ReservaConsumida();
+            case "CANCELADA" -> estadoReserva = new ReservaCancelada();
+            default -> estadoReserva = new ReservaPendiente();
+        }
+    }
+    public void setEstadoReserva(EstadoReserva nuevoEstado) {
+        this.estadoReserva = nuevoEstado;
+        this.estado = nuevoEstado.getNombre();
+    }
+    public void cancelar() {
+        if (estadoReserva == null) {
+            syncEstado();
+        }
+        estadoReserva.cancelar(this);
+    }
+    public Estadia checkIn() {
+        if (estadoReserva == null) {
+            syncEstado();
+        }
+        return estadoReserva.checkIn(this);
+    }
+    public void consumir() {
+        if (estadoReserva == null) {
+            syncEstado();
+        }
+        estadoReserva.consumir(this);
+    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public Habitacion getHabitacion() { return habitacion; }
+    public void setHabitacion(Habitacion habitacion) { this.habitacion = habitacion; }
+    public Estadia getEstadia() { return estadia; }
+    public void setEstadia(Estadia estadia) { this.estadia = estadia; }
+}
+//[classes/Dominio/responsablePago/PersonaFisica.java]
+package com.hotelPremier.classes.Dominio.responsablePago;
+import com.hotelPremier.classes.Dominio.Huesped;
+import jakarta.persistence.*;
+@Entity
+@Table(name = "persona_fisica")
+public class PersonaFisica extends ResponsablePago {
+    @OneToOne
+    @JoinColumns({
+        @JoinColumn(name = "dni", referencedColumnName = "dni"),
+        @JoinColumn(name = "tipodocumento", referencedColumnName = "tipodocumento")
+    })
+    private Huesped huesped;
+    public Huesped getHuesped() { return huesped; }
+    public void setHuesped(Huesped huesped) { this.huesped = huesped; }
+}
+//[classes/Dominio/responsablePago/PersonaJuridica.java]
+package com.hotelPremier.classes.Dominio.responsablePago;
+import com.hotelPremier.classes.Dominio.Direccion;
+import jakarta.persistence.*;
+@Entity
+@Table(name = "persona_juridica")
+public class PersonaJuridica extends ResponsablePago {
+    @Column(name = "razonsocial")
+    private String razonSocial;
+    @Column(name = "cuit")
+    private String cuit;
+    @OneToOne
+    @JoinColumn(name = "id_direccion_empresa")
+    private Direccion direccionEmpresa;
+    public String getRazonSocial() { return razonSocial; }
+    public void setRazonSocial(String razonSocial) { this.razonSocial = razonSocial; }
+    public String getCuit() { return cuit; }
+    public void setCuit(String cuit) { this.cuit = cuit; }
+    public Direccion getDireccionEmpresa() { return direccionEmpresa; }
+    public void setDireccionEmpresa(Direccion direccionEmpresa) { this.direccionEmpresa = direccionEmpresa; }
+}
+//[classes/Dominio/responsablePago/ResponsablePago.java]
+package com.hotelPremier.classes.Dominio.responsablePago;
+import java.util.List;
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Factura;
+import jakarta.persistence.*;
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "responsablepago")
+public abstract class ResponsablePago {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_responsablepago")
+    private Integer id;
+    @OneToOne
+    @JoinColumn(name = "id_direccion")
+    private Direccion direccion;
+    @OneToMany(mappedBy = "responsablepago")
+    private List<Factura> facturas;
+    public Integer getId() { return id; }
+    public Direccion getDireccion() { return direccion; }
+    public void setDireccion(Direccion direccion) { this.direccion = direccion; }
+}
+//[classes/Dominio/servicioExtra/ServicioExtra.java]
+package com.hotelPremier.classes.Dominio.servicioExtra;
+import com.hotelPremier.classes.Dominio.Estadia;
+import jakarta.persistence.*;
+@Entity
+@Table(name="servicio_extra")
+public class ServicioExtra {
+    @EmbeddedId
+    private ServicioExtraID servicioExtraID;
+    @ManyToOne
+    @JoinColumn(name = "id_estadia",insertable = false, updatable = false)
+    private Estadia estadia; // La Entidad completa
+    @Column(name="tipo_servicio")
+    private String tipo_servicio ;
+    @Column(name="precio")
+    private Float precio ;
+    public ServicioExtraID getServicioExtraID() {
+        return servicioExtraID;
+    }
+    public void setServicioExtraID(ServicioExtraID servicioExtraID) {
+        this.servicioExtraID = servicioExtraID;
+    }
+    public Estadia getEstadia() {
+        return estadia;
+    }
+    public void setEstadia(Estadia estadia) {
+        this.estadia = estadia;
+    }
+    public String getTipo_servicio() {
+        return tipo_servicio;
+    }
+    public void setTipo_servicio(String tipo_servicio) {
+        this.tipo_servicio = tipo_servicio;
+    }
+    public Float getPrecio() {
+        return precio;
+    }
+    public void setPrecio(Float precio) {
+        this.precio = precio;
+    }
+}
+//[classes/Dominio/servicioExtra/ServicioExtraID.java]
+package com.hotelPremier.classes.Dominio.servicioExtra;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import java.io.Serializable;
+import java.util.Objects;
+@Embeddable
+public class ServicioExtraID implements Serializable {
+    @Column(name="id_servicio")
+    private Integer id_servicio;
+    @Column(name="id_estadia")
+    private Integer id_estadia;
+    public void setId_estadia(Integer id_estadia) {
+        this.id_estadia = id_estadia;
+    }
+    public Integer getId_estadia() {
+        return id_estadia;
+    }
+    public void setId_servicio(Integer id_servicio) {
+        this.id_servicio = id_servicio;
+    }
+    public Integer getId_servicio() {
+        return id_servicio;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ServicioExtraID)) return false;
+        ServicioExtraID that = (ServicioExtraID) o;
+        return Objects.equals(id_servicio, that.id_servicio) &&
+               Objects.equals(id_estadia, that.id_estadia);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id_servicio, id_estadia);
+    }
+} 
+//[classes/Dominio/Usuario.java]
+package com.hotelPremier.classes.Dominio;
+import jakarta.persistence.*; // Usa jakarta.persistence para Spring Boot 3+
+@Entity
+@Table(name="usuario")
+public class Usuario {
+    @Id 
+    @Column(name="nombre")
+    String nombre;
+    @Column(name="contrasenia")
+    String contrasenia;
+}
+//[classes/DTO/DireccionDTO.java]
+package com.hotelPremier.classes.DTO;
+public class DireccionDTO {
+    private Integer id_direccionDTO;
+    private String calle;
+    private Integer numero;
+    private String localidad;
+    private String departamento;
+    private Integer piso;
+    private Integer codigoPostal;
+    private String provincia;
+    private String pais;
+    public void setID(Integer id){
+        this.id_direccionDTO=id;
+    }
+    public Integer getID(){
+        return this.id_direccionDTO;
+    }
+    public void setCalle(String calle) {
+        this.calle = calle;
+    }
+    public void setNumero(Integer numero) {
+        this.numero = numero;
+    }
+    public void setLocalidad(String localidad) {
+        this.localidad = localidad;
+    }
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
+    }
+    public void setPiso(Integer piso) {
+        this.piso = piso;
+    }
+    public void setCodigoPostal(Integer codigoPostal) {
+        this.codigoPostal = codigoPostal;
+    }
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+    public String getCalle() {
+        return this.calle;
+    }
+    public Integer getNumero() {
+        return this.numero;
+    }
+    public String getLocalidad() {
+        return this.localidad;
+    }
+    public String getDepartamento() {
+        return this.departamento;
+    }
+    public Integer getPiso() {
+        return this.piso;
+    }
+    public Integer getCodigoPostal() {
+        return this.codigoPostal;
+    }
+    public String getProvincia() {
+        return this.provincia;
+    }
+    public String getPais() {
+        return this.pais;
+    }    
+}
+//[classes/DTO/DobleEstandarDTO.java]
+package com.hotelPremier.classes.DTO;
+public class DobleEstandarDTO {
+    private Integer camasIndividuales;
+    private Integer camaDoble;
+}
+//[classes/DTO/DobleSuperiorDTO.java]
+package com.hotelPremier.classes.DTO;
+public class DobleSuperiorDTO {
+    private Integer camasIndividuales;
+    private Integer camaDoble;
+}
+//[classes/DTO/ErrorResponse.java]
+package com.hotelPremier.classes.DTO;
+import java.time.LocalDateTime;
+public class ErrorResponse {
+    private String mensaje;
+    private LocalDateTime timestamp;
+    private int status;
+    public ErrorResponse() {
+        this.timestamp = LocalDateTime.now();
+    }
+    public ErrorResponse(String mensaje, int status) {
+        this();
+        this.mensaje = mensaje;
+        this.status = status;
+    }
+    public String getMensaje() {
+        return mensaje;
+    }
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+    public int getStatus() {
+        return status;
+    }
+    public void setStatus(int status) {
+        this.status = status;
+    }
+}
+//[classes/DTO/EstadiaDTO.java]
+package com.hotelPremier.classes.DTO;
+import java.util.Date;
+import java.util.List;
+public class EstadiaDTO {
+    private Integer id_estadia;
+    private Date checkin;
+    private Date checkout;
+    private HabitacionDTO habitacion;
+    private List<HuespedDTO> listahuesped;
+    private List<FacturaDTO> listafactura;
+    private List<ServicioExtraDTO> listaconsumos;
+    private ReservaDTO reserva;
+    private String estado;
+    public Integer getId_estadia() {
+        return id_estadia;
+    }
+    public void setId_estadia(Integer id_estadia) {
+        this.id_estadia = id_estadia;
+    }
+    public Integer getID() { 
+        return id_estadia; 
+    }
+    public void setID(Integer id_estadia) { 
+        this.id_estadia = id_estadia; 
+    }
+    public Date getCheckin() { return checkin; }
+    public void setCheckin(Date checkin) { this.checkin = checkin; }
+    public Date getCheckout() { return checkout; }
+    public void setCheckout(Date checkout) { this.checkout = checkout; }
+    public HabitacionDTO getHabitacion() { return habitacion; }
+    public void setHabitacion(HabitacionDTO habitacion) { this.habitacion = habitacion; }
+    public ReservaDTO getReserva() { return reserva; }
+    public void setReserva(ReservaDTO reserva) { this.reserva = reserva; }
+    public List<HuespedDTO> getListahuesped() { return listahuesped; }
+    public void setListahuesped(List<HuespedDTO> listahuesped) { this.listahuesped = listahuesped; }
+    public List<FacturaDTO> getListafactura() { return listafactura; }
+    public void setListafactura(List<FacturaDTO> listafactura) { this.listafactura = listafactura; }
+    public List<ServicioExtraDTO> getListaconsumos() { return listaconsumos; }
+    public void setListaconsumos(List<ServicioExtraDTO> listaconsumos) { this.listaconsumos = listaconsumos; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+}
+//[classes/DTO/FacturaDTO.java]
+package com.hotelPremier.classes.DTO;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class FacturaDTO {
+    private Integer id;
+    private Date fecha;
+    private float total;
+    private String tipo;
+    private String estado;
+    private EstadiaDTO estadia;
+    private NotaDeCreditoDTO notacredito;
+    private PagoDTO pago;
+    private ResponsablePagoDTO responsablepago;   // 👈 AHORA ES DTO
+    private List<Integer> consumosIds = new java.util.ArrayList<>(); // IDs de los servicios extra seleccionados
+    private LocalDateTime fechaHoraCheckoutReal; // Fecha y hora real del checkout
+    private Float totalEstimado; // Total estimado enviado por el frontend (para validación)
+    public FacturaDTO() {
+        this.consumosIds = new java.util.ArrayList<>();
+    }
+    public FacturaDTO(Integer id,
+                      Date fecha,
+                      float total,
+                      String tipo,
+                      String estado,
+                      EstadiaDTO estadia,
+                      NotaDeCreditoDTO notacredito,
+                      PagoDTO pago,
+                      ResponsablePagoDTO responsablepago) {
+        this.id = id;
+        this.fecha = fecha;
+        this.total = total;
+        this.tipo = tipo;
+        this.estado = estado;
+        this.estadia = estadia;
+        this.notacredito = notacredito;
+        this.pago = pago;
+        this.responsablepago = responsablepago;
+        this.consumosIds = new java.util.ArrayList<>();
+    }
+    public Integer getID() {
+        return id;
+    }
+    public void setID(Integer id) {
+        this.id = id;
+    }
+    public Date getFecha() {
+        return fecha;
+    }
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+    public float getTotal() {
+        return total;
+    }
+    public void setTotal(float total) {
+        this.total = total;
+    }
+    public String getTipo() {
+        return tipo;
+    }
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+    public String getEstado() {
+        return estado;
+    }
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+    public EstadiaDTO getEstadia() {
+        return estadia;
+    }
+    public void setEstadia(EstadiaDTO estadia) {
+        this.estadia = estadia;
+    }
+    public NotaDeCreditoDTO getNotacredito() {
+        return notacredito;
+    }
+    public void setNotacredito(NotaDeCreditoDTO notacredito) {
+        this.notacredito = notacredito;
+    }
+    public PagoDTO getPago() {
+        return pago;
+    }
+    public void setPago(PagoDTO pago) {
+        this.pago = pago;
+    }
+    public ResponsablePagoDTO getResponsablepago() {
+        return responsablepago;
+    }
+    public void setResponsablepago(ResponsablePagoDTO responsablepago) {
+        this.responsablepago = responsablepago;
+    }
+    public List<Integer> getConsumosIds() {
+        if (consumosIds == null) {
+            consumosIds = new java.util.ArrayList<>();
+        }
+        return consumosIds;
+    }
+    public void setConsumosIds(List<Integer> consumosIds) {
+        this.consumosIds = consumosIds != null ? consumosIds : new java.util.ArrayList<>();
+    }
+    public LocalDateTime getFechaHoraCheckoutReal() {
+        return fechaHoraCheckoutReal;
+    }
+    public void setFechaHoraCheckoutReal(LocalDateTime fechaHoraCheckoutReal) {
+        this.fechaHoraCheckoutReal = fechaHoraCheckoutReal;
+    }
+    public Float getTotalEstimado() {
+        return totalEstimado;
+    }
+    public void setTotalEstimado(Float totalEstimado) {
+        this.totalEstimado = totalEstimado;
+    }
+}
+//[classes/DTO/HabitacionDTO.java]
+package com.hotelPremier.classes.DTO;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import java.util.List;
+public class HabitacionDTO {
+    private Integer numero;
+    private String estado;
+    private float precio;
+    private Integer cantidadPersonas;
+    private String tipohabitacion;
+    public HabitacionDTO(){}
+    public  HabitacionDTO(Habitacion  habitacion, List<ReservaDTO> reservas, List<EstadiaDTO> estadias
+    ){
+        this.numero=habitacion.getNumero();
+        this.estado=habitacion.getEstado();
+        this.precio=habitacion.getPrecio();
+        this.cantidadPersonas=habitacion.getCantidadPersonas();
+        this.tipohabitacion=habitacion.getTipo();
+    }
+    public void setTipohabitacion(String tipoHab) { this.tipohabitacion = tipoHab; }
+    public String getTipohabitacion() {return this.tipohabitacion; }
+    public Integer getNumero() { return this.numero; }
+    public void setNumero(Integer numero) { this.numero = numero; }
+    public String getEstado() { return this.estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+    public float getPrecio() { return this.precio; }
+    public void setPrecio(float precio) { this.precio = precio; }
+    public int getCantidadPersonas() { return this.cantidadPersonas; }
+    public void setCantidadPersonas(int cantidadPersonas) { this.cantidadPersonas = cantidadPersonas; }
+}
+//[classes/DTO/HabitacionEstadosDTO.java]
+package com.hotelPremier.classes.DTO;
+import java.util.List;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Reserva;
+public class HabitacionEstadosDTO {
+    private Habitacion habitacion;
+    private List<Reserva> reservas;
+    private List<Estadia> estadias;
+    public HabitacionEstadosDTO(Habitacion habitacion, 
+                                List<Reserva> reservas, 
+                                List<Estadia> estadias) {
+        this.habitacion = habitacion;
+        this.reservas = reservas;
+        this.estadias = estadias;
+    }
+    public Habitacion getHabitacion() {
+        return habitacion;
+    }
+    public void setHabitacion(Habitacion habitacion) {
+        this.habitacion = habitacion;
+    }
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
+    public List<Estadia> getEstadias() {
+        return estadias;
+    }
+    public void setEstadias(List<Estadia> estadias) {
+        this.estadias = estadias;
+    }
+}
+//[classes/DTO/HuespedDTO.java]
+package com.hotelPremier.classes.DTO;
+import java.util.Date;
+public class HuespedDTO {
+    private String nombre;
+    private String apellido;
+    private HuespedIDDTO huespedID;
+    private Date fechaNacimiento;
+    private String telefono;
+    private String email;
+    private DireccionDTO direccion;
+    private String cuit;
+    private String posicionIva;
+    private String ocupacion;
+    private String nacionalidad;
+    public HuespedDTO() { this.huespedID = new HuespedIDDTO(); }
+    public HuespedIDDTO getHuespedID() { return huespedID; }
+    public void setHuespedID(HuespedIDDTO id){ this.huespedID = id; }
+    public String getDni() { return huespedID.getDni(); }
+    public String getTipoDocumento() { return huespedID.getTipoDocumento(); }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+    public Date getFechaNacimiento() { return fechaNacimiento; }
+    public void setFechaNacimiento(Date fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public DireccionDTO getDireccion() { return direccion; }
+    public void setDireccion(DireccionDTO direccion) { this.direccion = direccion; }
+    public String getCuit() { return cuit; }
+    public void setCuit(String cuit) { this.cuit = cuit; }
+    public String getPosicionIva() { return posicionIva; }
+    public void setPosicionIva(String posicionIva) { this.posicionIva = posicionIva; }
+    public String getOcupacion() { return ocupacion; }
+    public void setOcupacion(String ocupacion) { this.ocupacion = ocupacion; }
+    public String getNacionalidad() { return nacionalidad; }
+    public void setNacionalidad(String nacionalidad) { this.nacionalidad = nacionalidad; }
+}
+//[classes/DTO/HuespedIDDTO.java]
+package com.hotelPremier.classes.DTO;
+public class HuespedIDDTO {
+    private String tipoDocumento;
+    private String dni;
+    public HuespedIDDTO() {}
+    public HuespedIDDTO(String tipoDocumento, String dni) {
+        this.tipoDocumento = tipoDocumento;
+        this.dni = dni;
+    }
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+    public String getDni() {
+        return dni;
+    }
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+}
+//[classes/DTO/IndividualEstandarDTO.java]
+package com.hotelPremier.classes.DTO;
+public class IndividualEstandarDTO {
+    private Integer camasKingSize;
+}
+//[classes/DTO/medioDePago/ChequeDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+import java.util.Date;
+public class ChequeDTO extends MedioDePagoDTO {
+    private int numeroCheque;
+    private String banco;
+    private Date plazo;
+    public int getNumeroCheque() { return numeroCheque; }
+    public void setNumeroCheque(int numeroCheque) { this.numeroCheque = numeroCheque; }
+    public String getBanco() { return banco; }
+    public void setBanco(String banco) { this.banco = banco; }
+    public Date getPlazo() { return plazo; }
+    public void setPlazo(Date plazo) { this.plazo = plazo; }
+}
+//[classes/DTO/medioDePago/MedioDePagoDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    property = "tipo",
+    visible = true
+)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = ChequeDTO.class,            name = "CHEQUE"),
+    @JsonSubTypes.Type(value = TarjetaCreditoDTO.class,    name = "TARJETA_CREDITO"),
+    @JsonSubTypes.Type(value = TarjetaDebitoDTO.class,     name = "TARJETA_DEBITO"),
+    @JsonSubTypes.Type(value = MonedaLocalDTO.class,       name = "MONEDA_LOCAL"),
+    @JsonSubTypes.Type(value = MonedaExtranjeraDTO.class,  name = "MONEDA_EXTRANJERA")
+})
+public class MedioDePagoDTO {
+    private String tipo;
+    private Integer id_mediodepago;
+    private float monto;
+    private Date fecha;
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+    public Integer getId_mediodepago() { return id_mediodepago; }
+    public void setId_mediodepago(Integer id_mediodepago) { this.id_mediodepago = id_mediodepago; }
+    public float getMonto() { return monto; }
+    public void setMonto(float monto) { this.monto = monto; }
+    public Date getFecha() { return fecha; }
+    public void setFecha(Date fecha) { this.fecha = fecha; }
+}
+//[classes/DTO/medioDePago/MonedaExtranjeraDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+public class MonedaExtranjeraDTO extends MedioDePagoDTO {
+    private String tipoMoneda;
+    private Double cotizacion;
+    public String getTipoMoneda() { return tipoMoneda; }
+    public void setTipoMoneda(String tipoMoneda) { this.tipoMoneda = tipoMoneda; }
+    public Double getCotizacion() { return cotizacion; }
+    public void setCotizacion(Double cotizacion) { this.cotizacion = cotizacion; }
+}
+//[classes/DTO/medioDePago/MonedaLocalDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+public class MonedaLocalDTO extends MedioDePagoDTO {
+    private String tipoMoneda;
+    public String getTipoMoneda() { return tipoMoneda; }
+    public void setTipoMoneda(String tipoMoneda) { this.tipoMoneda = tipoMoneda; }
+}
+//[classes/DTO/medioDePago/TarjetaCreditoDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+public class TarjetaCreditoDTO extends MedioDePagoDTO {
+    private String banco;
+    private int cuotas;
+    public String getBanco() { return banco; }
+    public void setBanco(String banco) { this.banco = banco; }
+    public int getCuotas() { return cuotas; }
+    public void setCuotas(int cuotas) { this.cuotas = cuotas; }
+}
+//[classes/DTO/medioDePago/TarjetaDebitoDTO.java]
+package com.hotelPremier.classes.DTO.medioDePago;
+public class TarjetaDebitoDTO extends MedioDePagoDTO {
+    private String banco;
+    private String dniTitular;
+    public String getBanco() { return banco; }
+    public void setBanco(String banco) { this.banco = banco; }
+    public String getDniTitular() { return dniTitular; }
+    public void setDniTitular(String dniTitular) { this.dniTitular = dniTitular; }
+}
+//[classes/DTO/NotaDeCreditoDTO.java]
+package com.hotelPremier.classes.DTO;
+import java.util.List;
+public class NotaDeCreditoDTO {
+    private Integer id;
+    private Float importe;       // valor de la NC
+    private List<FacturaDTO> listaFacturas;
+    public Float getImporte() { return importe; }
+    public void setImporte(Float importe) { this.importe = importe; }
+    public Integer getID() { return id; }
+    public List<FacturaDTO> getFacturas(){
+        return this.listaFacturas;
+    }
+    public void setFacturas(List<FacturaDTO> facturas){
+        this.listaFacturas = facturas;
+    }
+}
+//[classes/DTO/PagoDTO.java]
+package com.hotelPremier.classes.DTO;
+import java.util.Date;
+import java.util.List;
+import com.hotelPremier.classes.DTO.medioDePago.MedioDePagoDTO;
+public class PagoDTO {
+    private Integer id_pago;
+    private float monto;
+    private Date fecha;
+    private FacturaDTO factura;               // Factura a la que aplica
+    private List<MedioDePagoDTO> medios;      // Lista de medios
+    public Integer getId_pago() { return id_pago; }
+    public void setId_pago(Integer id_pago) { this.id_pago = id_pago; }
+    public float getMonto() { return monto; }
+    public void setMonto(float monto) { this.monto = monto; }
+    public Date getFecha() { return fecha; }
+    public void setFecha(Date fecha) { this.fecha = fecha; }
+    public FacturaDTO getFactura() { return factura; }
+    public void setFactura(FacturaDTO factura) { this.factura = factura; }
+    public List<MedioDePagoDTO> getMedios() { return medios; }
+    public void setMedios(List<MedioDePagoDTO> medios) { this.medios = medios; }
+}
+//[classes/DTO/PruebaDTO.java]
+package com.hotelPremier.classes.DTO;
+public class PruebaDTO {
+    private String cadena;
+    public PruebaDTO() { }
+    public PruebaDTO(String cadena){
+        this.cadena = cadena;
+    }
+    public void setCadena(String cadena){
+        this.cadena = cadena;
+    }
+    public String getCadena(){
+        return this.cadena;
+    }
+}
+//[classes/DTO/ReservaDTO.java]
+package com.hotelPremier.classes.DTO;
+import java.util.Date;
+public class ReservaDTO {
+    private Integer id_reserva;
+    private Date fecha_desde;
+    private Date fecha_hasta;
+    private String estado;
+    private String nombre;
+    private String apellido;
+    private String telefono;
+    private HabitacionDTO habitacion;  // <--- CAMBIO CRUCIAL
+    public Integer getId_reserva() { return id_reserva; }
+    public void setId_reserva(Integer id_reserva) { this.id_reserva = id_reserva; }
+    public Date getFecha_desde() { return fecha_desde; }
+    public void setFecha_desde(Date fecha_desde) { this.fecha_desde = fecha_desde; }
+    public Date getFecha_hasta() { return fecha_hasta; }
+    public void setFecha_hasta(Date fecha_hasta) { this.fecha_hasta = fecha_hasta; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getApellido() { return apellido; }
+    public void setApellido(String apellido) { this.apellido = apellido; }
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public HabitacionDTO getHabitacion() { return habitacion; }
+    public void setHabitacion(HabitacionDTO habitacion) { this.habitacion = habitacion; }
+}
+//[classes/DTO/ResponsablePagoDTO.java]
+package com.hotelPremier.classes.DTO;
+public class ResponsablePagoDTO {
+    private Integer id;
+    private String tipo; // "FISICA" o "JURIDICA"
+    private String dni;
+    private String tipoDocumento;
+    private String cuit;
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+    public String getDni() { return dni; }
+    public void setDni(String dni) { this.dni = dni; }
+    public String getTipoDocumento() { return tipoDocumento; }
+    public void setTipoDocumento(String tipoDocumento) { this.tipoDocumento = tipoDocumento; }
+    public String getCuit() { return cuit; }
+    public void setCuit(String cuit) { this.cuit = cuit; }
+}
+//[classes/DTO/ServicioExtraDTO.java]
+package com.hotelPremier.classes.DTO;
+public class ServicioExtraDTO {
+    private ServicioExtraIDDTO servicioExtraID;
+    private String tipo_servicio;
+    private Float precio;
+    public ServicioExtraDTO() {
+        this.servicioExtraID = new ServicioExtraIDDTO();
+    }
+    public ServicioExtraIDDTO getServicioExtraID() {
+        return servicioExtraID;
+    }
+    public void setServicioExtraID(ServicioExtraIDDTO servicioExtraID) {
+        this.servicioExtraID = servicioExtraID;
+    }
+    public String getTipo_servicio() {
+        return tipo_servicio;
+    }
+    public void setTipo_servicio(String tipo_servicio) {
+        this.tipo_servicio = tipo_servicio;
+    }
+    public Float getPrecio() {
+        return precio;
+    }
+    public void setPrecio(Float precio) {
+        this.precio = precio;
+    }
+}
+//[classes/DTO/ServicioExtraIDDTO.java]
+package com.hotelPremier.classes.DTO;
+public class ServicioExtraIDDTO {
+    private Integer id_servicio;
+    private Integer id_estadia;
+    public ServicioExtraIDDTO() {}
+    public ServicioExtraIDDTO(Integer id_servicio, Integer id_estadia) {
+        this.id_servicio = id_servicio;
+        this.id_estadia = id_estadia;
+    }
+    public Integer getId_servicio() {
+        return id_servicio;
+    }
+    public void setId_servicio(Integer id_servicio) {
+        this.id_servicio = id_servicio;
+    }
+    public Integer getId_estadia() {
+        return id_estadia;
+    }
+    public void setId_estadia(Integer id_estadia) {
+        this.id_estadia = id_estadia;
+    }
+}
+//[classes/DTO/SuiteDTO.java]
+package com.hotelPremier.classes.DTO;
+public class SuiteDTO {
+    private boolean camasKingSize;
+}
+//[classes/DTO/SuperiorFamilyPlanDTO.java]
+package com.hotelPremier.classes.DTO;
+public class SuperiorFamilyPlanDTO {
+    private boolean camasIndividuales;
+    private boolean camaDoble;
+}
+//[classes/DTO/UsuarioDTO.java]
+package com.hotelPremier.classes.DTO;
+public class UsuarioDTO {
+    String nombre;
+    String contrasena;
+    public void setNombre(String unNombre){
+        this.nombre= unNombre;
+    }
+    public void setContrasena(String unaContrasena){
+        this.contrasena= unaContrasena;
+    }
+    public String getNombre(){
+        return this.nombre;
+    }
+    public String getContrasena(){
+        return this.contrasena;
+    }
+}
+//[classes/excepciones/HuespedNoEncontradoException.java]
+package com.hotelPremier.classes.excepciones;
+public class HuespedNoEncontradoException extends Exception {
+    public HuespedNoEncontradoException(String mensaje) {
+        super(mensaje);
+    }
+}
+//[classes/excepciones/UsuarioNoExistenteException.java]
+package com.hotelPremier.classes.excepciones;
+public class UsuarioNoExistenteException extends Exception {
+    public UsuarioNoExistenteException(String mensaje) {
+        super(mensaje);
+    }
+}
+//[classes/FuncionesUtiles.java]
+//[classes/mapper/ClassMapper.java]
+package com.hotelPremier.classes.mapper;
+import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import com.hotelPremier.classes.DTO.*;
+import com.hotelPremier.classes.Dominio.*;
+import com.hotelPremier.classes.Dominio.responsablePago.PersonaFisica;
+import com.hotelPremier.classes.Dominio.responsablePago.PersonaJuridica;
+import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtraID;
+@Mapper(componentModel = "spring")
+public interface ClassMapper {
+    HabitacionDTO toDTOHab(Habitacion h);
+    List<HabitacionDTO> toDTOsHabitacion(List<Habitacion> h);
+    @Mappings({
+        @Mapping(target = "huespedID", source = "huespedID"),
+        @Mapping(target = "direccion", source = "direccion"),
+        @Mapping(target = "cuit", source = "cuit"),
+        @Mapping(target = "posicionIva", source = "posicionIva"),
+        @Mapping(target = "ocupacion", source = "ocupacion"),
+        @Mapping(target = "nacionalidad", source = "nacionalidad")
+    })
+    HuespedDTO toDTO(Huesped h);
+    List<HuespedDTO> toDtos(List<Huesped> h);
+    @Mappings({
+        @Mapping(target = "listaEstadia", ignore = true),
+        @Mapping(target = "responsablePago", ignore = true)
+    })
+    Huesped toEntity(HuespedDTO dto);
+    HuespedIDDTO toDTO(HuespedID id);
+    HuespedID toEntity(HuespedIDDTO dto);
+    @Mappings({
+        @Mapping(target = "habitacion", ignore = true),
+        @Mapping(target = "listahuesped", source = "listahuesped"),
+        @Mapping(target = "listafactura", ignore = true), // 🚫 evita ciclo
+        @Mapping(target = "listaconsumos", ignore = true),
+        @Mapping(target = "reserva", ignore = true),
+        @Mapping(target = "ID", ignore = true)
+    })
+    EstadiaDTO toDTOEstadia(Estadia e);
+    List<EstadiaDTO> toDTOsEstadia(List<Estadia> lista);
+    @Mappings({
+        @Mapping(target = "habitacion", ignore = true),
+        @Mapping(target = "listahuesped", ignore = true),
+        @Mapping(target = "listafactura", ignore = true),
+        @Mapping(target = "reserva", ignore = true)
+    })
+    Estadia toEntity(EstadiaDTO dto);
+    ReservaDTO toDTOReserva(Reserva r);
+    List<ReservaDTO> toDtosReserva(List<Reserva> r);
+    @Mappings({
+        @Mapping(target = "habitacion", ignore = true),
+        @Mapping(target = "estadia", ignore = true)
+    })
+    Reserva toEntityReserva(ReservaDTO dto);
+    @Mappings({
+        @Mapping(target = "estadia", ignore = true),        // 🚫 NO volver a estadia
+        @Mapping(target = "pago", ignore = true),           // 🚫 corta el loop
+        @Mapping(target = "notaDeCredito", ignore = true),
+        @Mapping(target = "responsablePago", ignore = true)
+    })
+    Factura toEntityFactura(FacturaDTO dto);
+    @Mappings({
+        @Mapping(target = "estadia", ignore = true),        // 🚫 clave
+        @Mapping(target = "pago", ignore = true),           // 🚫 clave
+        @Mapping(target = "notacredito", source = "notaDeCredito"),
+        @Mapping(
+            target = "responsablepago",
+            expression = "java(toDTO(f.getResponsablePago()))"
+        )
+    })
+    FacturaDTO toDTOFactura(Factura f);
+    List<FacturaDTO> toDTOsFactura(List<Factura> lista);
+    @Mappings({
+        @Mapping(target = "servicioExtraID", source = "servicioExtraID")
+    })
+    ServicioExtraDTO toDTOServicioExtra(ServicioExtra s);
+    List<ServicioExtraDTO> toDTOsServicioExtra(List<ServicioExtra> lista);
+    ServicioExtraIDDTO toDTOServicioExtraID(ServicioExtraID id);
+    ServicioExtraID toEntityServicioExtraID(ServicioExtraIDDTO dto);
+    default ResponsablePagoDTO toDTO(ResponsablePago r) {
+        if (r == null) return null;
+        ResponsablePagoDTO dto = new ResponsablePagoDTO();
+        dto.setId(r.getId());
+        if (r instanceof PersonaFisica pf) {
+            dto.setTipo("FISICA");
+            dto.setDni(pf.getHuesped().getHuespedID().getDni());
+            dto.setTipoDocumento(pf.getHuesped().getHuespedID().getTipoDocumento());
+        }
+        if (r instanceof PersonaJuridica pj) {
+            dto.setTipo("JURIDICA");
+            dto.setCuit(pj.getCuit());
+        }
+        return dto;
+    }
+}
+//[classes/Validador.java]
+package com.hotelPremier.classes;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.function.Predicate;
+public class Validador {
+    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static Predicate<String> esFechaValida = fecha -> {
+        try {
+            LocalDate.parse(fecha, formatter);
+            return true;  // fecha válida
+        } catch (DateTimeParseException e) {
+            return false; // fecha inválida
+        }
+    };
+    public static Predicate<String> esStringValido =
+            valor -> valor.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
+    public static Predicate<String> esMailValido = mail -> {
+        if (mail == null || mail.isEmpty()) {
+            return true; // Consideramos null o vacío como válido
+        }
+        return mail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
+    };
+    public static Predicate<String> esCalleValida = calle -> {
+        if (calle == null || calle.isEmpty()) {
+            return true; // null o vacío también válido
+        }
+        return calle.matches("^[a-zA-Z0-9 ]+$");
+    };
+    public static Predicate<String> esNumeroValido =
+            valor -> valor != null && valor.matches("\\d+");
+    public static final Predicate<String> esCuitValido = valor -> {
+        if (valor == null || valor.isEmpty()) return true;
+        String cuit = valor.replaceAll("-", "");
+        if (!cuit.matches("\\d{11}")) return false;
+        int[] pesos = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
+        int suma = 0;
+        for (int i = 0; i < 10; i++) {
+            suma += Character.getNumericValue(cuit.charAt(i)) * pesos[i];
+        }
+        int resto = suma % 11;
+        int verificador = 11 - resto;
+        if (verificador == 11) verificador = 0;
+        else if (verificador == 10) verificador = 9;
+        int ultimo = Character.getNumericValue(cuit.charAt(10));
+        return verificador == ultimo;
+    };
+}
+//[config/WebConfig.java]
+package com.hotelPremier.config;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+@Configuration
+public class WebConfig {
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
+    }
+}
+//[controller/EstadiaController.java]
+package com.hotelPremier.controller;
+import com.hotelPremier.service.EstadiaService;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+@RestController
+@RequestMapping("/estadias")
+@Tag(name = "Estadías", description = "Operaciones relacionadas con las estadías del hotel")
+public class EstadiaController {
+    @Autowired
+    private EstadiaService estadiaService;
+    @Operation(
+        summary = "Obtener estadía en curso por número de habitación",
+        description = "Devuelve la estadía que se encuentra en estado ENCURSO para una habitación determinada"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Estadía encontrada"),
+        @ApiResponse(responseCode = "404", description = "No existe estadía en curso para la habitación")
+    })
+    @GetMapping("/enCurso/{numHabitacion}")
+    public ResponseEntity<EstadiaDTO> obtenerEnCurso(
+        @Parameter(description = "Número de habitación", example = "101")
+        @PathVariable Integer numHabitacion
+    ) {
+        EstadiaDTO dto = estadiaService.obtenerEstadiaEnCurso(numHabitacion);
+        return ResponseEntity.ok(dto);
+    }
+}
+//[controller/FacturaController.java]
+package com.hotelPremier.controller;
+import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.service.FacturaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+@RestController
+@RequestMapping("/facturas")
+@Tag(name = "Facturas", description = "Gestión de facturación y consultas de facturas")
+public class FacturaController {
+    @Autowired
+    private FacturaService facturaService;
+    @Operation(
+        summary = "Obtener facturas por habitación",
+        description = "Devuelve todas las facturas asociadas a una habitación"
+    )
+    @GetMapping("/habitacion/{nro}")
+    public ResponseEntity<List<FacturaDTO>> obtenerPorHabitacion(
+        @Parameter(description = "Número de habitación", example = "101")
+        @PathVariable Integer nro
+    ) {
+        return ResponseEntity.ok(facturaService.obtenerFacturasPorHabitacion(nro));
+    }
+    @Operation(
+        summary = "Filtrar facturas",
+        description = "Permite filtrar facturas por CUIT, tipo de documento o número de documento. " +
+                     "Se puede usar cualquiera de estos campos de forma independiente o combinada. " +
+                     "Si solo se proporciona el número de documento, busca por DNI."
+    )
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<FacturaDTO>> filtrarFacturas(
+        @Parameter(description = "CUIT para buscar facturas de PersonaJuridica", example = "20-12345678-9")
+        @RequestParam(required = false) String cuit,
+        @Parameter(description = "Tipo de documento (DNI, LC, LE, etc.)", example = "DNI")
+        @RequestParam(required = false) String tipo,
+        @Parameter(description = "Número de documento (DNI)", example = "40123456")
+        @RequestParam(required = false) String numero
+    ) {
+        return ResponseEntity.ok(
+                facturaService.filtrarFacturas(cuit, tipo, numero)
+        );
+    }
+    @Operation(
+        summary = "Crear factura",
+        description = "Genera una nueva factura asociada a una estadía con todos los cálculos realizados automáticamente. Devuelve la factura completa creada."
+    )
+    @PostMapping
+    public ResponseEntity<FacturaDTO> crearFactura(@RequestBody FacturaDTO facturaDTO) {
+        FacturaDTO facturaCreada = facturaService.crearFactura(facturaDTO);
+        return ResponseEntity.ok(facturaCreada);
+    }
+}
+//[controller/HabitacionController.java]
+package com.hotelPremier.controller;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.service.HabitacionService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+@RestController
+@Tag(name = "Habitaciones", description = "Consultas y disponibilidad de habitaciones")
+public class HabitacionController {
+    @Autowired
+    HabitacionService habitacionService;
+    @Operation(summary = "Listar habitaciones por tipo")
+    @GetMapping("/habitaciones")
+    public ResponseEntity<List<HabitacionDTO>> getHabitaciones(
+        @Parameter(description = "Tipo de habitación", example = "DOBLE")
+        @RequestParam String tipo
+    ){
+        return ResponseEntity.ok(habitacionService.getHabitaciones(tipo));
+    }
+}
+//[controller/HuespedController.java]
+package com.hotelPremier.controller;
+import java.util.List;
+import com.hotelPremier.service.HuespedService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+@RestController
+@Tag(name = "Huéspedes", description = "ABM y búsqueda de huéspedes")
+public class HuespedController {
+    @Autowired 
+    private HuespedService huespedService;
+    @Operation(summary = "Buscar huéspedes")
+    @GetMapping("/huespedes")
+    public ResponseEntity<List<HuespedDTO>> getHuespedes(
+        @RequestParam(required = false) String dni,
+        @RequestParam(required = false) String nombre,
+        @RequestParam(required = false) String apellido,
+        @RequestParam(required = false) String tipoDocumento
+    ) {
+        return ResponseEntity.ok(
+            huespedService.buscarHuespedes(dni, nombre, apellido, tipoDocumento)
+        );
+    }
+    @Operation(summary = "Eliminar huésped")
+    @DeleteMapping("/huespedes/{tipo}/{dni}")
+    public ResponseEntity<Void> deleteHuesped(
+        @PathVariable String tipo,
+        @PathVariable String dni
+    ) {
+        huespedService.deleteHuesped(tipo, dni);
+        return ResponseEntity.noContent().build();
+    }
+    @Operation(summary = "Modificar huésped")
+    @PutMapping("/huespedes/modificar")
+    public ResponseEntity<HuespedDTO> updateHuesped(
+        @RequestBody HuespedDTO huespedDTO
+    ) {
+        return ResponseEntity.ok(huespedService.updateHuesped(huespedDTO));
+    }
+}
+//[controller/NotaDeCreditoController.java]
+package com.hotelPremier.controller;
+import com.hotelPremier.classes.DTO.NotaDeCreditoDTO;
+import com.hotelPremier.service.NotaDeCreditoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+@RestController
+@RequestMapping("/notadecredito")
+@Tag(name = "Notas de Crédito", description = "Gestión de notas de crédito")
+public class NotaDeCreditoController {
+    @Autowired
+    private NotaDeCreditoService service;
+    @Operation(
+        summary = "Ingresar nota de crédito",
+        description = "Genera una nota de crédito que anula contablemente una o más facturas"
+    )
+    @PostMapping
+    public ResponseEntity<String> ingresarNotaCredito(@RequestBody NotaDeCreditoDTO dto) {
+        String resultado = service.ingresarNotaDeCredito(dto);
+        return ResponseEntity.ok(resultado);
+    }
+}
+//[controller/PagoController.java]
+package com.hotelPremier.controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.hotelPremier.classes.DTO.PagoDTO;
+import com.hotelPremier.service.PagoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+@RestController
+@RequestMapping("/pagos")
+@Tag(name = "Pagos", description = "Registro de pagos de facturas")
+public class PagoController {
+    @Autowired
+    private PagoService pagoService;
+    @Operation(summary = "Registrar pago")
+    @PostMapping
+    public ResponseEntity<String> registrar(@RequestBody PagoDTO dto) {
+        return ResponseEntity.ok(pagoService.ingresarPago(dto));
+    }
+}
+//[controller/ReservaController.java]
+package com.hotelPremier.controller;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.service.ReservaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.Date;
+import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
+@RestController
+@RequestMapping("/reservas")
+@Tag(name = "Reservas", description = "Gestión de reservas de habitaciones")
+public class ReservaController {
+    @Autowired
+    private ReservaService reservaService;
+    @Operation(summary = "Guardar reservas")
+    @PostMapping
+    public ResponseEntity<List<ReservaDTO>> guardarReservas(@RequestBody List<ReservaDTO> listaDTO) {
+        List<ReservaDTO> reservasGuardadas = reservaService.guardarLista(listaDTO);
+        return ResponseEntity.ok(reservasGuardadas);
+    }
+    @Operation(summary = "Buscar reservas entre fechas")
+    @GetMapping
+    public ResponseEntity<List<ReservaDTO>> buscarEntreFechas(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta
+    ) {
+        List<ReservaDTO> reservas = reservaService.buscarEntreFechas(desde, hasta);
+        return ResponseEntity.ok(reservas);
+    }
+    @Operation(summary = "Buscar reservas por apellido y nombre")
+    @GetMapping("/buscar")
+    public ResponseEntity<List<ReservaDTO>> buscarPorApellidoNombre(
+        @RequestParam String apellido,
+        @RequestParam String nombre
+    ) {
+        List<ReservaDTO> reservas = reservaService.buscarPorApellidoNombre(apellido, nombre);
+        return ResponseEntity.ok(reservas);
+    }
+    @Operation(
+        summary = "Cancelar reserva",
+        description = "Cancela una reserva utilizando el patrón State (cambia el estado a cancelada). Solo permite cancelar reservas en estado PENDIENTE."
+    )
+    @PutMapping("/cancelar")
+    public ResponseEntity<ReservaDTO> cancelarReserva(@RequestBody ReservaDTO dto) {
+        ReservaDTO reservaCancelada = reservaService.cancelarReserva(dto.getId_reserva());
+        return ResponseEntity.ok(reservaCancelada);
+    }
+}
+//[controller/ResponsablePagoController.java]
+package com.hotelPremier.controller;
+import com.hotelPremier.service.ResponsablePagoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+@RestController
+@RequestMapping("/responsablesPago")
+@Tag(name = "Responsables de Pago", description = "Búsqueda de responsables de pago")
+public class ResponsablePagoController {
+    @Autowired
+    private ResponsablePagoService responsablePagoService;
+    @Operation(
+        summary = "Buscar responsable de pago",
+        description = "Busca el ID de un responsable de pago. Si viene CUIT busca en PersonaJuridica, " +
+                      "si no viene CUIT pero viene DNI y tipoDocumento busca en PersonaFisica."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Responsable de pago encontrado"),
+        @ApiResponse(responseCode = "404", description = "No se encontró responsable de pago")
+    })
+    @GetMapping
+    public ResponseEntity<ResponsablePagoIdResponse> buscarResponsablePago(
+        @Parameter(description = "DNI del huésped (requerido si no viene CUIT)", example = "40991234")
+        @RequestParam(required = false) String dni,
+        @Parameter(description = "Tipo de documento (requerido si no viene CUIT)", example = "DNI")
+        @RequestParam(required = false) String tipoDocumento,
+        @Parameter(description = "CUIT de la persona jurídica (opcional)", example = "20-12345678-9")
+        @RequestParam(required = false) String cuit
+    ) {
+        Integer id = responsablePagoService.buscarResponsablePago(dni, tipoDocumento, cuit);
+        return ResponseEntity.ok(new ResponsablePagoIdResponse(id));
+    }
+    private static class ResponsablePagoIdResponse {
+        private Integer id;
+        public ResponsablePagoIdResponse(Integer id) {
+            this.id = id;
+        }
+        public Integer getId() {
+            return id;
+        }
+        public void setId(Integer id) {
+            this.id = id;
+        }
+    }
+}
+//[exception/GlobalExceptionHandler.java]
+package com.hotelPremier.exception;
+import com.hotelPremier.classes.DTO.ErrorResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import java.util.HashMap;
+import java.util.Map;
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(RecursoNoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> handleRecursoNoEncontrado(RecursoNoEncontradoException ex) {
+        ErrorResponse error = new ErrorResponse(
+            ex.getMessage(),
+            HttpStatus.NOT_FOUND.value()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+    @ExceptionHandler(NegocioException.class)
+    public ResponseEntity<ErrorResponse> handleNegocioException(NegocioException ex) {
+        ErrorResponse error = new ErrorResponse(
+            ex.getMessage(),
+            HttpStatus.CONFLICT.value()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorResponse error = new ErrorResponse(
+            ex.getMessage(),
+            HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errores = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String nombreCampo = ((FieldError) error).getField();
+            String mensajeError = error.getDefaultMessage();
+            errores.put(nombreCampo, mensajeError);
+        });
+        Map<String, Object> respuesta = new HashMap<>();
+        respuesta.put("mensaje", "Error de validación");
+        respuesta.put("errores", errores);
+        respuesta.put("status", HttpStatus.BAD_REQUEST.value());
+        respuesta.put("timestamp", java.time.LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        ErrorResponse error = new ErrorResponse(
+            "Ocurrió un error interno en el servidor. Por favor, intente nuevamente más tarde.",
+            HttpStatus.INTERNAL_SERVER_ERROR.value()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+}
+//[exception/NegocioException.java]
+package com.hotelPremier.exception;
+public class NegocioException extends RuntimeException {
+    public NegocioException(String mensaje) {
+        super(mensaje);
+    }
+    public NegocioException(String mensaje, Throwable causa) {
+        super(mensaje, causa);
+    }
+}
+//[exception/RecursoNoEncontradoException.java]
+package com.hotelPremier.exception;
+public class RecursoNoEncontradoException extends RuntimeException {
+    public RecursoNoEncontradoException(String mensaje) {
+        super(mensaje);
+    }
+    public RecursoNoEncontradoException(String mensaje, Throwable causa) {
+        super(mensaje, causa);
+    }
+}
+//[HotelPremierApplication.java]
+package com.hotelPremier;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+@SpringBootApplication
+public class HotelPremierApplication {
+    public static void main(String[] args) { 
+        SpringApplication.run(HotelPremierApplication.class, args); 
+    } 
+}
+//[service/EstadiaService.java]
+package com.hotelPremier.service;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.estadia.observer.ActualizarHabitacionObserver;
+import com.hotelPremier.classes.Dominio.estadia.observer.ActualizarReservaObserver;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.repository.EstadiaRepository;
+import com.hotelPremier.repository.ServicioExtraRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+@Service
+public class EstadiaService {
+    @Autowired
+    private EstadiaRepository estadiaRepository;
+    @Autowired
+    private ServicioExtraRepository servicioExtraRepository;
+    @Autowired
+    private ClassMapper mapper;
+    public List<EstadiaDTO> obtenerEstadiasSinFactura() {
+        List<Estadia> lista = estadiaRepository.estadiasSinFactura();
+        return mapper.toDTOsEstadia(lista);
+    }
+    public EstadiaDTO obtenerEstadiaEnCurso(Integer nroHabitacion) {
+        Estadia estadia = estadiaRepository.estadiaEnCurso(nroHabitacion);
+        if (estadia == null) {
+            throw new RecursoNoEncontradoException(
+                "No hay estadía en curso para la habitación " + nroHabitacion
+            );
+        }
+        EstadiaDTO dto = mapper.toDTOsEstadia(List.of(estadia)).get(0);
+        if (estadia.getId_estadia() != null) {
+            List<ServicioExtra> consumos = 
+                servicioExtraRepository.findByEstadiaId(estadia.getId_estadia());
+            dto.setListaconsumos(mapper.toDTOsServicioExtra(consumos));
+        }
+        return dto;
+    }
+    public Estadia iniciarEstadia(Estadia estadia) {
+        prepararEstadiaParaInicio(estadia);
+        estadia.iniciarEstadia();
+        estadiaRepository.save(estadia);
+        return estadia;
+    }
+    private void prepararEstadiaParaInicio(Estadia estadia) {
+        estadia.registrarObserver(new ActualizarHabitacionObserver());
+        estadia.registrarObserver(new ActualizarReservaObserver());
+    }
+}
+//[service/FacturaService.java]
+package com.hotelPremier.service;
+import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.factura.calculo.CalculoFacturaStrategy;
+import com.hotelPremier.classes.Dominio.factura.calculo.DatosFactura;
+import com.hotelPremier.classes.Dominio.factura.calculo.SelectorEstrategiaCalculo;
+import com.hotelPremier.classes.Dominio.factura.observer.CheckoutFacturaObserver;
+import com.hotelPremier.classes.Dominio.factura.observer.NotaCreditoFacturaObserver;
+import com.hotelPremier.classes.Dominio.factura.observer.PagoFacturaObserver;
+import com.hotelPremier.classes.Dominio.responsablePago.PersonaFisica;
+import com.hotelPremier.classes.Dominio.responsablePago.PersonaJuridica;
+import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
+import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.repository.EstadiaRepository;
+import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.repository.HabitacionRepository;
+import com.hotelPremier.repository.ResponsablePagoRepository;
+import com.hotelPremier.repository.ServicioExtraRepository;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+@Service
+public class FacturaService {
+    @Autowired
+    private FacturaRepository facturaRepository;
+    @Autowired
+    private EstadiaRepository estadiaRepository;
+    @Autowired
+    private ResponsablePagoRepository responsablePagoRepository;
+    @Autowired
+    private ServicioExtraRepository servicioExtraRepository;
+    @Autowired
+    private HabitacionRepository habitacionRepository;
+    @Autowired
+    private ClassMapper mapper;
+    public List<FacturaDTO> obtenerFacturasPorHabitacion(Integer nroHabitacion) {
+        List<Factura> lista = facturaRepository.findAll().stream()
+                .filter(f -> f.getEstadia() != null &&
+                             f.getEstadia().getHabitacion() != null &&
+                             "FINALIZADA".equals(f.getEstadia().getEstado()) &&
+                             f.getEstadia().getHabitacion().getNumero().equals(nroHabitacion))
+                .toList();
+        return lista.stream()
+                .map(mapper::toDTOFactura)
+                .toList();
+    }
+    public List<FacturaDTO> buscarPorDni(String dni) {
+        List<Factura> lista = facturaRepository.buscarPorDni(dni);
+        return lista.stream()
+                .map(mapper::toDTOFactura)
+                .toList();
+    }
+    public List<FacturaDTO> filtrarFacturas(
+        String cuit,
+        String tipoDocumento,
+        String numeroDocumento
+    ) {
+        List<Factura> lista = facturaRepository.findAll();
+        List<Factura> filtradas = lista.stream()
+                .filter(f -> coincideCuit(f, cuit))
+                .filter(f -> coincideTipoDoc(f, tipoDocumento))
+                .filter(f -> coincideNumeroDoc(f, numeroDocumento))
+                .toList();
+        return filtradas.stream()
+                .map(mapper::toDTOFactura)
+                .toList();
+    }
+    public FacturaDTO crearFacturaConCalculo(FacturaDTO dto, DatosFactura datosFactura) {
+        if (dto.getEstadia() == null || dto.getEstadia().getID() == null) {
+            throw new IllegalArgumentException("La factura debe tener una estadía asociada");
+        }
+        Estadia estadia = estadiaRepository.findById(dto.getEstadia().getID())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Estadía no encontrada con ID: " + dto.getEstadia().getID()));
+        if (datosFactura.getFechaHoraCheckoutReal() != null) {
+            java.time.LocalDateTime fechaHoraCheckout = datosFactura.getFechaHoraCheckoutReal();
+            java.util.Date checkoutDate = java.sql.Timestamp.valueOf(fechaHoraCheckout);
+            estadia.setCheckout(checkoutDate);
+        }
+        Factura factura = mapper.toEntityFactura(dto);
+        estadia.generarFactura(factura);
+        estadia.finalizar();
+        CalculoFacturaStrategy estrategia =
+                SelectorEstrategiaCalculo.seleccionarEstrategia(estadia, datosFactura);
+        BigDecimal totalCalculado = estrategia.calcularTotal(estadia, datosFactura);
+        factura.setTotal(totalCalculado.floatValue());
+        factura.setEstadia(estadia);
+        factura.setFecha(new java.util.Date());
+        if (dto.getResponsablepago() != null && 
+            dto.getResponsablepago().getId() != null && 
+            dto.getResponsablepago().getId() > 0) {
+            ResponsablePago rp = responsablePagoRepository.findById(dto.getResponsablepago().getId())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Responsable de pago no encontrado con ID: " + dto.getResponsablepago().getId()));
+            factura.setResponsablePago(rp);
+        }
+        estadiaRepository.save(estadia);
+        facturaRepository.save(factura);
+        FacturaDTO facturaDTO = mapper.toDTOFactura(factura);
+        facturaDTO.setFechaHoraCheckoutReal(null);
+        facturaDTO.setTotalEstimado(null);
+        if (facturaDTO.getConsumosIds() == null) {
+            facturaDTO.setConsumosIds(new java.util.ArrayList<>());
+        }
+        return facturaDTO;
+    }
+    public FacturaDTO crearFactura(FacturaDTO dto) {
+        if (dto.getEstadia() != null && dto.getEstadia().getID() != null) {
+            return crearFacturaConCalculoAutomatico(dto);
+        }
+        Factura factura = mapper.toEntityFactura(dto);
+        if (dto.getResponsablepago() != null && 
+            dto.getResponsablepago().getId() != null && 
+            dto.getResponsablepago().getId() > 0) {
+            ResponsablePago rp = responsablePagoRepository.findById(dto.getResponsablepago().getId())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Responsable de pago no encontrado con ID: " + dto.getResponsablepago().getId()));
+            factura.setResponsablePago(rp);
+        }
+        facturaRepository.save(factura);
+        return mapper.toDTOFactura(factura);
+    }
+    private FacturaDTO crearFacturaConCalculoAutomatico(FacturaDTO dto) {
+        DatosFactura datosFactura = new DatosFactura();
+        List<ServicioExtra> consumos = new ArrayList<>();
+        if (dto.getConsumosIds() != null && !dto.getConsumosIds().isEmpty() && dto.getEstadia() != null) {
+            consumos = servicioExtraRepository.findByEstadiaIdAndServicioIds(
+                    dto.getEstadia().getID(),
+                    dto.getConsumosIds()
+            );
+        }
+        datosFactura.setConsumosSeleccionados(consumos);
+        datosFactura.setTipoFactura(dto.getTipo());
+        datosFactura.setFechaHoraCheckoutReal(dto.getFechaHoraCheckoutReal());
+        return crearFacturaConCalculo(dto, datosFactura);
+    }
+    public FacturaDTO generarFacturaFinal(Integer facturaId) {
+        Factura factura = facturaRepository.findById(facturaId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Factura no encontrada con ID: " + facturaId));
+        prepararFacturaParaCheckout(factura);
+        factura.generarFacturaFinal();
+        facturaRepository.save(factura);
+        if (factura.getEstadia() != null) {
+            estadiaRepository.save(factura.getEstadia());
+            if (factura.getEstadia().getHabitacion() != null) {
+                habitacionRepository.save(factura.getEstadia().getHabitacion());
+            }
+        }
+        return mapper.toDTOFactura(factura);
+    }
+    public FacturaDTO pagarFactura(Integer facturaId) {
+        Factura factura = facturaRepository.findById(facturaId)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Factura no encontrada con ID: " + facturaId));
+        prepararFacturaParaPago(factura);
+        factura.pagar();
+        facturaRepository.save(factura);
+        return mapper.toDTOFactura(factura);
+    }
+    public FacturaDTO aplicarNotaCreditoAFactura(Integer facturaId) {
+            Factura factura = facturaRepository.findById(facturaId)
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Factura no encontrada con ID: " + facturaId));
+            prepararFacturaParaNotaCredito(factura);
+            factura.aplicarNotaCredito();
+            facturaRepository.save(factura);
+            return mapper.toDTOFactura(factura);
+        }
+        private boolean coincideCuit(Factura f, String cuit) {
+        if (cuit == null || cuit.isBlank()) return true;
+        if (f.getResponsablePago() instanceof PersonaJuridica pj) {
+            return cuit.equals(pj.getCuit());
+        }
+        return false;
+    }
+    private boolean coincideTipoDoc(Factura f, String tipoDoc) {
+        if (tipoDoc == null || tipoDoc.isBlank()) return true;
+        if (f.getResponsablePago() instanceof PersonaFisica pf) {
+            return pf.getHuesped()
+                    .getHuespedID()
+                    .getTipoDocumento()
+                    .equalsIgnoreCase(tipoDoc);
+        }
+        return false;
+    }
+    private boolean coincideNumeroDoc(Factura f, String numeroDoc) {
+        if (numeroDoc == null || numeroDoc.isBlank()) return true;
+        if (f.getResponsablePago() instanceof PersonaFisica pf) {
+            return pf.getHuesped()
+                    .getHuespedID()
+                    .getDni()
+                    .equalsIgnoreCase(numeroDoc);
+        }
+        return false;
+    }
+    private void prepararFacturaParaCheckout(Factura factura) {
+        factura.registrarObserver(new CheckoutFacturaObserver());
+    }
+    private void prepararFacturaParaPago(Factura factura) {
+        factura.registrarObserver(new PagoFacturaObserver());
+    }
+    private void prepararFacturaParaNotaCredito(Factura factura) {
+        factura.registrarObserver(new NotaCreditoFacturaObserver());
+    }
+}
+//[service/HabitacionService.java]
+package com.hotelPremier.service;
+import com.hotelPremier.classes.DTO.EstadiaDTO;
+import com.hotelPremier.classes.DTO.HabitacionDTO;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.repository.HabitacionRepository;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+@Service
+public class HabitacionService {
+    @Autowired
+    private HabitacionRepository habitacionRepository;
+    @Autowired
+    private ClassMapper mapper;
+    public List<HabitacionDTO> getHabitaciones(String tipoHabitacion) {
+        return mapper.toDTOsHabitacion(
+                habitacionRepository.buscarPorTipoHabitacion(tipoHabitacion)
+        );
+    }
+    public HabitacionDTO getHabitacion(Integer numero) {
+        return mapper.toDTOHab(habitacionRepository.findByNumero(numero));
+    }
+    public List<HabitacionDTO> buscarListaHabitaciones(String tipo, Date fechaDesde, Date fechaHasta) {
+        return mapper.toDTOsHabitacion(
+                habitacionRepository.buscarListaHabitaciones(tipo, fechaDesde, fechaHasta)
+        );
+    }
+    public List<HabitacionDTO> obtenerHabitacionesConDetalle(String tipo, Date fechaDesde, Date fechaHasta) {
+        List<Habitacion> habitaciones = habitacionRepository.buscarPorTipoHabitacion(tipo);
+        List<HabitacionDTO> resultado = new ArrayList<>();
+        for (Habitacion h : habitaciones) {
+            List<Reserva> reservas = h.getListareservas().stream()
+                    .filter(r ->
+                            r.getFecha_desde().compareTo(fechaHasta) <= 0 &&
+                            r.getFecha_hasta().compareTo(fechaDesde) >= 0
+                    )
+                    .toList();
+            List<Estadia> estadias = h.getListaEstadia().stream()
+                    .filter(e ->
+                            e.getCheckin().compareTo(fechaHasta) <= 0 &&
+                            e.getCheckout().compareTo(fechaDesde) >= 0
+                    )
+                    .toList();
+            List<ReservaDTO> reservasDTO = mapper.toDtosReserva(reservas);
+            List<EstadiaDTO> estadiasDTO = mapper.toDTOsEstadia(estadias);
+            resultado.add(new HabitacionDTO(h, reservasDTO, estadiasDTO));
+        }
+        return resultado;
+    }
+    public List<Huesped> obtenerHuespedesPorHabitacion(Integer nroHabitacion) {
+        Habitacion habitacion = habitacionRepository.findById(nroHabitacion)
+                .orElse(null);
+        if (habitacion == null || habitacion.getListaEstadia() == null) {
+            return List.of();
+        }
+        return habitacion.getListaEstadia().stream()
+                .filter(e -> e.getListahuesped() != null)
+                .flatMap(e -> e.getListahuesped().stream())
+                .distinct()
+                .toList();
+    }
+    public List<HabitacionDTO> getHabitaciones() {
+        return mapper.toDTOsHabitacion(habitacionRepository.findAll());
+    }
+}
+//[service/HuespedService.java]
+package com.hotelPremier.service;
+import com.hotelPremier.classes.DTO.HuespedDTO;
+import com.hotelPremier.classes.Dominio.Direccion;
+import com.hotelPremier.classes.Dominio.Huesped;
+import com.hotelPremier.classes.Dominio.HuespedID;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.repository.DireccionRepository;
+import com.hotelPremier.repository.HuespedRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+@Service
+public class HuespedService {
+    @Autowired
+    private HuespedRepository huespedRepository;
+    @Autowired
+    private ClassMapper mapper;
+    @Autowired
+    private DireccionRepository direccionRepository;
+    public List<HuespedDTO> findAll() {
+        return mapper.toDtos(huespedRepository.findAll());
+    }
+    public List<HuespedDTO> findByCategory(String dni) {
+        return mapper.toDtos(
+                huespedRepository.findByHuespedID_Dni(dni)
+        );
+    }
+    public List<HuespedDTO> buscarHuespedes(
+            String dni,
+            String nombre,
+            String apellido,
+            String tipoDocumento
+    ) {
+        List<Huesped> lista = huespedRepository.buscarHuespedes(
+                dni, nombre, apellido, tipoDocumento
+        );
+        return mapper.toDtos(lista);
+    }
+    public HuespedDTO addHuesped(HuespedDTO huespedDTO) {
+        Huesped huesped = mapper.toEntity(huespedDTO);
+        Direccion direccion = huesped.getDireccion();
+        direccionRepository.save(direccion);
+        Huesped saved = huespedRepository.save(huesped);
+        return mapper.toDTO(saved);
+    }
+    public void deleteHuesped(String tipoDocumento, String dni) {
+        HuespedID id = new HuespedID();
+        id.setTipoDocumento(tipoDocumento);
+        id.setDni(dni);
+        if (!huespedRepository.existsById(id)) {
+            throw new RecursoNoEncontradoException(
+                String.format("Huésped no encontrado con tipo de documento: %s y DNI: %s", tipoDocumento, dni)
+            );
+        }
+        huespedRepository.deleteById(id);
+    }
+    public HuespedDTO updateHuesped(HuespedDTO huespedDTO) {
+        if (huespedDTO.getHuespedID() == null) {
+            throw new IllegalArgumentException("El DTO debe contener el ID del huésped (tipoDocumento y dni)");
+        }
+        String tipoDocumento = huespedDTO.getHuespedID().getTipoDocumento();
+        String dni = huespedDTO.getHuespedID().getDni();
+        if (tipoDocumento == null || dni == null) {
+            throw new IllegalArgumentException("El DTO debe contener tipoDocumento y dni en huespedID");
+        }
+        HuespedID id = new HuespedID();
+        id.setTipoDocumento(tipoDocumento);
+        id.setDni(dni);
+        Huesped huespedExistente = huespedRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                    String.format("Huésped no encontrado con tipo de documento: %s y DNI: %s", tipoDocumento, dni)
+                ));
+        huespedExistente.setNombre(huespedDTO.getNombre());
+        huespedExistente.setApellido(huespedDTO.getApellido());
+        huespedExistente.setFechaNacimiento(huespedDTO.getFechaNacimiento());
+        huespedExistente.setTelefono(huespedDTO.getTelefono());
+        huespedExistente.setEmail(huespedDTO.getEmail());
+        huespedExistente.setCuit(huespedDTO.getCuit());
+        huespedExistente.setPosicionIva(huespedDTO.getPosicionIva());
+        huespedExistente.setOcupacion(huespedDTO.getOcupacion());
+        huespedExistente.setNacionalidad(huespedDTO.getNacionalidad());
+        if (huespedDTO.getDireccion() != null) {
+            if (huespedExistente.getDireccion() != null) {
+                Direccion direccionExistente = huespedExistente.getDireccion();
+                direccionExistente.setCalle(huespedDTO.getDireccion().getCalle());
+                direccionExistente.setNumero(huespedDTO.getDireccion().getNumero());
+                direccionExistente.setLocalidad(huespedDTO.getDireccion().getLocalidad());
+                direccionExistente.setDepartamento(huespedDTO.getDireccion().getDepartamento());
+                direccionExistente.setPiso(huespedDTO.getDireccion().getPiso());
+                direccionExistente.setCodigoPostal(huespedDTO.getDireccion().getCodigoPostal());
+                direccionExistente.setProvincia(huespedDTO.getDireccion().getProvincia());
+                direccionExistente.setPais(huespedDTO.getDireccion().getPais());
+                direccionRepository.save(direccionExistente);
+            } else {
+                Direccion nuevaDireccion = new Direccion();
+                nuevaDireccion.setCalle(huespedDTO.getDireccion().getCalle());
+                nuevaDireccion.setNumero(huespedDTO.getDireccion().getNumero());
+                nuevaDireccion.setLocalidad(huespedDTO.getDireccion().getLocalidad());
+                nuevaDireccion.setDepartamento(huespedDTO.getDireccion().getDepartamento());
+                nuevaDireccion.setPiso(huespedDTO.getDireccion().getPiso());
+                nuevaDireccion.setCodigoPostal(huespedDTO.getDireccion().getCodigoPostal());
+                nuevaDireccion.setProvincia(huespedDTO.getDireccion().getProvincia());
+                nuevaDireccion.setPais(huespedDTO.getDireccion().getPais());
+                direccionRepository.save(nuevaDireccion);
+                huespedExistente.setDireccion(nuevaDireccion);
+            }
+        }
+        Huesped updated = huespedRepository.save(huespedExistente);
+        return mapper.toDTO(updated);
+    }
+}
+//[service/NotaDeCreditoService.java]
+package com.hotelPremier.service;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.NotaDeCredito;
+import com.hotelPremier.classes.DTO.NotaDeCreditoDTO;
+import com.hotelPremier.classes.DTO.FacturaDTO;
+import com.hotelPremier.classes.Dominio.factura.observer.NotaCreditoFacturaObserver;
+import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.repository.NotaDeCreditoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+@Service
+public class NotaDeCreditoService {
+    @Autowired
+    private NotaDeCreditoRepository notaRepo;
+    @Autowired
+    private FacturaRepository facturaRepo;
+    public String ingresarNotaDeCredito(NotaDeCreditoDTO dto) {
+        if (dto.getImporte() == null || dto.getImporte() <= 0) {
+            throw new IllegalArgumentException("El importe debe ser mayor a cero.");
+        }
+        if (dto.getFacturas() == null || dto.getFacturas().isEmpty()) {
+            throw new IllegalArgumentException("Debe indicar al menos una factura.");
+        }
+        List<Integer> ids = dto.getFacturas()
+                .stream()
+                .map(FacturaDTO::getID)
+                .toList();
+        List<Factura> facturas = facturaRepo.findAllById(ids);
+        if (facturas.isEmpty()) {
+            throw new RecursoNoEncontradoException("No se encontraron facturas válidas con los IDs proporcionados.");
+        }
+        float sumaTotales = facturas.stream()
+                .map(Factura::getTotal)
+                .reduce(0f, Float::sum);
+        if (dto.getImporte() < sumaTotales) {
+            throw new NegocioException(
+                String.format("El importe de la nota de crédito (%.2f) es insuficiente. Debe ser al menos: %.2f", 
+                    dto.getImporte(), sumaTotales)
+            );
+        }
+        NotaDeCredito nota = new NotaDeCredito();
+        nota.setImporte(dto.getImporte());
+        NotaDeCredito guardada = notaRepo.save(nota);
+        for (Factura factura : facturas) {
+            factura.setNotaDeCredito(guardada);
+            prepararFacturaParaNotaCredito(factura);
+            factura.aplicarNotaCredito();
+            facturaRepo.save(factura);
+        }
+        return "Nota de crédito aplicada correctamente a " + facturas.size() + " factura(s).";
+    }
+    private void prepararFacturaParaNotaCredito(Factura factura) {
+        factura.registrarObserver(new NotaCreditoFacturaObserver());
+    }
+}
+//[service/PagoService.java]
+package com.hotelPremier.service;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.hotelPremier.classes.DTO.PagoDTO;
+import com.hotelPremier.classes.DTO.medioDePago.*;
+import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.classes.Dominio.medioDePago.*;
+import com.hotelPremier.classes.Dominio.medioDePago.strategy.MedioPagoStrategy;
+import com.hotelPremier.classes.Dominio.medioDePago.strategy.SelectorMedioPagoStrategy;
+import com.hotelPremier.classes.Dominio.factura.observer.PagoFacturaObserver;
+import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.repository.FacturaRepository;
+import com.hotelPremier.repository.PagoRepository;
+import java.math.BigDecimal;
+@Service
+public class PagoService {
+    @Autowired
+    private PagoRepository pagoRepository;
+    @Autowired
+    private FacturaRepository facturaRepository;
+    public String ingresarPago(PagoDTO dto) {
+        if (dto == null) throw new IllegalArgumentException("JSON vacío.");
+        if (dto.getFactura() == null || dto.getFactura().getID() == null)
+            throw new IllegalArgumentException("Factura inválida.");
+        Factura factura = facturaRepository.findById(dto.getFactura().getID())
+            .orElseThrow(() -> new RecursoNoEncontradoException("Factura no encontrada con ID: " + dto.getFactura().getID()));
+        if (dto.getMedios() == null || dto.getMedios().isEmpty())
+            throw new IllegalArgumentException("Debe enviar al menos un medio de pago.");
+        if (pagoRepository.existsByFactura(factura)) {
+            throw new NegocioException("La factura ya posee un pago registrado");
+        }
+        List<MedioDePago> listaMedios = new ArrayList<>();
+        BigDecimal sumaCalculada = BigDecimal.ZERO;
+        Pago pago = new Pago();
+        pago.setFecha(new Date());
+        pago.setFactura(factura);
+        for (MedioDePagoDTO mpDTO : dto.getMedios()) {
+            MedioDePago medioPago = convertirDTO(mpDTO);
+            MedioPagoStrategy estrategia =
+                    SelectorMedioPagoStrategy.seleccionarEstrategia(medioPago);
+            estrategia.validar(medioPago, pago);
+            BigDecimal montoBase = BigDecimal.valueOf(medioPago.getMonto());
+            BigDecimal importeFinal = estrategia.calcularImporteFinal(montoBase, medioPago);
+            medioPago.setMonto(importeFinal.floatValue());
+            sumaCalculada = sumaCalculada.add(importeFinal);
+            listaMedios.add(medioPago);
+        }
+        BigDecimal montoPago = BigDecimal.valueOf(dto.getMonto());
+        if (montoPago.compareTo(sumaCalculada) > 0) {
+            BigDecimal diferencia = montoPago.subtract(sumaCalculada);
+            if (diferencia.compareTo(new BigDecimal("0.01")) > 0) {
+                throw new NegocioException(
+                    String.format(
+                        "El monto del pago (%.2f) no puede ser mayor que la suma de los medios calculados (%.2f).",
+                        montoPago.floatValue(),
+                        sumaCalculada.floatValue()
+                    )
+                );
+            }
+        }
+        pago.setMonto(montoPago.floatValue());
+        pago.setListamediodepago(listaMedios);
+        factura.setPago(pago);
+        prepararFacturaParaPago(factura);
+        factura.pagar();
+        pagoRepository.save(pago);
+        facturaRepository.save(factura);
+        return "Pago registrado correctamente.";
+    }
+    private MedioDePago convertirDTO(MedioDePagoDTO dto) {
+        if (dto.getTipo() == null) {
+            throw new IllegalArgumentException("Cada medio debe tener el campo 'tipo'.");
+        }
+        return switch (dto.getTipo().toUpperCase()) {
+            case "CHEQUE" -> {
+                Cheque c = new Cheque();
+                c.setMonto(dto.getMonto());
+                c.setFecha(dto.getFecha());
+                ChequeDTO d = (ChequeDTO) dto;
+                c.setNumeroCheque(d.getNumeroCheque());
+                c.setBanco(d.getBanco());
+                c.setPlazo(d.getPlazo());
+                yield c;
+            }
+            case "TARJETA_CREDITO" -> {
+                TarjetaCredito tc = new TarjetaCredito();
+                tc.setMonto(dto.getMonto());
+                tc.setFecha(dto.getFecha());
+                TarjetaCreditoDTO d = (TarjetaCreditoDTO) dto;
+                tc.setBanco(d.getBanco());
+                tc.setCuotas(d.getCuotas());
+                yield tc;
+            }
+            case "TARJETA_DEBITO" -> {
+                TarjetaDebito td = new TarjetaDebito();
+                td.setMonto(dto.getMonto());
+                td.setFecha(dto.getFecha());
+                TarjetaDebitoDTO d = (TarjetaDebitoDTO) dto;
+                td.setBanco(d.getBanco());
+                td.setDniTitular(d.getDniTitular());
+                yield td;
+            }
+            case "MONEDA_LOCAL" -> {
+                MonedaLocal ml = new MonedaLocal();
+                ml.setMonto(dto.getMonto());
+                ml.setFecha(dto.getFecha());
+                MonedaLocalDTO d = (MonedaLocalDTO) dto;
+                ml.setTipoMoneda(d.getTipoMoneda());
+                yield ml;
+            }
+            case "MONEDA_EXTRANJERA" -> {
+                MonedaExtranjera me = new MonedaExtranjera();
+                me.setMonto(dto.getMonto());
+                me.setFecha(dto.getFecha());
+                MonedaExtranjeraDTO d = (MonedaExtranjeraDTO) dto;
+                me.setTipoMoneda(d.getTipoMoneda());
+                me.setCotizacion(d.getCotizacion());
+                yield me;
+            }
+            default -> throw new IllegalArgumentException("Tipo no reconocido: " + dto.getTipo());
+        };
+    }
+    private void prepararFacturaParaPago(Factura factura) {
+        factura.registrarObserver(new PagoFacturaObserver());
+    }
+}
+//[service/ReservaService.java]
+package com.hotelPremier.service;
+import com.hotelPremier.classes.DTO.ReservaDTO;
+import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.classes.Dominio.Habitacion;
+import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.repository.EstadiaRepository;
+import com.hotelPremier.repository.HabitacionRepository;
+import com.hotelPremier.repository.ReservaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+@Service
+public class ReservaService {
+    @Autowired
+    private ReservaRepository reservaRepository;
+    @Autowired
+    private HabitacionRepository habitacionRepository;
+    @Autowired
+    private EstadiaRepository estadiaRepository;
+    @Autowired
+    private EstadiaService estadiaService;
+    @Autowired
+    private ClassMapper mapper;
+    public List<ReservaDTO> guardarLista(List<ReservaDTO> listaDTO) {
+        List<Reserva> entidades = new ArrayList<>();
+        for (ReservaDTO dto : listaDTO) {
+            if (dto.getHabitacion() == null)
+                throw new IllegalArgumentException("El DTO de reserva no contiene la habitación.");
+            Integer nro = dto.getHabitacion().getNumero();
+            if (nro == null)
+                throw new IllegalArgumentException("El DTO no trae número de habitación.");
+            Habitacion hab = habitacionRepository.findById(nro)
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Habitación no encontrada: " + nro));
+            Integer solapa = reservaRepository.haySuperposicion(
+                    nro,
+                    dto.getFecha_desde(),
+                    dto.getFecha_hasta()
+            );
+            if (solapa != null && solapa > 0)
+                throw new NegocioException("La habitación " + nro + " ya tiene reservas en ese rango de fechas.");
+            Reserva r = mapper.toEntityReserva(dto);
+            if (r.getEstado() == null || r.getEstado().trim().isEmpty()) {
+                r.setEstado("PENDIENTE");
+            }
+            r.setHabitacion(hab);
+            entidades.add(r);
+        }
+        reservaRepository.saveAll(entidades);
+        return mapper.toDtosReserva(entidades);
+    }
+    public List<ReservaDTO> buscarEntreFechas(LocalDate desde, LocalDate hasta) {
+        List<Reserva> reservas = reservaRepository.buscarEntreFechas(desde, hasta);
+        return mapper.toDtosReserva(reservas);
+    }
+    public List<ReservaDTO> buscarPorApellidoNombre(String apellido, String nombre) {
+        boolean tieneApe = apellido != null && !apellido.trim().isEmpty();
+        boolean tieneNom = nombre != null && !nombre.trim().isEmpty();
+        List<Reserva> lista;
+        if (tieneApe && tieneNom) {
+            lista = reservaRepository
+                    .findByApellidoStartingWithIgnoreCaseAndNombreStartingWithIgnoreCase(apellido, nombre);
+        } else if (tieneApe) {
+            lista = reservaRepository.findByApellidoStartingWithIgnoreCase(apellido);
+        } else if (tieneNom) {
+            lista = reservaRepository.findByNombreStartingWithIgnoreCase(nombre);
+        } else {
+            lista = reservaRepository.findAll();
+        }
+        return mapper.toDtosReserva(lista);
+    }
+    public ReservaDTO cancelarReserva(Integer idReserva) {
+        Reserva reserva = reservaRepository.findById(idReserva)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con ID: " + idReserva));
+        String estadoActual = reserva.getEstado();
+        if (estadoActual == null || estadoActual.trim().isEmpty()) {
+            estadoActual = "PENDIENTE"; // Estado por defecto
+        }
+        if (!estadoActual.equalsIgnoreCase("PENDIENTE")) {
+            throw new NegocioException(
+                "Solo se pueden cancelar reservas en estado PENDIENTE. La reserva actual está en estado: " + estadoActual
+            );
+        }
+        reserva.cancelar();
+        reservaRepository.save(reserva);
+        return mapper.toDTOReserva(reserva);
+    }
+    public Estadia hacerCheckIn(Integer idReserva) {
+        Reserva reserva = reservaRepository.findById(idReserva)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con ID: " + idReserva));
+        Estadia estadia = reserva.checkIn();
+        estadia = estadiaService.iniciarEstadia(estadia);
+        reservaRepository.save(reserva);
+        estadiaRepository.save(estadia);
+        if (estadia.getHabitacion() != null) {
+            habitacionRepository.save(estadia.getHabitacion());
+        }
+        return estadia;
+    }
+}
+//[service/ResponsablePagoService.java]
+package com.hotelPremier.service;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
+import com.hotelPremier.repository.ResponsablePagoRepository;
+import com.hotelPremier.classes.Dominio.responsablePago.PersonaFisica;
+import com.hotelPremier.classes.Dominio.responsablePago.PersonaJuridica;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+@Service
+public class ResponsablePagoService {
+    @Autowired
+    private ResponsablePagoRepository responsablePagoRepository;
+    public Integer buscarResponsablePago(String dni, String tipoDocumento, String cuit) {
+        if (cuit != null && !cuit.trim().isEmpty()) {
+            return responsablePagoRepository.findPersonaJuridicaByCuit(cuit)
+                    .map(PersonaJuridica::getId)
+                    .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "No se encontró responsable de pago con CUIT: " + cuit
+                    ));
+        }
+        if (dni != null && !dni.trim().isEmpty() && 
+            tipoDocumento != null && !tipoDocumento.trim().isEmpty()) {
+            return responsablePagoRepository.findPersonaFisicaByDniAndTipoDocumento(dni, tipoDocumento)
+                    .map(PersonaFisica::getId)
+                    .orElseThrow(() -> new RecursoNoEncontradoException(
+                        String.format("No se encontró responsable de pago con DNI: %s y tipo de documento: %s", dni, tipoDocumento)
+                    ));
+        }
+        throw new IllegalArgumentException(
+            "Debe proporcionar CUIT o bien DNI y tipoDocumento para buscar el responsable de pago"
+        );
+    }
+}

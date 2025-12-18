@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 import OcuparHabitacionIgualmente from "../carteles/ocuparHabitacionIgualmente";
 import CartelHabitacionNoDisponible from "../carteles/CartelHabitacionNoDisponible";
 import habitacionesSeleccionadas from "../carteles/habitacionesSeleccionadas"
-import axios from "axios";
+import axios from "../lib/axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan  } from "@fortawesome/free-solid-svg-icons";
 import CartelListaHabitaciones from "../carteles/cartelListaHabitaciones";
@@ -212,7 +212,9 @@ export default function ReservarHabitacion({ ocultarTabla = false }: Props) {
           });
 
           console.log("Habitaciones con reservas mapeadas:", habitacionesConReservas);
-          setHabitaciones(habitacionesConReservas);
+          // Ordenar habitaciones por número
+          const habitacionesOrdenadas = habitacionesConReservas.sort((a: HabitacionDTO, b: HabitacionDTO) => a.numero - b.numero);
+          setHabitaciones(habitacionesOrdenadas);
           setReservas(reservasData);
         } catch(err) {
           console.error("Error al cargar habitaciones y reservas:", err);
@@ -839,7 +841,9 @@ const fechaHastaSeleccion = rangos.length
                             listaestadias: []
                           };
                         });
-                        setHabitaciones(habitacionesConReservas);
+                        // Ordenar habitaciones por número
+                        const habitacionesOrdenadas = habitacionesConReservas.sort((a: any, b: any) => a.numero - b.numero);
+                        setHabitaciones(habitacionesOrdenadas);
                         setReservas(reservasData);
                       } catch(err) {
                         console.error("Error al recargar datos:", err);

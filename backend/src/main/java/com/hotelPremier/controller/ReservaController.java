@@ -4,7 +4,6 @@ import com.hotelPremier.classes.DTO.ReservaDTO;
 import com.hotelPremier.service.ReservaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,31 +29,30 @@ public class ReservaController {
 
     @Operation(summary = "Guardar reservas")
     @PostMapping
-    public ResponseEntity<?> guardarReservas(@RequestBody List<ReservaDTO> listaDTO) {
-        return ResponseEntity.ok(reservaService.guardarLista(listaDTO));
+    public ResponseEntity<List<ReservaDTO>> guardarReservas(@RequestBody List<ReservaDTO> listaDTO) {
+        List<ReservaDTO> reservasGuardadas = reservaService.guardarLista(listaDTO);
+        return ResponseEntity.ok(reservasGuardadas);
     }
 
     @Operation(summary = "Buscar reservas entre fechas")
     @GetMapping
-    public ResponseEntity<?> buscarEntreFechas(
+    public ResponseEntity<List<ReservaDTO>> buscarEntreFechas(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta
     ) {
-        return ResponseEntity.ok(
-            reservaService.buscarEntreFechas(desde, hasta)
-        );
+        List<ReservaDTO> reservas = reservaService.buscarEntreFechas(desde, hasta);
+        return ResponseEntity.ok(reservas);
     }
 
 
     @Operation(summary = "Buscar reservas por apellido y nombre")
     @GetMapping("/buscar")
-    public ResponseEntity<?> buscarPorApellidoNombre(
+    public ResponseEntity<List<ReservaDTO>> buscarPorApellidoNombre(
         @RequestParam String apellido,
         @RequestParam String nombre
     ) {
-        return ResponseEntity.ok(
-            reservaService.buscarPorApellidoNombre(apellido, nombre)
-        );
+        List<ReservaDTO> reservas = reservaService.buscarPorApellidoNombre(apellido, nombre);
+        return ResponseEntity.ok(reservas);
     }
 
     @Operation(
@@ -62,17 +60,8 @@ public class ReservaController {
         description = "Cancela una reserva utilizando el patrón State (cambia el estado a cancelada). Solo permite cancelar reservas en estado PENDIENTE."
     )
     @PutMapping("/cancelar")
-    public ResponseEntity<?> cancelarReserva(@RequestBody ReservaDTO dto) {
-        try {
-            return ResponseEntity.ok(
-                reservaService.cancelarReserva(dto.getId_reserva())
-            );
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    public ResponseEntity<ReservaDTO> cancelarReserva(@RequestBody ReservaDTO dto) {
+        ReservaDTO reservaCancelada = reservaService.cancelarReserva(dto.getId_reserva());
+        return ResponseEntity.ok(reservaCancelada);
     }
 }

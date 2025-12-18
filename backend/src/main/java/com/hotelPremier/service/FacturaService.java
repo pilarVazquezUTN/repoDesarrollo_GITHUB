@@ -13,6 +13,8 @@ import com.hotelPremier.classes.Dominio.responsablePago.PersonaFisica;
 import com.hotelPremier.classes.Dominio.responsablePago.PersonaJuridica;
 import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
 import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
 import com.hotelPremier.repository.EstadiaRepository;
 import com.hotelPremier.repository.FacturaRepository;
 import com.hotelPremier.repository.HabitacionRepository;
@@ -113,7 +115,7 @@ public class FacturaService {
         }
 
         Estadia estadia = estadiaRepository.findById(dto.getEstadia().getID())
-                .orElseThrow(() -> new IllegalArgumentException("Estadia no encontrada"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Estadía no encontrada con ID: " + dto.getEstadia().getID()));
 
         // Actualizar el checkout de la estadía con la fecha de checkout real de la factura
         if (datosFactura.getFechaHoraCheckoutReal() != null) {
@@ -143,7 +145,7 @@ public class FacturaService {
             dto.getResponsablepago().getId() != null && 
             dto.getResponsablepago().getId() > 0) {
             ResponsablePago rp = responsablePagoRepository.findById(dto.getResponsablepago().getId())
-                    .orElseThrow(() -> new IllegalArgumentException("ResponsablePago no encontrado"));
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Responsable de pago no encontrado con ID: " + dto.getResponsablepago().getId()));
             factura.setResponsablePago(rp);
         }
 
@@ -185,7 +187,7 @@ public class FacturaService {
             dto.getResponsablepago().getId() != null && 
             dto.getResponsablepago().getId() > 0) {
             ResponsablePago rp = responsablePagoRepository.findById(dto.getResponsablepago().getId())
-                    .orElseThrow(() -> new RuntimeException("ResponsablePago no encontrado"));
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Responsable de pago no encontrado con ID: " + dto.getResponsablepago().getId()));
             factura.setResponsablePago(rp);
         }
 
@@ -225,7 +227,7 @@ public class FacturaService {
     public FacturaDTO generarFacturaFinal(Integer facturaId) {
 
         Factura factura = facturaRepository.findById(facturaId)
-                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Factura no encontrada con ID: " + facturaId));
 
         prepararFacturaParaCheckout(factura);
         factura.generarFacturaFinal();
@@ -247,7 +249,7 @@ public class FacturaService {
     public FacturaDTO pagarFactura(Integer facturaId) {
 
         Factura factura = facturaRepository.findById(facturaId)
-                .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Factura no encontrada con ID: " + facturaId));
 
         prepararFacturaParaPago(factura);
         factura.pagar();
@@ -262,7 +264,7 @@ public class FacturaService {
     public FacturaDTO aplicarNotaCreditoAFactura(Integer facturaId) {
 
             Factura factura = facturaRepository.findById(facturaId)
-                    .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada con ID: " + facturaId));
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Factura no encontrada con ID: " + facturaId));
 
             prepararFacturaParaNotaCredito(factura);
             factura.aplicarNotaCredito();

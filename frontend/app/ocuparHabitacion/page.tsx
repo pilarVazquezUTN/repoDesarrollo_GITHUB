@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { format, parseISO, eachDayOfInterval, isAfter } from "date-fns";
-import axios from "axios";
+import axios from "../lib/axios";
+import { fetchWithLogs } from "../lib/fetch";
 
 import HabitacionReservadaOcuparIgual from "../carteles/habitacionReservadaOcuparIgual";
 import CartelHabitacionNoDisponible from "../carteles/CartelHabitacionNoDisponible";
@@ -267,7 +268,7 @@ export default function OcuparHabitacion({ ocultarTabla = false }: Props) {
                             habitacion: h   // ← OBJETO COMPLETO, NO STRING
                         };
 
-                        await fetch("http://localhost:8080/estadias", {
+                        await fetchWithLogs("http://localhost:8080/estadias", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(estadiaDTO),

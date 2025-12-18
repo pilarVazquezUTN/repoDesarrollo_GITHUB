@@ -3,7 +3,7 @@ import { useState } from "react";
 import CancelarAltaHuepsed from "../carteles/cancelarAltaHuesped";
 import CargarOtroHuesped from "../carteles/huespedCargadoSatisfacoriamente";
 import ErrorDniExistente from "../carteles/errorDniExistente";
-import axios from "axios";
+import axios from "../lib/axios";
 import { validarFormularioHuesped } from "../validaciones/validaciones";
 
 

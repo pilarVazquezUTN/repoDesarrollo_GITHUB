@@ -3,7 +3,6 @@ package com.hotelPremier.controller;
 import com.hotelPremier.service.ResponsablePagoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +30,7 @@ public class ResponsablePagoController {
         @ApiResponse(responseCode = "404", description = "No se encontró responsable de pago")
     })
     @GetMapping
-    public ResponseEntity<?> buscarResponsablePago(
+    public ResponseEntity<ResponsablePagoIdResponse> buscarResponsablePago(
         @Parameter(description = "DNI del huésped (requerido si no viene CUIT)", example = "40991234")
         @RequestParam(required = false) String dni,
         
@@ -41,15 +40,7 @@ public class ResponsablePagoController {
         @Parameter(description = "CUIT de la persona jurídica (opcional)", example = "20-12345678-9")
         @RequestParam(required = false) String cuit
     ) {
-        
         Integer id = responsablePagoService.buscarResponsablePago(dni, tipoDocumento, cuit);
-        
-        if (id == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró responsable de pago con los datos proporcionados");
-        }
-        
-        // Devolver solo el ID en un objeto simple
         return ResponseEntity.ok(new ResponsablePagoIdResponse(id));
     }
     

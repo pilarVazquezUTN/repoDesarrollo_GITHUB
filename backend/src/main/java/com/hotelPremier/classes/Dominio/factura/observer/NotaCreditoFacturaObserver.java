@@ -2,6 +2,7 @@ package com.hotelPremier.classes.Dominio.factura.observer;
 
 import com.hotelPremier.classes.Dominio.Factura;
 import com.hotelPremier.classes.Dominio.NotaDeCredito;
+import com.hotelPremier.exception.NegocioException;
 
 /**
  * Observer que reacciona cuando una factura pasa a estado CANCELADA.
@@ -25,15 +26,14 @@ public class NotaCreditoFacturaObserver implements FacturaObserver {
         NotaDeCredito notaCredito = factura.getNotaDeCredito();
         if (notaCredito == null) {
             // La nota de crédito debe estar asociada antes de cancelar
-            // Si no está, es un error de flujo
-            throw new IllegalStateException("No se puede cancelar la factura sin una nota de crédito asociada");
+            throw new NegocioException("No se puede cancelar la factura sin una nota de crédito asociada");
         }
 
         // Verificar que el total esté en 0 (ya establecido por State)
         // Usar comparación con tolerancia para evitar problemas de precisión de punto flotante
         float total = factura.getTotal();
         if (Math.abs(total) > 0.01f) {
-            throw new IllegalStateException(
+            throw new NegocioException(
                 String.format("El total de la factura cancelada debe ser 0. Total actual: %.2f", total)
             );
         }

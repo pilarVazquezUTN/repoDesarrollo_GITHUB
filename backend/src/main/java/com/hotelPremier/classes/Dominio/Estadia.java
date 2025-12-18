@@ -36,10 +36,10 @@ public class Estadia {
     @JsonBackReference(value = "habitacion-estadias")
     private Habitacion habitacion;
 
-    // ✔ Estadia es dueño de los HUÉSPEDES, así que va Managed
-    @ManyToMany(mappedBy = "listaEstadia", fetch = FetchType.EAGER)
-    @JsonManagedReference(value = "estadia-huespedes")
-    private List<Huesped> listahuesped;
+@ManyToMany(mappedBy = "listaEstadia", fetch = FetchType.EAGER)
+@JsonManagedReference(value = "estadia-huespedes")
+private List<Huesped> listahuesped;
+
 
     // ✔ Estadia es dueño de las Facturas → Managed
     @OneToMany(mappedBy = "estadia")

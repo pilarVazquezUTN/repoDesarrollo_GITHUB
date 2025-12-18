@@ -4,6 +4,7 @@ import com.hotelPremier.classes.DTO.HuespedDTO;
 import com.hotelPremier.classes.Dominio.Direccion;
 import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.Dominio.HuespedID;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.DireccionRepository;
 import com.hotelPremier.repository.HuespedRepository;
@@ -80,7 +81,9 @@ public class HuespedService {
         id.setDni(dni);
 
         if (!huespedRepository.existsById(id)) {
-            throw new RuntimeException("Huesped no encontrado");
+            throw new RecursoNoEncontradoException(
+                String.format("Huésped no encontrado con tipo de documento: %s y DNI: %s", tipoDocumento, dni)
+            );
         }
 
         huespedRepository.deleteById(id);
@@ -92,14 +95,14 @@ public class HuespedService {
     public HuespedDTO updateHuesped(HuespedDTO huespedDTO) {
         // Extraer tipo y dni del DTO
         if (huespedDTO.getHuespedID() == null) {
-            throw new RuntimeException("El DTO debe contener el ID del huésped (tipoDocumento y dni)");
+            throw new IllegalArgumentException("El DTO debe contener el ID del huésped (tipoDocumento y dni)");
         }
         
         String tipoDocumento = huespedDTO.getHuespedID().getTipoDocumento();
         String dni = huespedDTO.getHuespedID().getDni();
         
         if (tipoDocumento == null || dni == null) {
-            throw new RuntimeException("El DTO debe contener tipoDocumento y dni en huespedID");
+            throw new IllegalArgumentException("El DTO debe contener tipoDocumento y dni en huespedID");
         }
         
         HuespedID id = new HuespedID();
@@ -107,7 +110,9 @@ public class HuespedService {
         id.setDni(dni);
 
         Huesped huespedExistente = huespedRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Huesped no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                    String.format("Huésped no encontrado con tipo de documento: %s y DNI: %s", tipoDocumento, dni)
+                ));
 
         // Actualizar los campos del huésped existente con los datos del DTO
         huespedExistente.setNombre(huespedDTO.getNombre());

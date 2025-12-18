@@ -2,6 +2,7 @@ package com.hotelPremier.classes.Dominio.reserva.estado;
 
 import com.hotelPremier.classes.Dominio.Reserva;
 import com.hotelPremier.classes.Dominio.Estadia;
+import com.hotelPremier.exception.NegocioException;
 
 /**
  * Clase abstracta que define el comportamiento según el estado de la reserva.
@@ -18,7 +19,7 @@ public abstract class EstadoReserva {
      * Intenta cancelar la reserva. Por defecto lanza excepción si no es posible.
      */
     public void cancelar(Reserva reserva) {
-        throw new IllegalStateException("No se puede cancelar en estado " + getNombre());
+        throw new NegocioException("No se puede cancelar en estado " + getNombre());
     }
 
     /**
@@ -29,7 +30,7 @@ public abstract class EstadoReserva {
      * @return La nueva Estadia creada en estado ENCURSO
      */
     public Estadia checkIn(Reserva reserva) {
-        throw new IllegalStateException("No se puede hacer check-in en estado " + getNombre());
+        throw new NegocioException("No se puede hacer check-in en estado " + getNombre());
     }
 
     /**
@@ -40,7 +41,7 @@ public abstract class EstadoReserva {
      * @param reserva La reserva que se está consumiendo
      */
     public void consumir(Reserva reserva) {
-        throw new IllegalStateException("No se puede consumir la reserva en estado " + getNombre());
+        throw new NegocioException("No se puede consumir la reserva en estado " + getNombre());
     }
 }
 

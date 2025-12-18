@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios from "../lib/axios";
 import Link from "next/link";
 import CartelNoEncontrado from "../carteles/huespedNoEncontrado";
 import { esSoloLetras, esSoloNumeros, validarDNI } from "../validaciones/validaciones";

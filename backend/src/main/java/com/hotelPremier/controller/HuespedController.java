@@ -48,7 +48,7 @@ public class HuespedController {
 
     @Operation(summary = "Eliminar huésped")
     @DeleteMapping("/huespedes/{tipo}/{dni}")
-    public ResponseEntity<?> deleteHuesped(
+    public ResponseEntity<Void> deleteHuesped(
         @PathVariable String tipo,
         @PathVariable String dni
     ) {

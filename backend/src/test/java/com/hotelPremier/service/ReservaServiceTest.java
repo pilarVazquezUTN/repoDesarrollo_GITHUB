@@ -1,13 +1,11 @@
 package com.hotelPremier.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Date;
 import java.util.List;
@@ -23,9 +21,13 @@ import com.hotelPremier.classes.DTO.HabitacionDTO;
 import com.hotelPremier.classes.DTO.ReservaDTO;
 import com.hotelPremier.classes.Dominio.Habitacion;
 import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.classes.Dominio.Estadia;
 import com.hotelPremier.classes.mapper.ClassMapper;
+import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
 import com.hotelPremier.repository.HabitacionRepository;
 import com.hotelPremier.repository.ReservaRepository;
+import com.hotelPremier.repository.EstadiaRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ReservaServiceTest {
@@ -37,14 +39,20 @@ class ReservaServiceTest {
     private HabitacionRepository habitacionRepository;
 
     @Mock
+    private EstadiaRepository estadiaRepository;
+
+    @Mock
+    private EstadiaService estadiaService;
+
+    @Mock
     private ClassMapper mapper;
 
     @InjectMocks
     private ReservaService reservaService;
 
-    // ============================
-    // Reserva válida
-    // ============================
+    /**
+     * Registra correctamente una reserva válida sin superposición de fechas.
+     */
     @Test
     void reservaValida_seRegistraCorrectamente() {
 
@@ -65,24 +73,21 @@ class ReservaServiceTest {
         Reserva reserva = new Reserva();
         reserva.setEstado("PENDIENTE");
 
-        when(mapper.toEntityReserva(any(ReservaDTO.class)))
+        when(mapper.toEntityReserva(any()))
                 .thenReturn(reserva);
-
-        when(habitacionRepository.findById(101)).thenReturn(Optional.of(habitacion));
-
-        when(reservaRepository.haySuperposicion(
-                eq(101), any(), any())
-        ).thenReturn(0);
+        when(habitacionRepository.findById(101))
+                .thenReturn(Optional.of(habitacion));
+        when(reservaRepository.haySuperposicion(eq(101), any(), any()))
+                .thenReturn(0);
 
         reservaService.guardarLista(List.of(dto));
 
-        verify(reservaRepository, times(1))
-                .saveAll(any());
+        verify(reservaRepository).saveAll(any());
     }
 
-    // ============================
-    // Habitación inexistente
-    // ============================
+    /**
+     * Falla el registro si la habitación no existe.
+     */
     @Test
     void fallaSiNoExisteHabitacion() {
 
@@ -91,32 +96,30 @@ class ReservaServiceTest {
         habDTO.setNumero(101);
         dto.setHabitacion(habDTO);
 
-        assertThrows(RuntimeException.class,
+        assertThrows(RecursoNoEncontradoException.class,
                 () -> reservaService.guardarLista(List.of(dto)));
 
-        verify(reservaRepository, never())
-                .saveAll(any());
+        verify(reservaRepository, never()).saveAll(any());
     }
 
-    // ============================
-    // Faltan datos del titular
-    // ============================
+    /**
+     * Falla el registro si faltan datos obligatorios del titular.
+     */
     @Test
     void fallaSiFaltanDatosDelTitular() {
 
         ReservaDTO dto = new ReservaDTO();
         dto.setApellido("PEREZ");
 
-        assertThrows(RuntimeException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> reservaService.guardarLista(List.of(dto)));
 
-        verify(reservaRepository, never())
-                .saveAll(any());
+        verify(reservaRepository, never()).saveAll(any());
     }
 
-    // ============================
-    // Fechas solapadas
-    // ============================
+    /**
+     * Falla el registro cuando existen fechas solapadas.
+     */
     @Test
     void fallaSiHayFechasSolapadas() {
 
@@ -136,21 +139,18 @@ class ReservaServiceTest {
 
         when(habitacionRepository.findById(101))
                 .thenReturn(Optional.of(habitacion));
+        when(reservaRepository.haySuperposicion(eq(101), any(), any()))
+                .thenReturn(1);
 
-        when(reservaRepository.haySuperposicion(
-                eq(101), any(), any())
-        ).thenReturn(1);
-
-        assertThrows(RuntimeException.class,
+        assertThrows(NegocioException.class,
                 () -> reservaService.guardarLista(List.of(dto)));
 
-        verify(reservaRepository, never())
-                .saveAll(any());
+        verify(reservaRepository, never()).saveAll(any());
     }
 
-    // ============================
-    // Cancelar reserva pendiente
-    // ============================
+    /**
+     * Cancela correctamente una reserva pendiente.
+     */
     @Test
     void cancelarReservaPendiente_exito() {
 
@@ -160,19 +160,18 @@ class ReservaServiceTest {
 
         when(reservaRepository.findById(1))
                 .thenReturn(Optional.of(reserva));
-
-        when(mapper.toDTOReserva(any(Reserva.class)))
+        when(mapper.toDTOReserva(any()))
                 .thenReturn(new ReservaDTO());
 
         reservaService.cancelarReserva(1);
 
-        verify(reservaRepository, times(1)).save(reserva);
         assertEquals("CANCELADA", reserva.getEstado());
+        verify(reservaRepository).save(reserva);
     }
 
-    // ============================
-    // Cancelar ya cancelada
-    // ============================
+    /**
+     * Falla la cancelación si la reserva ya está cancelada.
+     */
     @Test
     void cancelarReservaYaCancelada_falla() {
 
@@ -183,24 +182,177 @@ class ReservaServiceTest {
         when(reservaRepository.findById(2))
                 .thenReturn(Optional.of(reserva));
 
-        assertThrows(IllegalStateException.class,
+        assertThrows(NegocioException.class,
                 () -> reservaService.cancelarReserva(2));
 
         verify(reservaRepository, never()).save(any());
     }
 
-    // ============================
-    // Cancelar inexistente
-    // ============================
+    /**
+     * Falla la cancelación si la reserva no existe.
+     */
     @Test
     void cancelarReservaInexistente_falla() {
 
         when(reservaRepository.findById(99))
                 .thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(RecursoNoEncontradoException.class,
                 () -> reservaService.cancelarReserva(99));
 
         verify(reservaRepository, never()).save(any());
+    }
+
+    /**
+     * Devuelve reservas dentro de un rango de fechas.
+     */
+    @Test
+    void buscarEntreFechas_devuelveReservasEnRango() {
+
+        java.time.LocalDate desde = java.time.LocalDate.of(2024, 1, 1);
+        java.time.LocalDate hasta = java.time.LocalDate.of(2024, 1, 31);
+
+        List<Reserva> reservas = List.of(new Reserva(), new Reserva());
+        List<ReservaDTO> dtos = List.of(new ReservaDTO(), new ReservaDTO());
+
+        when(reservaRepository.buscarEntreFechas(desde, hasta))
+                .thenReturn(reservas);
+        when(mapper.toDtosReserva(reservas))
+                .thenReturn(dtos);
+
+        List<ReservaDTO> resultado =
+                reservaService.buscarEntreFechas(desde, hasta);
+
+        assertEquals(2, resultado.size());
+    }
+
+    /**
+     * Busca reservas por apellido y nombre.
+     */
+    @Test
+    void buscarPorApellidoNombre_conApellidoYNombre_devuelveReservas() {
+
+        List<Reserva> reservas = List.of(new Reserva());
+
+        when(reservaRepository
+                .findByApellidoStartingWithIgnoreCaseAndNombreStartingWithIgnoreCase("Perez", "Juan"))
+                .thenReturn(reservas);
+        when(mapper.toDtosReserva(reservas))
+                .thenReturn(List.of(new ReservaDTO()));
+
+        List<ReservaDTO> resultado =
+                reservaService.buscarPorApellidoNombre("Perez", "Juan");
+
+        assertEquals(1, resultado.size());
+    }
+
+    /**
+     * Busca reservas solo por apellido.
+     */
+    @Test
+    void buscarPorApellidoNombre_soloApellido_devuelveReservas() {
+
+        List<Reserva> reservas = List.of(new Reserva());
+
+        when(reservaRepository.findByApellidoStartingWithIgnoreCase("Perez"))
+                .thenReturn(reservas);
+        when(mapper.toDtosReserva(reservas))
+                .thenReturn(List.of(new ReservaDTO()));
+
+        List<ReservaDTO> resultado =
+                reservaService.buscarPorApellidoNombre("Perez", null);
+
+        assertEquals(1, resultado.size());
+    }
+
+    /**
+     * Busca reservas solo por nombre.
+     */
+    @Test
+    void buscarPorApellidoNombre_soloNombre_devuelveReservas() {
+
+        List<Reserva> reservas = List.of(new Reserva());
+
+        when(reservaRepository.findByNombreStartingWithIgnoreCase("Juan"))
+                .thenReturn(reservas);
+        when(mapper.toDtosReserva(reservas))
+                .thenReturn(List.of(new ReservaDTO()));
+
+        List<ReservaDTO> resultado =
+                reservaService.buscarPorApellidoNombre(null, "Juan");
+
+        assertEquals(1, resultado.size());
+    }
+
+    /**
+     * Devuelve todas las reservas si no hay filtros.
+     */
+    @Test
+    void buscarPorApellidoNombre_sinParametros_devuelveTodas() {
+
+        List<Reserva> reservas = List.of(new Reserva(), new Reserva());
+
+        when(reservaRepository.findAll())
+                .thenReturn(reservas);
+        when(mapper.toDtosReserva(reservas))
+                .thenReturn(List.of(new ReservaDTO(), new ReservaDTO()));
+
+        List<ReservaDTO> resultado =
+                reservaService.buscarPorApellidoNombre(null, null);
+
+        assertEquals(2, resultado.size());
+    }
+
+    /**
+     * Falla el check-in si la reserva no existe.
+     */
+    @Test
+    void hacerCheckIn_reservaInexistente_falla() {
+
+        when(reservaRepository.findById(99))
+                .thenReturn(Optional.empty());
+
+        assertThrows(RecursoNoEncontradoException.class,
+                () -> reservaService.hacerCheckIn(99));
+
+        verify(reservaRepository, never()).save(any());
+    }
+
+    /**
+     * Realiza el check-in correctamente y genera la estadía.
+     */
+    @Test
+    void hacerCheckIn_exito() {
+
+        Reserva reserva = new Reserva();
+        reserva.setId_reserva(1);
+        reserva.setEstado("PENDIENTE");
+
+        Habitacion habitacion = new Habitacion();
+        habitacion.setNumero(101);
+
+        Estadia estadia = new Estadia();
+        estadia.setHabitacion(habitacion);
+
+        Reserva reservaSpy = spy(reserva);
+
+        when(reservaRepository.findById(1))
+                .thenReturn(Optional.of(reservaSpy));
+        doReturn(estadia).when(reservaSpy).checkIn();
+        when(estadiaService.iniciarEstadia(any()))
+                .thenReturn(estadia);
+        when(estadiaRepository.save(any()))
+                .thenReturn(estadia);
+        when(habitacionRepository.save(any()))
+                .thenReturn(habitacion);
+        when(reservaRepository.save(reservaSpy))
+                .thenReturn(reservaSpy);
+
+        Estadia resultado = reservaService.hacerCheckIn(1);
+
+        assertNotNull(resultado);
+        verify(reservaRepository).save(reservaSpy);
+        verify(estadiaRepository).save(estadia);
+        verify(habitacionRepository).save(habitacion);
     }
 }

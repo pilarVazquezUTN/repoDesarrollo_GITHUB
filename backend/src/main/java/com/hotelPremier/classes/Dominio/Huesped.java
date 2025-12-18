@@ -60,7 +60,6 @@ public class Huesped {
 @JsonBackReference(value = "estadia-huespedes")
 private List<Estadia> listaEstadia;
 
-
     @OneToOne
     @JoinColumn(name = "id_responsablepago")
     private ResponsablePago responsablePago;

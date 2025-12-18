@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import axios from "axios";
+import axios from "../lib/axios";
 import { format, parseISO } from "date-fns";
 import { esSoloNumeros, esObligatorio } from "../validaciones/validaciones";
 

@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import Tabla from "../tabla/page";
-import axios from "axios";
+import axios from "../../lib/axios";
 import { TipoHuesped } from "../../tabla/page";
 import CartelNoEncontrado from "../../carteles/huespedNoEncontrado";
 import Link from "next/link";

@@ -2,6 +2,7 @@ package com.hotelPremier.classes.Dominio.factura.observer;
 
 import com.hotelPremier.classes.Dominio.Factura;
 import com.hotelPremier.classes.Dominio.Pago;
+import com.hotelPremier.exception.NegocioException;
 
 /**
  * Observer que reacciona cuando una factura pasa a estado PAGADA.
@@ -24,8 +25,7 @@ public class PagoFacturaObserver implements FacturaObserver {
         Pago pago = factura.getPago();
         if (pago == null) {
             // El pago debe estar registrado antes de cambiar a PAGADA
-            // Si no está, es un error de flujo
-            throw new IllegalStateException("No se puede marcar la factura como PAGADA sin un pago asociado");
+            throw new NegocioException("No se puede marcar la factura como PAGADA sin un pago asociado");
         }
 
         // El pago ya está registrado y asociado a la factura

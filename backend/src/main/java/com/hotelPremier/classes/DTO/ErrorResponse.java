@@ -1,40 +1,48 @@
 package com.hotelPremier.classes.DTO;
 
+import java.time.LocalDateTime;
+
 /**
- * Clase DTO para respuestas de error estructuradas.
- * Permite que el frontend reciba mensajes de error de forma consistente.
+ * DTO para respuestas de error de la API.
+ * Proporciona información estructurada sobre los errores sin exponer detalles técnicos.
  */
 public class ErrorResponse {
-    
+
     private String mensaje;
-    private String error;
-    
+    private LocalDateTime timestamp;
+    private int status;
+
     public ErrorResponse() {
+        this.timestamp = LocalDateTime.now();
     }
-    
-    public ErrorResponse(String mensaje) {
+
+    public ErrorResponse(String mensaje, int status) {
+        this();
         this.mensaje = mensaje;
-        this.error = mensaje;
+        this.status = status;
     }
-    
-    public ErrorResponse(String mensaje, String error) {
-        this.mensaje = mensaje;
-        this.error = error;
-    }
-    
+
     public String getMensaje() {
         return mensaje;
     }
-    
+
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
     }
-    
-    public String getError() {
-        return error;
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
-    
-    public void setError(String error) {
-        this.error = error;
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

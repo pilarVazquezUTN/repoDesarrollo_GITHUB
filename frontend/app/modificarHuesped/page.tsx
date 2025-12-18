@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios from "../lib/axios";
 import { validarFormularioHuesped } from "../validaciones/validaciones";
 import { TipoHuesped } from "../tabla/page";
 import CancelarModificacion from "../carteles/cancelarModificacion";

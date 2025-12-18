@@ -24,11 +24,8 @@ public class NotaDeCreditoController {
         description = "Genera una nota de crédito que anula contablemente una o más facturas"
     )
     @PostMapping
-    public ResponseEntity<?> ingresarNotaCredito(@RequestBody NotaDeCreditoDTO dto) {
-        try {
-            return ResponseEntity.ok(service.ingresarNotaDeCredito(dto));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> ingresarNotaCredito(@RequestBody NotaDeCreditoDTO dto) {
+        String resultado = service.ingresarNotaDeCredito(dto);
+        return ResponseEntity.ok(resultado);
     }
 }

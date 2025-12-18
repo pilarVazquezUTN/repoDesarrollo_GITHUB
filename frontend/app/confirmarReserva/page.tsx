@@ -6,6 +6,7 @@ import { parseISO, format } from "date-fns";
 import { esSoloLetras, esSoloNumeros, esObligatorio, telefonoValido} from "../validaciones/validaciones";
 import { es } from "date-fns/locale";
 import  ReservaConfirmada  from "../carteles/reservaConfirmada";
+import { fetchWithLogs } from "../lib/fetch";
 
 interface HabitacionDTO {
   numero: number;
@@ -108,7 +109,7 @@ const listaReservasDTO: ReservaDTO[] = rangos.map(rango => ({
 console.log("LISTA RESERVAS DTO ENVIADA:", listaReservasDTO);
 console.log("JSON enviado:", JSON.stringify(listaReservasDTO, null, 2));
          try {
-            const response = await fetch("http://localhost:8080/reservas", {
+            const response = await fetchWithLogs("http://localhost:8080/reservas", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

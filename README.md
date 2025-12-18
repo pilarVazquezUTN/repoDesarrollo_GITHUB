@@ -4,6 +4,18 @@ Proyecto desarrollado como **Trabajo Práctico Final 2025** para las materias **
 
 El sistema permite gestionar reservas, estadías, huéspedes, facturación y pagos de un hotel, cumpliendo con los casos de uso definidos en el enunciado oficial del TP.
 
+## 📑 Índice
+
+- [📌 Tecnologías utilizadas](#-tecnologías-utilizadas)
+- [📂 Estructura del proyecto](#-estructura-del-proyecto)
+- [🚀 Cómo ejecutar el proyecto](#-cómo-ejecutar-el-proyecto)
+- [🌐 Endpoints](#-endpoints)
+- [🚨 Manejo de errores y excepciones](#-manejo-de-errores-y-excepciones)
+- [🧠 Patrones de diseño implementados](#-patrones-de-diseño-implementados)
+- [🧪 Testing](#-testing)
+- [📐 Diagramas](#-diagramas)
+- [✅ Casos de Uso implementados](#-casos-de-uso-implementados)
+
 ---
 
 ## 📌 Tecnologías utilizadas
@@ -65,6 +77,8 @@ El sistema permite gestionar reservas, estadías, huéspedes, facturación y pag
 │
 ├── sql						  → Archivo .sql de backup con tablas y datos precargados
 │
+├── Postman				          → Archivo con export de postman, con ejemplos de endpoints
+│
 ├── EntregaDiseñoCU_Diagramas			  → Diagramas 
 │
 └── README.md
@@ -73,9 +87,43 @@ El sistema permite gestionar reservas, estadías, huéspedes, facturación y pag
 
 ---
 
-## ▶️ Cómo ejecutar el proyecto
+## 🚀 Cómo ejecutar el proyecto
 
-### 1️⃣ Backend (Spring Boot)
+---
+
+### 1️⃣ Cargar base de datos en PostgreSQL (pgAdmin)
+
+El repositorio incluye un **backup de la base de datos** con las tablas y datos necesarios para probar el sistema.
+
+El archivo se encuentra en:
+
+/sql/hotelpremier.backup
+
+#### Pasos para restaurar el backup en pgAdmin
+
+    1. AbrirpgAdmin **(Obligatorio Postrgre 18)**
+    2. Crear una base de datos vacía (por ejemplo `hotelpremier`)
+    3. Hacer clic derecho sobre la base de datos creada
+    4. Seleccionar **Restore**
+    5. En la opción **Filename**, seleccionar el archivo:
+
+    /sql/hotelpremier.backup
+
+    6. Presionar**Restore** y esperar a que finalice el proceso
+
+#### Configuración en application.properties
+
+    Una vez restaurada la base de datos, verificar que los datos de conexión en`application.properties` coincidan con la base creada:
+
+    spring.datasource.url=jdbc:postgresql://localhost:5432/hotelpremier
+    spring.datasource.username=USUARIO
+    spring.datasource.password=PASSWORD
+
+    De esta forma, el backend podrá conectarse correctamente a la base de datos restaurada.
+
+---
+
+### 2️⃣ Backend (Spring Boot)
 
 Desde la carpeta `/backend`:
 
@@ -97,7 +145,7 @@ http://localhost:8080/swagger-ui.html
 
 ---
 
-### 2️⃣Frontend (Next.js)
+### 3️⃣ Frontend (Next.js)
 
 Desde la carpeta `/frontend`:
 
@@ -113,7 +161,22 @@ http://localhost:3000
 
 ---
 
-## 🔌 Endpoints principales
+### 4️⃣ Importar colección de Postman
+
+El repositorio incluye una **colección de Postman** con **endpoints de ejemplo** para probar la API REST del sistema.
+
+Para importar la colección:
+
+1. Abrir **Postman**
+2. Ir a **File → Import**
+3. Seleccionar la opción **Files**
+4. Importar el archivo: /Postman/Endpoints.json
+
+Una vez importada la colección, se dispondrá de endpoints organizados por recurso y requests de ejemplo para cada Caso de Uso, permitiendo validar rápidamente el funcionamiento del backend.
+
+---
+
+## 🌐 Endpoints
 
 A continuación se detallan los **endpoints REST implementados**, organizados por recurso y alineados con los Casos de Uso solicitados en la consigna.
 
@@ -138,7 +201,7 @@ A continuación se detallan los **endpoints REST implementados**, organizados po
 
 ---
 
-### 🏨 Habitaciones
+### 🛏️Habitaciones
 
 - `GET /habitaciones?tipo=XXX`
   Listado de habitaciones, opcionalmente filtradas por tipo.
@@ -175,10 +238,25 @@ A continuación se detallan los **endpoints REST implementados**, organizados po
 
 ---
 
-### 🏢 Responsables de Pago
+### 👨‍💼Responsables de Pago
 
 - `GET /responsablesPago?dni=XXX&tipoDocumento=YYY&cuit=ZZZ`
   Búsqueda de responsables de pago (persona física o jurídica).
+
+---
+
+## 🚨 Manejo de errores y excepciones
+
+El backend implementa un **criterio unificado de clasificación de errores**, utilizando **excepciones personalizadas** y códigos HTTP adecuados.
+
+| Tipo de error                       | Excepción                   | Código HTTP |
+| ----------------------------------- | ---------------------------- | ------------ |
+| Recurso no existe                   | RecursoNoEncontradoException | 404          |
+| Regla de negocio / estado inválido | NegocioException             | 409          |
+| Validación de datos de entrada     | IllegalArgumentException     | 400          |
+| Error técnico inesperado           | Exception                    | 500          |
+
+Las excepciones se manejan de forma centralizada mediante un **handler global** (`@ControllerAdvice`), garantizando respuestas consistentes y claras.
 
 ---
 
@@ -273,4 +351,4 @@ Todos realizados en **PlantUML**, respetando el diseño aprobado en la materia D
 - CU07 – Facturar
 - CU11 – Dar baja huésped
 - CU16 – Ingresar pago
-- CU19 – Ingresar nota de créditoa
+- CU19 – Ingresar nota de crédito

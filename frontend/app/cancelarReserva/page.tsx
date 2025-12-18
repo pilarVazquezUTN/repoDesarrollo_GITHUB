@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios from "../lib/axios";
 import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import { esSoloLetras, esObligatorio } from "../validaciones/validaciones";

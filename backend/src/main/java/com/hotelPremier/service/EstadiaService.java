@@ -5,6 +5,7 @@ import com.hotelPremier.classes.Dominio.Estadia;
 import com.hotelPremier.classes.Dominio.estadia.observer.ActualizarHabitacionObserver;
 import com.hotelPremier.classes.Dominio.estadia.observer.ActualizarReservaObserver;
 import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.EstadiaRepository;
 import com.hotelPremier.repository.ServicioExtraRepository;
@@ -40,7 +41,11 @@ public class EstadiaService {
      */
     public EstadiaDTO obtenerEstadiaEnCurso(Integer nroHabitacion) {
         Estadia estadia = estadiaRepository.estadiaEnCurso(nroHabitacion);
-        if (estadia == null) return null;
+        if (estadia == null) {
+            throw new RecursoNoEncontradoException(
+                "No hay estadía en curso para la habitación " + nroHabitacion
+            );
+        }
         
         EstadiaDTO dto = mapper.toDTOsEstadia(List.of(estadia)).get(0);
         

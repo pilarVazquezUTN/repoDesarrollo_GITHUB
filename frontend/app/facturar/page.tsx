@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import axios from "axios";
+import axios from "../lib/axios";
 import { TipoHuesped } from "../tabla/page";
 import FacturarUnTerceroModal from "../carteles/facturarUnTercero";
 import MenorEdad from "../carteles/menorEdad";

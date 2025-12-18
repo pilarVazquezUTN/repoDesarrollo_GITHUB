@@ -4,6 +4,8 @@ import com.hotelPremier.classes.DTO.ReservaDTO;
 import com.hotelPremier.classes.Dominio.Estadia;
 import com.hotelPremier.classes.Dominio.Habitacion;
 import com.hotelPremier.classes.Dominio.Reserva;
+import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.EstadiaRepository;
 import com.hotelPremier.repository.HabitacionRepository;
@@ -45,14 +47,14 @@ public class ReservaService {
         for (ReservaDTO dto : listaDTO) {
 
             if (dto.getHabitacion() == null)
-                throw new RuntimeException("El DTO de reserva no contiene la habitación.");
+                throw new IllegalArgumentException("El DTO de reserva no contiene la habitación.");
 
             Integer nro = dto.getHabitacion().getNumero();
             if (nro == null)
-                throw new RuntimeException("El DTO no trae número de habitación.");
+                throw new IllegalArgumentException("El DTO no trae número de habitación.");
 
             Habitacion hab = habitacionRepository.findById(nro)
-                    .orElseThrow(() -> new RuntimeException("Habitación inexistente: " + nro));
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Habitación no encontrada: " + nro));
 
             Integer solapa = reservaRepository.haySuperposicion(
                     nro,
@@ -61,7 +63,7 @@ public class ReservaService {
             );
 
             if (solapa != null && solapa > 0)
-                throw new RuntimeException("La habitación " + nro + " ya tiene reservas en ese rango.");
+                throw new NegocioException("La habitación " + nro + " ya tiene reservas en ese rango de fechas.");
 
             Reserva r = mapper.toEntityReserva(dto);
             if (r.getEstado() == null || r.getEstado().trim().isEmpty()) {
@@ -118,7 +120,7 @@ public class ReservaService {
     public ReservaDTO cancelarReserva(Integer idReserva) {
 
         Reserva reserva = reservaRepository.findById(idReserva)
-                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + idReserva));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con ID: " + idReserva));
 
         // Validar que la reserva esté en estado PENDIENTE
         String estadoActual = reserva.getEstado();
@@ -127,7 +129,7 @@ public class ReservaService {
         }
         
         if (!estadoActual.equalsIgnoreCase("PENDIENTE")) {
-            throw new IllegalStateException(
+            throw new NegocioException(
                 "Solo se pueden cancelar reservas en estado PENDIENTE. La reserva actual está en estado: " + estadoActual
             );
         }
@@ -144,7 +146,7 @@ public class ReservaService {
     public Estadia hacerCheckIn(Integer idReserva) {
 
         Reserva reserva = reservaRepository.findById(idReserva)
-                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + idReserva));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con ID: " + idReserva));
 
         Estadia estadia = reserva.checkIn();
         estadia = estadiaService.iniciarEstadia(estadia);

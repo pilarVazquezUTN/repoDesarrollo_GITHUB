@@ -70,12 +70,8 @@ public class FacturaController {
         description = "Genera una nueva factura asociada a una estadía con todos los cálculos realizados automáticamente. Devuelve la factura completa creada."
     )
     @PostMapping
-    public ResponseEntity<?> crearFactura(@RequestBody FacturaDTO facturaDTO) {
-        try {
-            FacturaDTO facturaCreada = facturaService.crearFactura(facturaDTO);
-            return ResponseEntity.ok(facturaCreada);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<FacturaDTO> crearFactura(@RequestBody FacturaDTO facturaDTO) {
+        FacturaDTO facturaCreada = facturaService.crearFactura(facturaDTO);
+        return ResponseEntity.ok(facturaCreada);
     }
 }

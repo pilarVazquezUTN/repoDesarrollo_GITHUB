@@ -4,6 +4,7 @@ import com.hotelPremier.classes.Dominio.Estadia;
 import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
 import com.hotelPremier.classes.Dominio.Factura;
+import com.hotelPremier.exception.NegocioException;
 import java.util.Date;
 
 /**
@@ -21,28 +22,28 @@ public abstract class EstadoEstadia {
      * Intenta agregar un huésped a la estadía. Por defecto lanza excepción si no es posible.
      */
     public void agregarHuesped(Estadia estadia, Huesped huesped) {
-        throw new IllegalStateException("No se puede agregar huésped en estado " + getNombre());
+        throw new NegocioException("No se puede agregar huésped en estado " + getNombre());
     }
 
     /**
      * Intenta agregar un servicio extra a la estadía. Por defecto lanza excepción si no es posible.
      */
     public void agregarServicioExtra(Estadia estadia, ServicioExtra servicio) {
-        throw new IllegalStateException("No se puede agregar servicio extra en estado " + getNombre());
+        throw new NegocioException("No se puede agregar servicio extra en estado " + getNombre());
     }
 
     /**
      * Intenta generar una factura para la estadía. Por defecto lanza excepción si no es posible.
      */
     public void generarFactura(Estadia estadia, Factura factura) {
-        throw new IllegalStateException("No se puede generar una factura para una estiadia en estado " + getNombre());
+        throw new NegocioException("No se puede generar una factura para una estadía en estado " + getNombre());
     }
 
     /**
      * Intenta modificar las fechas de la estadía. Por defecto lanza excepción si no es posible.
      */
     public void modificarFechas(Estadia estadia, Date nuevoCheckin, Date nuevoCheckout) {
-        throw new IllegalStateException("No se pueden modificar fechas en estado " + getNombre());
+        throw new NegocioException("No se pueden modificar fechas en estado " + getNombre());
     }
 
     /**
@@ -50,7 +51,7 @@ public abstract class EstadoEstadia {
      * Por defecto lanza excepción si no es posible.
      */
     public void finalizar(Estadia estadia) {
-        throw new IllegalStateException("No se puede finalizar en estado " + getNombre());
+        throw new NegocioException("No se puede finalizar en estado " + getNombre());
     }
 }
 

@@ -18,6 +18,8 @@ import com.hotelPremier.classes.Dominio.medioDePago.strategy.MedioPagoStrategy;
 import com.hotelPremier.classes.Dominio.medioDePago.strategy.SelectorMedioPagoStrategy;
 import com.hotelPremier.classes.Dominio.factura.observer.PagoFacturaObserver;
 
+import com.hotelPremier.exception.NegocioException;
+import com.hotelPremier.exception.RecursoNoEncontradoException;
 import com.hotelPremier.repository.FacturaRepository;
 import com.hotelPremier.repository.PagoRepository;
 
@@ -42,13 +44,13 @@ public class PagoService {
             throw new IllegalArgumentException("Factura inválida.");
 
         Factura factura = facturaRepository.findById(dto.getFactura().getID())
-            .orElseThrow(() -> new IllegalArgumentException("Factura no encontrada."));
+            .orElseThrow(() -> new RecursoNoEncontradoException("Factura no encontrada con ID: " + dto.getFactura().getID()));
 
         if (dto.getMedios() == null || dto.getMedios().isEmpty())
             throw new IllegalArgumentException("Debe enviar al menos un medio de pago.");
 
         if (pagoRepository.existsByFactura(factura)) {
-            throw new RuntimeException("La factura ya posee un pago registrado");
+            throw new NegocioException("La factura ya posee un pago registrado");
         }
 
         List<MedioDePago> listaMedios = new ArrayList<>();
@@ -84,7 +86,7 @@ public class PagoService {
             BigDecimal diferencia = montoPago.subtract(sumaCalculada);
             // Permitir una pequeña tolerancia para redondeos (0.01)
             if (diferencia.compareTo(new BigDecimal("0.01")) > 0) {
-                throw new IllegalArgumentException(
+                throw new NegocioException(
                     String.format(
                         "El monto del pago (%.2f) no puede ser mayor que la suma de los medios calculados (%.2f).",
                         montoPago.floatValue(),
