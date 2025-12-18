@@ -118,7 +118,7 @@ public class Reserva {
             estado = "PENDIENTE"; // Estado por defecto
         }
         switch (estado.toUpperCase()) {
-            case "CONSUMIDA" -> estadoReserva = new ReservaConsumida();
+            case "FINALIZADA" -> estadoReserva = new ReservaConsumida();
             case "CANCELADA" -> estadoReserva = new ReservaCancelada();
             default -> estadoReserva = new ReservaPendiente();
         }
@@ -158,8 +158,8 @@ public class Reserva {
 
     /**
      * Método delegado: delega al estado actual la operación de consumir la reserva.
-     * Cambia el estado a CONSUMIDA sin crear una nueva estadía.
-     * Útil cuando la estadía ya existe y solo se necesita marcar la reserva como consumida.
+     * Cambia el estado a FINALIZADA sin crear una nueva estadía.
+     * Útil cuando la estadía ya existe y solo se necesita marcar la reserva como finalizada.
      */
     public void consumir() {
         if (estadoReserva == null) {

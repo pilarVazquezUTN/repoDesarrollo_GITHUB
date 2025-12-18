@@ -5,7 +5,7 @@ import com.hotelPremier.classes.Dominio.Reserva;
 
 /**
  * Observer que actualiza el estado de la reserva cuando una estadía pasa a ENCURSO.
- * Cambia el estado de la reserva a CONSUMIDA (CHECKIN/CUMPLIDA).
+ * Cambia el estado de la reserva a FINALIZADA.
  */
 public class ActualizarReservaObserver implements EstadiaObserver {
 

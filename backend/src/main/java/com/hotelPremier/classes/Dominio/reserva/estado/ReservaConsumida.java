@@ -1,7 +1,7 @@
 package com.hotelPremier.classes.Dominio.reserva.estado;
 
 /**
- * Estado CONSUMIDA de una reserva.
+ * Estado FINALIZADA de una reserva.
  * La reserva fue utilizada para crear una estadía (check-in realizado).
  * 
  * No permite ninguna operación adicional.
@@ -11,7 +11,7 @@ public class ReservaConsumida extends EstadoReserva {
 
     @Override
     public String getNombre() {
-        return "CONSUMIDA";
+        return "FINALIZADA";
     }
     
     // Todos los métodos heredan el comportamiento por defecto que lanza excepción

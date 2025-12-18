@@ -83,12 +83,21 @@ public class GlobalExceptionHandler {
 
     /**
      * Maneja cualquier otra excepción no prevista.
-     * Retorna HTTP 500 Internal Server Error con mensaje genérico.
+     * Retorna HTTP 500 Internal Server Error.
+     * En desarrollo muestra el error real, en producción muestra mensaje genérico.
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        // Imprimir el stack trace en consola para debugging
+        ex.printStackTrace();
+        
+        // Mostrar el error real (cambiar a mensaje genérico en producción)
+        String mensaje = ex.getMessage() != null 
+            ? ex.getMessage() 
+            : ex.getClass().getSimpleName();
+        
         ErrorResponse error = new ErrorResponse(
-            "Ocurrió un error interno en el servidor. Por favor, intente nuevamente más tarde.",
+            mensaje,
             HttpStatus.INTERNAL_SERVER_ERROR.value()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);

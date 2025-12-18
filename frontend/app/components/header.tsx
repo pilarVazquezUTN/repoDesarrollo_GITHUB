@@ -16,13 +16,15 @@ export default function Header() {
   const pathname = usePathname();
   const mostrarHeader = pathname !== "/loging";
   const mostrarHeader1 = pathname !== "/paginaPrincipal";
+  const ocultarEnMenu = pathname === "/menu"; // Ocultar header completo en menú principal
+  const mostrarNav = pathname !== "/menu"; // No mostrar nav en el menú principal
 
-  if (!mostrarHeader || !mostrarHeader1) return null;
+  if (!mostrarHeader || !mostrarHeader1 || ocultarEnMenu) return null;
 
   return (
     <header className="w-full bg-indigo-950 text-white py-6 px-6 shadow-lg">
       <Link href="/menu" className="hover:text-gray-500"> 
-        <div className="flex items-center gap-4 mb-4">
+        <div className={`flex items-center gap-4 ${mostrarNav ? 'mb-4' : ''}`}>
         <Image 
           src="/logoHotelPremier.png"        // Asegurate de que la imagen se llame así en la carpeta public
           alt="Logo Hotel Premier"
@@ -34,7 +36,7 @@ export default function Header() {
         </div>
       </Link>
       
-
+      {mostrarNav && (
       <nav className="flex gap-6 text-lg overflow-x-auto whitespace-nowrap">
         
         <Link
@@ -69,15 +71,15 @@ export default function Header() {
           Facturar
         </Link>
 
-        {/*<Link href="/darAltaHuesped"
+        <Link href="/darAltaHuesped"
           className={` ${
                 pathname === "/darAltaHuesped"
                   ? "text-gray-500"
                   : "hover:text-gray-500"
             }`}
         >
-          Dar alta Huésped
-        </Link> */}
+          Dar Alta Huésped
+        </Link>
 
         {/*<Link href="/darBajaHuesped"
           className={` ${
@@ -128,18 +130,19 @@ export default function Header() {
           Ingresar Nota De Credito
         </Link>
 
-        {/*<Link href="/ocuparHabitacion"
+        <Link href="/ocuparHabitacion"
           className={` ${
                 pathname === "/ocuparHabitacion"
                   ? "text-gray-500"
                   : "hover:text-gray-500"
               }`}
         >
-          Ocupar Habitacion
-        </Link> */}
+          Ocupar Habitación
+        </Link>
 
 
       </nav>
+      )}
     </header>
   );
 }

@@ -11,7 +11,7 @@ import com.hotelPremier.classes.exception.NegocioException;
 public abstract class EstadoReserva {
 
     /**
-     * Retorna el nombre del estado (PENDIENTE, CONSUMIDA, CANCELADA)
+     * Retorna el nombre del estado (PENDIENTE, FINALIZADA, CANCELADA)
      */
     public abstract String getNombre();
 
@@ -34,7 +34,7 @@ public abstract class EstadoReserva {
     }
 
     /**
-     * Consume la reserva cambiando su estado a CONSUMIDA sin crear una nueva estadía.
+     * Consume la reserva cambiando su estado a FINALIZADA sin crear una nueva estadía.
      * Útil cuando la estadía ya existe y solo se necesita marcar la reserva como consumida.
      * Por defecto lanza excepción si no es posible.
      * 

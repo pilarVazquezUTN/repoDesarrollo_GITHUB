@@ -4,6 +4,7 @@ import com.hotelPremier.classes.DTO.HuespedDTO;
 import com.hotelPremier.classes.Dominio.Direccion;
 import com.hotelPremier.classes.Dominio.Huesped;
 import com.hotelPremier.classes.Dominio.HuespedID;
+import com.hotelPremier.classes.exception.NegocioException;
 import com.hotelPremier.classes.exception.RecursoNoEncontradoException;
 import com.hotelPremier.classes.mapper.ClassMapper;
 import com.hotelPremier.repository.DireccionRepository;
@@ -59,16 +60,81 @@ public class HuespedService {
 
     /**
      * Registra un nuevo huésped junto con su dirección.
+     * 
+     * Campos obligatorios: tipoDocumento, dni, nombre, apellido, fechaNacimiento, 
+     *                      telefono, ocupacion, nacionalidad, direccion (calle, numero, 
+     *                      localidad, codigoPostal, provincia, pais)
+     * Campos opcionales: cuit, posicionIva, email, departamento, piso
      */
     public HuespedDTO addHuesped(HuespedDTO huespedDTO) {
+        // Validar que venga el ID del huésped
+        if (huespedDTO.getHuespedID() == null) {
+            throw new NegocioException("Debe especificar el ID del huésped (tipoDocumento y dni).");
+        }
+        
+        String tipoDocumento = huespedDTO.getHuespedID().getTipoDocumento();
+        String dni = huespedDTO.getHuespedID().getDni();
+        
+        // Validar campos obligatorios del huésped
+        validarCampoObligatorio(tipoDocumento, "tipo de documento");
+        validarCampoObligatorio(dni, "número de documento");
+        validarCampoObligatorio(huespedDTO.getNombre(), "nombre");
+        validarCampoObligatorio(huespedDTO.getApellido(), "apellido");
+        validarCampoObligatorio(huespedDTO.getTelefono(), "teléfono");
+        validarCampoObligatorio(huespedDTO.getOcupacion(), "ocupación");
+        validarCampoObligatorio(huespedDTO.getNacionalidad(), "nacionalidad");
+        
+        if (huespedDTO.getFechaNacimiento() == null) {
+            throw new NegocioException("Debe especificar la fecha de nacimiento.");
+        }
+        
+        // Validar dirección obligatoria
+        if (huespedDTO.getDireccion() == null) {
+            throw new NegocioException("Debe especificar la dirección del huésped.");
+        }
+        
+        // Validar campos obligatorios de la dirección
+        validarCampoObligatorio(huespedDTO.getDireccion().getCalle(), "calle");
+        if (huespedDTO.getDireccion().getNumero() == null) {
+            throw new NegocioException("Debe especificar el número de la dirección.");
+        }
+        validarCampoObligatorio(huespedDTO.getDireccion().getLocalidad(), "localidad");
+        if (huespedDTO.getDireccion().getCodigoPostal() == null) {
+            throw new NegocioException("Debe especificar el código postal.");
+        }
+        validarCampoObligatorio(huespedDTO.getDireccion().getProvincia(), "provincia");
+        validarCampoObligatorio(huespedDTO.getDireccion().getPais(), "país");
+        
+        // Verificar que no exista ya un huésped con ese documento
+        HuespedID id = new HuespedID();
+        id.setTipoDocumento(tipoDocumento);
+        id.setDni(dni);
+        
+        if (huespedRepository.existsById(id)) {
+            throw new NegocioException(
+                "Ya existe un huésped con " + tipoDocumento + ": " + dni);
+        }
 
         Huesped huesped = mapper.toEntity(huespedDTO);
+        
+        // Guardar la dirección
         Direccion direccion = huesped.getDireccion();
-
-        direccionRepository.save(direccion);
+        if (direccion != null) {
+            direccionRepository.save(direccion);
+        }
+        
         Huesped saved = huespedRepository.save(huesped);
 
         return mapper.toDTO(saved);
+    }
+    
+    /**
+     * Valida que un campo de tipo String no sea null ni esté vacío.
+     */
+    private void validarCampoObligatorio(String valor, String nombreCampo) {
+        if (valor == null || valor.trim().isEmpty()) {
+            throw new NegocioException("Debe especificar el/la " + nombreCampo + ".");
+        }
     }
 
     /**

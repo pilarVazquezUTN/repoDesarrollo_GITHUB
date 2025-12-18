@@ -28,7 +28,7 @@ public class ReservaPendiente extends EstadoReserva {
 
     @Override
     public Estadia checkIn(Reserva reserva) {
-        // 1. Cambiar estado de la reserva a CONSUMIDA
+        // 1. Cambiar estado de la reserva a FINALIZADA
         reserva.setEstadoReserva(new ReservaConsumida());
         
         // 2. Crear nueva Estadia en estado ENCURSO
@@ -47,7 +47,7 @@ public class ReservaPendiente extends EstadoReserva {
 
     @Override
     public void consumir(Reserva reserva) {
-        // Consumir la reserva cambiando su estado a CONSUMIDA
+        // Consumir la reserva cambiando su estado a FINALIZADA
         // Sin crear una nueva estadía (útil cuando la estadía ya existe)
         reserva.setEstadoReserva(new ReservaConsumida());
     }

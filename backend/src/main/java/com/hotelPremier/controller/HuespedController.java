@@ -40,11 +40,11 @@ public class HuespedController {
         );
     }
 
-    // @Operation(summary = "Dar de alta huésped")
-    // @PostMapping("/huespedes")
-    // public ResponseEntity<HuespedDTO> addHuesped(@RequestBody HuespedDTO huesped) {
-    //     return ResponseEntity.ok(huespedService.addHuesped(huesped));
-    // }
+    @Operation(summary = "Dar de alta huésped")
+    @PostMapping("/huespedes")
+    public ResponseEntity<HuespedDTO> addHuesped(@RequestBody HuespedDTO huesped) {
+        return ResponseEntity.ok(huespedService.addHuesped(huesped));
+    }
 
     @Operation(summary = "Eliminar huésped")
     @DeleteMapping("/huespedes/{tipo}/{dni}")
