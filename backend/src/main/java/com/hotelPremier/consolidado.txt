@@ -173,9 +173,9 @@ public class Estadia {
     @JoinColumn(name = "nro_habitacion")
     @JsonBackReference(value = "habitacion-estadias")
     private Habitacion habitacion;
-    @ManyToMany(mappedBy = "listaEstadia", fetch = FetchType.EAGER)
-    @JsonManagedReference(value = "estadia-huespedes")
-    private List<Huesped> listahuesped;
+@ManyToMany(mappedBy = "listaEstadia", fetch = FetchType.EAGER)
+@JsonManagedReference(value = "estadia-huespedes")
+private List<Huesped> listahuesped;
     @OneToMany(mappedBy = "estadia")
     @JsonManagedReference(value = "estadia-facturas")
     private List<Factura> listafactura;
@@ -2490,18 +2490,86 @@ public class UsuarioDTO {
         return this.contrasena;
     }
 }
-//[classes/excepciones/HuespedNoEncontradoException.java]
-package com.hotelPremier.classes.excepciones;
-public class HuespedNoEncontradoException extends Exception {
-    public HuespedNoEncontradoException(String mensaje) {
-        super(mensaje);
+//[classes/exception/GlobalExceptionHandler.java]
+package com.hotelPremier.classes.exception;
+import com.hotelPremier.classes.DTO.ErrorResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import java.util.HashMap;
+import java.util.Map;
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(RecursoNoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> handleRecursoNoEncontrado(RecursoNoEncontradoException ex) {
+        ErrorResponse error = new ErrorResponse(
+            ex.getMessage(),
+            HttpStatus.NOT_FOUND.value()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+    @ExceptionHandler(NegocioException.class)
+    public ResponseEntity<ErrorResponse> handleNegocioException(NegocioException ex) {
+        ErrorResponse error = new ErrorResponse(
+            ex.getMessage(),
+            HttpStatus.CONFLICT.value()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorResponse error = new ErrorResponse(
+            ex.getMessage(),
+            HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errores = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String nombreCampo = ((FieldError) error).getField();
+            String mensajeError = error.getDefaultMessage();
+            errores.put(nombreCampo, mensajeError);
+        });
+        Map<String, Object> respuesta = new HashMap<>();
+        respuesta.put("mensaje", "Error de validación");
+        respuesta.put("errores", errores);
+        respuesta.put("status", HttpStatus.BAD_REQUEST.value());
+        respuesta.put("timestamp", java.time.LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        ErrorResponse error = new ErrorResponse(
+            "Ocurrió un error interno en el servidor. Por favor, intente nuevamente más tarde.",
+            HttpStatus.INTERNAL_SERVER_ERROR.value()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }
-//[classes/excepciones/UsuarioNoExistenteException.java]
-package com.hotelPremier.classes.excepciones;
-public class UsuarioNoExistenteException extends Exception {
-    public UsuarioNoExistenteException(String mensaje) {
+//[classes/exception/NegocioException.java]
+package com.hotelPremier.classes.exception;
+public class NegocioException extends RuntimeException {
+    public NegocioException(String mensaje) {
         super(mensaje);
+    }
+    public NegocioException(String mensaje, Throwable causa) {
+        super(mensaje, causa);
+    }
+}
+//[classes/exception/RecursoNoEncontradoException.java]
+package com.hotelPremier.classes.exception;
+public class RecursoNoEncontradoException extends RuntimeException {
+    public RecursoNoEncontradoException(String mensaje) {
+        super(mensaje);
+    }
+    public RecursoNoEncontradoException(String mensaje, Throwable causa) {
+        super(mensaje, causa);
     }
 }
 //[classes/FuncionesUtiles.java]
@@ -2979,13 +3047,15 @@ public class ResponsablePagoController {
         @Parameter(description = "CUIT de la persona jurídica (opcional)", example = "20-12345678-9")
         @RequestParam(required = false) String cuit
     ) {
-        Integer id = responsablePagoService.buscarResponsablePago(dni, tipoDocumento, cuit);
-        return ResponseEntity.ok(new ResponsablePagoIdResponse(id));
+        var result = responsablePagoService.buscarResponsablePago(dni, tipoDocumento, cuit);
+        return ResponseEntity.ok(new ResponsablePagoIdResponse(result.id(), result.razonSocial()));
     }
     private static class ResponsablePagoIdResponse {
         private Integer id;
-        public ResponsablePagoIdResponse(Integer id) {
+        private String razonSocial;
+        public ResponsablePagoIdResponse(Integer id, String razonSocial) {
             this.id = id;
+            this.razonSocial = razonSocial;
         }
         public Integer getId() {
             return id;
@@ -2993,88 +3063,12 @@ public class ResponsablePagoController {
         public void setId(Integer id) {
             this.id = id;
         }
-    }
-}
-//[exception/GlobalExceptionHandler.java]
-package com.hotelPremier.classes.exception;
-import com.hotelPremier.classes.DTO.ErrorResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import java.util.HashMap;
-import java.util.Map;
-@RestControllerAdvice
-public class GlobalExceptionHandler {
-    @ExceptionHandler(RecursoNoEncontradoException.class)
-    public ResponseEntity<ErrorResponse> handleRecursoNoEncontrado(RecursoNoEncontradoException ex) {
-        ErrorResponse error = new ErrorResponse(
-            ex.getMessage(),
-            HttpStatus.NOT_FOUND.value()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-    }
-    @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<ErrorResponse> handleNegocioException(NegocioException ex) {
-        ErrorResponse error = new ErrorResponse(
-            ex.getMessage(),
-            HttpStatus.CONFLICT.value()
-        );
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-    }
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-        ErrorResponse error = new ErrorResponse(
-            ex.getMessage(),
-            HttpStatus.BAD_REQUEST.value()
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-    }
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errores = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String nombreCampo = ((FieldError) error).getField();
-            String mensajeError = error.getDefaultMessage();
-            errores.put(nombreCampo, mensajeError);
-        });
-        Map<String, Object> respuesta = new HashMap<>();
-        respuesta.put("mensaje", "Error de validación");
-        respuesta.put("errores", errores);
-        respuesta.put("status", HttpStatus.BAD_REQUEST.value());
-        respuesta.put("timestamp", java.time.LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
-    }
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        ErrorResponse error = new ErrorResponse(
-            "Ocurrió un error interno en el servidor. Por favor, intente nuevamente más tarde.",
-            HttpStatus.INTERNAL_SERVER_ERROR.value()
-        );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-    }
-}
-//[exception/NegocioException.java]
-package com.hotelPremier.classes.exception;
-public class NegocioException extends RuntimeException {
-    public NegocioException(String mensaje) {
-        super(mensaje);
-    }
-    public NegocioException(String mensaje, Throwable causa) {
-        super(mensaje, causa);
-    }
-}
-//[exception/RecursoNoEncontradoException.java]
-package com.hotelPremier.classes.exception;
-public class RecursoNoEncontradoException extends RuntimeException {
-    public RecursoNoEncontradoException(String mensaje) {
-        super(mensaje);
-    }
-    public RecursoNoEncontradoException(String mensaje, Throwable causa) {
-        super(mensaje, causa);
+        public String getRazonSocial() {
+            return razonSocial;
+        }
+        public void setRazonSocial(String razonSocial) {
+            this.razonSocial = razonSocial;
+        }
     }
 }
 //[HotelPremierApplication.java]
@@ -3154,7 +3148,6 @@ import com.hotelPremier.classes.Dominio.responsablePago.PersonaFisica;
 import com.hotelPremier.classes.Dominio.responsablePago.PersonaJuridica;
 import com.hotelPremier.classes.Dominio.responsablePago.ResponsablePago;
 import com.hotelPremier.classes.Dominio.servicioExtra.ServicioExtra;
-import com.hotelPremier.classes.exception.NegocioException;
 import com.hotelPremier.classes.exception.RecursoNoEncontradoException;
 import com.hotelPremier.repository.EstadiaRepository;
 import com.hotelPremier.repository.FacturaRepository;
@@ -3739,7 +3732,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 @Service
 public class ReservaService {
@@ -3841,21 +3833,22 @@ import org.springframework.stereotype.Service;
 public class ResponsablePagoService {
     @Autowired
     private ResponsablePagoRepository responsablePagoRepository;
-    public Integer buscarResponsablePago(String dni, String tipoDocumento, String cuit) {
+    public record ResponsablePagoResult(Integer id, String razonSocial) {}
+    public ResponsablePagoResult buscarResponsablePago(String dni, String tipoDocumento, String cuit) {
         if (cuit != null && !cuit.trim().isEmpty()) {
-            return responsablePagoRepository.findPersonaJuridicaByCuit(cuit)
-                    .map(PersonaJuridica::getId)
+            PersonaJuridica pj = responsablePagoRepository.findPersonaJuridicaByCuit(cuit)
                     .orElseThrow(() -> new RecursoNoEncontradoException(
                         "No se encontró responsable de pago con CUIT: " + cuit
                     ));
+            return new ResponsablePagoResult(pj.getId(), pj.getRazonSocial());
         }
         if (dni != null && !dni.trim().isEmpty() && 
             tipoDocumento != null && !tipoDocumento.trim().isEmpty()) {
-            return responsablePagoRepository.findPersonaFisicaByDniAndTipoDocumento(dni, tipoDocumento)
-                    .map(PersonaFisica::getId)
+            PersonaFisica pf = responsablePagoRepository.findPersonaFisicaByDniAndTipoDocumento(dni, tipoDocumento)
                     .orElseThrow(() -> new RecursoNoEncontradoException(
                         String.format("No se encontró responsable de pago con DNI: %s y tipo de documento: %s", dni, tipoDocumento)
                     ));
+            return new ResponsablePagoResult(pf.getId(), null);
         }
         throw new IllegalArgumentException(
             "Debe proporcionar CUIT o bien DNI y tipoDocumento para buscar el responsable de pago"
